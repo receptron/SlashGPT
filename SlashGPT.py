@@ -26,7 +26,6 @@ for file in files:
     # print(key, file, data)
     prompts[key] = data
 
-print(prompts)
 messages = []
 botName = "GPT"
 
@@ -36,7 +35,6 @@ while True:
         continue
     if (value[0] == "/"):
         key = value[1:]
-        print(f"\033[92m\033[1m{key}\033[95m\033[0m")
         if (key == "bye"):
             break
         elif (key == "reset"):
@@ -47,6 +45,8 @@ while True:
             prompt = prompts[key]
             if (prompt):
                 botName = key
+                description = prompt["description"]
+                print(f"Activating {key}: {description}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
                 print(f"Invalid Slash command: {key}")
