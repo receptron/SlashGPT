@@ -4,6 +4,7 @@ import readline # So that input can handle Kanji & delete
 import openai
 from dotenv import load_dotenv
 import json
+from datetime import datetime
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -22,6 +23,8 @@ files = os.listdir("./prompts")
 
 if not os.path.isdir("output"):
     os.makedirs("output")
+if not os.path.isdir("output/GPT"):
+    os.makedirs("output/GPT")
 
 # print(files)
 for file in files:
@@ -33,6 +36,7 @@ for file in files:
 
 messages = []
 context = None
+context_time = datetime.now()
 
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
@@ -50,11 +54,13 @@ while True:
         elif (key == "reset"):
             messages = []
             context = None
+            context_time = datetime.now()
             continue            
         else:
             prompt = prompts.get(key)
             if (prompt):
                 context = key
+                context_time = datetime.now()
                 if not os.path.isdir(f"output/{context}"):
                     os.makedirs(f"output/{context}")
                 title = prompt["title"]
@@ -73,3 +79,5 @@ while True:
     botName = context or "GPT"
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     messages.append({"role":answer['role'], "content":answer['content']})
+    with open(f"output/{botName}/{context_time}.json", 'w') as f:
+        json.dump(messages, f)
