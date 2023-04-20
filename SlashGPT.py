@@ -14,7 +14,8 @@ OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
-print("System Slashes: /bye, /reset, /help")
+oneline_help = "System Slashes: /bye, /reset, /help, /gpt3, /gpt4"
+print(oneline_help)
 openai.api_key = OPENAI_API_KEY
 
 # Reading Prompt files
@@ -41,7 +42,7 @@ context_time = datetime.now()
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
     if (len(value) == 0):
-        print("System Slashes: /bye, /reset, /help")
+        print(oneline_help)
         continue
     if (value[0] == "/"):
         key = value[1:]
@@ -51,6 +52,14 @@ while True:
             continue
         if (key == "bye"):
             break
+        elif (key == "gpt3"):
+            OPENAI_API_MODEL = "gpt-3.5-turbo"
+            print(f"Model = {OPENAI_API_MODEL}")
+            continue
+        elif (key == "gpt4"):
+            OPENAI_API_MODEL = "gpt-4"
+            print(f"Model = {OPENAI_API_MODEL}")
+            continue
         elif (key == "reset"):
             messages = []
             context = None
