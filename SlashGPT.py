@@ -75,6 +75,7 @@ while True:
                 title = prompt["title"]
                 print(f"Activating: {title}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
+                continue
             else:            
                 print(f"Invalid slash command: {key}")
                 continue
