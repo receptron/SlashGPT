@@ -39,11 +39,11 @@ where the context is "GTP" for general chat, and the slash key for a specialized
 
 ## Prompt Extensions
 
-1. Create a new JSON file in "promots" folder with following properties:
+1. Create a new JSON file in "prompts" folder with following properties:
 
- *title* (string): Title for the user to see (required)
- *source* (string): Source of the prompt (optional: URL, email, github id, or twitter id)
- *promot* (array of strings): The system prompts which define the bot (required)
+    *title* (string): Title for the user to see (required)
+    *source* (string): Source of the prompt (optional: URL, email, github id, or twitter id)
+    *promot* (array of strings): The system prompts which define the bot (required)
 
 2. Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
 
