@@ -3,6 +3,7 @@ import os
 import readline # So that input can handle Kanji & delete
 import openai
 from dotenv import load_dotenv
+import json
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -17,6 +18,11 @@ openai.api_key = OPENAI_API_KEY
 # Reading Prompt files
 files = os.listdir("./prompts")
 print(files)
+for file in files:
+    key = file.split('.')[0]
+    with open(f"./prompts/{file}", 'r') as f:
+        data = json.load(f)
+    print(key, file, data)
 
 messages = []
 
