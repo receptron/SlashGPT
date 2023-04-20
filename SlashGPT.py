@@ -42,14 +42,15 @@ while True:
             botName = "GPT"
             continue            
         else:
-            prompt = prompts[key]
+            prompt = prompts.get(key)
             if (prompt):
                 botName = key
                 description = prompt["description"]
                 print(f"Activating {key}: {description}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
-                print(f"Invalid Slash command: {key}")
+                print(f"Invalid slash command: {key}")
+                continue
     else:  
         messages.append({"role":"user", "content":value})
 
