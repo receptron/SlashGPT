@@ -45,7 +45,7 @@ while True:
             prompt = prompts[key]
             if (prompt):
                 print(prompt)
-                messages = [{"role":"system", "content":'\n'.join(prompt["Prompt"])}]
+                messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
                 print(f"Invalid Slash command: {key}")
     else:  
