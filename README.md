@@ -8,9 +8,13 @@ a specific set of prompts, which hleps the user to file patent.
 
 ## Initialization
 
-1. Create .env file, and spacify your OpenAI key as follows:
+1. Install the required packages: `pip install -r requirements.txt`
+2. Create .env file, and spacify your OpenAI key as follows:
     OPENAI_API_KEY=...
-2. Install the required packages: `pip install -r requirements.txt`
+3. You may optionally specify the Model. The default is "gpt-3.5-turbo".
+    OPENAI_API_MODEL=...
+4. You may optionally specify the temperature. The default is 0.7.
+    OPENAI_TEMPERATURE=...
 
 ## Execution
 
