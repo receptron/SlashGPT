@@ -4,17 +4,20 @@ import readline # So that input can handle Kanji & delete
 import openai
 from dotenv import load_dotenv
 
-# CONFIGURATIONS
+# Configuration
 load_dotenv() # Load default environment variables (.env)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
-
 print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
-
 openai.api_key = OPENAI_API_KEY
+
+# Reading Prompt files
+files = os.listdir("./prompts")
+print(files)
+
 messages = []
 
 while True:
