@@ -19,6 +19,10 @@ openai.api_key = OPENAI_API_KEY
 # Reading Prompt files
 prompts = {}
 files = os.listdir("./prompts")
+
+if not os.path.isdir("output"):
+    os.makedirs("output")
+
 # print(files)
 for file in files:
     key = file.split('.')[0]
@@ -28,7 +32,7 @@ for file in files:
     prompts[key] = data
 
 messages = []
-botName = "GPT"
+context = None
 
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
@@ -45,12 +49,14 @@ while True:
             break
         elif (key == "reset"):
             messages = []
-            botName = "GPT"
+            context = None
             continue            
         else:
             prompt = prompts.get(key)
             if (prompt):
-                botName = key
+                context = key
+                if not os.path.isdir(f"output/{context}"):
+                    os.makedirs(f"output/{context}")
                 title = prompt["title"]
                 print(f"Activating: {title}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
@@ -64,5 +70,6 @@ while True:
 
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=OPENAI_TEMPERATURE)
     answer = response['choices'][0]['message']
+    botName = context or "GPT"
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     messages.append({"role":answer['role'], "content":answer['content']})
