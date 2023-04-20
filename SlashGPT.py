@@ -28,6 +28,7 @@ for file in files:
 
 print(prompts)
 messages = []
+botName = "GPT"
 
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
@@ -40,20 +41,21 @@ while True:
             break
         elif (key == "reset"):
             messages = []
+            botName = "GPT"
             continue            
         else:
             prompt = prompts[key]
             if (prompt):
-                print(prompt)
+                botName = key
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
                 print(f"Invalid Slash command: {key}")
     else:  
         messages.append({"role":"user", "content":value})
 
-    print(f"{messages}")
+    # print(f"{messages}")
 
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=OPENAI_TEMPERATURE)
     answer = response['choices'][0]['message']
-    print(f"\033[92m\033[1mGPT\033[95m\033[0m: {answer['content']}")
+    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     messages.append({"role":answer['role'], "content":answer['content']})
