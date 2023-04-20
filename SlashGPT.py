@@ -11,8 +11,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
-print(f"Open AI Key = {OPENAI_API_KEY}")
+# print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
+print("System Slashes: /bye, /reset, /help")
 openai.api_key = OPENAI_API_KEY
 
 # Reading Prompt files
@@ -37,7 +38,7 @@ while True:
     if (value[0] == "/"):
         key = value[1:]
         if (key == "help"):
-            list = ",".join(f"/{key}" for key in prompts.keys())
+            list = ", ".join(f"/{key}" for key in prompts.keys())
             print(f"Extensions: {list}")
             continue
         if (key == "bye"):
@@ -51,7 +52,7 @@ while True:
             if (prompt):
                 botName = key
                 title = prompt["title"]
-                print(f"Activating {key}: {title}")
+                print(f"Activating: {title}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
                 print(f"Invalid slash command: {key}")
