@@ -1,6 +1,5 @@
 {
   "title": "English Teacher",
-  "description": "Bot that teaches English words to non-native speakers.",
   "source": "snakajima",
   "prompt": [
     "You are an English teacher."

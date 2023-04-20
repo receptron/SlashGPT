@@ -50,8 +50,8 @@ while True:
             prompt = prompts.get(key)
             if (prompt):
                 botName = key
-                description = prompt["description"]
-                print(f"Activating {key}: {description}")
+                title = prompt["title"]
+                print(f"Activating {key}: {title}")
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
             else:            
                 print(f"Invalid slash command: {key}")

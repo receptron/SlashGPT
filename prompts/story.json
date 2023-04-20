@@ -1,6 +1,5 @@
 {
   "title": "Story Teller",
-  "description": "Bot that tells a story.",
   "source": "https://github.com/f/awesome-chatgpt-prompts",
   "prompt": [
       "I want you to act as a storyteller.",
