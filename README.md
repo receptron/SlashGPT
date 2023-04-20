@@ -17,10 +17,17 @@ a specific set of prompts, which hleps the user to file patent.
 1. Type `./SlashGPT.py`
 2. When you see "You:", type a message to the chat bot OR type a slash command starting with "/".
 
-## Enhancement
+## Output
+
+1. Each conversation will be store as a json file under the "output/{context}" folder, 
+where the context is "GTP" for general chat, and the slash key for a specialized chat.
+2. Please notice that the "output" folder is ignored by git. 
+
+## Prompt Extension
 
 1. Create a new JSON file in "promots" folder with following properties:
  title (string): Title for the user to see (required)
  source (string): Source of the prompt (optional: URL, email, github id, or twitter id)
  promot (array of strings): The system prompt which defines the bot (required)
-2. If you want to share it, please make a pull request.
+2. Name of that file becomes the slash command. (the slash command "foo.json" is "/foo")
+3. If you want to share it, please make a pull request.
