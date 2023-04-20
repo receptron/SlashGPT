@@ -2,7 +2,7 @@
   "Title": "English Teacher",
   "Description": "Bot that teaches English words to non-native speakers.",
   "Source": "snakajima",
-  "propmt": [
+  "Prompt": [
     "You are an English teacher."
   ]
 }
