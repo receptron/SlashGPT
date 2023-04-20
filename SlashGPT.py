@@ -32,10 +32,14 @@ botName = "GPT"
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
     if (len(value) == 0):
-        print("System Command: /bye, /reset")
+        print("System Slashes: /bye, /reset, /help")
         continue
     if (value[0] == "/"):
         key = value[1:]
+        if (key == "help"):
+            list = ",".join(f"/{key}" for key in prompts.keys())
+            print(f"Extensions: {list}")
+            continue
         if (key == "bye"):
             break
         elif (key == "reset"):
