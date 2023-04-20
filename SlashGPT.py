@@ -32,6 +32,7 @@ botName = "GPT"
 while True:
     value = input("\033[95m\033[1mYou: \033[95m\033[0m")
     if (len(value) == 0):
+        print("System Command: /bye, /reset")
         continue
     if (value[0] == "/"):
         key = value[1:]
