@@ -11,3 +11,16 @@ a specific set of prompts, which hleps the user to file patent.
 1. Create .env file, and spacify your OpenAI key as follows:
     OPENAI_API_KEY=...
 2. Install the required packages: `pip install -r requirements.txt`
+
+## Execution
+
+1. Type `./SlashGPT.py`
+2. When you see "You:", type a message to the chat bot OR type a slash command starting with "/".
+
+## Enhancement
+
+1. Create a new JSON file in "promots" folder with following properties:
+ title (string): Title for the user to see (required)
+ source (string): Source of the prompt (optional: URL, email, github id, or twitter id)
+ promot (array of strings): The system prompt which defines the bot (required)
+2. If you want to share it, please make a pull request.
