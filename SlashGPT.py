@@ -36,11 +36,13 @@ for file in files:
     prompts[key] = data
 
 messages = []
-context = None
+context = "GPT"
 context_time = datetime.now()
+userName = "You"
+botName = "GPT"
 
 while True:
-    value = input("\033[95m\033[1mYou: \033[95m\033[0m")
+    value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
     if (len(value) == 0):
         print(oneline_help)
         continue
@@ -62,8 +64,10 @@ while True:
             continue
         elif (key == "reset"):
             messages = []
-            context = None
+            context = "GPT"
             context_time = datetime.now()
+            userName = "You"
+            botName = "GPT"
             continue            
         else:
             prompt = prompts.get(key)
@@ -74,6 +78,8 @@ while True:
                     os.makedirs(f"output/{context}")
                 title = prompt["title"]
                 print(f"Activating: {title}")
+                userName = prompt.get("you") or "You"
+                botName = prompt.get("bot") or context
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
                 continue
             else:            
@@ -86,8 +92,7 @@ while True:
 
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=OPENAI_TEMPERATURE)
     answer = response['choices'][0]['message']
-    botName = context or "GPT"
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     messages.append({"role":answer['role'], "content":answer['content']})
-    with open(f"output/{botName}/{context_time}.json", 'w') as f:
+    with open(f"output/{context}/{context_time}.json", 'w') as f:
         json.dump(messages, f)
