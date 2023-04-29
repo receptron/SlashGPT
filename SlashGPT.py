@@ -40,6 +40,7 @@ context = "GPT"
 context_time = datetime.now()
 userName = "You"
 botName = "GPT"
+temperature = OPENAI_TEMPERATURE
 
 while True:
     value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -68,6 +69,7 @@ while True:
             context_time = datetime.now()
             userName = "You"
             botName = "GPT"
+            temperature = OPENAI_TEMPERATURE
             continue            
         else:
             prompt = prompts.get(key)
@@ -77,7 +79,10 @@ while True:
                 if not os.path.isdir(f"output/{context}"):
                     os.makedirs(f"output/{context}")
                 title = prompt["title"]
-                print(f"Activating: {title}")
+                temperature = OPENAI_TEMPERATURE
+                if (prompt.get("temperature")):
+                    temperature = float(prompt.get("temperature"))
+                print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = prompt.get("you") or "You"
                 botName = prompt.get("bot") or context
                 messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
@@ -90,7 +95,7 @@ while True:
 
     # print(f"{messages}")
 
-    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=OPENAI_TEMPERATURE)
+    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=temperature)
     answer = response['choices'][0]['message']
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     messages.append({"role":answer['role'], "content":answer['content']})
