@@ -95,9 +95,9 @@ while True:
                 if data:
                     print(data)
                     index = 0
-                    while(re.match("\\{random\\}", contents)):
+                    while(re.search("\\{random\\}", contents)):
                         print("found {random}")
-                        contents = re.sub("\\{random\\}", data[index], contents)
+                        contents = re.sub("\\{random\\}", data[index], contents, 1)
                         index += 1
                 messages = [{"role":"system", "content":contents}]
                 continue
