@@ -94,7 +94,11 @@ while True:
                 data = prompt.get("data")
                 if data:
                     print(data)
-                    contents = re.sub("clear", "dark", contents)
+                    index = 0
+                    while(re.match("\\{random\\}", contents)):
+                        print("found {random}")
+                        contents = re.sub("\\{random\\}", data[index], contents)
+                        index += 1
                 messages = [{"role":"system", "content":contents}]
                 continue
             else:            
