@@ -89,7 +89,11 @@ while True:
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = prompt.get("you") or "You"
                 botName = prompt.get("bot") or context
-                messages = [{"role":"system", "content":'\n'.join(prompt["prompt"])}]
+                contents = prompt["prompt"]
+                data = prompt.get("data")
+                if data:
+                    print(data) 
+                messages = [{"role":"system", "content":'\n'.join(contents)}]
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
