@@ -76,6 +76,7 @@ while True:
             userName = "You"
             botName = "GPT"
             temperature = OPENAI_TEMPERATURE
+            OPENAI_API_MODEL = "gpt-3.5-turbo"
             continue            
         else:
             prompt = prompts.get(key)
@@ -88,6 +89,10 @@ while True:
                 temperature = OPENAI_TEMPERATURE
                 if (prompt.get("temperature")):
                     temperature = float(prompt.get("temperature"))
+                if (prompt.get("model")):
+                    OPENAI_API_MODEL = prompt.get("model")
+                else:
+                    OPENAI_API_MODEL = "gpt-3.5-turbo"
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = prompt.get("you") or "You"
                 botName = prompt.get("bot") or context
