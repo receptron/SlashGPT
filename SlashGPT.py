@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import json
 from datetime import datetime
 import re
+import random
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -93,10 +94,14 @@ while True:
                 contents = '\n'.join(prompt["prompt"])
                 data = prompt.get("data")
                 if data:
-                    print(data)
+                    # Shuffle 
+                    for i in range(len(data)):
+                        index = random.randrange(0, len(data))
+                        temp = data[i]
+                        data[i] = data[index]
+                        data[index] = temp
                     index = 0
                     while(re.search("\\{random\\}", contents)):
-                        print("found {random}")
                         contents = re.sub("\\{random\\}", data[index], contents, 1)
                         index += 1
                 messages = [{"role":"system", "content":contents}]
