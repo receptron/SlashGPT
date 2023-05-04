@@ -5,6 +5,7 @@ import openai
 from dotenv import load_dotenv
 import json
 from datetime import datetime
+import re
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -89,11 +90,12 @@ while True:
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = prompt.get("you") or "You"
                 botName = prompt.get("bot") or context
-                contents = prompt["prompt"]
+                contents = '\n'.join(prompt["prompt"])
                 data = prompt.get("data")
                 if data:
-                    print(data) 
-                messages = [{"role":"system", "content":'\n'.join(contents)}]
+                    print(data)
+                    contents = re.sub("clear", "dark", contents)
+                messages = [{"role":"system", "content":contents}]
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
