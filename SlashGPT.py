@@ -118,6 +118,11 @@ while True:
                         contents = re.sub("\\{random\\}", data[index], contents, 1)
                         index += 1
                 messages = [{"role":"system", "content":contents}]
+                intros = prompt.get("intro") 
+                if (intros):
+                    intro = intros[random.randrange(0, len(intros))]
+                    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {intro}")
+                    messages.append({"role":"assistant", "content":intro})
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
