@@ -43,6 +43,7 @@ context_time = datetime.now()
 userName = "You"
 botName = "GPT"
 temperature = OPENAI_TEMPERATURE
+prompt = None
 
 while True:
     value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -69,6 +70,12 @@ while True:
             OPENAI_API_MODEL = "gpt-4"
             print(f"Model = {OPENAI_API_MODEL}")
             continue
+        elif (key == "sample"):
+            if (prompt != None and prompt.get("sample")):
+                print(prompt.get("sample"))
+                messages.append({"role":"user", "content":prompt.get("sample")})
+            else:
+                continue
         elif (key == "reset"):
             messages = []
             context = "GPT"
@@ -77,6 +84,7 @@ while True:
             botName = "GPT"
             temperature = OPENAI_TEMPERATURE
             OPENAI_API_MODEL = "gpt-3.5-turbo"
+            prompt = None
             continue            
         else:
             prompt = prompts.get(key)
