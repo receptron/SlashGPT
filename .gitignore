@@ -6,3 +6,7 @@ __pycache__/
 
 .vscode/
 output/
+
+# Python
+.ipynb_checkpoints/
+*.ipynb
