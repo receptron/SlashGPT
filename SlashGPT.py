@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 import re
 import random
+import pinecone
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -16,6 +17,13 @@ OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
+assert PINECONE_API_KEY, "PINECONE_API_KEY environment variable is missing from .env"
+PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
+assert (
+    PINECONE_ENVIRONMENT
+), "PINECONE_ENVIRONMENT environment variable is missing from .env"
+
 oneline_help = "System Slashes: /bye, /reset, /help, /prompt, /gpt3, /gpt4"
 print(oneline_help)
 openai.api_key = OPENAI_API_KEY
