@@ -15,6 +15,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
+EMBEDDING_MODEL = "text-embedding-ada-002"
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -57,6 +58,21 @@ temperature = OPENAI_TEMPERATURE
 prompt = None
 index = None
 contents = ""
+
+def strings_ranked_by_relatedness(
+    query: str,
+    index: pinecone.Index,
+    top_n: int = 100
+) -> object:
+    """Returns a list of strings and relatednesses, sorted from most related to least."""
+    query_embedding_response = openai.Embedding.create(
+        model=EMBEDDING_MODEL,
+        input=query,
+    )
+    query_embedding = query_embedding_response["data"][0]["embedding"]
+
+    results = index.query(query_embedding, top_k=top_n, include_metadata=True)
+    return results
 
 while True:
     value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -124,14 +140,14 @@ while True:
                 if data:
                     # Shuffle 
                     for i in range(len(data)):
-                        index = random.randrange(0, len(data))
+                        j = random.randrange(0, len(data))
                         temp = data[i]
-                        data[i] = data[index]
-                        data[index] = temp
-                    index = 0
+                        data[i] = data[j]
+                        data[j] = temp
+                    j = 0
                     while(re.search("\\{random\\}", contents)):
-                        contents = re.sub("\\{random\\}", data[index], contents, 1)
-                        index += 1
+                        contents = re.sub("\\{random\\}", data[j], contents, 1)
+                        j += 1
 
                 table_name = prompt.get("pinecone")
                 if table_name:
@@ -162,7 +178,7 @@ while True:
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
     if index:
         messages = [{"role":"system", "content":contents}]
-        
+
     messages.append({"role":answer['role'], "content":answer['content']})
     with open(f"output/{context}/{context_time}.json", 'w') as f:
         json.dump(messages, f)
