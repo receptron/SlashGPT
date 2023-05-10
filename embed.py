@@ -74,9 +74,9 @@ def strings_ranked_by_relatedness(
     return results
 
 # examples
-results = strings_ranked_by_relatedness("curling gold medal", top_n=5)
-for match in results["matches"]:
-    print(match["score"])
+# results = strings_ranked_by_relatedness("curling gold medal", top_n=5)
+# for match in results["matches"]:
+#    print(match["score"])
 
 def num_tokens(text: str, model: str = GPT_MODEL) -> int:
     """Return the number of tokens in a string."""
@@ -128,5 +128,11 @@ def ask(
     response_message = response["choices"][0]["message"]["content"]
     return response_message
 
-res = ask('Which athletes won the gold medal in curling at the 2022 Winter Olympics?')
-print(res)
+query = 'Please list the names of Japanese athletes won the gold medal at the 2022 Winter Olympics along with event names they won the medal.'
+res = ask(query)
+print(f"Q: {query}\nA: {res}")
+
+query = 'Which athletes won the gold medal in curling at the 2022 Winter Olympics?'
+res = ask(query)
+print(f"Q: {query}\nA: {res}")
+
