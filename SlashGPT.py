@@ -8,6 +8,7 @@ from datetime import datetime
 import re
 import random
 import pinecone
+import tiktoken  # for counting tokens
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -73,6 +74,31 @@ def strings_ranked_by_relatedness(
 
     results = index.query(query_embedding, top_k=top_n, include_metadata=True)
     return results
+
+def num_tokens(text: str) -> int:
+    """Return the number of tokens in a string."""
+    encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
+    return len(encoding.encode(text))
+
+def query_message(
+    query: str,
+    index: pinecone.Index,
+    token_budget: int
+) -> str:
+    """Return a message for GPT, with relevant source texts pulled from a dataframe."""
+    results = strings_ranked_by_relatedness(query, index)
+    message = ""
+    for match in results["matches"]:
+        string = match["metadata"]["text"]
+        next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
+        if (
+            num_tokens(message + next_article + query)
+            > token_budget
+        ):
+            break
+        else:
+            message += next_article
+    return message
 
 while True:
     value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -169,16 +195,19 @@ while True:
                 print(f"Invalid slash command: {key}")
                 continue
     else:  
+        if index:
+            message = query_message(value, index, 4096 - 500)
+            print(message)
+            messages = [{"role":"system", "content":contents}]
         messages.append({"role":"user", "content":value})
 
     # print(f"{messages}")
 
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=temperature)
     answer = response['choices'][0]['message']
-    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
-    if index:
-        messages = [{"role":"system", "content":contents}]
+    res = answer['content']
+    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {res}")
 
-    messages.append({"role":answer['role'], "content":answer['content']})
+    messages.append({"role":answer['role'], "content":res})
     with open(f"output/{context}/{context_time}.json", 'w') as f:
         json.dump(messages, f)
