@@ -188,7 +188,6 @@ while True:
                 intros = prompt.get("intro") 
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
-                    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {intro}")
                     messages.append({"role":"assistant", "content":intro})
                 continue
             else:            
@@ -196,11 +195,10 @@ while True:
                 continue
     else:  
         if index:
-            print("calling query_message")
             articles = query_message(value, index, 4096 - 500)
             # print(message)
             foo = re.sub("\\{articles\\}", articles, contents, 1)
-            print(foo)
+            # print(foo)
             messages = [{"role":"system", "content":foo}]
         messages.append({"role":"user", "content":value})
 
