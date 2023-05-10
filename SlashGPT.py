@@ -55,6 +55,8 @@ userName = "You"
 botName = "GPT"
 temperature = OPENAI_TEMPERATURE
 prompt = None
+index = None
+contents = ""
 
 while True:
     value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -72,6 +74,8 @@ while True:
         elif (key == "prompt"):
             if (len(messages) >= 1 and messages[0].get("role")=="system"):
                 print(messages[0].get("content"))
+            elif (index):
+                print(contents)
             continue
         elif (key == "gpt3"):
             OPENAI_API_MODEL = "gpt-3.5-turbo"
@@ -134,7 +138,11 @@ while True:
                     assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                     index = pinecone.Index(table_name)
                     print(index)
-                messages = [{"role":"system", "content":contents}]
+                    messages = []
+                else:
+                    index = None
+                    messages = [{"role":"system", "content":contents}]
+
                 intros = prompt.get("intro") 
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
@@ -152,6 +160,9 @@ while True:
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=temperature)
     answer = response['choices'][0]['message']
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {answer['content']}")
+    if index:
+        messages = [{"role":"system", "content":contents}]
+        
     messages.append({"role":answer['role'], "content":answer['content']})
     with open(f"output/{context}/{context_time}.json", 'w') as f:
         json.dump(messages, f)
