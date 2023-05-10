@@ -38,6 +38,8 @@ if table_name not in pinecone.list_indexes():
         table_name, dimension=dimension, metric=metric, pod_type=pod_type
     )
 
+# Connect to the index
+index = pinecone.Index(table_name)
 
 print("loadig CSV file")
 embeddings_path = "./output/winter_olympics_2022.csv"
@@ -48,6 +50,12 @@ df = pd.read_csv(embeddings_path)
 print("converting it to list type")
 df['embedding'] = df['embedding'].apply(ast.literal_eval)
 # print(df)
+
+print("writing vectors")
+vectors = [(f"id_{i}", row["embedding"], {"text":row["text"]}) for i, row in df.iterrows()]
+# print(vectors)
+for vector in vectors:
+    index.upsert([vector])
 
 # search function
 def strings_ranked_by_relatedness(
