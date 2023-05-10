@@ -131,6 +131,7 @@ while True:
 
                 table_name = prompt.get("pinecone")
                 if table_name:
+                    assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                     index = pinecone.Index(table_name)
                     print(index)
                 messages = [{"role":"system", "content":contents}]
