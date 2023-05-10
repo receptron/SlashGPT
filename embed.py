@@ -106,7 +106,27 @@ def query_message(
     return message + question
 
 
-query = 'Which athletes won the gold medal in curling at the 2022 Winter Olympics?'
-message = query_message(query, model=GPT_MODEL, token_budget=4096-500)
+def ask(
+    query: str,
+    model: str = GPT_MODEL,
+    token_budget: int = 4096 - 500,
+    print_message: bool = False,
+) -> str:
+    """Answers a query using GPT and a dataframe of relevant texts and embeddings."""
+    message = query_message(query, model=model, token_budget=token_budget)
+    if print_message:
+        print(message)
+    messages = [
+        {"role": "system", "content": "You answer questions about the 2022 Winter Olympics."},
+        {"role": "user", "content": message},
+    ]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=0
+    )
+    response_message = response["choices"][0]["message"]["content"]
+    return response_message
 
-print(message)
+res = ask('Which athletes won the gold medal in curling at the 2022 Winter Olympics?')
+print(res)
