@@ -41,46 +41,72 @@ if table_name not in pinecone.list_indexes():
 # Connect to the index
 index = pinecone.Index(table_name)
 
-print("loadig CSV file")
-embeddings_path = "./output/winter_olympics_2022.csv"
+def load_vectors():
+    print("loadig CSV file")
+    embeddings_path = "./output/winter_olympics_2022.csv"
 
-df = pd.read_csv(embeddings_path)
+    df = pd.read_csv(embeddings_path)
 
-# convert embeddings from CSV str type back to list type
-print("converting it to list type")
-df['embedding'] = df['embedding'].apply(ast.literal_eval)
-# print(df)
+    # convert embeddings from CSV str type back to list type
+    print("converting it to list type")
+    df['embedding'] = df['embedding'].apply(ast.literal_eval)
+    # print(df)
 
-print("writing vectors")
-vectors = [(f"id_{i}", row["embedding"], {"text":row["text"]}) for i, row in df.iterrows()]
-# print(vectors)
-for vector in vectors:
-    index.upsert([vector])
+    print("writing vectors")
+    vectors = [(f"id_{i}", row["embedding"], {"text":row["text"]}) for i, row in df.iterrows()]
+    # print(vectors)
+    for vector in vectors:
+        index.upsert([vector])
 
 # search function
 def strings_ranked_by_relatedness(
     query: str,
-    df: pd.DataFrame,
-    relatedness_fn=lambda x, y: 1 - spatial.distance.cosine(x, y),
     top_n: int = 100
-) -> tuple[list[str], list[float]]:
+) -> object:
     """Returns a list of strings and relatednesses, sorted from most related to least."""
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,
         input=query,
     )
     query_embedding = query_embedding_response["data"][0]["embedding"]
-    strings_and_relatednesses = [
-        (row["text"], relatedness_fn(query_embedding, row["embedding"]))
-        for i, row in df.iterrows()
-    ]
-    strings_and_relatednesses.sort(key=lambda x: x[1], reverse=True)
-    strings, relatednesses = zip(*strings_and_relatednesses)
-    return strings[:top_n], relatednesses[:top_n]
+
+    results = index.query(query_embedding, top_k=top_n, include_metadata=True)
+    return results
 
 # examples
-strings, relatednesses = strings_ranked_by_relatedness("curling gold medal", df, top_n=5)
-for string, relatedness in zip(strings, relatednesses):
-    print(f"{relatedness=:.3f}")
-    # print(string)
+results = strings_ranked_by_relatedness("curling gold medal", top_n=5)
+for match in results["matches"]:
+    print(match["score"])
 
+def num_tokens(text: str, model: str = GPT_MODEL) -> int:
+    """Return the number of tokens in a string."""
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(text))
+
+def query_message(
+    query: str,
+    model: str,
+    token_budget: int
+) -> str:
+    """Return a message for GPT, with relevant source texts pulled from a dataframe."""
+    results = strings_ranked_by_relatedness(query)
+    introduction = 'Use the below articles on the 2022 Winter Olympics to answer the subsequent question. If the answer cannot be found in the articles, write "I could not find an answer."'
+    question = f"\n\nQuestion: {query}"
+    message = introduction
+    for match in results["matches"]:
+        string = match["metadata"]["text"]
+        next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
+        if (
+            num_tokens(message + next_article + question, model=model)
+            > token_budget
+        ):
+            break
+        else:
+            message += next_article
+    return message + question
+
+
+query = 'Which athletes won the gold medal in curling at the 2022 Winter Olympics?'
+message = query_message(query, model=GPT_MODEL, token_budget=4096-500)
+
+print(message)
