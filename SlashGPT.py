@@ -196,9 +196,12 @@ while True:
                 continue
     else:  
         if index:
-            message = query_message(value, index, 4096 - 500)
-            print(message)
-            messages = [{"role":"system", "content":contents}]
+            print("calling query_message")
+            articles = query_message(value, index, 4096 - 500)
+            # print(message)
+            foo = re.sub("\\{articles\\}", articles, contents, 1)
+            print(foo)
+            messages = [{"role":"system", "content":foo}]
         messages.append({"role":"user", "content":value})
 
     # print(f"{messages}")
