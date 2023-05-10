@@ -24,9 +24,12 @@ assert (
     PINECONE_ENVIRONMENT
 ), "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
+# Initialize Pinecone & OpenAI
+pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+openai.api_key = OPENAI_API_KEY
+
 oneline_help = "System Slashes: /bye, /reset, /help, /prompt, /gpt3, /gpt4"
 print(oneline_help)
-openai.api_key = OPENAI_API_KEY
 
 # Reading Prompt files
 prompts = {}
@@ -125,6 +128,11 @@ while True:
                     while(re.search("\\{random\\}", contents)):
                         contents = re.sub("\\{random\\}", data[index], contents, 1)
                         index += 1
+
+                table_name = prompt.get("pinecone")
+                if table_name:
+                    index = pinecone.Index(table_name)
+                    print(index)
                 messages = [{"role":"system", "content":contents}]
                 intros = prompt.get("intro") 
                 if (intros):
