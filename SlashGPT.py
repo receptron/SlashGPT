@@ -84,10 +84,7 @@ def fetch_related_articles(
     for match in results["matches"]:
         string = match["metadata"]["text"]
         next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
-        if (
-            num_tokens(articles + next_article + query)
-            > token_budget
-        ):
+        if (num_tokens(articles + next_article + query) > token_budget):
             break
         else:
             articles += next_article
