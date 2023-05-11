@@ -69,9 +69,13 @@ def num_tokens(text: str) -> int:
 def fetch_related_articles(
     index: pinecone.Index,
     query: str,
+    messages: list,
     token_budget: int = TOKEN_BUDGET
 ) -> str:
     """Return related articles with the question using the embedding vector search."""
+    for message in messages:
+        if (message["role"] == "user"):
+            query = message["content"] + "\n" + query
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,
         input=query,
@@ -120,7 +124,7 @@ while True:
             if (question):
                 print(question)
                 if p_index:
-                    articles = fetch_related_articles(p_index, question)
+                    articles = fetch_related_articles(p_index, question, messages)
                     assert messages[0]["role"] == "system", "Missing system message"
                     messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
                 messages.append({"role":"user", "content":question})
@@ -187,7 +191,7 @@ while True:
                 continue
     else:  
         if p_index:
-            articles = fetch_related_articles(p_index, question)
+            articles = fetch_related_articles(p_index, question, messages)
             assert messages[0]["role"] == "system", "Missing system message"
             messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
         messages.append({"role":"user", "content":question})
