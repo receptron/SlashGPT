@@ -57,7 +57,7 @@ context_time = datetime.now()
 userName = "You"
 botName = "GPT"
 temperature = OPENAI_TEMPERATURE
-prompt = None
+manifest = None
 p_index = None
 contents = ""
 
@@ -120,8 +120,8 @@ while True:
             OPENAI_API_MODEL = "gpt-4"
             print(f"Model = {OPENAI_API_MODEL}")
             continue
-        elif (key == "sample" and prompt != None):
-            question = prompt.get("sample") 
+        elif (key == "sample" and manifest != None):
+            question = manifest.get("sample") 
             if (question):
                 print(question)
                 if p_index:
@@ -138,29 +138,29 @@ while True:
             botName = "GPT"
             temperature = OPENAI_TEMPERATURE
             OPENAI_API_MODEL = "gpt-3.5-turbo"
-            prompt = None
+            manifest = None
             p_index = None
             continue            
         else:
-            prompt = manifests.get(key)
-            if (prompt):
+            manifest = manifests.get(key)
+            if (manifest):
                 context = key
                 context_time = datetime.now()
                 if not os.path.isdir(f"output/{context}"):
                     os.makedirs(f"output/{context}")
-                title = prompt["title"]
+                title = manifest["title"]
                 temperature = OPENAI_TEMPERATURE
-                if (prompt.get("temperature")):
-                    temperature = float(prompt.get("temperature"))
-                if (prompt.get("model")):
-                    OPENAI_API_MODEL = prompt.get("model")
+                if (manifest.get("temperature")):
+                    temperature = float(manifest.get("temperature"))
+                if (manifest.get("model")):
+                    OPENAI_API_MODEL = manifest.get("model")
                 else:
                     OPENAI_API_MODEL = "gpt-3.5-turbo"
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
-                userName = prompt.get("you") or "You"
-                botName = prompt.get("bot") or context
-                contents = '\n'.join(prompt["prompt"])
-                data = prompt.get("data")
+                userName = manifest.get("you") or "You"
+                botName = manifest.get("bot") or context
+                contents = '\n'.join(manifest["prompt"])
+                data = manifest.get("data")
                 if data:
                     # Shuffle 
                     for i in range(len(data)):
@@ -173,7 +173,7 @@ while True:
                         contents = re.sub("\\{random\\}", data[j], contents, 1)
                         j += 1
 
-                table_name = prompt.get("articles")
+                table_name = manifest.get("articles")
                 if table_name:
                     assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                     p_index = pinecone.Index(table_name)
@@ -182,7 +182,7 @@ while True:
                     p_index = None
                     messages = [{"role":"system", "content":contents}]
 
-                intros = prompt.get("intro") 
+                intros = manifest.get("intro") 
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
                     messages.append({"role":"assistant", "content":intro})
