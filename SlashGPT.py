@@ -34,8 +34,8 @@ openai.api_key = OPENAI_API_KEY
 oneline_help = "System Slashes: /bye, /reset, /help, /prompt, /gpt3, /gpt4"
 print(oneline_help)
 
-# Reading Prompt files
-prompts = {}
+# Reading Manifest files
+manifests = {}
 files = os.listdir("./prompts")
 
 if not os.path.isdir("output"):
@@ -49,7 +49,7 @@ for file in files:
     with open(f"./prompts/{file}", 'r') as f:
         data = json.load(f)
     # print(key, file, data)
-    prompts[key] = data
+    manifests[key] = data
 
 messages = []
 context = "GPT"
@@ -101,7 +101,7 @@ while True:
     if (question[0] == "/"):
         key = question[1:]
         if (key == "help"):
-            list = ", ".join(f"/{key}" for key in prompts.keys())
+            list = ", ".join(f"/{key}" for key in manifests.keys())
             print(f"Extensions: {list}")
             continue
         if (key == "bye"):
@@ -142,7 +142,7 @@ while True:
             p_index = None
             continue            
         else:
-            prompt = prompts.get(key)
+            prompt = manifests.get(key)
             if (prompt):
                 context = key
                 context_time = datetime.now()
