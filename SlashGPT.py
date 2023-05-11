@@ -80,25 +80,25 @@ def num_tokens(text: str) -> int:
     encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
     return len(encoding.encode(text))
 
-def query_message(
-    query: str,
+def get_releated_articles(
     index: pinecone.Index,
+    query: str,
     token_budget: int
 ) -> str:
     """Return a message for GPT, with relevant source texts pulled from a dataframe."""
     results = strings_ranked_by_relatedness(query, index)
-    message = ""
+    articles = ""
     for match in results["matches"]:
         string = match["metadata"]["text"]
         next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
         if (
-            num_tokens(message + next_article + query)
+            num_tokens(articles + next_article + query)
             > token_budget
         ):
             break
         else:
-            message += next_article
-    return message
+            articles += next_article
+    return articles
 
 while True:
     question = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
@@ -131,7 +131,7 @@ while True:
             question = prompt.get("sample") 
             if (question):
                 if index:
-                    articles = query_message(question, index, 4096 - 500)
+                    articles = get_releated_articles(index, question, 4096 - 500)
                     messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
                 print(question)
                 messages.append({"role":"user", "content":question})
@@ -200,7 +200,7 @@ while True:
                 continue
     else:  
         if index:
-            articles = query_message(question, index, 4096 - 500)
+            articles = get_releated_articles(index, question, 4096 - 500)
             messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
         messages.append({"role":"user", "content":question})
 
