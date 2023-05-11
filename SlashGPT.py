@@ -17,6 +17,7 @@ assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 EMBEDDING_MODEL = "text-embedding-ada-002"
+TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -65,10 +66,10 @@ def num_tokens(text: str) -> int:
     encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
     return len(encoding.encode(text))
 
-def get_releated_articles(
+def fetch_related_articles(
     index: pinecone.Index,
     query: str,
-    token_budget: int
+    token_budget: int = TOKEN_BUDGET
 ) -> str:
     """Return a message for GPT, with relevant source texts pulled from a dataframe."""
     query_embedding_response = openai.Embedding.create(
@@ -124,7 +125,7 @@ while True:
             if (question):
                 print(question)
                 if p_index:
-                    articles = get_releated_articles(p_index, question, 4096 - 500)
+                    articles = fetch_related_articles(p_index, question)
                     messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
                 messages.append({"role":"user", "content":question})
             else:
@@ -191,7 +192,7 @@ while True:
                 continue
     else:  
         if p_index:
-            articles = get_releated_articles(p_index, question, 4096 - 500)
+            articles = fetch_related_articles(p_index, question)
             messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
         messages.append({"role":"user", "content":question})
 
