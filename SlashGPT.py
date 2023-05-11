@@ -129,6 +129,9 @@ while True:
             continue
         elif (key == "sample"):
             if (prompt != None and prompt.get("sample")):
+                if index:
+                    articles = query_message(prompt.get("sample"), index, 4096 - 500)
+                    messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
                 print(prompt.get("sample"))
                 messages.append({"role":"user", "content":prompt.get("sample")})
             else:
@@ -196,10 +199,7 @@ while True:
     else:  
         if index:
             articles = query_message(value, index, 4096 - 500)
-            # print(message)
-            foo = re.sub("\\{articles\\}", articles, contents, 1)
-            # print(foo)
-            messages = [{"role":"system", "content":foo}]
+            messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
         messages.append({"role":"user", "content":value})
 
     # print(f"{messages}")
