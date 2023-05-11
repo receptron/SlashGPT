@@ -127,13 +127,14 @@ while True:
             OPENAI_API_MODEL = "gpt-4"
             print(f"Model = {OPENAI_API_MODEL}")
             continue
-        elif (key == "sample"):
-            if (prompt != None and prompt.get("sample")):
+        elif (key == "sample" and prompt != None):
+            question = prompt.get("sample") 
+            if (question):
                 if index:
-                    articles = query_message(prompt.get("sample"), index, 4096 - 500)
+                    articles = query_message(question, index, 4096 - 500)
                     messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
-                print(prompt.get("sample"))
-                messages.append({"role":"user", "content":prompt.get("sample")})
+                print(question)
+                messages.append({"role":"user", "content":question})
             else:
                 continue
         elif (key == "reset"):
