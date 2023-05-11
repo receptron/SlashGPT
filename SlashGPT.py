@@ -71,7 +71,7 @@ def fetch_related_articles(
     query: str,
     token_budget: int = TOKEN_BUDGET
 ) -> str:
-    """Return a message for GPT, with relevant source texts pulled from a dataframe."""
+    """Return related articles with the question using the embedding vector search."""
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,
         input=query,
