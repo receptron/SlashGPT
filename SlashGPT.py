@@ -146,6 +146,7 @@ while True:
             temperature = OPENAI_TEMPERATURE
             OPENAI_API_MODEL = "gpt-3.5-turbo"
             prompt = None
+            index = None
             continue            
         else:
             prompt = prompts.get(key)
