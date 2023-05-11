@@ -68,11 +68,11 @@ def num_tokens(text: str) -> int:
 
 def fetch_related_articles(
     index: pinecone.Index,
-    query: str,
     messages: list,
     token_budget: int = TOKEN_BUDGET
 ) -> str:
     """Return related articles with the question using the embedding vector search."""
+    query = ""
     for message in messages:
         if (message["role"] == "user"):
             query = message["content"] + "\n" + query
@@ -123,11 +123,11 @@ while True:
             question = manifest.get("sample") 
             if (question):
                 print(question)
+                messages.append({"role":"user", "content":question})
                 if p_index:
-                    articles = fetch_related_articles(p_index, question, messages)
+                    articles = fetch_related_articles(p_index, messages)
                     assert messages[0]["role"] == "system", "Missing system message"
                     messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
-                messages.append({"role":"user", "content":question})
             else:
                 continue
         elif (key == "reset"):
@@ -190,11 +190,11 @@ while True:
                 print(f"Invalid slash command: {key}")
                 continue
     else:  
+        messages.append({"role":"user", "content":question})
         if p_index:
-            articles = fetch_related_articles(p_index, question, messages)
+            articles = fetch_related_articles(p_index, messages)
             assert messages[0]["role"] == "system", "Missing system message"
             messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
-        messages.append({"role":"user", "content":question})
 
     # print(f"{messages}")
 
