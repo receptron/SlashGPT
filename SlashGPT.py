@@ -60,21 +60,6 @@ prompt = None
 index = None
 contents = ""
 
-def strings_ranked_by_relatedness(
-    query: str,
-    index: pinecone.Index,
-    top_n: int = 100
-) -> object:
-    """Returns a list of strings and relatednesses, sorted from most related to least."""
-    query_embedding_response = openai.Embedding.create(
-        model=EMBEDDING_MODEL,
-        input=query,
-    )
-    query_embedding = query_embedding_response["data"][0]["embedding"]
-
-    results = index.query(query_embedding, top_k=top_n, include_metadata=True)
-    return results
-
 def num_tokens(text: str) -> int:
     """Return the number of tokens in a string."""
     encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
@@ -86,7 +71,14 @@ def get_releated_articles(
     token_budget: int
 ) -> str:
     """Return a message for GPT, with relevant source texts pulled from a dataframe."""
-    results = strings_ranked_by_relatedness(query, index)
+    query_embedding_response = openai.Embedding.create(
+        model=EMBEDDING_MODEL,
+        input=query,
+    )
+    query_embedding = query_embedding_response["data"][0]["embedding"]
+
+    results = index.query(query_embedding, top_k=100, include_metadata=True)
+
     articles = ""
     for match in results["matches"]:
         string = match["metadata"]["text"]
@@ -130,10 +122,10 @@ while True:
         elif (key == "sample" and prompt != None):
             question = prompt.get("sample") 
             if (question):
+                print(question)
                 if index:
                     articles = get_releated_articles(index, question, 4096 - 500)
                     messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
-                print(question)
                 messages.append({"role":"user", "content":question})
             else:
                 continue
