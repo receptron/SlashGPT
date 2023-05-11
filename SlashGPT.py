@@ -121,7 +121,8 @@ while True:
                 print(question)
                 if p_index:
                     articles = fetch_related_articles(p_index, question)
-                    messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}]
+                    assert messages[0]["role"] == "system", "Missing system message"
+                    messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
                 messages.append({"role":"user", "content":question})
             else:
                 continue
@@ -187,7 +188,8 @@ while True:
     else:  
         if p_index:
             articles = fetch_related_articles(p_index, question)
-            messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}]
+            assert messages[0]["role"] == "system", "Missing system message"
+            messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
         messages.append({"role":"user", "content":question})
 
     # print(f"{messages}")
