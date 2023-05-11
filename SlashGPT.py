@@ -185,6 +185,7 @@ while True:
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
                     messages.append({"role":"assistant", "content":intro})
+                    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {intro}")
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
