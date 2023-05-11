@@ -57,7 +57,7 @@ userName = "You"
 botName = "GPT"
 temperature = OPENAI_TEMPERATURE
 prompt = None
-index = None
+p_index = None
 contents = ""
 
 def num_tokens(text: str) -> int:
@@ -108,7 +108,7 @@ while True:
         elif (key == "prompt"):
             if (len(messages) >= 1 and messages[0].get("role")=="system"):
                 print(messages[0].get("content"))
-            elif (index):
+            elif (p_index):
                 print(contents)
             continue
         elif (key == "gpt3"):
@@ -123,8 +123,8 @@ while True:
             question = prompt.get("sample") 
             if (question):
                 print(question)
-                if index:
-                    articles = get_releated_articles(index, question, 4096 - 500)
+                if p_index:
+                    articles = get_releated_articles(p_index, question, 4096 - 500)
                     messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
                 messages.append({"role":"user", "content":question})
             else:
@@ -138,7 +138,7 @@ while True:
             temperature = OPENAI_TEMPERATURE
             OPENAI_API_MODEL = "gpt-3.5-turbo"
             prompt = None
-            index = None
+            p_index = None
             continue            
         else:
             prompt = prompts.get(key)
@@ -175,11 +175,10 @@ while True:
                 table_name = prompt.get("articles")
                 if table_name:
                     assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                    index = pinecone.Index(table_name)
-                    print(index)
+                    p_index = pinecone.Index(table_name)
                     messages = []
                 else:
-                    index = None
+                    p_index = None
                     messages = [{"role":"system", "content":contents}]
 
                 intros = prompt.get("intro") 
@@ -191,8 +190,8 @@ while True:
                 print(f"Invalid slash command: {key}")
                 continue
     else:  
-        if index:
-            articles = get_releated_articles(index, question, 4096 - 500)
+        if p_index:
+            articles = get_releated_articles(p_index, question, 4096 - 500)
             messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
         messages.append({"role":"user", "content":question})
 
