@@ -101,12 +101,12 @@ def query_message(
     return message
 
 while True:
-    value = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
-    if (len(value) == 0):
+    question = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
+    if (len(question) == 0):
         print(oneline_help)
         continue
-    if (value[0] == "/"):
-        key = value[1:]
+    if (question[0] == "/"):
+        key = question[1:]
         if (key == "help"):
             list = ", ".join(f"/{key}" for key in prompts.keys())
             print(f"Extensions: {list}")
@@ -199,9 +199,9 @@ while True:
                 continue
     else:  
         if index:
-            articles = query_message(value, index, 4096 - 500)
+            articles = query_message(question, index, 4096 - 500)
             messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
-        messages.append({"role":"user", "content":value})
+        messages.append({"role":"user", "content":question})
 
     # print(f"{messages}")
 
