@@ -178,7 +178,7 @@ while True:
                         contents = re.sub("\\{random\\}", data[j], contents, 1)
                         j += 1
 
-                table_name = prompt.get("pinecone")
+                table_name = prompt.get("articles")
                 if table_name:
                     assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                     index = pinecone.Index(table_name)
