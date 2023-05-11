@@ -106,8 +106,6 @@ while True:
         elif (key == "prompt"):
             if (len(messages) >= 1 and messages[0].get("role")=="system"):
                 print(messages[0].get("content"))
-            elif (p_index):
-                print(prompt)
             continue
         elif (key == "gpt3"):
             OPENAI_API_MODEL = "gpt-3.5-turbo"
@@ -174,10 +172,9 @@ while True:
                 if table_name:
                     assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                     p_index = pinecone.Index(table_name)
-                    messages = []
                 else:
                     p_index = None
-                    messages = [{"role":"system", "content":prompt}]
+                messages = [{"role":"system", "content":prompt}]
 
                 intros = manifest.get("intro") 
                 if (intros):
