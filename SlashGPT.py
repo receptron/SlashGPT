@@ -59,7 +59,7 @@ botName = "GPT"
 temperature = OPENAI_TEMPERATURE
 manifest = None
 p_index = None
-contents = ""
+prompt = ""
 
 def num_tokens(text: str) -> int:
     """Return the number of tokens in a string."""
@@ -110,7 +110,7 @@ while True:
             if (len(messages) >= 1 and messages[0].get("role")=="system"):
                 print(messages[0].get("content"))
             elif (p_index):
-                print(contents)
+                print(prompt)
             continue
         elif (key == "gpt3"):
             OPENAI_API_MODEL = "gpt-3.5-turbo"
@@ -126,7 +126,7 @@ while True:
                 print(question)
                 if p_index:
                     articles = fetch_related_articles(p_index, question)
-                    messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
+                    messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}]
                 messages.append({"role":"user", "content":question})
             else:
                 continue
@@ -159,7 +159,7 @@ while True:
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = manifest.get("you") or "You"
                 botName = manifest.get("bot") or context
-                contents = '\n'.join(manifest["prompt"])
+                prompt = '\n'.join(manifest["prompt"])
                 data = manifest.get("data")
                 if data:
                     # Shuffle 
@@ -169,8 +169,8 @@ while True:
                         data[i] = data[j]
                         data[j] = temp
                     j = 0
-                    while(re.search("\\{random\\}", contents)):
-                        contents = re.sub("\\{random\\}", data[j], contents, 1)
+                    while(re.search("\\{random\\}", prompt)):
+                        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
                         j += 1
 
                 table_name = manifest.get("articles")
@@ -180,7 +180,7 @@ while True:
                     messages = []
                 else:
                     p_index = None
-                    messages = [{"role":"system", "content":contents}]
+                    messages = [{"role":"system", "content":prompt}]
 
                 intros = manifest.get("intro") 
                 if (intros):
@@ -193,7 +193,7 @@ while True:
     else:  
         if p_index:
             articles = fetch_related_articles(p_index, question)
-            messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, contents, 1)}]
+            messages = [{"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}]
         messages.append({"role":"user", "content":question})
 
     # print(f"{messages}")
