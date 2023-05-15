@@ -58,6 +58,7 @@ class ChatContext:
         self.userName = "You"
         self.botName = "GPT"
         self.title = ""
+        self.intro = None
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
@@ -68,7 +69,8 @@ class ChatContext:
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
             self.model = manifest.get("model") or self.model
-            self.title = manifest["title"]
+            self.title = manifest.get("title")
+            self.intro = manifest.get("intro")
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -174,9 +176,8 @@ while True:
                     os.makedirs(f"output/{context.role}")
                 print(f"Activating: {context.title} (model={context.model}, temperature={context.temperature})")
 
-                intros = manifest.get("intro") 
-                if (intros):
-                    intro = intros[random.randrange(0, len(intros))]
+                if (context.intro):
+                    intro = context.intro[random.randrange(0, len(context.intro))]
                     context.messages.append({"role":"assistant", "content":intro})
                     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {intro}")
                 continue
