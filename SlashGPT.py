@@ -55,8 +55,9 @@ class ChatContext:
     def __init__(self, role: str = "GPT", manifest = None):
         self.role = role
         self.time = datetime.now()
-        self.botName = "GPT"
         self.userName = "You"
+        self.botName = "GPT"
+        self.title = ""
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
@@ -67,6 +68,7 @@ class ChatContext:
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
             self.model = manifest.get("model") or self.model
+            self.title = manifest["title"]
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -170,8 +172,7 @@ while True:
                 context = ChatContext(role=key, manifest = manifest)
                 if not os.path.isdir(f"output/{context.role}"):
                     os.makedirs(f"output/{context.role}")
-                title = manifest["title"]
-                print(f"Activating: {title} (model={context.model}, temperature={context.temperature})")
+                print(f"Activating: {context.title} (model={context.model}, temperature={context.temperature})")
 
                 intros = manifest.get("intro") 
                 if (intros):
