@@ -86,48 +86,46 @@ class ChatContext:
                 self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
 
+    def num_tokens(self, text: str) -> int:
+        """Return the number of tokens in a string."""
+        encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
+        return len(encoding.encode(text))
+    
+    def fetch_related_articles(
+        self,
+        token_budget: int = TOKEN_BUDGET
+    ) -> str:
+        """Return related articles with the question using the embedding vector search."""
+        query = ""
+        for message in self.messages:
+            if (message["role"] == "user"):
+                query = message["content"] + "\n" + query
+        query_embedding_response = openai.Embedding.create(
+            model=EMBEDDING_MODEL,
+            input=query,
+        )
+        query_embedding = query_embedding_response["data"][0]["embedding"]
+
+        results = self.index.query(query_embedding, top_k=100, include_metadata=True)
+
+        articles = ""
+        for match in results["matches"]:
+            string = match["metadata"]["text"]
+            next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
+            if (self.num_tokens(articles + next_article + query) > token_budget):
+                break
+            else:
+                articles += next_article
+        return articles
+
     def appendQuestion(self, question: str):
         self.messages.append({"role":"user", "content":question})
         if self.index:
-            articles = fetch_related_articles(self.index, self.messages)
+            articles = self.fetch_related_articles()
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, self.prompt, 1)}
 
-
 context = ChatContext()
-
-def num_tokens(text: str) -> int:
-    """Return the number of tokens in a string."""
-    encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
-    return len(encoding.encode(text))
-
-def fetch_related_articles(
-    index: pinecone.Index,
-    messages: list,
-    token_budget: int = TOKEN_BUDGET
-) -> str:
-    """Return related articles with the question using the embedding vector search."""
-    query = ""
-    for message in messages:
-        if (message["role"] == "user"):
-            query = message["content"] + "\n" + query
-    query_embedding_response = openai.Embedding.create(
-        model=EMBEDDING_MODEL,
-        input=query,
-    )
-    query_embedding = query_embedding_response["data"][0]["embedding"]
-
-    results = index.query(query_embedding, top_k=100, include_metadata=True)
-
-    articles = ""
-    for match in results["matches"]:
-        string = match["metadata"]["text"]
-        next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
-        if (num_tokens(articles + next_article + query) > token_budget):
-            break
-        else:
-            articles += next_article
-    return articles
 
 while True:
     question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
@@ -155,10 +153,10 @@ while True:
             print(f"Model = {OPENAI_API_MODEL}")
             continue
         elif (key == "sample" and context.manifest != None):
-            question = context.manifest.get("sample") 
-            if (question):
-                print(question)
-                context.appendQuestion(question)
+            sample = context.manifest.get("sample") 
+            if (sample):
+                print(sample)
+                context.appendQuestion(sample)
             else:
                 continue
         elif (key == "reset"):
