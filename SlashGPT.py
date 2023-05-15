@@ -59,6 +59,7 @@ class ChatContext:
         self.botName = "GPT"
         self.title = ""
         self.intro = None
+        self.sample = None
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
@@ -71,6 +72,7 @@ class ChatContext:
             self.model = manifest.get("model") or self.model
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
+            self.sample = manifest.get("sample") 
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -158,11 +160,10 @@ while True:
             context.model = "gpt-4"
             print(f"Model = {context.model}")
             continue
-        elif (key == "sample" and context.manifest != None):
-            sample = context.manifest.get("sample") 
-            if (sample):
-                print(sample)
-                context.appendQuestion(sample)
+        elif (key == "sample"):
+            if (context.sample):
+                print(context.sample)
+                context.appendQuestion(context.sample)
             else:
                 continue
         elif (key == "reset"):
