@@ -65,6 +65,7 @@ class ChatContext:
         self.prompt = None
         self.index = None
         self.model = OPENAI_API_MODEL
+        self.translator = False
         self.messages = []
         if (manifest):
             self.userName = manifest.get("you") or self.userName
@@ -73,6 +74,7 @@ class ChatContext:
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample") 
+            self.translator = manifest.get("translator") or False
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -127,11 +129,20 @@ class ChatContext:
         return articles
 
     def appendQuestion(self, question: str):
-        self.messages.append({"role":"user", "content":question})
-        if self.index:
-            articles = self.fetch_related_articles()
-            assert self.messages[0]["role"] == "system", "Missing system message"
-            self.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, self.prompt, 1)}
+        if self.translator:
+            self.messages = [{
+                "role": "system",
+                "content":re.sub("\\{input\\}", question, self.prompt, 1)
+            }]
+        else:
+            self.messages.append({"role":"user", "content":question})
+            if self.index:
+                articles = self.fetch_related_articles()
+                assert self.messages[0]["role"] == "system", "Missing system message"
+                self.messages[0] = {
+                    "role":"system", 
+                    "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
+                }
 
 context = ChatContext()
 
@@ -149,7 +160,7 @@ while True:
         if (key == "bye"):
             break
         elif (key == "prompt"):
-            if (len(context.messages) >= 1 and context.messages[0].get("role")=="system"):
+            if (len(context.messages) >= 1):
                 print(context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
