@@ -86,6 +86,14 @@ class ChatContext:
                 self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
 
+    def appendQuestion(self, question: str):
+        self.messages.append({"role":"user", "content":question})
+        if self.index:
+            articles = fetch_related_articles(self.index, self.messages)
+            assert self.messages[0]["role"] == "system", "Missing system message"
+            self.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, self.prompt, 1)}
+
+
 context = ChatContext()
 
 def num_tokens(text: str) -> int:
@@ -150,11 +158,7 @@ while True:
             question = context.manifest.get("sample") 
             if (question):
                 print(question)
-                context.messages.append({"role":"user", "content":question})
-                if context.index:
-                    articles = fetch_related_articles(context.index, context.messages)
-                    assert context.messages[0]["role"] == "system", "Missing system message"
-                    context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
+                context.appendQuestion(question)
             else:
                 continue
         elif (key == "reset"):
@@ -183,12 +187,8 @@ while True:
             else:            
                 print(f"Invalid slash command: {key}")
                 continue
-    else:  
-        context.messages.append({"role":"user", "content":question})
-        if context.index:
-            articles = fetch_related_articles(context.index, context.messages)
-            assert context.messages[0]["role"] == "system", "Missing system message"
-            context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
+    else:
+        context.appendQuestion(question)
 
     # print(f"{messages}")
 
