@@ -60,6 +60,7 @@ class ChatContext:
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
+        self.index = None
         self.messages = []
         if (manifest):
             self.userName = manifest.get("you") or self.userName
@@ -79,10 +80,13 @@ class ChatContext:
                 while(re.search("\\{random\\}", self.prompt)):
                     self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
                     j += 1
+            table_name = manifest.get("articles")
+            if table_name:
+                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
+                self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
 
 context = ChatContext()
-p_index = None
 
 def num_tokens(text: str) -> int:
     """Return the number of tokens in a string."""
@@ -147,8 +151,8 @@ while True:
             if (question):
                 print(question)
                 context.messages.append({"role":"user", "content":question})
-                if p_index:
-                    articles = fetch_related_articles(p_index, context.messages)
+                if context.index:
+                    articles = fetch_related_articles(context.index, context.messages)
                     assert context.messages[0]["role"] == "system", "Missing system message"
                     context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
             else:
@@ -156,7 +160,6 @@ while True:
         elif (key == "reset"):
             context = ChatContext()
             OPENAI_API_MODEL = "gpt-3.5-turbo"
-            p_index = None
             continue            
         else:
             manifest = manifests.get(key)
@@ -171,13 +174,6 @@ while True:
                     OPENAI_API_MODEL = "gpt-3.5-turbo"
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={context.temperature})")
 
-                table_name = manifest.get("articles")
-                if table_name:
-                    assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                    p_index = pinecone.Index(table_name)
-                else:
-                    p_index = None
-
                 intros = manifest.get("intro") 
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
@@ -189,8 +185,8 @@ while True:
                 continue
     else:  
         context.messages.append({"role":"user", "content":question})
-        if p_index:
-            articles = fetch_related_articles(p_index, context.messages)
+        if context.index:
+            articles = fetch_related_articles(context.index, context.messages)
             assert context.messages[0]["role"] == "system", "Missing system message"
             context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
 
