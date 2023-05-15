@@ -59,16 +59,30 @@ class ChatContext:
         self.userName = "You"
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
+        self.prompt = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
+            self.prompt = '\n'.join(manifest["prompt"])
+            data = manifest.get("data")
+            if data:
+                # Shuffle 
+                for i in range(len(data)):
+                    j = random.randrange(0, len(data))
+                    temp = data[i]
+                    data[i] = data[j]
+                    data[j] = temp
+                j = 0
+                while(re.search("\\{random\\}", self.prompt)):
+                    self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
+                    j += 1
+
 
 context = ChatContext()
 messages = []
 p_index = None
-prompt = ""
 
 def num_tokens(text: str) -> int:
     """Return the number of tokens in a string."""
@@ -136,7 +150,7 @@ while True:
                 if p_index:
                     articles = fetch_related_articles(p_index, messages)
                     assert messages[0]["role"] == "system", "Missing system message"
-                    messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
+                    messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
             else:
                 continue
         elif (key == "reset"):
@@ -157,19 +171,6 @@ while True:
                 else:
                     OPENAI_API_MODEL = "gpt-3.5-turbo"
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={context.temperature})")
-                prompt = '\n'.join(manifest["prompt"])
-                data = manifest.get("data")
-                if data:
-                    # Shuffle 
-                    for i in range(len(data)):
-                        j = random.randrange(0, len(data))
-                        temp = data[i]
-                        data[i] = data[j]
-                        data[j] = temp
-                    j = 0
-                    while(re.search("\\{random\\}", prompt)):
-                        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
-                        j += 1
 
                 table_name = manifest.get("articles")
                 if table_name:
@@ -177,7 +178,7 @@ while True:
                     p_index = pinecone.Index(table_name)
                 else:
                     p_index = None
-                messages = [{"role":"system", "content":prompt}]
+                messages = [{"role":"system", "content":context.prompt}]
 
                 intros = manifest.get("intro") 
                 if (intros):
@@ -193,7 +194,7 @@ while True:
         if p_index:
             articles = fetch_related_articles(p_index, messages)
             assert messages[0]["role"] == "system", "Missing system message"
-            messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, prompt, 1)}
+            messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
 
     # print(f"{messages}")
 
