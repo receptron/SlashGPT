@@ -61,10 +61,12 @@ class ChatContext:
         self.manifest = manifest
         self.prompt = None
         self.index = None
+        self.model = OPENAI_API_MODEL
         self.messages = []
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
+            self.model = manifest.get("model") or self.model
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -88,7 +90,7 @@ class ChatContext:
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
-        encoding = tiktoken.encoding_for_model(OPENAI_API_MODEL)
+        encoding = tiktoken.encoding_for_model(context.model)
         return len(encoding.encode(text))
     
     def fetch_related_articles(
@@ -145,12 +147,12 @@ while True:
                 print(context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
-            OPENAI_API_MODEL = "gpt-3.5-turbo"
-            print(f"Model = {OPENAI_API_MODEL}")
+            context.model = "gpt-3.5-turbo"
+            print(f"Model = {context.model}")
             continue
         elif (key == "gpt4"):
-            OPENAI_API_MODEL = "gpt-4"
-            print(f"Model = {OPENAI_API_MODEL}")
+            context.model = "gpt-4"
+            print(f"Model = {context.model}")
             continue
         elif (key == "sample" and context.manifest != None):
             sample = context.manifest.get("sample") 
@@ -161,7 +163,6 @@ while True:
                 continue
         elif (key == "reset"):
             context = ChatContext()
-            OPENAI_API_MODEL = "gpt-3.5-turbo"
             continue            
         else:
             manifest = manifests.get(key)
@@ -170,11 +171,7 @@ while True:
                 if not os.path.isdir(f"output/{context.role}"):
                     os.makedirs(f"output/{context.role}")
                 title = manifest["title"]
-                if (manifest.get("model")):
-                    OPENAI_API_MODEL = manifest.get("model")
-                else:
-                    OPENAI_API_MODEL = "gpt-3.5-turbo"
-                print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={context.temperature})")
+                print(f"Activating: {title} (model={context.model}, temperature={context.temperature})")
 
                 intros = manifest.get("intro") 
                 if (intros):
@@ -190,7 +187,7 @@ while True:
 
     # print(f"{messages}")
 
-    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=context.messages, temperature=context.temperature)
+    response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
     answer = response['choices'][0]['message']
     res = answer['content']
     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
