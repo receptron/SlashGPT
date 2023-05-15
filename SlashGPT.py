@@ -51,8 +51,13 @@ for file in files:
     # print(key, file, data)
     manifests[key] = data
 
+class ChatContext:
+    def __init__(self, role: str = "GPT"):
+        self.role = role
+        self.botName = "GPT"
+
+context = ChatContext()
 messages = []
-context = "GPT"
 context_time = datetime.now()
 userName = "You"
 botName = "GPT"
@@ -131,8 +136,8 @@ while True:
             else:
                 continue
         elif (key == "reset"):
+            context = ChatContext()
             messages = []
-            context = "GPT"
             context_time = datetime.now()
             userName = "You"
             botName = "GPT"
@@ -144,10 +149,10 @@ while True:
         else:
             manifest = manifests.get(key)
             if (manifest):
-                context = key
+                context = ChatContext(role=key)
                 context_time = datetime.now()
-                if not os.path.isdir(f"output/{context}"):
-                    os.makedirs(f"output/{context}")
+                if not os.path.isdir(f"output/{context.role}"):
+                    os.makedirs(f"output/{context.role}")
                 title = manifest["title"]
                 temperature = OPENAI_TEMPERATURE
                 if (manifest.get("temperature")):
@@ -158,7 +163,7 @@ while True:
                     OPENAI_API_MODEL = "gpt-3.5-turbo"
                 print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
                 userName = manifest.get("you") or "You"
-                botName = manifest.get("bot") or context
+                botName = manifest.get("bot") or context.role
                 prompt = '\n'.join(manifest["prompt"])
                 data = manifest.get("data")
                 if data:
@@ -205,5 +210,5 @@ while True:
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {res}")
 
     messages.append({"role":answer['role'], "content":res})
-    with open(f"output/{context}/{context_time}.json", 'w') as f:
+    with open(f"output/{context.role}/{context_time}.json", 'w') as f:
         json.dump(messages, f)
