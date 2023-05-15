@@ -60,6 +60,7 @@ class ChatContext:
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
+        self.messages = []
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
@@ -78,10 +79,9 @@ class ChatContext:
                 while(re.search("\\{random\\}", self.prompt)):
                     self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
                     j += 1
-
+            self.messages = [{"role":"system", "content":self.prompt}]
 
 context = ChatContext()
-messages = []
 p_index = None
 
 def num_tokens(text: str) -> int:
@@ -131,8 +131,8 @@ while True:
         if (key == "bye"):
             break
         elif (key == "prompt"):
-            if (len(messages) >= 1 and messages[0].get("role")=="system"):
-                print(messages[0].get("content"))
+            if (len(context.messages) >= 1 and context.messages[0].get("role")=="system"):
+                print(context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
             OPENAI_API_MODEL = "gpt-3.5-turbo"
@@ -146,16 +146,15 @@ while True:
             question = context.manifest.get("sample") 
             if (question):
                 print(question)
-                messages.append({"role":"user", "content":question})
+                context.messages.append({"role":"user", "content":question})
                 if p_index:
-                    articles = fetch_related_articles(p_index, messages)
-                    assert messages[0]["role"] == "system", "Missing system message"
-                    messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
+                    articles = fetch_related_articles(p_index, context.messages)
+                    assert context.messages[0]["role"] == "system", "Missing system message"
+                    context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
             else:
                 continue
         elif (key == "reset"):
             context = ChatContext()
-            messages = []
             OPENAI_API_MODEL = "gpt-3.5-turbo"
             p_index = None
             continue            
@@ -178,31 +177,30 @@ while True:
                     p_index = pinecone.Index(table_name)
                 else:
                     p_index = None
-                messages = [{"role":"system", "content":context.prompt}]
 
                 intros = manifest.get("intro") 
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
-                    messages.append({"role":"assistant", "content":intro})
+                    context.messages.append({"role":"assistant", "content":intro})
                     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {intro}")
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
                 continue
     else:  
-        messages.append({"role":"user", "content":question})
+        context.messages.append({"role":"user", "content":question})
         if p_index:
-            articles = fetch_related_articles(p_index, messages)
-            assert messages[0]["role"] == "system", "Missing system message"
-            messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
+            articles = fetch_related_articles(p_index, context.messages)
+            assert context.messages[0]["role"] == "system", "Missing system message"
+            context.messages[0] = {"role":"system", "content":re.sub("\\{articles\\}", articles, context.prompt, 1)}
 
     # print(f"{messages}")
 
-    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=context.temperature)
+    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=context.messages, temperature=context.temperature)
     answer = response['choices'][0]['message']
     res = answer['content']
     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
 
-    messages.append({"role":answer['role'], "content":res})
+    context.messages.append({"role":answer['role'], "content":res})
     with open(f"output/{context.role}/{context.time}.json", 'w') as f:
-        json.dump(messages, f)
+        json.dump(context.messages, f)
