@@ -55,10 +55,10 @@ class ChatContext:
     def __init__(self, role: str = "GPT"):
         self.role = role
         self.botName = "GPT"
+        self.time = datetime.now()
 
 context = ChatContext()
 messages = []
-context_time = datetime.now()
 userName = "You"
 botName = "GPT"
 temperature = OPENAI_TEMPERATURE
@@ -138,7 +138,6 @@ while True:
         elif (key == "reset"):
             context = ChatContext()
             messages = []
-            context_time = datetime.now()
             userName = "You"
             botName = "GPT"
             temperature = OPENAI_TEMPERATURE
@@ -150,7 +149,6 @@ while True:
             manifest = manifests.get(key)
             if (manifest):
                 context = ChatContext(role=key)
-                context_time = datetime.now()
                 if not os.path.isdir(f"output/{context.role}"):
                     os.makedirs(f"output/{context.role}")
                 title = manifest["title"]
@@ -210,5 +208,5 @@ while True:
     print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {res}")
 
     messages.append({"role":answer['role'], "content":res})
-    with open(f"output/{context.role}/{context_time}.json", 'w') as f:
+    with open(f"output/{context.role}/{context.time}.json", 'w') as f:
         json.dump(messages, f)
