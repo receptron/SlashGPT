@@ -199,6 +199,8 @@ while True:
 
     # print(f"{messages}")
 
+    if "useChatHistory" in manifest and manifest["useChatHistory"] is False:
+        messages = [messages[0], messages[-1]]
     response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=temperature)
     answer = response['choices'][0]['message']
     res = answer['content']
