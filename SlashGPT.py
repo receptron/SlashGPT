@@ -52,17 +52,21 @@ for file in files:
     manifests[key] = data
 
 class ChatContext:
-    def __init__(self, role: str = "GPT"):
+    def __init__(self, role: str = "GPT", manifest = None):
         self.role = role
-        self.botName = "GPT"
         self.time = datetime.now()
+        self.botName = "GPT"
+        self.userName = "You"
+        self.temperature = OPENAI_TEMPERATURE
+        self.manifest = manifest
+        if (manifest):
+            self.userName = manifest.get("you") or self.userName
+            self.botName = manifest.get("bot") or context.role
+            if (manifest.get("temperature")):
+                self.temperature = float(manifest.get("temperature"))
 
 context = ChatContext()
 messages = []
-userName = "You"
-botName = "GPT"
-temperature = OPENAI_TEMPERATURE
-manifest = None
 p_index = None
 prompt = ""
 
@@ -100,7 +104,7 @@ def fetch_related_articles(
     return articles
 
 while True:
-    question = input(f"\033[95m\033[1m{userName}: \033[95m\033[0m")
+    question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
     if (len(question) == 0):
         print(oneline_help)
         continue
@@ -124,8 +128,8 @@ while True:
             OPENAI_API_MODEL = "gpt-4"
             print(f"Model = {OPENAI_API_MODEL}")
             continue
-        elif (key == "sample" and manifest != None):
-            question = manifest.get("sample") 
+        elif (key == "sample" and context.manifest != None):
+            question = context.manifest.get("sample") 
             if (question):
                 print(question)
                 messages.append({"role":"user", "content":question})
@@ -138,30 +142,21 @@ while True:
         elif (key == "reset"):
             context = ChatContext()
             messages = []
-            userName = "You"
-            botName = "GPT"
-            temperature = OPENAI_TEMPERATURE
             OPENAI_API_MODEL = "gpt-3.5-turbo"
-            manifest = None
             p_index = None
             continue            
         else:
             manifest = manifests.get(key)
             if (manifest):
-                context = ChatContext(role=key)
+                context = ChatContext(role=key, manifest = manifest)
                 if not os.path.isdir(f"output/{context.role}"):
                     os.makedirs(f"output/{context.role}")
                 title = manifest["title"]
-                temperature = OPENAI_TEMPERATURE
-                if (manifest.get("temperature")):
-                    temperature = float(manifest.get("temperature"))
                 if (manifest.get("model")):
                     OPENAI_API_MODEL = manifest.get("model")
                 else:
                     OPENAI_API_MODEL = "gpt-3.5-turbo"
-                print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={temperature})")
-                userName = manifest.get("you") or "You"
-                botName = manifest.get("bot") or context.role
+                print(f"Activating: {title} (model={OPENAI_API_MODEL}, temperature={context.temperature})")
                 prompt = '\n'.join(manifest["prompt"])
                 data = manifest.get("data")
                 if data:
@@ -188,7 +183,7 @@ while True:
                 if (intros):
                     intro = intros[random.randrange(0, len(intros))]
                     messages.append({"role":"assistant", "content":intro})
-                    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {intro}")
+                    print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {intro}")
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
@@ -202,10 +197,10 @@ while True:
 
     # print(f"{messages}")
 
-    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=temperature)
+    response = openai.ChatCompletion.create(model=OPENAI_API_MODEL, messages=messages, temperature=context.temperature)
     answer = response['choices'][0]['message']
     res = answer['content']
-    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {res}")
+    print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
 
     messages.append({"role":answer['role'], "content":res})
     with open(f"output/{context.role}/{context.time}.json", 'w') as f:
