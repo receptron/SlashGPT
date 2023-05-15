@@ -31,8 +31,8 @@ assert (
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
 openai.api_key = OPENAI_API_KEY
 
-oneline_help = "System Slashes: /bye, /reset, /help, /prompt, /gpt3, /gpt4"
-print(oneline_help)
+ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /help"
+print(ONELINE_HELP)
 
 # Reading Manifest files
 manifests = {}
@@ -138,7 +138,7 @@ context = ChatContext()
 while True:
     question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
     if (len(question) == 0):
-        print(oneline_help)
+        print(ONELINE_HELP)
         continue
     if (question[0] == "/"):
         key = question[1:]
