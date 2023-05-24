@@ -24,6 +24,11 @@ a specific set of prompts, which hleps the user to file a patent.
 
     `OPENAI_TEMPERATURE=...`
 
+5. You may optionally specify Pinecone key and environment.
+
+    `PINECONE_API_KEY=...`
+    `PINECONE_ENVIRONMENT=...`
+
 ## Execution
 
 1. Type `./SlashGPT.py`
@@ -44,6 +49,12 @@ where the context is "GTP" for general chat, and the slash key for a specialized
     *title* (string): Title for the user to see (required)
     *source* (string): Source of the prompt (optional: URL, email, github id, or twitter id)
     *promot* (array of strings): The system prompts which define the bot (required)
+    *bot* (string, optional): Bot name
+    *sample* (string, optional): Sample question (type "/sample" to send it)
+    *intro* (array of strings, optional): Introduction statements (will be randomly selected)
+    *model* (string, optional): LLM model (gpt-4)
+    *temperature* (string, optional): Temperature
+    *articles* (string, optional): name of embedding database
 
 2. Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
 
