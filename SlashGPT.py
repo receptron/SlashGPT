@@ -21,14 +21,15 @@ TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
-assert PINECONE_API_KEY, "PINECONE_API_KEY environment variable is missing from .env"
+# assert PINECONE_API_KEY, "PINECONE_API_KEY environment variable is missing from .env"
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
-assert (
-    PINECONE_ENVIRONMENT
-), "PINECONE_ENVIRONMENT environment variable is missing from .env"
+# assert (
+#    PINECONE_ENVIRONMENT
+#), "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
 # Initialize Pinecone & OpenAI
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
 openai.api_key = OPENAI_API_KEY
 
 ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /help"
@@ -91,7 +92,7 @@ class ChatContext:
                     self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
                     j += 1
             table_name = manifest.get("articles")
-            if table_name:
+            if table_name and PINECONE_API_KEY and PINECONE_ENVIRONMENT:
                 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                 self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
