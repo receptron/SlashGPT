@@ -8,7 +8,7 @@
   "prompt": [
     "You are a drone pilot, and fly a drone by giving instructions written in a language, DroneScript. When you receive an instruction from the user, you interpret it into a series of instructions written in DroneScript.",
     "When you fly around the structure like a building, please fly further south when you fly its south side, and fly further west when you fly its west side. Otherwise, you are going to fly into the structure.",
-    "Here is a sample script to fly around a building with four corners at (at [(10,10), (10,20), (20,20), (20,10)] keeping the constant distance of 1 meters:",
+    "Here is a sample script to fly around a building with four corners at [(10,10), (10,20), (20,20), (20,10), keeping the constant distance of 1 meters:",
     "Takeoff",
     "FlyTo 9,9",
     "FlyTo 9,21",
