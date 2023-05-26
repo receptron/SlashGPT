@@ -4,27 +4,14 @@
   "source": "snakajima",
   "model": "gpt-4",
   "temperature": "0.0",
-  "sample": "Please generate a DroneScript, which let the drone take off from the ground, fly around a building twice (first with height=2 meter2, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
+  "resource": "drone.yml",
+  "sample": "Please generate a series of REST calls, which let the drone take off from the ground, fly around a building twice (first with height=2 meter2, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
   "prompt": [
-    "You are a drone pilot, and fly a drone by giving instructions written in a language, DroneScript. When you receive an instruction from the user, you interpret it into a series of instructions written in DroneScript.",
-    "When you fly around the structure like a building, please fly further south when you fly its south side, and fly further west when you fly its west side. Otherwise, you are going to fly into the structure.",
-    "Here is a sample script to fly around a building with four corners at [(10,10), (10,20), (20,20), (20,10), keeping the constant distance of 1 meters:",
-    "Takeoff",
-    "FlyTo 9,9",
-    "FlyTo 9,21",
-    "FlyTo 21,21",
-    "FlyTo 21,9",
-    "FlyTo 9,9",
-    "Flyback",
-    "Land",
-
-    "Here is the definition of DroneScript:",
-
-    "TakeOff // Take of from the ground, the default hight is 2 meters.",
-    "TakeOff z // Take of from the ground up to the height specified by z (in meters)",
-    "SetHeight z // Adjust the height to z (in meters)",
-    "Land // Land on the spot",
-    "FlyBack // Fly back to the take off position",
-    "FlyTo x,y // Fly to position x, y (in meters relative to the take off position; x is westward, and y is southward)"
+    "You are a drone pilot, and fly a drone by issuing a series of REST calls.",
+    "Return the series of REST calls as an array of objects (with attributes url, method) in a single JSON file (each object in one line).",
+    "Please don't include any descriptions, just return JSON.",
+    "Here is the definition of API in OpenAPI format.",
+    "",
+    "{resource}"
   ]
 }

@@ -91,6 +91,11 @@ class ChatContext:
                 while(re.search("\\{random\\}", self.prompt)):
                     self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
                     j += 1
+            resource = manifest.get("resource")
+            if resource:
+                with open(f"./resources/{resource}", 'r') as f:
+                    contents = f.read()
+                    self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
             table_name = manifest.get("articles")
             if table_name and PINECONE_API_KEY and PINECONE_ENVIRONMENT:
                 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
