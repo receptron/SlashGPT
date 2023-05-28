@@ -191,7 +191,8 @@ while True:
         elif (key == "sample"):
             if (context.sample):
                 print(context.sample)
-                context.appendQuestion(context.sample)
+                question = context.sample
+                context.appendQuestion(question)
             else:
                 continue
         elif (key == "reset"):
@@ -218,7 +219,24 @@ while True:
 
     # print(f"{messages}")
     if (context.model == "palm"):
-        res = "foo"
+        defaults = {
+            'model': 'models/chat-bison-001',
+            'temperature': context.temperature,
+            'candidate_count': 1,
+            'top_k': 40,
+            'top_p': 0.95,
+        }
+        system = ""
+        examples = []
+        messages = []
+        messages.append(question)
+        response = palm.chat(
+            **defaults,
+            context=system,
+            examples=examples,
+            messages=messages
+        )
+        res = response.last
         role = "assistant"
     else:
         response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
