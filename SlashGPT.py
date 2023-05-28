@@ -277,7 +277,7 @@ while True:
                     prompts.append(message["content"])
                 else:
                     prompts.append(f"{role}:{message['content']}")
-
+        prompts.append("assistant:")
         response = palm.generate_text(
             **defaults,
             prompt='\n'.join(prompts)
