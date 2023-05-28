@@ -9,6 +9,7 @@ import re
 import random
 import pinecone
 import tiktoken  # for counting tokens
+import google.generativeai as palm
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -16,6 +17,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
+GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
 TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
@@ -27,12 +29,14 @@ PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
 #    PINECONE_ENVIRONMENT
 #), "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
-# Initialize Pinecone & OpenAI
+# Initialize OpenAI and optinoally Pinecone and Palm 
+openai.api_key = OPENAI_API_KEY
 if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-openai.api_key = OPENAI_API_KEY
+if (GOOGLE_PALM_KEY):
+    palm.configure(api_key=GOOGLE_PALM_KEY)
 
-ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /help"
+ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /help"
 print(ONELINE_HELP)
 
 # Reading Manifest files
@@ -176,6 +180,13 @@ while True:
         elif (key == "gpt4"):
             context.model = "gpt-4"
             print(f"Model = {context.model}")
+            continue
+        elif (key == "palm"):
+            if (GOOGLE_PALM_KEY):
+                context.model = "palm"
+                print(f"Model = {context.model}")
+            else:
+                print("Error: Missing GOOGLE_PALM_KEY")
             continue
         elif (key == "sample"):
             if (context.sample):
