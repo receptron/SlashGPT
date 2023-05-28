@@ -191,6 +191,15 @@ while True:
             else:
                 print("Error: Missing GOOGLE_PALM_KEY")
             continue
+        elif (key == "palmt"):
+            if (GOOGLE_PALM_KEY):
+                context.model = "palmt"
+                if (context.botName == "GPT"):
+                    context.botName = "PaLM(Text)"
+                print(f"Model = {context.model}")
+            else:
+                print("Error: Missing GOOGLE_PALM_KEY")
+            continue
         elif (key == "sample"):
             if (context.sample):
                 print(context.sample)
@@ -250,6 +259,30 @@ while True:
         res = response.last
         if (res == None):
             print(response.filters)
+        role = "assistant"
+    elif (context.model == "palmt"):
+        defaults = {
+            'model': 'models/text-bison-001',
+            'temperature': context.temperature,
+            'candidate_count': 1,
+            'top_k': 40,
+            'top_p': 0.95,
+        }
+        prompts = []
+        for message in context.messages:
+            role = message["role"]
+            content = message["content"]
+            if (content):
+                if (role == "system"):
+                    prompts.append(message["content"])
+                else:
+                    prompts.append(f"{role}:{message['content']}")
+
+        response = palm.generate_text(
+            **defaults,
+            prompt='\n'.join(prompts)
+        )
+        res = response.result
         role = "assistant"
     else:
         response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
