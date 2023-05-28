@@ -184,6 +184,8 @@ while True:
         elif (key == "palm"):
             if (GOOGLE_PALM_KEY):
                 context.model = "palm"
+                if (context.botName == "GPT"):
+                    context.botName = "PaLM"
                 print(f"Model = {context.model}")
             else:
                 print("Error: Missing GOOGLE_PALM_KEY")
