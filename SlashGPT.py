@@ -228,13 +228,13 @@ while True:
         }
         system = ""
         examples = []
-        messages = []
-        messages.append(question)
+        msgs = []
+        msgs.append(question)
         response = palm.chat(
             **defaults,
             context=system,
             examples=examples,
-            messages=messages
+            messages=msgs
         )
         res = response.last
         role = "assistant"
