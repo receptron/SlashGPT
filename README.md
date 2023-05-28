@@ -28,6 +28,7 @@ a specific set of prompts, which hleps the user to file a patent.
 
     `PINECONE_API_KEY=...`
     `PINECONE_ENVIRONMENT=...`
+    `GOOGLE_PALM_KEY=...`
 
 ## Execution
 

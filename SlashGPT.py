@@ -9,6 +9,7 @@ import re
 import random
 import pinecone
 import tiktoken  # for counting tokens
+import google.generativeai as palm
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -16,6 +17,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
+GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
 TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
@@ -27,12 +29,14 @@ PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
 #    PINECONE_ENVIRONMENT
 #), "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
-# Initialize Pinecone & OpenAI
+# Initialize OpenAI and optinoally Pinecone and Palm 
+openai.api_key = OPENAI_API_KEY
 if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-openai.api_key = OPENAI_API_KEY
+if (GOOGLE_PALM_KEY):
+    palm.configure(api_key=GOOGLE_PALM_KEY)
 
-ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /help"
+ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /help"
 print(ONELINE_HELP)
 
 # Reading Manifest files
@@ -177,10 +181,20 @@ while True:
             context.model = "gpt-4"
             print(f"Model = {context.model}")
             continue
+        elif (key == "palm"):
+            if (GOOGLE_PALM_KEY):
+                context.model = "palm"
+                if (context.botName == "GPT"):
+                    context.botName = "PaLM"
+                print(f"Model = {context.model}")
+            else:
+                print("Error: Missing GOOGLE_PALM_KEY")
+            continue
         elif (key == "sample"):
             if (context.sample):
                 print(context.sample)
-                context.appendQuestion(context.sample)
+                question = context.sample
+                context.appendQuestion(question)
             else:
                 continue
         elif (key == "reset"):
@@ -206,12 +220,41 @@ while True:
         context.appendQuestion(question)
 
     # print(f"{messages}")
+    if (context.model == "palm"):
+        defaults = {
+            'model': 'models/chat-bison-001',
+            'temperature': context.temperature,
+            'candidate_count': 1,
+            'top_k': 40,
+            'top_p': 0.95,
+        }
+        system = ""
+        examples = []
+        messages = []
+        for message in context.messages:
+            role = message["role"]
+            content = message["content"]
+            if (content):
+                if (role == "system"):
+                    system = message["content"]
+                elif (len(messages)>0 or role != "assistant"):
+                    messages.append(message["content"])
 
-    response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
-    answer = response['choices'][0]['message']
-    res = answer['content']
+        response = palm.chat(
+            **defaults,
+            context=system,
+            examples=examples,
+            messages=messages
+        )
+        res = response.last
+        role = "assistant"
+    else:
+        response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
+        answer = response['choices'][0]['message']
+        res = answer['content']
+        role = answer['role']
     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
 
-    context.messages.append({"role":answer['role'], "content":res})
+    context.messages.append({"role":role, "content":res})
     with open(f"output/{context.role}/{context.time}.json", 'w') as f:
         json.dump(context.messages, f)
