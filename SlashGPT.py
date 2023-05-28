@@ -10,6 +10,7 @@ import random
 import pinecone
 import tiktoken  # for counting tokens
 import google.generativeai as palm
+import google.generativeai.types as safety_types
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -247,6 +248,8 @@ while True:
             messages=messages
         )
         res = response.last
+        if (res == None):
+            print(response.filters)
         role = "assistant"
     else:
         response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
