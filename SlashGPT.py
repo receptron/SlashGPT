@@ -217,12 +217,16 @@ while True:
         context.appendQuestion(question)
 
     # print(f"{messages}")
-
-    response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
-    answer = response['choices'][0]['message']
-    res = answer['content']
+    if (context.model == "palm"):
+        res = "foo"
+        role = "assistant"
+    else:
+        response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
+        answer = response['choices'][0]['message']
+        res = answer['content']
+        role = answer['role']
     print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
 
-    context.messages.append({"role":answer['role'], "content":res})
+    context.messages.append({"role":role, "content":res})
     with open(f"output/{context.role}/{context.time}.json", 'w') as f:
         json.dump(context.messages, f)
