@@ -46,21 +46,20 @@ if not os.path.isdir("output"):
 if not os.path.isdir("output/GPT"):
     os.makedirs("output/GPT")
 
-# Reading Manifest files
-manifests = {}
+# Read Manifest files
 
-def loadManifest(folder: str = "./prompts"):
+def loadManifests(folder: str = "./prompts"):
+    results = {}
     files = os.listdir(folder)
-
-    # print(files)
     for file in files:
         key = file.split('.')[0]
-        with open(f"./prompts/{file}", 'r') as f:
+        with open(f"{folder}/{file}", 'r') as f:
             data = json.load(f)
         # print(key, file, data)
-        manifests[key] = data
+        results[key] = data
+    return results
 
-loadManifest()
+manifests = loadManifests()
 
 class ChatContext:
     def __init__(self, role: str = "GPT", manifest = None):
@@ -213,6 +212,10 @@ while True:
             else:
                 continue
         elif (key == "reset"):
+            context = ChatContext()
+            continue            
+        elif (key == "rpg1"):
+            manifests = loadManifests('./rpg1')
             context = ChatContext()
             continue            
         else:
