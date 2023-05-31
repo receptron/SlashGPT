@@ -40,22 +40,27 @@ if (GOOGLE_PALM_KEY):
 ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /help"
 print(ONELINE_HELP)
 
-# Reading Manifest files
-manifests = {}
-files = os.listdir("./prompts")
-
+# Prepare output folders
 if not os.path.isdir("output"):
     os.makedirs("output")
 if not os.path.isdir("output/GPT"):
     os.makedirs("output/GPT")
 
-# print(files)
-for file in files:
-    key = file.split('.')[0]
-    with open(f"./prompts/{file}", 'r') as f:
-        data = json.load(f)
-    # print(key, file, data)
-    manifests[key] = data
+# Reading Manifest files
+manifests = {}
+
+def loadManifest(folder: str = "./prompts"):
+    files = os.listdir(folder)
+
+    # print(files)
+    for file in files:
+        key = file.split('.')[0]
+        with open(f"./prompts/{file}", 'r') as f:
+            data = json.load(f)
+        # print(key, file, data)
+        manifests[key] = data
+
+loadManifest()
 
 class ChatContext:
     def __init__(self, role: str = "GPT", manifest = None):
