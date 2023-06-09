@@ -37,7 +37,7 @@ if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
 if (GOOGLE_PALM_KEY):
     palm.configure(api_key=GOOGLE_PALM_KEY)
 
-ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /help"
+ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
 print(ONELINE_HELP)
 
 # Prepare output folders
@@ -73,6 +73,7 @@ class ChatContext:
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
+        self.verbose = False
         self.index = None
         self.model = OPENAI_API_MODEL
         self.translator = False
@@ -134,12 +135,16 @@ class ChatContext:
         results = self.index.query(query_embedding, top_k=100, include_metadata=True)
 
         articles = ""
+        count = 0
         for match in results["matches"]:
             string = match["metadata"]["text"]
             next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
             if (self.num_tokens(articles + next_article + query) > token_budget):
+                if (context.verbose):
+                    print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
                 break
             else:
+                count += 1
                 articles += next_article
         return articles
 
@@ -174,6 +179,10 @@ while True:
             continue
         if (key == "bye"):
             break
+        elif (key == "verbose"):
+            context.verbose = context.verbose == False
+            print(f"Verbose Mode: {context.verbose}")
+            continue
         elif (key == "prompt"):
             if (len(context.messages) >= 1):
                 print(context.messages[0].get("content"))
