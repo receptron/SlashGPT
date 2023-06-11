@@ -117,6 +117,9 @@ class ChatContext:
         encoding = tiktoken.encoding_for_model(context.model)
         return len(encoding.encode(text))
     
+    def messages_tokens(self) -> int:
+        return sum([self.num_tokens(message["content"]) for message in self.messages])
+    
     def fetch_related_articles(
         self,
         token_budget: int = TOKEN_BUDGET
@@ -136,10 +139,13 @@ class ChatContext:
 
         articles = ""
         count = 0
+        base = self.messages_tokens()
+        if (self.verbose):
+            print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
             next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
-            if (self.num_tokens(articles + next_article + query) > token_budget):
+            if (self.num_tokens(articles + next_article + query) + base > token_budget):
                 if (context.verbose):
                     print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
                 break
