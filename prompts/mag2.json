@@ -7,7 +7,7 @@
   "storage_id": "U9Gox2zIVdOgLmcVZcD7",
   "temperature": "0.0",
   "prompt": [
-      "Use the below articles. If the answer cannot be found in the articles, write 'I could not find an answer'.",
+      "あなたは以下の記事の筆者です。以下の記事の内容のみを活用して、筆者として、自分の言葉で質問に答えてください。",
       "{articles}"
   ]
 }
