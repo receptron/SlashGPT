@@ -199,8 +199,8 @@ while True:
             print(f"Model = {context.model}")
             continue
         elif (key == "gpt31"):
-            context.model = "gpt-3.5-turbo-0613"
-            context.max_token = 4096
+            context.model = "gpt-3.5-turbo-16k-0613"
+            context.max_token = 4096 * 4
             print(f"Model = {context.model}")
             continue
         elif (key == "gpt4"):
