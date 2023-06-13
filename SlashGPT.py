@@ -20,7 +20,6 @@ OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
-TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -76,6 +75,7 @@ class ChatContext:
         self.verbose = False
         self.index = None
         self.model = OPENAI_API_MODEL
+        self.max_token = 4096
         self.translator = False
         self.messages = []
         if (manifest):
@@ -122,7 +122,7 @@ class ChatContext:
     
     def fetch_related_articles(
         self,
-        token_budget: int = TOKEN_BUDGET
+        token_budget: int
     ) -> str:
         """Return related articles with the question using the embedding vector search."""
         query = ""
@@ -163,7 +163,7 @@ class ChatContext:
         else:
             self.messages.append({"role":"user", "content":question})
             if self.index:
-                articles = self.fetch_related_articles()
+                articles = self.fetch_related_articles(self.max_token - 500)
                 assert self.messages[0]["role"] == "system", "Missing system message"
                 self.messages[0] = {
                     "role":"system", 

@@ -2,7 +2,7 @@
   "title": "まぐまぐ「週刊 Life is beautufil」",
   "bot": "まぐまぐ",
   "source": "snakajima",
-  "sample": "Please list the names of Japanese athletes won the gold medal at the 2022 Winter Olympics along with event names they won the medal.",
+  "sample": "「２２世紀の民主主義」は誰が書いた書籍で、どんな内容ですか？",
   "articles": "singularitysociety",
   "storage_id": "U9Gox2zIVdOgLmcVZcD7",
   "temperature": "0.0",
