@@ -316,6 +316,9 @@ while True:
         role = "assistant"
     else:
         response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
+        if (context.verbose):
+            print(f"model={response['model']}")
+            print(f"usage={response['usage']}")
         answer = response['choices'][0]['message']
         res = answer['content']
         role = answer['role']
