@@ -135,7 +135,7 @@ class ChatContext:
         )
         query_embedding = query_embedding_response["data"][0]["embedding"]
 
-        results = self.index.query(query_embedding, top_k=100, include_metadata=True)
+        results = self.index.query(query_embedding, top_k=12, include_metadata=True)
 
         articles = ""
         count = 0
@@ -146,12 +146,12 @@ class ChatContext:
             string = match["metadata"]["text"]
             next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
             if (self.num_tokens(articles + next_article + query) + base > token_budget):
-                if (context.verbose):
-                    print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
                 break
             else:
                 count += 1
                 articles += next_article
+        if (context.verbose):
+            print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
     def appendQuestion(self, question: str):
@@ -195,10 +195,17 @@ while True:
             continue
         elif (key == "gpt3"):
             context.model = "gpt-3.5-turbo"
+            context.max_token = 4096
+            print(f"Model = {context.model}")
+            continue
+        elif (key == "gpt31"):
+            context.model = "gpt-3.5-turbo-0613"
+            context.max_token = 4096
             print(f"Model = {context.model}")
             continue
         elif (key == "gpt4"):
             context.model = "gpt-4"
+            context.max_token = 4096
             print(f"Model = {context.model}")
             continue
         elif (key == "palm"):
