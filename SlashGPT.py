@@ -322,7 +322,10 @@ while True:
         res = response.result
         role = "assistant"
     else:
-        response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
+        response = openai.ChatCompletion.create(
+            model=context.model, 
+            messages=context.messages, 
+            temperature=context.temperature)
         if (context.verbose):
             print(f"model={response['model']}")
             print(f"usage={response['usage']}")
