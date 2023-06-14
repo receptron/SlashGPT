@@ -1,7 +1,7 @@
 {
   "title": "ソクラテスの家庭教師",
   "bot": "ソクラテス",
-  "source": "snakajima",
+  "source": "openai",
   "language": ["ja"],
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "連立一次方程式の解き方：3x+2y=7, 9x-4y=1",
