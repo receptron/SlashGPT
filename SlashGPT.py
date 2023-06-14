@@ -107,6 +107,11 @@ class ChatContext:
                 with open(f"./resources/{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
+            table_name = manifest.get("articles")
+            if table_name and PINECONE_API_KEY and PINECONE_ENVIRONMENT:
+                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
+                self.index = pinecone.Index(table_name)
+            self.messages = [{"role":"system", "content":self.prompt}]
             functions = manifest.get("functions")
             if functions:
                 with open(f"./resources/{functions}", 'r') as f:
