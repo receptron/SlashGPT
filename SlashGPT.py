@@ -17,7 +17,7 @@ from termcolor import colored
 load_dotenv() # Load default environment variables (.env)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
-OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
+OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo-0613")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
@@ -202,7 +202,7 @@ while True:
                 print(context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
-            context.model = "gpt-3.5-turbo"
+            context.model = "gpt-3.5-turbo-0613"
             context.max_token = 4096
             print(f"Model = {context.model}")
             continue
@@ -323,11 +323,17 @@ while True:
         res = response.result
         role = "assistant"
     else:
-        response = openai.ChatCompletion.create(
-            model=context.model,
-            messages=context.messages,
-            functions=context.functions,
-            temperature=context.temperature)
+        if context.functions:
+            response = openai.ChatCompletion.create(
+                model=context.model,
+                messages=context.messages,
+                functions=context.functions,
+                temperature=context.temperature)
+        else:
+            response = openai.ChatCompletion.create(
+                model=context.model,
+                messages=context.messages,
+                temperature=context.temperature)
         if (context.verbose):
             print(f"model={response['model']}")
             print(f"usage={response['usage']}")
