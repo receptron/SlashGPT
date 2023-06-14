@@ -11,6 +11,7 @@ import pinecone
 import tiktoken  # for counting tokens
 import google.generativeai as palm
 import google.generativeai.types as safety_types
+from termcolor import colored
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -323,8 +324,9 @@ while True:
         role = "assistant"
     else:
         response = openai.ChatCompletion.create(
-            model=context.model, 
-            messages=context.messages, 
+            model=context.model,
+            messages=context.messages,
+            functions=context.functions,
             temperature=context.temperature)
         if (context.verbose):
             print(f"model={response['model']}")
@@ -332,8 +334,12 @@ while True:
         answer = response['choices'][0]['message']
         res = answer['content']
         role = answer['role']
-    print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
+        function_call = answer.get('function_call')
+        if (function_call):
+            print(colored(function_call, "blue"))
 
-    context.messages.append({"role":role, "content":res})
-    with open(f"output/{context.role}/{context.time}.json", 'w') as f:
-        json.dump(context.messages, f)
+    if (res):
+        print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
+        context.messages.append({"role":role, "content":res})
+        with open(f"output/{context.role}/{context.time}.json", 'w') as f:
+            json.dump(context.messages, f)
