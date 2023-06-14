@@ -3,7 +3,7 @@
   "bot": "Home",
   "source": "snakajima",
   "temperature": "0.0",
-  "functions": "weather.yml",
+  "functions": "weather.json",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "What is the weather like today?",
   "prompt": [

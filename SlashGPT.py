@@ -85,6 +85,7 @@ class ChatContext:
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample") 
+            self.functions = None
             self.translator = manifest.get("translator") or False
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
@@ -106,11 +107,12 @@ class ChatContext:
                 with open(f"./resources/{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
-            table_name = manifest.get("articles")
-            if table_name and PINECONE_API_KEY and PINECONE_ENVIRONMENT:
-                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                self.index = pinecone.Index(table_name)
-            self.messages = [{"role":"system", "content":self.prompt}]
+            functions = manifest.get("functions")
+            if functions:
+                with open(f"./resources/{functions}", 'r') as f:
+                    self.functions = json.load(f)
+                    if context.verbose:
+                        print(self.functions)
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""

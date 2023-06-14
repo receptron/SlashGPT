@@ -7,12 +7,12 @@
             "properties": {
                 "location": {
                     "type": "string",
-                    "description": "The city and state, e.g. San Francisco, CA",
+                    "description": "The city and state, e.g. San Francisco, CA"
                 },
                 "format": {
                     "type": "string",
                     "enum": ["celsius", "fahrenheit"],
-                    "description": "The temperature unit to use. Infer this from the users location.",
+                    "description": "The temperature unit to use. Infer this from the users location."
                 }
             },
             "required": ["location", "format"]
