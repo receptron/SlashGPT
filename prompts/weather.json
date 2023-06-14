@@ -1,0 +1,13 @@
+{
+  "title": "Weather Channel",
+  "bot": "Weather",
+  "source": "snakajima",
+  "temperature": "0.0",
+  "functions": "weather.json",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "sample": "What is the weather like today?",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

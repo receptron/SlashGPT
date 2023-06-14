@@ -10,6 +10,8 @@ import random
 import pinecone
 import tiktoken  # for counting tokens
 import google.generativeai as palm
+import google.generativeai.types as safety_types
+from termcolor import colored
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -19,7 +21,6 @@ OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
-TOKEN_BUDGET = 4096 - 500
 # print(f"Open AI Key = {OPENAI_API_KEY}")
 print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -36,25 +37,29 @@ if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
 if (GOOGLE_PALM_KEY):
     palm.configure(api_key=GOOGLE_PALM_KEY)
 
-ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /help"
+ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
 print(ONELINE_HELP)
 
-# Reading Manifest files
-manifests = {}
-files = os.listdir("./prompts")
-
+# Prepare output folders
 if not os.path.isdir("output"):
     os.makedirs("output")
 if not os.path.isdir("output/GPT"):
     os.makedirs("output/GPT")
 
-# print(files)
-for file in files:
-    key = file.split('.')[0]
-    with open(f"./prompts/{file}", 'r') as f:
-        data = json.load(f)
-    # print(key, file, data)
-    manifests[key] = data
+# Read Manifest files
+
+def loadManifests(folder: str = "./prompts"):
+    results = {}
+    files = os.listdir(folder)
+    for file in files:
+        key = file.split('.')[0]
+        with open(f"{folder}/{file}", 'r') as f:
+            data = json.load(f)
+        # print(key, file, data)
+        results[key] = data
+    return results
+
+manifests = loadManifests()
 
 class ChatContext:
     def __init__(self, role: str = "GPT", manifest = None):
@@ -68,8 +73,10 @@ class ChatContext:
         self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
+        self.verbose = False
         self.index = None
         self.model = OPENAI_API_MODEL
+        self.max_token = 4096
         self.translator = False
         self.messages = []
         if (manifest):
@@ -79,6 +86,7 @@ class ChatContext:
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample") 
+            self.functions = None
             self.translator = manifest.get("translator") or False
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
@@ -105,15 +113,24 @@ class ChatContext:
                 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                 self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
+            functions = manifest.get("functions")
+            if functions:
+                with open(f"./resources/{functions}", 'r') as f:
+                    self.functions = json.load(f)
+                    if context.verbose:
+                        print(self.functions)
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
         encoding = tiktoken.encoding_for_model(context.model)
         return len(encoding.encode(text))
     
+    def messages_tokens(self) -> int:
+        return sum([self.num_tokens(message["content"]) for message in self.messages])
+    
     def fetch_related_articles(
         self,
-        token_budget: int = TOKEN_BUDGET
+        token_budget: int
     ) -> str:
         """Return related articles with the question using the embedding vector search."""
         query = ""
@@ -126,16 +143,23 @@ class ChatContext:
         )
         query_embedding = query_embedding_response["data"][0]["embedding"]
 
-        results = self.index.query(query_embedding, top_k=100, include_metadata=True)
+        results = self.index.query(query_embedding, top_k=12, include_metadata=True)
 
         articles = ""
+        count = 0
+        base = self.messages_tokens()
+        if (self.verbose):
+            print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
             next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
-            if (self.num_tokens(articles + next_article + query) > token_budget):
+            if (self.num_tokens(articles + next_article + query) + base > token_budget):
                 break
             else:
+                count += 1
                 articles += next_article
+        if (context.verbose):
+            print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
     def appendQuestion(self, question: str):
@@ -147,7 +171,7 @@ class ChatContext:
         else:
             self.messages.append({"role":"user", "content":question})
             if self.index:
-                articles = self.fetch_related_articles()
+                articles = self.fetch_related_articles(self.max_token - 500)
                 assert self.messages[0]["role"] == "system", "Missing system message"
                 self.messages[0] = {
                     "role":"system", 
@@ -169,16 +193,27 @@ while True:
             continue
         if (key == "bye"):
             break
+        elif (key == "verbose"):
+            context.verbose = context.verbose == False
+            print(f"Verbose Mode: {context.verbose}")
+            continue
         elif (key == "prompt"):
             if (len(context.messages) >= 1):
                 print(context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
             context.model = "gpt-3.5-turbo"
+            context.max_token = 4096
+            print(f"Model = {context.model}")
+            continue
+        elif (key == "gpt31"):
+            context.model = "gpt-3.5-turbo-16k-0613"
+            context.max_token = 4096 * 4
             print(f"Model = {context.model}")
             continue
         elif (key == "gpt4"):
             context.model = "gpt-4"
+            context.max_token = 4096
             print(f"Model = {context.model}")
             continue
         elif (key == "palm"):
@@ -186,6 +221,15 @@ while True:
                 context.model = "palm"
                 if (context.botName == "GPT"):
                     context.botName = "PaLM"
+                print(f"Model = {context.model}")
+            else:
+                print("Error: Missing GOOGLE_PALM_KEY")
+            continue
+        elif (key == "palmt"):
+            if (GOOGLE_PALM_KEY):
+                context.model = "palmt"
+                if (context.botName == "GPT"):
+                    context.botName = "PaLM(Text)"
                 print(f"Model = {context.model}")
             else:
                 print("Error: Missing GOOGLE_PALM_KEY")
@@ -198,6 +242,10 @@ while True:
             else:
                 continue
         elif (key == "reset"):
+            context = ChatContext()
+            continue            
+        elif (key == "rpg1"):
+            manifests = loadManifests('./rpg1')
             context = ChatContext()
             continue            
         else:
@@ -247,14 +295,51 @@ while True:
             messages=messages
         )
         res = response.last
+        if (res == None):
+            print(response.filters)
+        role = "assistant"
+    elif (context.model == "palmt"):
+        defaults = {
+            'model': 'models/text-bison-001',
+            'temperature': context.temperature,
+            'candidate_count': 1,
+            'top_k': 40,
+            'top_p': 0.95,
+        }
+        prompts = []
+        for message in context.messages:
+            role = message["role"]
+            content = message["content"]
+            if (content):
+                if (role == "system"):
+                    prompts.append(message["content"])
+                else:
+                    prompts.append(f"{role}:{message['content']}")
+        prompts.append("assistant:")
+        response = palm.generate_text(
+            **defaults,
+            prompt='\n'.join(prompts)
+        )
+        res = response.result
         role = "assistant"
     else:
-        response = openai.ChatCompletion.create(model=context.model, messages=context.messages, temperature=context.temperature)
+        response = openai.ChatCompletion.create(
+            model=context.model,
+            messages=context.messages,
+            functions=context.functions,
+            temperature=context.temperature)
+        if (context.verbose):
+            print(f"model={response['model']}")
+            print(f"usage={response['usage']}")
         answer = response['choices'][0]['message']
         res = answer['content']
         role = answer['role']
-    print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
+        function_call = answer.get('function_call')
+        if (function_call):
+            print(colored(function_call, "blue"))
 
-    context.messages.append({"role":role, "content":res})
-    with open(f"output/{context.role}/{context.time}.json", 'w') as f:
-        json.dump(context.messages, f)
+    if (res):
+        print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
+        context.messages.append({"role":role, "content":res})
+        with open(f"output/{context.role}/{context.time}.json", 'w') as f:
+            json.dump(context.messages, f)
