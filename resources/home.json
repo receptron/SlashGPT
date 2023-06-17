@@ -53,17 +53,36 @@
     },
     {
         "name": "take_picture",
-        "description": "Set the temperature",
+        "description": "Take a picture and send it",
         "parameters": {
             "type": "object",
             "properties": {
                 "camera": {
                     "type": "string",
                     "enum": ["entrance", "backyard", "kitchen", "living room"],
-                    "description": "Take a picture using one of security cameras and send it."
+                    "description": "Specify the camera to use."
                 }
             },
             "required": ["camera"]
+        }
+    },
+    {
+        "name": "play_music",
+        "description": "Play music",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "enum": ["living room", "master bedroom"],
+                    "description": "Location to play a music."
+                },
+                "music": {
+                    "type": "string",
+                    "description": "Music to play, such as artist, title and playlist."
+                }
+            },
+            "required": ["location"]
         }
     },
     {
