@@ -343,6 +343,8 @@ while True:
         function_call = answer.get('function_call')
         if (function_call):
             print(colored(function_call, "blue"))
+            # Reset the conversation to avoid confusion
+            context.messages = context.messages[:1]
 
     if (res):
         print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
