@@ -216,6 +216,11 @@ while True:
             context.max_token = 4096
             print(f"Model = {context.model}")
             continue
+        elif (key == "gpt41"):
+            context.model = "gpt-4-0613"
+            context.max_token = 4096
+            print(f"Model = {context.model}")
+            continue
         elif (key == "palm"):
             if (GOOGLE_PALM_KEY):
                 context.model = "palm"

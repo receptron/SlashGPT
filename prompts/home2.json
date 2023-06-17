@@ -7,7 +7,7 @@
   "functions": "home.json",
   "sample": "Please set the room temperature of kitchen to 28 celsius",
   "prompt": [
-    "Don't make assumptions about what values to plug into functions.",
+    "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous."
   ]
 }
