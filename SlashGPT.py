@@ -79,6 +79,7 @@ class ChatContext:
         self.max_token = 4096
         self.translator = False
         self.messages = []
+        self.functions = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
@@ -86,7 +87,6 @@ class ChatContext:
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample") 
-            self.functions = None
             self.translator = manifest.get("translator") or False
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))

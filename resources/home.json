@@ -52,6 +52,21 @@
         }
     },
     {
+        "name": "take_picture",
+        "description": "Set the temperature",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "camera": {
+                    "type": "string",
+                    "enum": ["entrance", "backyard", "kitchen", "living room"],
+                    "description": "Take a picture using one of security cameras and send it."
+                }
+            },
+            "required": ["camera"]
+        }
+    },
+    {
         "name": "control_light",
         "description": "Turn on/off various lights",
         "parameters": {
@@ -69,7 +84,7 @@
                 },
                 "dimm": {
                     "type": "number",
-                    "description": "Specify the dimm level between 0 and 1.0."
+                    "description": "Specify the dimm level between 0 and 1.0. The 'switch' parameter must be 'on'."
                 }
             },
             "required": ["location", "switch"]
