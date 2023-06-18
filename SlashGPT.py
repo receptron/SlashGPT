@@ -347,6 +347,9 @@ while True:
         role = answer['role']
         function_call = answer.get('function_call')
         if (function_call):
+            arguments = function_call.get("arguments") 
+            if arguments and isinstance(arguments, str):
+                function_call.arguments = json.loads(arguments)      
             print(colored(function_call, "blue"))
             # Reset the conversation to avoid confusion
             context.messages = context.messages[:1]
