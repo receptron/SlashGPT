@@ -16,10 +16,12 @@
                 },
                 "DTSTART": {
                     "type": "string",
+                    "format": "date-time",
                     "description": "the date and time that the event begins such as 19980119T020000"
                 },
                 "DTEND": {
                     "type": "string",
+                    "format": "date-time",
                     "description": "the date and time that the event ends such as 19980119T030000"
                 },
                 "LOCATION": {
