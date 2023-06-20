@@ -91,6 +91,9 @@ class ChatContext:
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
+            if(re.search("\\{now\\}", self.prompt)):
+                self.prompt = re.sub("\\{now\\}", self.time.isoformat(), self.prompt, 1)
+            
             data = manifest.get("data")
             if data:
                 # Shuffle 
