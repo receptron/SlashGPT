@@ -14,8 +14,21 @@
                                 "type": "string",
                                 "description": "name of the command",
                                 "enum": ["take_off", "set_height", "fly_to", "land"]
+                            },
+                            "west": {
+                                "type": "number",
+                                "description": "westward distance in meters from the starting position"
+                            },
+                            "south": {
+                                "type": "number",
+                                "description": "southward distance in meters from the starting position"
+                            },
+                            "height": {
+                                "type": "number",
+                                "description": "height in meters, e.g. 1.2"
                             }
-                        }
+                        },
+                        "required": []
                     },
                     "description": "The list of commands to the drone"
                 }
