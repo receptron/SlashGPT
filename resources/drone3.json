@@ -6,7 +6,17 @@
             "type": "object",
             "properties": {
                 "commands": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "name of the command",
+                                "enum": ["take_off", "set_height", "fly_to", "land"]
+                            }
+                        }
+                    },
                     "description": "The list of commands to the drone"
                 }
             },
