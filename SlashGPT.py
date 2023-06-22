@@ -190,7 +190,7 @@ while True:
         print(f"\033[95m\033[1mChained: \033[95m\033[0m{chained}")
     else:
         question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
-        chained = None
+    chained = None
 
     if (len(question) == 0):
         print(ONELINE_HELP)
