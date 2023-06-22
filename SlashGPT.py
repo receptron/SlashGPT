@@ -94,7 +94,8 @@ class ChatContext:
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
             if(re.search("\\{now\\}", self.prompt)):
-                self.prompt = re.sub("\\{now\\}", self.time.isoformat(), self.prompt, 1)
+                # isoformat
+                self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%S'), self.prompt, 1)
             
             data = manifest.get("data")
             if data:
