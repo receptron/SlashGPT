@@ -165,14 +165,14 @@ class ChatContext:
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
-    def appendQuestion(self, question: str):
+    def appendQuestion(self, question: str, role: str = "user"):
         if self.translator:
             self.messages = [{
                 "role": "system",
                 "content":re.sub("\\{input\\}", question, self.prompt, 1)
             }]
         else:
-            self.messages.append({"role":"user", "content":question})
+            self.messages.append({"role":role, "content":question})
             if self.index:
                 articles = self.fetch_related_articles(self.max_token - 500)
                 assert self.messages[0]["role"] == "system", "Missing system message"
