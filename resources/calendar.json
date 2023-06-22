@@ -42,12 +42,16 @@
                     "type": "string",
                     "description": "URL to the calendar event"
                 },
-                "recipient": {
-                    "type": "string",
-                    "description": "email address of recipient"
+                "recipients": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "email address"
+                    },
+                    "description": "email addresses of recipients"
                 }
             },
-            "required": ["invitation_link"]
+            "required": ["invitation_link", "recipients"]
         }        
     }
 ]
