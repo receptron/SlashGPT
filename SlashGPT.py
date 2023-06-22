@@ -376,13 +376,14 @@ while True:
                     template = action.get("template")
                     if template:
                         mime_type = action.get("mime_type") or ""
+                        chained_msg = action.get("chained_msg") or f"{url}"
                         with open(f"./resources/{template}", 'r') as f:
                             template = f.read()
                             if context.verbose:
                                 print(template)
                             ical = template.format(**arguments)
                             url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                            chained = f"The event was scheduled. Here is the invitation link: '{url}'"
+                            chained = chained_msg.format(url = url) 
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]

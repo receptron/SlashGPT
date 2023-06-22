@@ -8,7 +8,8 @@
   "actions": {
     "make_event": {
       "template": "calendar.ical",
-      "mime_type": "text/calendar"
+      "mime_type": "text/calendar",
+      "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
     }
   },
   "intro": [
