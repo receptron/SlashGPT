@@ -7,13 +7,14 @@
   "functions": "calendar.json",
   "actions": {
     "make_event": {
-      "template": "calendar.ical"
+      "template": "calendar.ical",
+      "mime_type": "text/calendar"
     }
   },
   "intro": [
     "Please let me know if there any event you want to add to your calendar" 
   ],
-  "sample": "Please schedule a meeting with Tim Cook on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
+  "sample": "Please schedule a meeting with Tim Cook from 1pm for 30 minutes on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
   "prompt": [
     "Don't make assumptions about what values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",
