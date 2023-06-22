@@ -369,10 +369,14 @@ while True:
         if (function_call):
             arguments = function_call.get("arguments") 
             if arguments and isinstance(arguments, str):
-                function_call.arguments = json.loads(arguments)      
+                arguments = json.loads(arguments)      
+                function_call.arguments = arguments
             print(colored(function_call, "blue"))
             name = function_call.get("name")
             if (name and name=="make_event"):
+                if context.template:
+                    print("DTSTART", arguments["DTSTART"])
+                    print(context.template.format(**arguments))
                 chained = "The event was scheduled. Here is the invitation link: 'https://calendar.com/12345.ical'"
             else:
                 # Reset the conversation to avoid confusion
