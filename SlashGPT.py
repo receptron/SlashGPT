@@ -12,6 +12,7 @@ import tiktoken  # for counting tokens
 import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
+import urllib.parse
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -376,8 +377,9 @@ while True:
             if (name and name=="make_event"):
                 if context.template:
                     print("DTSTART", arguments["DTSTART"])
-                    print(context.template.format(**arguments))
-                chained = "The event was scheduled. Here is the invitation link: 'https://calendar.com/12345.ical'"
+                    ical = context.template.format(**arguments)
+                    url = f"data:text/calendar;charset=utf-8,{urllib.parse.quote_plus(ical)}"
+                    chained = f"The event was scheduled. Here is the invitation link: '{url}'"
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]
