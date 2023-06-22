@@ -363,7 +363,7 @@ while True:
             print(colored(function_call, "blue"))
             name = function_call.get("name")
             if (name and name=="make_event"):
-                chained = "Here is the invitation link: 'https://calendar.com/12345.ical'"
+                chained = "The event was scheduled. Here is the invitation link: 'https://calendar.com/12345.ical'"
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]
