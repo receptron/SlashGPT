@@ -31,5 +31,23 @@
             },
             "required": ["SUMMARY", "DTSTART", "DTEND"]
         }
+    },
+    {
+        "name": "send_invitation",
+        "description": "Send the invitation",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "invitation_link": {
+                    "type": "string",
+                    "description": "URL to the calendar event"
+                },
+                "recipient": {
+                    "type": "string",
+                    "description": "email address of recipient"
+                }
+            },
+            "required": ["invitation_link"]
+        }        
     }
 ]
