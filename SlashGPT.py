@@ -182,9 +182,16 @@ class ChatContext:
                 }
 
 context = ChatContext()
+chained = None
 
 while True:
-    question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
+    if chained:
+        question = chained
+        print(f"\033[95m\033[1mChained: \033[95m\033[0m{chained}")
+    else:
+        question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
+        chained = None
+
     if (len(question) == 0):
         print(ONELINE_HELP)
         continue
@@ -354,8 +361,12 @@ while True:
             if arguments and isinstance(arguments, str):
                 function_call.arguments = json.loads(arguments)      
             print(colored(function_call, "blue"))
-            # Reset the conversation to avoid confusion
-            context.messages = context.messages[:1]
+            name = function_call.get("name")
+            if (name and name=="make_event"):
+                chained = "Here is the invitation link: 'https://calendar.com/12345.ical'"
+            else:
+                # Reset the conversation to avoid confusion
+                context.messages = context.messages[:1]
 
     if (res):
         print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
