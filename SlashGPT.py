@@ -166,6 +166,7 @@ class ChatContext:
         return articles
 
     def appendQuestion(self, question: str, role: str = "user"):
+        print("role:", role)
         if self.translator:
             self.messages = [{
                 "role": "system",
@@ -185,9 +186,11 @@ context = ChatContext()
 chained = None
 
 while True:
+    roleInput = "user"
     if chained:
         question = chained
-        print(f"\033[95m\033[1mChained: \033[95m\033[0m{chained}")
+        roleInput = "system"
+        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{chained}")
     else:
         question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
     chained = None
@@ -280,7 +283,7 @@ while True:
                 print(f"Invalid slash command: {key}")
                 continue
     else:
-        context.appendQuestion(question)
+        context.appendQuestion(question, roleInput)
 
     # print(f"{messages}")
     if (context.model == "palm"):
