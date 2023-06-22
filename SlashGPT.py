@@ -81,20 +81,21 @@ class ChatContext:
         self.translator = False
         self.messages = []
         self.functions = None
-        self.template = None
+        self.actions = {}
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
             self.model = manifest.get("model") or self.model
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
-            self.sample = manifest.get("sample") 
+            self.sample = manifest.get("sample")
+            self.actions = manifest.get("actions") or {} 
             self.translator = manifest.get("translator") or False
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
             if(re.search("\\{now\\}", self.prompt)):
-                # isoformat
+                # not isoformat
                 self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%S'), self.prompt, 1)
             
             data = manifest.get("data")
@@ -125,12 +126,6 @@ class ChatContext:
                     self.functions = json.load(f)
                     if context.verbose:
                         print(self.functions)
-            template = manifest.get("template")
-            if template:
-                with open(f"./resources/{template}", 'r') as f:
-                    self.template = f.read()
-                    if context.verbose:
-                        print(self.template)
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
@@ -375,12 +370,18 @@ while True:
                 function_call.arguments = arguments
             print(colored(function_call, "blue"))
             name = function_call.get("name")
-            if (name and name=="make_event"):
-                if context.template:
-                    print("DTSTART", arguments["DTSTART"])
-                    ical = context.template.format(**arguments)
-                    url = f"data:text/calendar;charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                    chained = f"The event was scheduled. Here is the invitation link: '{url}'"
+            if name:
+                action = context.actions.get(name)
+                if action:
+                    template = action.get("template")
+                    if template:
+                        with open(f"./resources/{template}", 'r') as f:
+                            template = f.read()
+                            if context.verbose:
+                                print(template)
+                            ical = template.format(**arguments)
+                            url = f"data:text/calendar;charset=utf-8,{urllib.parse.quote_plus(ical)}"
+                            chained = f"The event was scheduled. Here is the invitation link: '{url}'"
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]

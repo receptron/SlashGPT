@@ -29,7 +29,7 @@
                     "description": "the intended venue with address for the event."
                 }
             },
-            "required": ["SUMMARY", "DTSTART", "DTEND"]
+            "required": ["SUMMARY", "DTSTART", "DTEND", "DESCRIPTION", "LOCATION"]
         }
     },
     {

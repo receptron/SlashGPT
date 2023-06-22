@@ -5,7 +5,11 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
   "functions": "calendar.json",
-  "template": "calendar.ical",
+  "actions": {
+    "make_event": {
+      "template": "calendar.ical"
+    }
+  },
   "intro": [
     "Please let me know if there any event you want to add to your calendar" 
   ],
