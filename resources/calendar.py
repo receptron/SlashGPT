@@ -1,4 +1,4 @@
 
 
-def send_invitation(invitation_link: str):
-    print("send_invitation was called")
+def send_invitation(invitation_link: str, recipients):
+    print(f"send_invitation was called with {invitation_link} and {recipients}")

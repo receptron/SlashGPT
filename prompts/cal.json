@@ -7,7 +7,7 @@
   "functions": "calendar.json",
   "actions": {
     "make_event": {
-      "template": "calendar.ical",
+      "template": "calendar.ics",
       "mime_type": "text/calendar",
       "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
     }
