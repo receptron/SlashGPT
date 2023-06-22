@@ -170,7 +170,6 @@ class ChatContext:
         return articles
 
     def appendQuestion(self, question: str, role: str = "user"):
-        print("role:", role)
         if self.translator:
             self.messages = [{
                 "role": "system",
