@@ -80,6 +80,7 @@ class ChatContext:
         self.translator = False
         self.messages = []
         self.functions = None
+        self.template = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
@@ -122,6 +123,12 @@ class ChatContext:
                     self.functions = json.load(f)
                     if context.verbose:
                         print(self.functions)
+            template = manifest.get("template")
+            if template:
+                with open(f"./resources/{template}", 'r') as f:
+                    self.template = f.read()
+                    if context.verbose:
+                        print(self.template)
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
