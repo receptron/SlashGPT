@@ -13,6 +13,7 @@ import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
 import urllib.parse
+import importlib
 
 # Configuration
 load_dotenv() # Load default environment variables (.env)
@@ -82,6 +83,7 @@ class ChatContext:
         self.messages = []
         self.functions = None
         self.actions = {}
+        self.module = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
@@ -91,6 +93,17 @@ class ChatContext:
             self.sample = manifest.get("sample")
             self.actions = manifest.get("actions") or {} 
             self.translator = manifest.get("translator") or False
+            module = manifest.get("module")
+            if module:
+                with open(f"./resources/{module}", 'r') as f:
+                    try:
+                        code = f.read()
+                        namespace = {}
+                        exec(code, namespace)
+                        self.module = namespace
+                        print("self.module", self.module.get("send_invitation"))
+                    except ImportError:
+                        print(f"Failed to import module: {module}")
             if (manifest.get("temperature")):
                 self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
@@ -383,6 +396,9 @@ while True:
                             ical = template.format(**arguments)
                             url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
                             chained = chained_msg.format(url = url) 
+                else:
+                    function = context.module and context.module.get(name) or None
+                    print("function=", function)
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]
