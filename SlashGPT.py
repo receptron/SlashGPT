@@ -398,7 +398,7 @@ while True:
                             chained = chained_msg.format(url = url) 
                 else:
                     function = context.module and context.module.get(name) or None
-                    print("function=", function)
+                    function(**arguments)
             else:
                 # Reset the conversation to avoid confusion
                 context.messages = context.messages[:1]
