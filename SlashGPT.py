@@ -61,6 +61,7 @@ class ChatContext:
         self.functions = None
         self.actions = {}
         self.module = None
+        self.chained = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or context.role
@@ -177,7 +178,7 @@ class ChatContext:
     def processMessage(self):
         role = None
         res = None
-        chained = None
+        self.chained = None
         if (self.model == "palm"):
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -271,7 +272,7 @@ class ChatContext:
                                     print(template)
                                 ical = template.format(**arguments)
                                 url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                chained = chained_msg.format(url = url) 
+                                self.chained = chained_msg.format(url = url) 
                     else:
                         function = self.module and self.module.get(name) or None
                         if function:
@@ -279,7 +280,7 @@ class ChatContext:
                 else:
                     # Reset the conversation to avoid confusion
                     self.messages = self.messages[:1]
-        return (role, res, chained)
+        return (role, res)
 
 
 class Main:
@@ -296,14 +297,13 @@ class Main:
 
 main = Main()
 context = ChatContext()
-chained = None
 
 while True:
     roleInput = "user"
-    if chained:
-        question = chained
+    if context.chained:
+        question = context.chained
         roleInput = "system"
-        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{chained}")
+        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{context.chained}")
     else:
         question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
 
@@ -397,10 +397,9 @@ while True:
     else:
         context.appendQuestion(question, roleInput)
 
-    # print(f"{messages}")
-    (role, res, chained) = context.processMessage()
+    (role, res) = context.processMessage()
 
-    if (res):
+    if role and res:
         print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
         context.messages.append({"role":role, "content":res})
         with open(f"output/{context.role}/{context.time}.json", 'w') as f:
