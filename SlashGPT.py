@@ -175,6 +175,9 @@ class ChatContext:
                     "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
                 }
 
+    """
+    Let the LLM generate a message and append it to the message list
+    """
     def generateMessage(self):
         role = None
         res = None
@@ -297,7 +300,11 @@ class Main:
         self.context = ChatContext()
         self.exit = False
 
-    def processMessage(self):
+    """
+    Process either an input from the user, or a chained input from the previous function call
+    Returns True if the input was appended to the message list.
+    """
+    def processQuery(self):
         roleInput = "user"
         if self.context.chained:
             question = self.context.chained
@@ -386,7 +393,7 @@ class Main:
 main = Main()
 
 while not main.exit:
-    if main.processMessage():
+    if main.processQuery():
         (role, res) = main.context.generateMessage()
 
         if role and res:
