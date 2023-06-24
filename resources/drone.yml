@@ -3,7 +3,7 @@ info:  version: '1'
   title: Drone Pilot API
   description: Allow users to fly a drone
 servers:
-  - url: http://nedra.ai/api
+  - url: http://localhost:8080
 paths:
   /TakeOff:
     get:
