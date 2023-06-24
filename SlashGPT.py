@@ -40,21 +40,6 @@ if not os.path.isdir("output"):
 if not os.path.isdir("output/GPT"):
     os.makedirs("output/GPT")
 
-# Read Manifest files
-
-def loadManifests(folder: str = "./prompts"):
-    results = {}
-    files = os.listdir(folder)
-    for file in files:
-        key = file.split('.')[0]
-        with open(f"{folder}/{file}", 'r') as f:
-            data = json.load(f)
-        # print(key, file, data)
-        results[key] = data
-    return results
-
-manifests = loadManifests()
-
 class ChatContext:
     def __init__(self, role: str = "GPT", manifest = None):
         self.role = role
@@ -296,6 +281,20 @@ class ChatContext:
                     self.messages = self.messages[:1]
         return (role, res, chained)
 
+
+class Main:
+    def __init__(self, folder: str = "./prompts"):
+        # Read Manifest files
+        self.manifests = {}
+        files = os.listdir(folder)
+        for file in files:
+            key = file.split('.')[0]
+            with open(f"{folder}/{file}", 'r') as f:
+                data = json.load(f)
+            # print(key, file, data)
+            self.manifests[key] = data
+
+main = Main()
 context = ChatContext()
 chained = None
 
@@ -314,7 +313,7 @@ while True:
     if (question[0] == "/"):
         key = question[1:]
         if (key == "help"):
-            list = ", ".join(f"/{key}" for key in manifests.keys())
+            list = ", ".join(f"/{key}" for key in main.manifests.keys())
             print(f"Extensions: {list}")
             continue
         if (key == "bye"):
@@ -376,11 +375,11 @@ while True:
             context = ChatContext()
             continue            
         elif (key == "rpg1"):
-            manifests = loadManifests('./rpg1')
+            main = Main('./rpg1')
             context = ChatContext()
             continue            
         else:
-            manifest = manifests.get(key)
+            manifest = main.manifests.get(key)
             if (manifest):
                 context = ChatContext(role=key, manifest = manifest)
                 if not os.path.isdir(f"output/{context.role}"):
