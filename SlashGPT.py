@@ -64,7 +64,7 @@ class ChatContext:
         self.chained = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
-            self.botName = manifest.get("bot") or context.role
+            self.botName = manifest.get("bot") or self.role
             self.model = manifest.get("model") or self.model
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
@@ -114,12 +114,12 @@ class ChatContext:
             if functions:
                 with open(f"./resources/{functions}", 'r') as f:
                     self.functions = json.load(f)
-                    if context.verbose:
+                    if self.verbose:
                         print(self.functions)
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
-        encoding = tiktoken.encoding_for_model(context.model)
+        encoding = tiktoken.encoding_for_model(self.model)
         return len(encoding.encode(text))
     
     def messages_tokens(self) -> int:
@@ -155,7 +155,7 @@ class ChatContext:
             else:
                 count += 1
                 articles += next_article
-        if (context.verbose):
+        if (self.verbose):
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
@@ -294,18 +294,18 @@ class Main:
                 data = json.load(f)
             # print(key, file, data)
             self.manifests[key] = data
+        self.context = ChatContext()
 
 main = Main()
-context = ChatContext()
 
 while True:
     roleInput = "user"
-    if context.chained:
-        question = context.chained
+    if main.context.chained:
+        question = main.context.chained
         roleInput = "system"
-        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{context.chained}")
+        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{main.context.chained}")
     else:
-        question = input(f"\033[95m\033[1m{context.userName}: \033[95m\033[0m")
+        question = input(f"\033[95m\033[1m{main.context.userName}: \033[95m\033[0m")
 
     if (len(question) == 0):
         print(ONELINE_HELP)
@@ -319,88 +319,88 @@ while True:
         if (key == "bye"):
             break
         elif (key == "verbose"):
-            context.verbose = context.verbose == False
-            print(f"Verbose Mode: {context.verbose}")
+            main.context.verbose = main.context.verbose == False
+            print(f"Verbose Mode: {main.context.verbose}")
             continue
         elif (key == "prompt"):
-            if (len(context.messages) >= 1):
-                print(context.messages[0].get("content"))
+            if (len(main.context.messages) >= 1):
+                print(main.context.messages[0].get("content"))
             continue
         elif (key == "gpt3"):
-            context.model = "gpt-3.5-turbo-0613"
-            context.max_token = 4096
-            print(f"Model = {context.model}")
+            main.context.model = "gpt-3.5-turbo-0613"
+            main.context.max_token = 4096
+            print(f"Model = {main.context.model}")
             continue
         elif (key == "gpt31"):
-            context.model = "gpt-3.5-turbo-16k-0613"
-            context.max_token = 4096 * 4
-            print(f"Model = {context.model}")
+            main.context.model = "gpt-3.5-turbo-16k-0613"
+            main.context.max_token = 4096 * 4
+            print(f"Model = {main.context.model}")
             continue
         elif (key == "gpt4"):
-            context.model = "gpt-4"
-            context.max_token = 4096
-            print(f"Model = {context.model}")
+            main.context.model = "gpt-4"
+            main.context.max_token = 4096
+            print(f"Model = {main.context.model}")
             continue
         elif (key == "gpt41"):
-            context.model = "gpt-4-0613"
-            context.max_token = 4096
-            print(f"Model = {context.model}")
+            main.context.model = "gpt-4-0613"
+            main.context.max_token = 4096
+            print(f"Model = {main.context.model}")
             continue
         elif (key == "palm"):
             if (GOOGLE_PALM_KEY):
-                context.model = "palm"
-                if (context.botName == "GPT"):
-                    context.botName = "PaLM"
-                print(f"Model = {context.model}")
+                main.context.model = "palm"
+                if (main.context.botName == "GPT"):
+                    main.context.botName = "PaLM"
+                print(f"Model = {main.context.model}")
             else:
                 print("Error: Missing GOOGLE_PALM_KEY")
             continue
         elif (key == "palmt"):
             if (GOOGLE_PALM_KEY):
-                context.model = "palmt"
-                if (context.botName == "GPT"):
-                    context.botName = "PaLM(Text)"
-                print(f"Model = {context.model}")
+                main.context.model = "palmt"
+                if (main.context.botName == "GPT"):
+                    main.context.botName = "PaLM(Text)"
+                print(f"Model = {main.context.model}")
             else:
                 print("Error: Missing GOOGLE_PALM_KEY")
             continue
         elif (key == "sample"):
-            if (context.sample):
-                print(context.sample)
-                question = context.sample
-                context.appendQuestion(question)
+            if (main.context.sample):
+                print(main.context.sample)
+                question = main.context.sample
+                main.context.appendQuestion(question)
             else:
                 continue
         elif (key == "reset"):
-            context = ChatContext()
+            main.context = ChatContext()
             continue            
         elif (key == "rpg1"):
             main = Main('./rpg1')
-            context = ChatContext()
+            main.context = ChatContext()
             continue            
         else:
             manifest = main.manifests.get(key)
             if (manifest):
-                context = ChatContext(role=key, manifest = manifest)
-                if not os.path.isdir(f"output/{context.role}"):
-                    os.makedirs(f"output/{context.role}")
-                print(f"Activating: {context.title} (model={context.model}, temperature={context.temperature})")
+                main.context = ChatContext(role=key, manifest = manifest)
+                if not os.path.isdir(f"output/{main.context.role}"):
+                    os.makedirs(f"output/{main.context.role}")
+                print(f"Activating: {main.context.title} (model={main.context.model}, temperature={main.context.temperature})")
 
-                if (context.intro):
-                    intro = context.intro[random.randrange(0, len(context.intro))]
-                    context.messages.append({"role":"assistant", "content":intro})
-                    print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {intro}")
+                if (main.context.intro):
+                    intro = main.context.intro[random.randrange(0, len(main.context.intro))]
+                    main.context.messages.append({"role":"assistant", "content":intro})
+                    print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {intro}")
                 continue
             else:            
                 print(f"Invalid slash command: {key}")
                 continue
     else:
-        context.appendQuestion(question, roleInput)
+        main.context.appendQuestion(question, roleInput)
 
-    (role, res) = context.generateMessage()
+    (role, res) = main.context.generateMessage()
 
     if role and res:
-        print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
-        context.messages.append({"role":role, "content":res})
-        with open(f"output/{context.role}/{context.time}.json", 'w') as f:
-            json.dump(context.messages, f)
+        print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {res}")
+        main.context.messages.append({"role":role, "content":res})
+        with open(f"output/{main.context.role}/{main.context.time}.json", 'w') as f:
+            json.dump(main.context.messages, f)
