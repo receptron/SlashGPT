@@ -101,7 +101,6 @@ class ChatContext:
                         namespace = {}
                         exec(code, namespace)
                         self.module = namespace
-                        print("self.module", self.module.get("send_invitation"))
                     except ImportError:
                         print(f"Failed to import module: {module}")
             if (manifest.get("temperature")):
@@ -298,7 +297,8 @@ class ChatContext:
                                 chained = chained_msg.format(url = url) 
                     else:
                         function = self.module and self.module.get(name) or None
-                        function(**arguments)
+                        if function:
+                            function(**arguments)
                 else:
                     # Reset the conversation to avoid confusion
                     self.messages = self.messages[:1]
