@@ -19,18 +19,10 @@ import importlib
 load_dotenv() # Load default environment variables (.env)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
-OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo-0613")
-OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.7))
 GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
-# print(f"Open AI Key = {OPENAI_API_KEY}")
-print(f"Model = {OPENAI_API_MODEL}")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
-# assert PINECONE_API_KEY, "PINECONE_API_KEY environment variable is missing from .env"
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
-# assert (
-#    PINECONE_ENVIRONMENT
-#), "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
 # Initialize OpenAI and optinoally Pinecone and Palm 
 openai.api_key = OPENAI_API_KEY
@@ -72,12 +64,12 @@ class ChatContext:
         self.title = ""
         self.intro = None
         self.sample = None
-        self.temperature = OPENAI_TEMPERATURE
         self.manifest = manifest
         self.prompt = None
         self.verbose = False
         self.index = None
-        self.model = OPENAI_API_MODEL
+        self.temperature = 0.7
+        self.model = "gpt-3.5-turbo-0613"
         self.max_token = 4096
         self.translator = False
         self.messages = []
