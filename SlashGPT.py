@@ -295,112 +295,102 @@ class Main:
             # print(key, file, data)
             self.manifests[key] = data
         self.context = ChatContext()
+        self.exit = False
+
+    def processMessage(self):
+        roleInput = "user"
+        if self.context.chained:
+            question = self.context.chained
+            roleInput = "system"
+            print(f"\033[95m\033[1mSystem: \033[95m\033[0m{self.context.chained}")
+        else:
+            question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+
+        if (len(question) == 0):
+            print(ONELINE_HELP)
+        elif (question[0] == "/"):
+            key = question[1:]
+            if (key == "help"):
+                list = ", ".join(f"/{key}" for key in self.manifests.keys())
+                print(f"Extensions: {list}")
+            if (key == "bye"):
+                self.exit = True;
+            elif (key == "verbose"):
+                self.context.verbose = self.context.verbose == False
+                print(f"Verbose Mode: {self.context.verbose}")
+            elif (key == "prompt"):
+                if (len(self.context.messages) >= 1):
+                    print(self.context.messages[0].get("content"))
+            elif (key == "gpt3"):
+                self.context.model = "gpt-3.5-turbo-0613"
+                self.context.max_token = 4096
+                print(f"Model = {self.context.model}")
+            elif (key == "gpt31"):
+                self.context.model = "gpt-3.5-turbo-16k-0613"
+                self.context.max_token = 4096 * 4
+                print(f"Model = {self.context.model}")
+            elif (key == "gpt4"):
+                self.context.model = "gpt-4"
+                self.context.max_token = 4096
+                print(f"Model = {self.context.model}")
+            elif (key == "gpt41"):
+                self.context.model = "gpt-4-0613"
+                self.context.max_token = 4096
+                print(f"Model = {self.context.model}")
+            elif (key == "palm"):
+                if (GOOGLE_PALM_KEY):
+                    self.context.model = "palm"
+                    if (self.context.botName == "GPT"):
+                        self.context.botName = "PaLM"
+                    print(f"Model = {self.context.model}")
+                else:
+                    print("Error: Missing GOOGLE_PALM_KEY")
+            elif (key == "palmt"):
+                if (GOOGLE_PALM_KEY):
+                    self.context.model = "palmt"
+                    if (self.context.botName == "GPT"):
+                        self.context.botName = "PaLM(Text)"
+                    print(f"Model = {self.context.model}")
+                else:
+                    print("Error: Missing GOOGLE_PALM_KEY")
+            elif (key == "sample"):
+                if (self.context.sample):
+                    print(self.context.sample)
+                    question = self.context.sample
+                    self.context.appendQuestion(question)
+                    return True
+            elif (key == "reset"):
+                self.context = ChatContext()
+            elif (key == "rpg1"):
+                main = Main('./rpg1')
+                self.context = ChatContext()
+            else:
+                manifest = self.manifests.get(key)
+                if (manifest):
+                    self.context = ChatContext(role=key, manifest = manifest)
+                    if not os.path.isdir(f"output/{self.context.role}"):
+                        os.makedirs(f"output/{self.context.role}")
+                    print(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature})")
+
+                    if (self.context.intro):
+                        intro = self.context.intro[random.randrange(0, len(self.context.intro))]
+                        self.context.messages.append({"role":"assistant", "content":intro})
+                        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
+                else:            
+                    print(f"Invalid slash command: {key}")
+        else:
+            self.context.appendQuestion(question, roleInput)
+            return True
+        return False
 
 main = Main()
 
-while True:
-    roleInput = "user"
-    if main.context.chained:
-        question = main.context.chained
-        roleInput = "system"
-        print(f"\033[95m\033[1mSystem: \033[95m\033[0m{main.context.chained}")
-    else:
-        question = input(f"\033[95m\033[1m{main.context.userName}: \033[95m\033[0m")
+while not main.exit:
+    if main.processMessage():
+        (role, res) = main.context.generateMessage()
 
-    if (len(question) == 0):
-        print(ONELINE_HELP)
-        continue
-    if (question[0] == "/"):
-        key = question[1:]
-        if (key == "help"):
-            list = ", ".join(f"/{key}" for key in main.manifests.keys())
-            print(f"Extensions: {list}")
-            continue
-        if (key == "bye"):
-            break
-        elif (key == "verbose"):
-            main.context.verbose = main.context.verbose == False
-            print(f"Verbose Mode: {main.context.verbose}")
-            continue
-        elif (key == "prompt"):
-            if (len(main.context.messages) >= 1):
-                print(main.context.messages[0].get("content"))
-            continue
-        elif (key == "gpt3"):
-            main.context.model = "gpt-3.5-turbo-0613"
-            main.context.max_token = 4096
-            print(f"Model = {main.context.model}")
-            continue
-        elif (key == "gpt31"):
-            main.context.model = "gpt-3.5-turbo-16k-0613"
-            main.context.max_token = 4096 * 4
-            print(f"Model = {main.context.model}")
-            continue
-        elif (key == "gpt4"):
-            main.context.model = "gpt-4"
-            main.context.max_token = 4096
-            print(f"Model = {main.context.model}")
-            continue
-        elif (key == "gpt41"):
-            main.context.model = "gpt-4-0613"
-            main.context.max_token = 4096
-            print(f"Model = {main.context.model}")
-            continue
-        elif (key == "palm"):
-            if (GOOGLE_PALM_KEY):
-                main.context.model = "palm"
-                if (main.context.botName == "GPT"):
-                    main.context.botName = "PaLM"
-                print(f"Model = {main.context.model}")
-            else:
-                print("Error: Missing GOOGLE_PALM_KEY")
-            continue
-        elif (key == "palmt"):
-            if (GOOGLE_PALM_KEY):
-                main.context.model = "palmt"
-                if (main.context.botName == "GPT"):
-                    main.context.botName = "PaLM(Text)"
-                print(f"Model = {main.context.model}")
-            else:
-                print("Error: Missing GOOGLE_PALM_KEY")
-            continue
-        elif (key == "sample"):
-            if (main.context.sample):
-                print(main.context.sample)
-                question = main.context.sample
-                main.context.appendQuestion(question)
-            else:
-                continue
-        elif (key == "reset"):
-            main.context = ChatContext()
-            continue            
-        elif (key == "rpg1"):
-            main = Main('./rpg1')
-            main.context = ChatContext()
-            continue            
-        else:
-            manifest = main.manifests.get(key)
-            if (manifest):
-                main.context = ChatContext(role=key, manifest = manifest)
-                if not os.path.isdir(f"output/{main.context.role}"):
-                    os.makedirs(f"output/{main.context.role}")
-                print(f"Activating: {main.context.title} (model={main.context.model}, temperature={main.context.temperature})")
-
-                if (main.context.intro):
-                    intro = main.context.intro[random.randrange(0, len(main.context.intro))]
-                    main.context.messages.append({"role":"assistant", "content":intro})
-                    print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {intro}")
-                continue
-            else:            
-                print(f"Invalid slash command: {key}")
-                continue
-    else:
-        main.context.appendQuestion(question, roleInput)
-
-    (role, res) = main.context.generateMessage()
-
-    if role and res:
-        print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {res}")
-        main.context.messages.append({"role":role, "content":res})
-        with open(f"output/{main.context.role}/{main.context.time}.json", 'w') as f:
-            json.dump(main.context.messages, f)
+        if role and res:
+            print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {res}")
+            main.context.messages.append({"role":role, "content":res})
+            with open(f"output/{main.context.role}/{main.context.time}.json", 'w') as f:
+                json.dump(main.context.messages, f)
