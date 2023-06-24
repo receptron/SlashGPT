@@ -175,7 +175,7 @@ class ChatContext:
                     "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
                 }
 
-    def processMessage(self):
+    def generateMessage(self):
         role = None
         res = None
         self.chained = None
@@ -397,7 +397,7 @@ while True:
     else:
         context.appendQuestion(question, roleInput)
 
-    (role, res) = context.processMessage()
+    (role, res) = context.generateMessage()
 
     if role and res:
         print(f"\033[92m\033[1m{context.botName}\033[95m\033[0m: {res}")
