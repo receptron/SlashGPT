@@ -177,6 +177,7 @@ class ChatContext:
 
     """
     Let the LLM generate a message and append it to the message list
+    returns (role, res) if a message was appended.
     """
     def generateMessage(self):
         role = None
@@ -389,15 +390,20 @@ class Main:
             self.context.appendQuestion(question, roleInput)
             return True
         return False
+    
+    def start(self):
+        while not self.exit:
+            if self.processQuery():
+                (role, res) = self.context.generateMessage()
+
+                if role and res:
+                    print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+                    self.context.messages.append({"role":role, "content":res})
+                    with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
+                        json.dump(self.context.messages, f)
+
 
 main = Main()
+main.start()
 
-while not main.exit:
-    if main.processQuery():
-        (role, res) = main.context.generateMessage()
 
-        if role and res:
-            print(f"\033[92m\033[1m{main.context.botName}\033[95m\033[0m: {res}")
-            main.context.messages.append({"role":role, "content":res})
-            with open(f"output/{main.context.role}/{main.context.time}.json", 'w') as f:
-                json.dump(main.context.messages, f)
