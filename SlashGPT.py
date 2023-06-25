@@ -19,6 +19,7 @@ import urllib.parse
 class ChatConfig:
     def __init__(self):
         self.pathManifests = "./prompts" # Location of manifest files
+        self.pathResources = "./resources" # Location of various resources
         load_dotenv() # Load default environment variables (.env)
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
         assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
@@ -71,7 +72,7 @@ class ChatContext:
             self.translator = manifest.get("translator") or False
             module = manifest.get("module")
             if module:
-                with open(f"./resources/{module}", 'r') as f:
+                with open(f"{self.config.pathResources}/{module}", 'r') as f:
                     try:
                         code = f.read()
                         namespace = {}
@@ -100,7 +101,7 @@ class ChatContext:
                     j += 1
             resource = manifest.get("resource")
             if resource:
-                with open(f"./resources/{resource}", 'r') as f:
+                with open(f"{self.config.pathResources}/{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
             table_name = manifest.get("articles")
@@ -110,7 +111,7 @@ class ChatContext:
             self.messages = [{"role":"system", "content":self.prompt}]
             functions = manifest.get("functions")
             if functions:
-                with open(f"./resources/{functions}", 'r') as f:
+                with open(f"{self.config.pathResources}/{functions}", 'r') as f:
                     self.functions = json.load(f)
                     if self.verbose:
                         print(self.functions)
@@ -268,7 +269,7 @@ class ChatContext:
                         if template:
                             mime_type = action.get("mime_type") or ""
                             chained_msg = action.get("chained_msg") or f"{url}"
-                            with open(f"./resources/{template}", 'r') as f:
+                            with open(f"{self.config.pathResources}/{template}", 'r') as f:
                                 template = f.read()
                                 if self.verbose:
                                     print(template)
