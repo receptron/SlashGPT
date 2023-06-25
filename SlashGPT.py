@@ -391,15 +391,18 @@ class Main:
     def start(self):
         while not self.exit:
             if self.context.chained:
+                # If there is any "chained" message, use it with the role "system"
                 question = self.context.chained
                 roleInput = "system"
                 self.context.chained = None
                 print(f"\033[95m\033[1mSystem: \033[95m\033[0m{question}")
             else:
+                # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 roleInput = "user"
 
             if self.processQuery(roleInput, question):
+                # If it appended a new message, then ask LLM to generate a response.
                 (role, res) = self.context.generateMessage()
 
                 if role and res:
