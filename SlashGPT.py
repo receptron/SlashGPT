@@ -158,7 +158,7 @@ class ChatContext:
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
-    def appendQuestion(self, question: str, role: str = "user"):
+    def appendQuestion(self, role: str, question: str):
         if self.translator:
             self.messages = [{
                 "role": "system",
@@ -362,8 +362,7 @@ class Main:
                 if (self.context.sample):
                     print(self.context.sample)
                     question = self.context.sample
-                    self.context.appendQuestion(question)
-                    return True
+                    return ("user", question)
             elif (key == "reset"):
                 self.context = ChatContext(self.config)
             elif (key == "rpg1"):
@@ -384,9 +383,8 @@ class Main:
                 else:            
                     print(f"Invalid slash command: {key}")
         else:
-            self.context.appendQuestion(question, roleInput)
-            return True
-        return False
+            return (roleInput, question)
+        return (None, None)
     
     def start(self):
         while not self.exit:
@@ -401,7 +399,10 @@ class Main:
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 roleInput = "user"
 
-            if self.processInput(roleInput, question):
+            # Process slash commands (if exits)
+            (role, question) = self.processInput(roleInput, question)
+            if role and question:
+                self.context.appendQuestion(role, question)
                 # If it appended a new message, then ask LLM to generate a response.
                 (role, res) = self.context.generateResponse()
 
