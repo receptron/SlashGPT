@@ -181,7 +181,6 @@ class ChatContext:
     def generateMessage(self):
         role = None
         res = None
-        self.chained = None
         if (self.model == "palm"):
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -311,15 +310,7 @@ class Main:
     Process either an input from the user, or a chained input from the previous function call
     Returns True if the input was appended to the message list.
     """
-    def processQuery(self):
-        roleInput = "user"
-        if self.context.chained:
-            question = self.context.chained
-            roleInput = "system"
-            print(f"\033[95m\033[1mSystem: \033[95m\033[0m{self.context.chained}")
-        else:
-            question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-
+    def processQuery(self, roleInput:str, question: str):
         if (len(question) == 0):
             print(self.config.ONELINE_HELP)
         elif (question[0] == "/"):
@@ -399,7 +390,16 @@ class Main:
     
     def start(self):
         while not self.exit:
-            if self.processQuery():
+            if self.context.chained:
+                question = self.context.chained
+                roleInput = "system"
+                self.context.chained = None
+                print(f"\033[95m\033[1mSystem: \033[95m\033[0m{question}")
+            else:
+                question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+                roleInput = "user"
+
+            if self.processQuery(roleInput, question):
                 (role, res) = self.context.generateMessage()
 
                 if role and res:
