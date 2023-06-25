@@ -178,7 +178,7 @@ class ChatContext:
     Let the LLM generate a message and append it to the message list
     returns (role, res) if a message was appended.
     """
-    def generateMessage(self):
+    def generateResponse(self):
         role = None
         res = None
         if (self.model == "palm"):
@@ -310,7 +310,7 @@ class Main:
     Process either an input from the user, or a chained input from the previous function call
     Returns True if the input was appended to the message list.
     """
-    def processQuery(self, roleInput:str, question: str):
+    def processInput(self, roleInput:str, question: str):
         if (len(question) == 0):
             print(self.config.ONELINE_HELP)
         elif (question[0] == "/"):
@@ -401,9 +401,9 @@ class Main:
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 roleInput = "user"
 
-            if self.processQuery(roleInput, question):
+            if self.processInput(roleInput, question):
                 # If it appended a new message, then ask LLM to generate a response.
-                (role, res) = self.context.generateMessage()
+                (role, res) = self.context.generateResponse()
 
                 if role and res:
                     print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
