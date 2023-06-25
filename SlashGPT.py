@@ -18,6 +18,7 @@ import urllib.parse
 
 class ChatConfig:
     def __init__(self):
+        self.pathManifests = "./prompts" # Location of manifest files
         load_dotenv() # Load default environment variables (.env)
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
         assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
@@ -284,7 +285,7 @@ class ChatContext:
         return (role, res)
 
 class Main:
-    def __init__(self, config: ChatConfig, folder: str = "./prompts"):
+    def __init__(self, config: ChatConfig):
         self.config = config
 
         # Prepare output folders
@@ -295,10 +296,10 @@ class Main:
 
         # Read Manifest files
         self.manifests = {}
-        files = os.listdir(folder)
+        files = os.listdir(self.config.pathManifests)
         for file in files:
             key = file.split('.')[0]
-            with open(f"{folder}/{file}", 'r') as f:
+            with open(f"{self.config.pathManifests}/{file}", 'r') as f:
                 data = json.load(f)
             # print(key, file, data)
             self.manifests[key] = data
