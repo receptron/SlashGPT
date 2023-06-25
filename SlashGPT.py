@@ -63,6 +63,8 @@ class ChatContext:
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or self.role
             self.model = manifest.get("model") or self.model
+            if self.model == "gpt-3.5-turbo-16k-0613":
+                self.max_token = 4096 * 4
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample")
@@ -382,7 +384,7 @@ class Main:
                     self.context = ChatContext(self.config, role=key, manifest = manifest)
                     if not os.path.isdir(f"output/{self.context.role}"):
                         os.makedirs(f"output/{self.context.role}")
-                    print(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature})")
+                    print(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})")
 
                     if (self.context.intro):
                         intro = self.context.intro[random.randrange(0, len(self.context.intro))]

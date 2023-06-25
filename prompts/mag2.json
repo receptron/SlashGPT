@@ -3,6 +3,7 @@
   "bot": "まぐまぐ",
   "source": "snakajima",
   "sample": "「２２世紀の民主主義」は誰が書いた書籍で、どんな内容ですか？",
+  "model": "gpt-3.5-turbo-16k-0613",
   "articles": "singularitysociety",
   "storage_id": "U9Gox2zIVdOgLmcVZcD7",
   "temperature": "0.0",
