@@ -16,22 +16,23 @@ import urllib.parse
 import importlib
 
 # Configuration
-load_dotenv() # Load default environment variables (.env)
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
-GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
-EMBEDDING_MODEL = "text-embedding-ada-002"
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
-PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
 
 class ChatConfig:
     def __init__(self):
+        load_dotenv() # Load default environment variables (.env)
+        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+        assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
+        self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
+        self.EMBEDDING_MODEL = "text-embedding-ada-002"
+        self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
+        self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
+
         # Initialize OpenAI and optinoally Pinecone and Palm 
-        openai.api_key = OPENAI_API_KEY
-        if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
-            pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-        if (GOOGLE_PALM_KEY):
-            palm.configure(api_key=GOOGLE_PALM_KEY)
+        openai.api_key = self.OPENAI_API_KEY
+        if (self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT):
+            pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
+        if (self.GOOGLE_PALM_KEY):
+            palm.configure(api_key=self.GOOGLE_PALM_KEY)
         self.ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
         print(self.ONELINE_HELP)
 
@@ -102,7 +103,7 @@ class ChatContext:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
             table_name = manifest.get("articles")
-            if table_name and PINECONE_API_KEY and PINECONE_ENVIRONMENT:
+            if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
                 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                 self.index = pinecone.Index(table_name)
             self.messages = [{"role":"system", "content":self.prompt}]
@@ -131,7 +132,7 @@ class ChatContext:
             if (message["role"] == "user"):
                 query = message["content"] + "\n" + query
         query_embedding_response = openai.Embedding.create(
-            model=EMBEDDING_MODEL,
+            model=self.config.EMBEDDING_MODEL,
             input=query,
         )
         query_embedding = query_embedding_response["data"][0]["embedding"]
@@ -349,7 +350,7 @@ class Main:
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
             elif (key == "palm"):
-                if (GOOGLE_PALM_KEY):
+                if (self.config.GOOGLE_PALM_KEY):
                     self.context.model = "palm"
                     if (self.context.botName == "GPT"):
                         self.context.botName = "PaLM"
@@ -357,7 +358,7 @@ class Main:
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
             elif (key == "palmt"):
-                if (GOOGLE_PALM_KEY):
+                if (self.config.GOOGLE_PALM_KEY):
                     self.context.model = "palmt"
                     if (self.context.botName == "GPT"):
                         self.context.botName = "PaLM(Text)"
