@@ -307,10 +307,11 @@ class Main:
         self.exit = False
 
     """
-    Process either an input from the user, or a chained input from the previous function call
-    Returns True if the input was appended to the message list.
+    If the question start with "/", process it as a Slash command.
+    Otherwise, return (roleInput, question) as is.
+    Notice that some Slash commands returns (role, question) as well.
     """
-    def processInput(self, roleInput:str, question: str):
+    def processSlash(self, roleInput:str, question: str):
         if (len(question) == 0):
             print(self.config.ONELINE_HELP)
         elif (question[0] == "/"):
@@ -366,6 +367,7 @@ class Main:
             elif (key == "reset"):
                 self.context = ChatContext(self.config)
             elif (key == "rpg1"):
+                # BUGBUG: This logic is not working right now
                 main = Main('./rpg1')
                 self.context = ChatContext(self.config)
             else:
@@ -400,7 +402,7 @@ class Main:
                 roleInput = "user"
 
             # Process slash commands (if exits)
-            (role, question) = self.processInput(roleInput, question)
+            (role, question) = self.processSlash(roleInput, question)
             if role and question:
                 self.context.appendQuestion(role, question)
                 # If it appended a new message, then ask LLM to generate a response.
