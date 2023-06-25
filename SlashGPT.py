@@ -13,7 +13,6 @@ import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
 import urllib.parse
-import importlib
 
 # Configuration
 
@@ -34,7 +33,6 @@ class ChatConfig:
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
         self.ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
-        print(self.ONELINE_HELP)
 
 class ChatContext:
     def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
@@ -408,7 +406,8 @@ class Main:
                     with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
                         json.dump(self.context.messages, f)
 
-
-main = Main(ChatConfig())
+config = ChatConfig()
+print(config.ONELINE_HELP)
+main = Main(config)
 main.start()
 
