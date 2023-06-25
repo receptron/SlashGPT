@@ -24,24 +24,20 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
 
-# Initialize OpenAI and optinoally Pinecone and Palm 
-openai.api_key = OPENAI_API_KEY
-if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-if (GOOGLE_PALM_KEY):
-    palm.configure(api_key=GOOGLE_PALM_KEY)
-
-ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
-print(ONELINE_HELP)
-
-# Prepare output folders
-if not os.path.isdir("output"):
-    os.makedirs("output")
-if not os.path.isdir("output/GPT"):
-    os.makedirs("output/GPT")
+class ChatConfig:
+    def __init__(self):
+        # Initialize OpenAI and optinoally Pinecone and Palm 
+        openai.api_key = OPENAI_API_KEY
+        if (PINECONE_API_KEY and PINECONE_ENVIRONMENT):
+            pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+        if (GOOGLE_PALM_KEY):
+            palm.configure(api_key=GOOGLE_PALM_KEY)
+        self.ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        print(self.ONELINE_HELP)
 
 class ChatContext:
-    def __init__(self, role: str = "GPT", manifest = None):
+    def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
+        self.config = config
         self.role = role
         self.time = datetime.now()
         self.userName = "You"
@@ -286,9 +282,16 @@ class ChatContext:
                     self.messages = self.messages[:1]
         return (role, res)
 
-
 class Main:
-    def __init__(self, folder: str = "./prompts"):
+    def __init__(self, config: ChatConfig, folder: str = "./prompts"):
+        self.config = config
+
+        # Prepare output folders
+        if not os.path.isdir("output"):
+            os.makedirs("output")
+        if not os.path.isdir("output/GPT"):
+            os.makedirs("output/GPT")
+
         # Read Manifest files
         self.manifests = {}
         files = os.listdir(folder)
@@ -298,7 +301,7 @@ class Main:
                 data = json.load(f)
             # print(key, file, data)
             self.manifests[key] = data
-        self.context = ChatContext()
+        self.context = ChatContext(self.config)
         self.exit = False
 
     """
@@ -315,7 +318,7 @@ class Main:
             question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
 
         if (len(question) == 0):
-            print(ONELINE_HELP)
+            print(self.config.ONELINE_HELP)
         elif (question[0] == "/"):
             key = question[1:]
             if (key == "help"):
@@ -368,14 +371,14 @@ class Main:
                     self.context.appendQuestion(question)
                     return True
             elif (key == "reset"):
-                self.context = ChatContext()
+                self.context = ChatContext(self.config)
             elif (key == "rpg1"):
                 main = Main('./rpg1')
-                self.context = ChatContext()
+                self.context = ChatContext(self.config)
             else:
                 manifest = self.manifests.get(key)
                 if (manifest):
-                    self.context = ChatContext(role=key, manifest = manifest)
+                    self.context = ChatContext(self.config, role=key, manifest = manifest)
                     if not os.path.isdir(f"output/{self.context.role}"):
                         os.makedirs(f"output/{self.context.role}")
                     print(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature})")
@@ -403,7 +406,6 @@ class Main:
                         json.dump(self.context.messages, f)
 
 
-main = Main()
+main = Main(ChatConfig())
 main.start()
-
 
