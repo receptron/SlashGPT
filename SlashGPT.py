@@ -294,17 +294,19 @@ class Main:
         if not os.path.isdir("output/GPT"):
             os.makedirs("output/GPT")
 
-        # Read Manifest files
+        self.loadManifests(self.config.pathManifests)
+        self.context = ChatContext(self.config)
+        self.exit = False
+
+    def loadManifests(self, path):
         self.manifests = {}
-        files = os.listdir(self.config.pathManifests)
+        files = os.listdir(path)
         for file in files:
             key = file.split('.')[0]
-            with open(f"{self.config.pathManifests}/{file}", 'r') as f:
+            with open(f"{path}/{file}", 'r') as f:
                 data = json.load(f)
             # print(key, file, data)
             self.manifests[key] = data
-        self.context = ChatContext(self.config)
-        self.exit = False
 
     """
     If the question start with "/", process it as a Slash command.
