@@ -4,7 +4,7 @@
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
-  "functions": "home.json",
+  "functions": "./resources/home.json",
   "sample": "Please set the room temperature of kitchen to 28 celsius",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",

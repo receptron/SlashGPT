@@ -111,7 +111,7 @@ class ChatContext:
             self.messages = [{"role":"system", "content":self.prompt}]
             functions = manifest.get("functions")
             if functions:
-                with open(f"{self.config.pathResources}/{functions}", 'r') as f:
+                with open(f"{functions}", 'r') as f:
                     self.functions = json.load(f)
                     if self.verbose:
                         print(self.functions)

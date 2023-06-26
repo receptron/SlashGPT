@@ -4,7 +4,7 @@
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
-  "functions": "calendar.json",
+  "functions": "./resources/calendar.json",
   "module": "./resources/calendar.py",
   "actions": {
     "make_event": {
