@@ -268,7 +268,7 @@ class ChatContext:
                         if template:
                             mime_type = action.get("mime_type") or ""
                             chained_msg = action.get("chained_msg") or f"{url}"
-                            with open(f"{self.config.pathResources}/{template}", 'r') as f:
+                            with open(f"{template}", 'r') as f:
                                 template = f.read()
                                 if self.verbose:
                                     print(template)

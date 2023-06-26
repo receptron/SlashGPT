@@ -8,7 +8,7 @@
   "module": "./resources/calendar.py",
   "actions": {
     "make_event": {
-      "template": "calendar.ics",
+      "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
       "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
     }
