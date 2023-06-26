@@ -18,8 +18,6 @@ import urllib.parse
 
 class ChatConfig:
     def __init__(self):
-        self.pathManifests = "./prompts" # Location of manifest files
-        self.pathResources = "./resources" # Location of various resources
         load_dotenv() # Load default environment variables (.env)
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
         assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
@@ -285,7 +283,7 @@ class ChatContext:
         return (role, res)
 
 class Main:
-    def __init__(self, config: ChatConfig):
+    def __init__(self, config: ChatConfig, pathManifests: str):
         self.config = config
 
         # Prepare output folders
@@ -294,7 +292,7 @@ class Main:
         if not os.path.isdir("output/GPT"):
             os.makedirs("output/GPT")
 
-        self.loadManifests(self.config.pathManifests)
+        self.loadManifests(pathManifests)
         self.context = ChatContext(self.config)
         self.exit = False
 
@@ -417,6 +415,6 @@ class Main:
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
-main = Main(config)
+main = Main(config, "./prompts")
 main.start()
 
