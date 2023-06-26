@@ -101,7 +101,7 @@ class ChatContext:
                     j += 1
             resource = manifest.get("resource")
             if resource:
-                with open(f"{self.config.pathResources}/{resource}", 'r') as f:
+                with open(f"{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
             table_name = manifest.get("articles")
