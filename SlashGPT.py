@@ -72,7 +72,7 @@ class ChatContext:
             self.translator = manifest.get("translator") or False
             module = manifest.get("module")
             if module:
-                with open(f"{self.config.pathResources}/{module}", 'r') as f:
+                with open(f"{module}", 'r') as f:
                     try:
                         code = f.read()
                         namespace = {}
