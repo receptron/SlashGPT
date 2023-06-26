@@ -369,8 +369,7 @@ class Main:
             elif (key == "reset"):
                 self.context = ChatContext(self.config)
             elif (key == "rpg1"):
-                # BUGBUG: This logic is not working right now
-                main = Main('./rpg1')
+                self.loadManifests('./rpg1')
                 self.context = ChatContext(self.config)
             else:
                 manifest = self.manifests.get(key)
