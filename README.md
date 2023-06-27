@@ -87,3 +87,40 @@ LOCATION:{LOCATION}
 END:VEVENT
 END:VCALENDAR
 ```
+
+The definition of "make_event" function.
+```
+{
+  "name": "make_event",
+  "description": "Create a calendar event in iCalendar format",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "SUMMARY": {
+        "type": "string",
+        "description": "a short, one-line description of the event"
+      },
+      "DESCRIPTION": {
+        "type": "string",
+        "description": "a more complete description of the calendar",
+        "maxLength": 400
+      },
+      "DTSTART": {
+        "type": "string",
+        "format": "date-time",
+        "description": "the date and time in UTC that the event begins such as 19980119T020000Z"
+      },
+      "DTEND": {
+        "type": "string",
+        "format": "date-time",
+        "description": "the date and time in UTC that the event ends such as 19980119T030000Z"
+      },
+      "LOCATION": {
+        "type": "string",
+        "description": "the intended venue with address for the event."
+      }
+    },
+    "required": ["SUMMARY", "DTSTART", "DTEND", "DESCRIPTION", "LOCATION"]
+  }
+}
+```
