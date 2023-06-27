@@ -1,0 +1,17 @@
+{
+  "title": "Database",
+  "bot": "DB",
+  "source": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": "0.0",
+  "functions": "./resources/db.json",
+  "resource": "./resources/products.sql",
+  "sample": "Please list 10 products with highest prices", 
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "Current time is {now}.",
+    "Here is the database schema:",
+    "{resource}"
+  ]
+}
