@@ -319,7 +319,7 @@ class Main:
             if (key == "help"):
                 list = ", ".join(f"/{key}" for key in self.manifests.keys())
                 print(f"Extensions: {list}")
-            if (key == "bye"):
+            elif (key == "bye"):
                 self.exit = True;
             elif (key == "verbose"):
                 self.context.verbose = self.context.verbose == False
