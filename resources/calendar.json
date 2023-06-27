@@ -17,12 +17,12 @@
                 "DTSTART": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "the date and time that the event begins such as 19980119T020000"
+                    "description": "the date and time with timezone info that the event begins such as 19980119T020000-08:00"
                 },
                 "DTEND": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "the date and time that the event ends such as 19980119T030000"
+                    "description": "the date and time with timezone info  that the event ends such as 19980119T030000-08:00"
                 },
                 "LOCATION": {
                     "type": "string",
