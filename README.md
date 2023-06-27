@@ -1,10 +1,11 @@
 # SlashGPT
 
-SlashGPT is a front-end of GPT3 & 4, which allows the user to chat with various bots with special purposes.
-Each bot comes with a set of prompts, which optimizes the conversation for a specific purpose. 
+SlashGPT is a playground for devleopers to make quick prototypes of apps with Natural Language UI.
 
-The user may switch to any bot by typing "/{botname}". For example, "/patent" initializes the bot with
-a specific set of prompts, which hleps the user to file a patent.
+Here are the design goals:
+1. Easy to add a new app. You just need to add a new manifest file (in Json).
+2. Super easy to switch between apps. Just type "/{appname}"
+3. Extensible
 
 ## Initialization
 
@@ -16,15 +17,7 @@ a specific set of prompts, which hleps the user to file a patent.
 
     `OPENAI_API_KEY=...`
 
-3. You may optionally specify the Model. The default is "gpt-3.5-turbo".
-
-    `OPENAI_API_MODEL=...`
-
-4. You may optionally specify the temperature. The default is 0.7.
-
-    `OPENAI_TEMPERATURE=...`
-
-5. You may optionally specify Pinecone key and environment.
+3. You may optionally specify Pinecone key and environment.
 
     `PINECONE_API_KEY=...`
     `PINECONE_ENVIRONMENT=...`
@@ -39,24 +32,58 @@ a specific set of prompts, which hleps the user to file a patent.
 ## Outputs
 
 1. Each conversation will be store as a json file under the "output/{context}" folder, 
-where the context is "GTP" for general chat, and the slash key for a specialized chat.
+where the context is "GTP" for general chat, and the app id for a specialized chat.
 
 2. Please notice that the "output" folder is ignored by git. 
 
-## Prompt Extensions
+## Manifest files
 
-1. Create a new JSON file in "prompts" folder with following properties:
+Create a new manifest file in "prompts" folder with following properties:
 
-    *title* (string): Title for the user to see (required)
-    *source* (string): Source of the prompt (optional: URL, email, github id, or twitter id)
-    *promot* (array of strings): The system prompts which define the bot (required)
+    *title* (string, required): Title for the user to see
+    *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
+    *promt* (array of strings, required): The system prompts which define the bot (required)
     *bot* (string, optional): Bot name
     *sample* (string, optional): Sample question (type "/sample" to send it)
     *intro* (array of strings, optional): Introduction statements (will be randomly selected)
     *model* (string, optional): LLM model (gpt-4)
     *temperature* (string, optional): Temperature
     *articles* (string, optional): name of embedding database
+    *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
+    *functions* (string, optional): location of the function definitions. 
+    *module* (string, optional): location of the pytoh script to be loaded for function calls
+    *data* (array of string, optional): {random} will put one of them into the prompt
+    *actions* (json, optional): Template-based function processor
 
-2. Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
+Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
 
-3. If you want to share it, please make a pull request.
+## Actions
+
+It defines template-based actions for functions. I will generatae a text file using the template file and function parameters, create a "data:" URL, then generate a system message with that url. 
+
+Here is an example for "make_event" function.
+
+```
+  "actions": {
+    "make_event": {
+      "template": "./resources/calendar.ics",
+      "mime_type": "text/calendar",
+      "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
+    }
+  }
+```
+
+The contents of calendar.ics file.
+```
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//My Calendar//NONSGML v1.0//EN
+BEGIN:VEVENT
+DTSTART:{DTSTART}
+DTEND:{DTEND}
+SUMMARY:{SUMMARY}
+DESCRIPTION:{DESCRIPTION}
+LOCATION:{LOCATION}
+END:VEVENT
+END:VCALENDAR
+```
