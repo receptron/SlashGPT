@@ -83,7 +83,7 @@ class ChatContext:
             self.prompt = '\n'.join(manifest["prompt"])
             if(re.search("\\{now\\}", self.prompt)):
                 # not isoformat (notice that the timezone is hardcoded)
-                self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%S-08:00'), self.prompt, 1)
+                self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%SZ'), self.prompt, 1)
             
             data = manifest.get("data")
             if data:
