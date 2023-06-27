@@ -327,6 +327,8 @@ class Main:
             elif (key == "prompt"):
                 if (len(self.context.messages) >= 1):
                     print(self.context.messages[0].get("content"))
+                if self.context.verbose and self.context.functions:
+                    print(self.context.functions)
             elif (key == "gpt3"):
                 self.context.model = "gpt-3.5-turbo-0613"
                 self.context.max_token = 4096
