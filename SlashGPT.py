@@ -55,7 +55,6 @@ class ChatContext:
         self.functions = None
         self.actions = {}
         self.module = None
-        self.chained = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or self.role
@@ -361,14 +360,14 @@ class Main:
         return (None, None)
     
     def start(self):
+        chained = None
+        name = None
         while not self.exit:
-            if self.context.chained:
+            if chained and name:
                 # If there is any "chained" message, use it with the role "system"
-                question = self.context.chained
+                question = chained
                 roleInput = "function"
-                name = self.context.name
-                self.context.name = None
-                self.context.chained = None
+                chained = None
                 print(f"\033[95m\033[1mFunction: \033[95m\033[0m{question} for {name}")
             else:
                 # Otherwise, retrieve the input from the user.
@@ -410,12 +409,11 @@ class Main:
                                         print(template)
                                     ical = template.format(**arguments)
                                     url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                    self.context.chained = chained_msg.format(url = url)
-                                    self.context.name = name
+                                    chained = chained_msg.format(url = url)
                         else:
                             function = self.context.module and self.context.module.get(name) or None
                             if function:
-                                function(**arguments)
+                                chained = function(**arguments)
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
