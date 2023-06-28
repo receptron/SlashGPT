@@ -1,11 +1,12 @@
 # SlashGPT
 
-SlashGPT is a playground for devleopers to make quick prototypes of apps with Natural Language UI.
+SlashGPT is a playground for develeopers to make quick prototypes of LLM apps (apps with Natural Language UI).
 
 Here are the design goals:
-1. Easy to add a new app. You just need to add a new manifest file (in Json).
-2. Super easy to switch between apps. Just type "/{appname}"
-3. Extensible
+
+1. Extremely easy to create a new LLM app. You just need to add a new manifest file (in Json).
+2. Instantly switch between apps. Just type "/{appname}"
+3. Extensible enough so that it is possible to implement most of LLM apps without writing any code. 
 
 ## Initialization
 
