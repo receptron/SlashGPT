@@ -177,6 +177,7 @@ class ChatContext:
     def generateResponse(self):
         role = None
         res = None
+        function_call = None
         if (self.model == "palm"):
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -250,36 +251,7 @@ class ChatContext:
             res = answer['content']
             role = answer['role']
             function_call = answer.get('function_call')
-            if (function_call):
-                arguments = function_call.get("arguments") 
-                if arguments and isinstance(arguments, str):
-                    arguments = json.loads(arguments)      
-                    function_call.arguments = arguments
-                print(colored(function_call, "blue"))
-                name = function_call.get("name")
-                if name:
-                    action = self.actions.get(name)
-                    if action:
-                        template = action.get("template")
-                        if template:
-                            mime_type = action.get("mime_type") or ""
-                            chained_msg = action.get("chained_msg") or f"{url}"
-                            with open(f"{template}", 'r') as f:
-                                template = f.read()
-                                if self.verbose:
-                                    print(template)
-                                ical = template.format(**arguments)
-                                url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                self.chained = chained_msg.format(url = url)
-                                self.name = name
-                    else:
-                        function = self.module and self.module.get(name) or None
-                        if function:
-                            function(**arguments)
-                else:
-                    # Reset the conversation to avoid confusion
-                    self.messages = self.messages[:1]
-        return (role, res)
+        return (role, res, function_call)
 
 class Main:
     def __init__(self, config: ChatConfig, pathManifests: str):
@@ -406,16 +378,44 @@ class Main:
 
             # Process slash commands (if exits)
             (role, question) = self.processSlash(roleInput, question)
+
             if role and question:
                 self.context.appendQuestion(role, question, name)
-                # If it appended a new message, then ask LLM to generate a response.
-                (role, res) = self.context.generateResponse()
+                # Ask LLM to generate a response.
+                (role, res, function_call) = self.context.generateResponse()
 
                 if role and res:
                     print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
                     self.context.messages.append({"role":role, "content":res})
                     with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
                         json.dump(self.context.messages, f)
+
+                if (function_call):
+                    arguments = function_call.get("arguments") 
+                    if arguments and isinstance(arguments, str):
+                        arguments = json.loads(arguments)      
+                        function_call.arguments = arguments
+                    print(colored(function_call, "blue"))
+                    name = function_call.get("name")
+                    if name:
+                        action = self.context.actions.get(name)
+                        if action:
+                            template = action.get("template")
+                            if template:
+                                mime_type = action.get("mime_type") or ""
+                                chained_msg = action.get("chained_msg") or f"{url}"
+                                with open(f"{template}", 'r') as f:
+                                    template = f.read()
+                                    if self.context.verbose:
+                                        print(template)
+                                    ical = template.format(**arguments)
+                                    url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
+                                    self.context.chained = chained_msg.format(url = url)
+                                    self.context.name = name
+                        else:
+                            function = self.context.module and self.context.module.get(name) or None
+                            if function:
+                                function(**arguments)
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
