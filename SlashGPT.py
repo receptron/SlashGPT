@@ -395,7 +395,6 @@ class Main:
                 question = self.context.chained
                 roleInput = "function"
                 name = self.context.name
-                print(f"name={name}")
                 self.context.name = None
                 self.context.chained = None
                 print(f"\033[95m\033[1mFunction: \033[95m\033[0m{question} for {name}")
