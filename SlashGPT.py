@@ -47,7 +47,7 @@ class ChatContext:
         self.manifest = manifest
         self.prompt = None
         self.verbose = False
-        self.index = None
+        self.index = None # pinecone index
         self.temperature = 0.7
         self.model = "gpt-3.5-turbo-0613"
         self.max_token = 4096
@@ -102,10 +102,13 @@ class ChatContext:
                 with open(f"{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
-            table_name = manifest.get("articles")
-            if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
-                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                self.index = pinecone.Index(table_name)
+            embeddings = manifest.get("embeddings")
+            if embeddings:
+                table_name = embeddings.get("name")
+                if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
+                    assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
+                    self.index = pinecone.Index(table_name)
+
             self.messages = [{"role":"system", "content":self.prompt}]
             functions = manifest.get("functions")
             if functions:
