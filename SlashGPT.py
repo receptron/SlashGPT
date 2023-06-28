@@ -159,14 +159,17 @@ class ChatContext:
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
-    def appendQuestion(self, role: str, question: str):
+    def appendQuestion(self, role: str, question: str, name):
         if self.translator:
             self.messages = [{
                 "role": "system",
                 "content":re.sub("\\{input\\}", question, self.prompt, 1)
             }]
         else:
-            self.messages.append({"role":role, "content":question})
+            if name:
+                self.messages.append({"role":role, "content":question, "name":name })
+            else:
+                self.messages.append({"role":role, "content":question })
             if self.index:
                 articles = self.fetch_related_articles(self.max_token - 500)
                 assert self.messages[0]["role"] == "system", "Missing system message"
@@ -275,7 +278,8 @@ class ChatContext:
                                     print(template)
                                 ical = template.format(**arguments)
                                 url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                self.chained = chained_msg.format(url = url) 
+                                self.chained = chained_msg.format(url = url)
+                                self.name = name
                     else:
                         function = self.module and self.module.get(name) or None
                         if function:
@@ -397,18 +401,22 @@ class Main:
             if self.context.chained:
                 # If there is any "chained" message, use it with the role "system"
                 question = self.context.chained
-                roleInput = "system"
+                roleInput = "function"
+                name = self.context.name
+                print(f"name={name}")
+                self.context.name = None
                 self.context.chained = None
-                print(f"\033[95m\033[1mSystem: \033[95m\033[0m{question}")
+                print(f"\033[95m\033[1mFunction: \033[95m\033[0m{question} for {name}")
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 roleInput = "user"
+                name = None
 
             # Process slash commands (if exits)
             (role, question) = self.processSlash(roleInput, question)
             if role and question:
-                self.context.appendQuestion(role, question)
+                self.context.appendQuestion(role, question, name)
                 # If it appended a new message, then ask LLM to generate a response.
                 (role, res) = self.context.generateResponse()
 
