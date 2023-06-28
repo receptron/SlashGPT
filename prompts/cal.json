@@ -10,7 +10,7 @@
     "make_event": {
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
-      "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
+      "chained_msg": "{{ 'invitation_link': '{url}' }}"
     }
   },
   "intro": [
