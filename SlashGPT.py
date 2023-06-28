@@ -368,7 +368,7 @@ class Main:
                 question = chained
                 roleInput = "function"
                 chained = None
-                print(f"\033[95m\033[1mFunction: \033[95m\033[0m{question} for {name}")
+                print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")

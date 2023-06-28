@@ -2,7 +2,8 @@
   "title": "Home Automation",
   "bot": "Home",
   "source": "snakajima",
-  "model": "gpt-3.5-turbo-16k-0613",
+  "modelx": "gpt-3.5-turbo-16k-0613",
+  "model": "gpt-4-0613",
   "temperature": "0.0",
   "functions": "./resources/home.json",
   "actions": {
@@ -13,7 +14,7 @@
     "play_music": { "chained_msg":"Success" },
     "control_light": { "chained_msg":"Success" }
   },
-  "sample": "Please set the room temperature of kitchen to 28 celsius",
+  "sample": "Turn on the light of the living room, take a picture, and turn it off",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous."
