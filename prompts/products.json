@@ -7,7 +7,7 @@
   "functions": "./resources/db.json",
   "resource": "./resources/products.sql",
   "module": "./resources/db.py",
-  "sample": "Please list 10 products with highest prices", 
+  "sample": "List 10 customers with most orders.", 
   "prompt": [
     "Don't make assumptions about what values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",
