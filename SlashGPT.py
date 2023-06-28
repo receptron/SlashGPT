@@ -51,7 +51,6 @@ class ChatContext:
         self.temperature = 0.7
         self.model = "gpt-3.5-turbo-0613"
         self.max_token = 4096
-        self.translator = False
         self.messages = []
         self.functions = None
         self.actions = {}
@@ -67,7 +66,6 @@ class ChatContext:
             self.intro = manifest.get("intro")
             self.sample = manifest.get("sample")
             self.actions = manifest.get("actions") or {} 
-            self.translator = manifest.get("translator") or False
             module = manifest.get("module")
             if module:
                 with open(f"{module}", 'r') as f:
@@ -160,23 +158,17 @@ class ChatContext:
         return articles
 
     def appendQuestion(self, role: str, question: str, name):
-        if self.translator:
-            self.messages = [{
-                "role": "system",
-                "content":re.sub("\\{input\\}", question, self.prompt, 1)
-            }]
+        if name:
+            self.messages.append({"role":role, "content":question, "name":name })
         else:
-            if name:
-                self.messages.append({"role":role, "content":question, "name":name })
-            else:
-                self.messages.append({"role":role, "content":question })
-            if self.index:
-                articles = self.fetch_related_articles(self.max_token - 500)
-                assert self.messages[0]["role"] == "system", "Missing system message"
-                self.messages[0] = {
-                    "role":"system", 
-                    "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
-                }
+            self.messages.append({"role":role, "content":question })
+        if self.index:
+            articles = self.fetch_related_articles(self.max_token - 500)
+            assert self.messages[0]["role"] == "system", "Missing system message"
+            self.messages[0] = {
+                "role":"system", 
+                "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
+            }
 
     """
     Let the LLM generate a message and append it to the message list
