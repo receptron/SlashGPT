@@ -421,7 +421,7 @@ class Main:
                                     url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
                                     chained = chained_msg.format(url = url)
                             else:
-                                chained_msg = action.get("chained_msg")
+                                chained_msg = action.get("message")
                                 if chained_msg:
                                     chained = chained_msg.format(**arguments)
                                 else: 
