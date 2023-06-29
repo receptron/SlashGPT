@@ -23,6 +23,7 @@ Here are the design goals:
     `PINECONE_API_KEY=...`
     `PINECONE_ENVIRONMENT=...`
     `GOOGLE_PALM_KEY=...`
+    `WOLFRAM_API_KEY=...`
 
 ## Execution
 

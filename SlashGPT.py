@@ -402,6 +402,11 @@ class Main:
                             url = action.get("url")
                             template = action.get("template")
                             message_template = action.get("message")
+                            appkey = action.get("appkey")
+                            if appkey:
+                                appkey = os.getenv(appkey, "")
+                                if appkey:
+                                    arguments["appkey"] = appkey
                             if url:
                                 url = url.format(**arguments)
                                 if self.context.verbose:

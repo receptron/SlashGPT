@@ -5,7 +5,8 @@
   "temperature": "0.0",
   "actions": {
     "query": {
-      "url": "https://www.wolframalpha.com/api/v1/llm-api?input={input}"
+      "url": "https://www.wolframalpha.com/api/v1/llm-api?input={input}&appid={appkey}",
+      "appkey": "WOLFRAM_API_KEY"
     }
   },
   "functions": "./resources/wolfram.json",
