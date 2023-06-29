@@ -1,0 +1,19 @@
+{
+  "title": "Kayak",
+  "bot": "Kayak",
+  "source": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
+  "modelx": "gpt-4-0613",
+  "temperature": "0.0",
+  "functions": "./resources/kayak.json",
+  "sample": "Find a flight from Seattle to Kona on July 4th",
+  "actions": {
+    "flight_search": {
+      "url": "https://www.kayak.com/sherlock/openai/search/flights"
+    }
+  },
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "Current time is {now}."
+  ]
+}
