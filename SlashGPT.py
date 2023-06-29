@@ -361,14 +361,13 @@ class Main:
         return (None, None)
     
     def start(self):
-        chained = None
+        function_message = None
         name = None
         while not self.exit:
-            if chained and name:
-                # If there is any "chained" message, use it with the role "system"
-                question = chained
+            if function_message and name:
+                question = function_message
                 roleInput = "function"
-                chained = None
+                function_message = None
                 print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
@@ -405,10 +404,10 @@ class Main:
                             message_template = action.get("message")
                             if url:
                                 url = url.format(**arguments)
-                                print("url", url)
+                                print("Fetching from url", url)
                                 response = requests.get(url)
                                 if response.status_code == 200:
-                                    chained = response.text
+                                    function_message = response.text
                                 else:
                                     print(f"Got {response.status_code} from {url}")
                             elif template:
@@ -420,15 +419,15 @@ class Main:
                                         print(template)
                                     ical = template.format(**arguments)
                                     url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                    chained = message_template.format(url = url)
+                                    function_message = message_template.format(url = url)
                             elif message_template:
-                                chained = message_template.format(**arguments)
+                                function_message = message_template.format(**arguments)
                             else: 
-                                chained = "Success"
+                                function_message = "Success"
                         else:
                             function = self.context.module and self.context.module.get(name) or None
                             if function:
-                                chained = function(**arguments)
+                                function_message = function(**arguments)
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
