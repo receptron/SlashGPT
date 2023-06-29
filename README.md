@@ -62,9 +62,42 @@ Name of that file becomes the slash command. (the slash command of "foo.json" is
 
 ## Actions
 
-It defines template-based actions for functions. I will generatae a text file using the template file and function parameters, create a "data:" URL, then generate a system message with that url. 
+It defines template-based implementations (including mocks) for functions (alternative to writing python code using the "module" property).
 
-Here is an example for "make_event" function.
+It supports three different ways. 
+
+1. Formatted string.
+
+Use this method to develop the front-end of a system before the backend become ready. Here is an example (home2).
+
+```
+  "actions": {
+    "fill_bath": { "message":"Success. I started filling the bath tab." },
+    "set_temperature": { "message":"Success. I set the teperature to {temperature} for {location}" },
+    "start_sprinkler": { "message":"Success. I started the sprinkler for {location}" },
+    "take_picture": { "message":"Success. I took a picture of {location}" },
+    "play_music": { "message":"Success. I started playing {music} in {location}" },
+    "control_light": { "message":"Success. The light switch of {location} is now {switch}." }
+  }
+```
+
+2. REST calls
+
+Use this method to call REST API (equivalent to ChatGPT's plugin system). Here is an example (currency).
+
+```
+  "actions": {
+    "convert": {
+      "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
+    }
+  }
+```
+
+3. data URL
+
+This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL. 
+
+Here is an example for "make_event" function (cal).
 
 ```
   "actions": {
