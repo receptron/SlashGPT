@@ -412,7 +412,7 @@ class Main:
                                     print(f"Got {response.status_code} from {url}")
                             elif template:
                                 mime_type = action.get("mime_type") or ""
-                                chained_msg = action.get("chained_msg") or f"{url}"
+                                chained_msg = action.get("message") or f"{url}"
                                 with open(f"{template}", 'r') as f:
                                     template = f.read()
                                     if self.context.verbose:

@@ -7,12 +7,12 @@
   "temperature": "0.0",
   "functions": "./resources/home.json",
   "actions": {
-    "fill_bath": { "chained_msg":"Success" },
-    "set_temperature": { "chained_msg":"Success" },
-    "start_sprinkler": { "chained_msg":"Success" },
-    "take_picture": { "chained_msg":"Success" },
-    "play_music": { "chained_msg":"Success" },
-    "control_light": { "chained_msg":"Success. The light switch of {location} is now {switch}." }
+    "fill_bath": { "message":"Success" },
+    "set_temperature": { "message":"Success" },
+    "start_sprinkler": { "message":"Success" },
+    "take_picture": { "message":"Success" },
+    "play_music": { "message":"Success" },
+    "control_light": { "message":"Success. The light switch of {location} is now {switch}." }
   },
   "sample": "Turn on the light of the living room, take a picture, and turn it off",
   "prompt": [
