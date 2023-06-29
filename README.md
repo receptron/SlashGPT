@@ -62,13 +62,17 @@ Name of that file becomes the slash command. (the slash command of "foo.json" is
 
 ## Actions
 
-It defines template-based implementations (including mocks) for functions (alternative to writing python code using the "module" property).
+It defines template-based implementations (including mockups) for functions (alternative to writing python code using the "module" property).
 
 It supports three different ways. 
 
-1. Formatted string.
+1. Formatted string (mockups).
 
-Use this method to develop the front-end of a system before the backend become ready. Here is an example (home2).
+Use this method to develop the front-end of a system before the backend become ready. 
+
+  *message* (string, required): Python-style format string
+
+Here is an example (home2).
 
 ```
   "actions": {
@@ -83,7 +87,12 @@ Use this method to develop the front-end of a system before the backend become r
 
 2. REST calls
 
-Use this method to call REST API (equivalent to ChatGPT's plugin system). Here is an example (currency).
+Use this method to call REST API (equivalent to ChatGPT's plugin system).
+
+  *url* (string, required): Python-style format string, which references to function arguments.
+  *method* (string, optional): Specify "POST" if we need to use HTTP-POST. The body will contain a JSON representation of function parameters.
+
+Here is an example (currency).
 
 ```
   "actions": {
@@ -95,7 +104,11 @@ Use this method to call REST API (equivalent to ChatGPT's plugin system). Here i
 
 3. data URL
 
-This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL. 
+This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
+
+  *template* (string, required): The location of the template file.
+  *mime_type* (string, required): The mime type of the data.
+  *message* (string, required): Python-style format string, which references to the data-URL as {url}.
 
 Here is an example for "make_event" function (cal).
 
@@ -104,7 +117,7 @@ Here is an example for "make_event" function (cal).
     "make_event": {
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
-      "chained_msg": "The event was scheduled. Here is the invitation link: '{url}'"
+      "message": "The event was scheduled. Here is the invitation link: '{url}'"
     }
   }
 ```
