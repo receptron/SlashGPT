@@ -1,0 +1,51 @@
+openapi: 3.0.1
+info:
+  title: News Plugin
+  description: A plugin that fetches and summarizes news headlines.
+  version: 'v1'
+servers:
+  - url: https://simbiss.net
+paths:
+  /news:
+    get:
+      operationId: getNews
+      summary: Get the latest news headlines
+      parameters:
+        - name: search
+          in: query
+          description: The search term for the news
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          description: The title of the news article
+                        description:
+                          type: string
+                          description: The description of the news article
+                        source:
+                          type: string
+                          description: The source of the news article
+                        url:
+                          type: string
+                          description: The URL of the news article
+                        image:
+                          type: string
+                          description: image of the news article
+                        date:
+                          type: datetime
+                          description: publication date of the news article
+                    description: The latest news headlines.
