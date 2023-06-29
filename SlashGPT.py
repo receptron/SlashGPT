@@ -13,6 +13,7 @@ import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
 import urllib.parse
+import requests
 
 # Configuration
 
@@ -399,8 +400,17 @@ class Main:
                     if name:
                         action = self.context.actions.get(name)
                         if action:
+                            url = action.get("url")
                             template = action.get("template")
-                            if template:
+                            if url:
+                                url = url.format(**arguments)
+                                print("url", url)
+                                response = requests.get(url)
+                                if response.status_code == 200:
+                                    chained = response.text
+                                else:
+                                    print(f"Got {response.status_code} from {url}")
+                            elif template:
                                 mime_type = action.get("mime_type") or ""
                                 chained_msg = action.get("chained_msg") or f"{url}"
                                 with open(f"{template}", 'r') as f:
