@@ -404,9 +404,11 @@ class Main:
                             message_template = action.get("message")
                             appkey = action.get("appkey")
                             if appkey:
-                                appkey = os.getenv(appkey, "")
-                                if appkey:
-                                    arguments["appkey"] = appkey
+                                appkey_value = os.getenv(appkey, "")
+                                if appkey_value:
+                                    arguments["appkey"] = appkey_value
+                                else:
+                                    print(colored(f"Missing {appkey} in .env file.", "red"))
                             if url:
                                 url = url.format(**arguments)
                                 if self.context.verbose:
@@ -415,7 +417,7 @@ class Main:
                                 if response.status_code == 200:
                                     function_message = response.text
                                 else:
-                                    print(f"Got {response.status_code} from {url}")
+                                    print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
                             elif template:
                                 mime_type = action.get("mime_type") or ""
                                 message_template = message_template or f"{url}"

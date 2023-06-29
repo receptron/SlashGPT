@@ -1,6 +1,6 @@
 {
   "title": "Wolfram",
-  "source": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
+  "source": "https://gptstore.ai/plugins/wolframalpha-com",
   "modelx": "gpt-4-0613",
   "temperature": "0.0",
   "actions": {
