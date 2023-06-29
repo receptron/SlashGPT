@@ -3,14 +3,14 @@
   "source": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
   "modelx": "gpt-4-0613",
   "temperature": "0.0",
-  "resource": "./resources/currency.yml",
+  "functions": "./resources/currency.json",
   "sample": "Please convert 1USD into JPY",
+  "actions": {
+    "convert": {
+      "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
+    }
+  },
   "prompt": [
-    "You convert currency values based on the latest exchange rates.",
-    "Return the series of REST calls as an array of objects (with attribute 'url') in a single JSON file (each object in one line).",
-    "Please don't include any descriptions, just return JSON.",
-    "Here is the definition of API in OpenAPI format.",
-    "",
-    "{resource}"
+    "You convert currency values based on the latest exchange rates."
   ]
 }
