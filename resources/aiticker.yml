@@ -1,0 +1,245 @@
+openapi: 3.0.2
+info:
+  title: AITickerChat Retrieval Plugin API
+  description: A retrieval API for querying and filtering SEC filing documents and Earnings Call Transcripts based on natural language queries and metadata.
+  version: 1.0.0
+  servers:
+    - url: "https://stock-advisor.com"
+paths:
+  /query:
+    post:
+      summary: Query
+      description: Accepts search query objects with query, filter, optional sort_order and limit. Break down complex questions into sub-questions. Filter by symbol, form_types (prioritize array with '10-K', '10-Q' and 'earnings_transcript'), fiscal_year, fiscal_quarter, and xbrl_only for just financial numbers.
+      operationId: query_query_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResponse"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        - HTTPBearer: []
+components:
+  schemas:
+    DocumentChunkMetadata:
+      title: DocumentChunkMetadata
+      type: object
+      properties:
+        source:
+          $ref: "#/components/schemas/Source"
+        filename:
+          title: Filename
+          type: string
+        url:
+          title: Url
+          type: string
+        form_type:
+          $ref: "#/components/schemas/FormType"
+        published_date:
+          title: Published Date
+          type: integer
+        document_id:
+          title: Document Id
+          type: string
+        symbol:
+          title: Stock Symbol
+          type: string
+        cik:
+          title: Stock CIK
+          type: string
+        fiscal_quarter:
+          title: Fiscal Quarter
+          type: integer
+        fiscal_year:
+          title: Fiscal Year
+          type: integer
+        is_xbrl:
+          title: Is XBRL
+          type: bool
+    DocumentChunkWithScore:
+      title: DocumentChunkWithScore
+      required:
+        - text
+        - metadata
+        - score
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        text:
+          title: Text
+          type: string
+        metadata:
+          $ref: "#/components/schemas/DocumentChunkMetadata"
+        embedding:
+          title: Embedding
+          type: array
+          items:
+            type: number
+        score:
+          title: Score
+          type: number
+    DocumentMetadataFilter:
+      title: DocumentMetadataFilter
+      type: object
+      properties:
+        form_types:
+          title: Form Types
+          type: array
+          required: true
+          items:
+            $ref: "#/components/schemas/FormType"
+        symbol:
+          title: Stock Symbol
+          type: string
+          description: The symbol for the stock being analyzed.  This value should always be provided.
+          required: true
+        fiscal_quarter:
+          title: Fiscal Quarter
+          type: integer
+          description: The fiscal quarter of the document being retrieved.  This should be an integer from 1 to 4.
+        fiscal_year:
+          title: Fiscal Year
+          type: integer
+          description: The fiscal year of the document being retrieved.  This should be an integer of the year (e.g. 2023)
+        xbrl_only:
+          title: Xbrl Only
+          type: bool
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationError"
+    Query:
+      title: Query
+      required:
+        - query
+      type: object
+      properties:
+        query:
+          title: Query
+          type: string
+        filter:
+          $ref: "#/components/schemas/DocumentMetadataFilter"
+        sort_order:
+          title: Sort Order
+          type: string
+          enum:
+            - asc
+            - desc
+          default: desc
+          description: The order in which to sort when sorting by date. 'asc' for ascending, 'desc' for descending.
+        limit:
+          title: Limit Documents
+          type: integer
+          description: The maximum number of documents to return.  Do not use when form_types is ['8-K'] and instead filter by fiscal_year and fiscal_quarter.
+        top_k:
+          title: Top K
+          type: integer
+          default: 20
+    QueryRequest:
+      title: QueryRequest
+      required:
+        - queries
+      type: object
+      properties:
+        queries:
+          title: Queries
+          type: array
+          items:
+            $ref: "#/components/schemas/Query"
+    QueryResponse:
+      title: QueryResponse
+      required:
+        - results
+      type: object
+      properties:
+        results:
+          title: Results
+          type: array
+          items:
+            $ref: "#/components/schemas/QueryResult"
+        extra_information_for_assistant:
+          title: Extra Information
+          type: string
+          description: Extra information for you on how to respond to queries.
+    QueryResult:
+      title: QueryResult
+      required:
+        - query
+        - results
+      type: object
+      properties:
+        query:
+          title: Query
+          type: string
+        results:
+          title: Results
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentChunkWithScore"
+    Source:
+      title: Source
+      enum:
+        - SEC
+        - EarningsCallTranscripts
+      type: string
+      description: An enumeration.
+    FormType:
+      title: Form Type
+      enum:
+        - earnings_transcript
+        - 10-K
+        - 10-Q
+        - 8-K
+        - DEFA14A
+        - 'DEF 14A'
+        - S-1
+        - S-3
+        - 6-K
+        - 20-F
+      type: string
+      description: An enumeration describing type of document to retrieve.  Always use 'earnings_transcript' for earnings calls. Use '10-K' or '10-Q' to summarize quarterly or annual results.  Use '8-K' for news.  Use 'DEF 14A' for information on a shareholder vote. Use 'S-1' for IPOs.  Use 'S-3' for information on raising capital.
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
