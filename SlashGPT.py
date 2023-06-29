@@ -400,6 +400,7 @@ class Main:
                         action = self.context.actions.get(name)
                         if action:
                             url = action.get("url")
+                            method = action.get("method")
                             template = action.get("template")
                             message_template = action.get("message")
                             appkey = action.get("appkey")
@@ -410,10 +411,16 @@ class Main:
                                 else:
                                     print(colored(f"Missing {appkey} in .env file.", "red"))
                             if url:
-                                url = url.format(**arguments)
-                                if self.context.verbose:
-                                    print(colored(f"Fetching from {url}", "yellow"))
-                                response = requests.get(url)
+                                if method == "POST":
+                                    headers = {'Content-Type': 'application/json'}
+                                    if self.context.verbose:
+                                        print(colored(f"Posting to {url}", "yellow"))
+                                    response = requests.post(url, headers=headers, json=arguments)
+                                else:
+                                    url = url.format(**arguments)
+                                    if self.context.verbose:
+                                        print(colored(f"Fetching from {url}", "yellow"))
+                                    response = requests.get(url)
                                 if response.status_code == 200:
                                     function_message = response.text
                                 else:

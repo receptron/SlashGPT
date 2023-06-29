@@ -8,7 +8,8 @@
   "sample": "Find a flight from Seattle to Kona on July 4th",
   "actions": {
     "flight_search": {
-      "url": "https://www.kayak.com/sherlock/openai/search/flights"
+      "url": "https://www.kayak.com/sherlock/openai/search/flights",
+      "method": "POST"
     }
   },
   "prompt": [
