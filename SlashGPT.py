@@ -245,8 +245,8 @@ class ChatContext:
                     messages=self.messages,
                     temperature=self.temperature)
             if (self.verbose):
-                print(f"model={response['model']}")
-                print(f"usage={response['usage']}")
+                print(colored(f"model={response['model']}", "yellow"))
+                print(colored(f"usage={response['usage']}", "yellow"))
             answer = response['choices'][0]['message']
             res = answer['content']
             role = answer['role']
@@ -404,7 +404,8 @@ class Main:
                             message_template = action.get("message")
                             if url:
                                 url = url.format(**arguments)
-                                print("Fetching from url", url)
+                                if self.context.verbose:
+                                    print(colored(f"Fetching from {url}", "yellow"))
                                 response = requests.get(url)
                                 if response.status_code == 200:
                                     function_message = response.text
