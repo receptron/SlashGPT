@@ -411,7 +411,11 @@ class Main:
                                     url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
                                     chained = chained_msg.format(url = url)
                             else:
-                                chained = action.get("chained_msg") or "Success"
+                                chained_msg = action.get("chained_msg")
+                                if chained_msg:
+                                    chained = chained_msg.format(**arguments)
+                                else: 
+                                    chained = "Success"
                         else:
                             function = self.context.module and self.context.module.get(name) or None
                             if function:

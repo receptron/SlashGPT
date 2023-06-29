@@ -2,8 +2,8 @@
   "title": "Home Automation",
   "bot": "Home",
   "source": "snakajima",
-  "modelx": "gpt-3.5-turbo-16k-0613",
-  "model": "gpt-4-0613",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "modelx": "gpt-4-0613",
   "temperature": "0.0",
   "functions": "./resources/home.json",
   "actions": {
@@ -12,7 +12,7 @@
     "start_sprinkler": { "chained_msg":"Success" },
     "take_picture": { "chained_msg":"Success" },
     "play_music": { "chained_msg":"Success" },
-    "control_light": { "chained_msg":"Success" }
+    "control_light": { "chained_msg":"Success. The light switch of {location} is now {switch}." }
   },
   "sample": "Turn on the light of the living room, take a picture, and turn it off",
   "prompt": [
