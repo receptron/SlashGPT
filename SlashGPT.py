@@ -402,6 +402,7 @@ class Main:
                         if action:
                             url = action.get("url")
                             template = action.get("template")
+                            message_template = action.get("message")
                             if url:
                                 url = url.format(**arguments)
                                 print("url", url)
@@ -412,20 +413,18 @@ class Main:
                                     print(f"Got {response.status_code} from {url}")
                             elif template:
                                 mime_type = action.get("mime_type") or ""
-                                chained_msg = action.get("message") or f"{url}"
+                                message_template = message_template or f"{url}"
                                 with open(f"{template}", 'r') as f:
                                     template = f.read()
                                     if self.context.verbose:
                                         print(template)
                                     ical = template.format(**arguments)
                                     url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                    chained = chained_msg.format(url = url)
-                            else:
-                                chained_msg = action.get("message")
-                                if chained_msg:
-                                    chained = chained_msg.format(**arguments)
-                                else: 
-                                    chained = "Success"
+                                    chained = message_template.format(url = url)
+                            elif message_template:
+                                chained = message_template.format(**arguments)
+                            else: 
+                                chained = "Success"
                         else:
                             function = self.context.module and self.context.module.get(name) or None
                             if function:
