@@ -1,0 +1,20 @@
+{
+  "title": "Internet Browser",
+  "source": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": "0.5",
+  "functions": "./resources/browser.json",
+  "actions": {
+    "fetch": {
+      "message": "{{ result:'success', text:'Here is the text of this web page: Elon Musk is a business magnate and investor. He is the founder, CEO, and chief engineer of SpaceX; angel investor, CEO, and product architect of Tesla, Inc.; owner, CTO, and chairman of Twitter; founder of The Boring Company and X Corp.; co-founder of Neuralink and OpenAI; and president of the philanthropic Musk Foundation. Musk is the wealthiest person in the world according to the Bloomberg Billionaires Index and Forbes's Real Time Billionaires list as of June 2023, primarily from his ownership stakes in Tesla and SpaceX.'}}"
+    }
+  },
+  "intro": [
+    "I am a Internet Browser. Please specify the URL of the web page you are interested in." 
+  ],
+  "sample": "Please write the summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}
