@@ -42,29 +42,29 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 Create a new manifest file in "prompts" folder with following properties:
 
-    *title* (string, required): Title for the user to see
-    *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
-    *promt* (array of strings, required): The system prompts which define the bot (required)
-    *bot* (string, optional): Bot name
-    *sample* (string, optional): Sample question (type "/sample" to send it)
-    *intro* (array of strings, optional): Introduction statements (will be randomly selected)
-    *model* (string, optional): LLM model (gpt-4)
-    *temperature* (string, optional): Temperature
-    *data* (array of string, optional): {random} will put one of them randamly into the prompt
-    *embeddings* (object, optional):
-      *name* (string, required): index name
-    *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
-    *functions* (string, optional): location of the function definitions. 
-    *module* (string, optional): location of the pytoh script to be loaded for function calls
-    *actions* (object, optional): Template-based function processor (see details below)
+- *title* (string, **required**): Title for the user to see
+- *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
+- *promt* (array of strings, **required**): The system prompts which define the bot (required)
+- *bot* (string, optional): Bot name
+- *sample* (string, optional): Sample question (type "/sample" to send it)
+- *intro* (array of strings, optional): Introduction statements (will be randomly selected)
+- *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
+- *temperature* (string, optional): Temperature (the default is 0.7)
+- *data* (array of string, optional): {random} will put one of them randamly into the prompt
+- *embeddings* (object, optional):
+  - *name* (string, optional): index name of the embedding vector database
+- *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
+- *functions* (string, optional): location of the function definitions 
+- *module* (string, optional): location of the pytoh script to be loaded for function calls
+- *actions* (object, optional): Template-based function processor (see details below)
 
 Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
 
 ## Actions
 
-It defines template-based implementations (including mockups) for functions (alternative to writing python code using the "module" property).
+It defines template-based function implementations (including mockups), alternative to writing Python code using the "module" property.
 
-It supports three different ways. 
+It supports three different methods. 
 
 1. Formatted string (mockups).
 
