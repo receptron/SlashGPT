@@ -380,73 +380,77 @@ class Main:
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
-                self.context.appendQuestion(role, question, name)
-                # Ask LLM to generate a response.
-                (role, res, function_call) = self.context.generateResponse()
+                try:
+                    self.context.appendQuestion(role, question, name)
+                    # Ask LLM to generate a response.
+                    (role, res, function_call) = self.context.generateResponse()
 
-                if role and res:
-                    print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
-                    self.context.messages.append({"role":role, "content":res})
-                    with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
-                        json.dump(self.context.messages, f)
+                    if role and res:
+                        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+                        self.context.messages.append({"role":role, "content":res})
+                        with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
+                            json.dump(self.context.messages, f)
 
-                if (function_call):
-                    arguments = function_call.get("arguments") 
-                    if arguments and isinstance(arguments, str):
-                        arguments = json.loads(arguments)      
-                        function_call.arguments = arguments
-                    print(colored(function_call, "blue"))
-                    name = function_call.get("name")
-                    if name:
-                        action = self.context.actions.get(name)
-                        if action:
-                            url = action.get("url")
-                            method = action.get("method")
-                            template = action.get("template")
-                            message_template = action.get("message")
-                            appkey = action.get("appkey")
-                            if appkey:
-                                appkey_value = os.getenv(appkey, "")
-                                if appkey_value:
-                                    arguments["appkey"] = appkey_value
-                                else:
-                                    print(colored(f"Missing {appkey} in .env file.", "red"))
-                            if url:
-                                if method == "POST":
-                                    headers = {'Content-Type': 'application/json'}
-                                    if self.context.verbose:
-                                        print(colored(f"Posting to {url}", "yellow"))
-                                    response = requests.post(url, headers=headers, json=arguments)
-                                else:
-                                    url = url.format(**arguments)
-                                    if self.context.verbose:
-                                        print(colored(f"Fetching from {url}", "yellow"))
-                                    response = requests.get(url)
-                                if response.status_code == 200:
-                                    function_message = response.text
-                                else:
-                                    print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
-                            elif template:
-                                mime_type = action.get("mime_type") or ""
-                                message_template = message_template or f"{url}"
-                                with open(f"{template}", 'r') as f:
-                                    template = f.read()
-                                    if self.context.verbose:
-                                        print(template)
-                                    ical = template.format(**arguments)
-                                    url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                    function_message = message_template.format(url = url)
-                            elif message_template:
-                                function_message = message_template.format(**arguments)
-                            else: 
-                                function_message = "Success"
-                        else:
-                            function = self.context.module and self.context.module.get(name) or None
-                            if function:
-                                result = function(**arguments)
-                                if isinstance(result, dict):
-                                    result = json.dumps(result)
-                                function_message = result
+                    if (function_call):
+                        arguments = function_call.get("arguments") 
+                        if arguments and isinstance(arguments, str):
+                            arguments = json.loads(arguments)      
+                            function_call.arguments = arguments
+                        print(colored(function_call, "blue"))
+                        name = function_call.get("name")
+                        if name:
+                            action = self.context.actions.get(name)
+                            if action:
+                                url = action.get("url")
+                                method = action.get("method")
+                                template = action.get("template")
+                                message_template = action.get("message")
+                                appkey = action.get("appkey")
+                                if appkey:
+                                    appkey_value = os.getenv(appkey, "")
+                                    if appkey_value:
+                                        arguments["appkey"] = appkey_value
+                                    else:
+                                        print(colored(f"Missing {appkey} in .env file.", "red"))
+                                if url:
+                                    if method == "POST":
+                                        headers = {'Content-Type': 'application/json'}
+                                        if self.context.verbose:
+                                            print(colored(f"Posting to {url}", "yellow"))
+                                        response = requests.post(url, headers=headers, json=arguments)
+                                    else:
+                                        url = url.format(**arguments)
+                                        if self.context.verbose:
+                                            print(colored(f"Fetching from {url}", "yellow"))
+                                        response = requests.get(url)
+                                    if response.status_code == 200:
+                                        function_message = response.text
+                                    else:
+                                        print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+                                elif template:
+                                    mime_type = action.get("mime_type") or ""
+                                    message_template = message_template or f"{url}"
+                                    with open(f"{template}", 'r') as f:
+                                        template = f.read()
+                                        if self.context.verbose:
+                                            print(template)
+                                        ical = template.format(**arguments)
+                                        url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
+                                        function_message = message_template.format(url = url)
+                                elif message_template:
+                                    function_message = message_template.format(**arguments)
+                                else: 
+                                    function_message = "Success"
+                            else:
+                                function = self.context.module and self.context.module.get(name) or None
+                                if function:
+                                    result = function(**arguments)
+                                    if isinstance(result, dict):
+                                        result = json.dumps(result)
+                                    function_message = result
+                except:
+                    print("Exception: restarting the chat")
+                    self.context.messages = self.context.messages[:1]
 
 config = ChatConfig()
 print(config.ONELINE_HELP)

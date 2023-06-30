@@ -24,8 +24,8 @@ def fetch(url: str):
                 body_text += element.get_text() + '\n'
 
         num = num_tokens(body_text)
-        if num > 5000:
-            limit = int(len(body_text) * 5000 / num)
+        if num >  4500:
+            limit = int(len(body_text) * 4500 / num)
             body_text = body_text[:limit]
 
         return { 
