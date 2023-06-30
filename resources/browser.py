@@ -1,5 +1,11 @@
 import requests
+import tiktoken
 from bs4 import BeautifulSoup
+
+def num_tokens(text: str) -> int:
+    """Return the number of tokens in a string."""
+    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-16k-0613")
+    return len(encoding.encode(text))
 
 def fetch(url: str):
 
@@ -17,10 +23,14 @@ def fetch(url: str):
             for element in elements:
                 body_text += element.get_text() + '\n'
 
-        # Print the extracted body text
+        num = num_tokens(body_text)
+        if num > 5000:
+            limit = int(len(body_text) * 5000 / num)
+            body_text = body_text[:limit]
+
         return { 
             "result":"success",
-            "text": body_text[:15000] }
+            "text": body_text }
     else:    
         return {
             "reuslt":"error",

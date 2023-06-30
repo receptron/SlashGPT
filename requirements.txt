@@ -3,3 +3,4 @@ python-dotenv==1.0.0
 pinecone-client
 google-generativeai
 termcolor
+bs4
