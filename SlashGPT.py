@@ -33,7 +33,7 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-        self.ONELINE_HELP = "System Slashes: /bye, /reset, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        self.ONELINE_HELP = "System Slashes: /bye, /reset, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
 
 class ChatContext:
     def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
@@ -114,6 +114,9 @@ class ChatContext:
                     self.functions = json.load(f)
                     if self.verbose:
                         print(self.functions)
+
+    def clearMessages(self):
+        self.messages = self.messages[:1]
 
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
@@ -266,6 +269,7 @@ class Main:
         self.loadManifests(pathManifests)
         self.context = ChatContext(self.config)
         self.exit = False
+        self.pathManifests = pathManifests
 
     def loadManifests(self, path):
         self.manifests = {}
@@ -338,7 +342,10 @@ class Main:
                     question = self.context.sample
                     return ("user", question)
             elif (key == "reset"):
+                self.loadManifests(self.pathManifests)
                 self.context = ChatContext(self.config)
+            elif (key == "clear"):
+                self.context.clearMessages()
             elif (key == "rpg1"):
                 self.loadManifests('./rpg1')
                 self.context = ChatContext(self.config)
@@ -450,7 +457,7 @@ class Main:
                                     function_message = result
                 except:
                     print("Exception: restarting the chat")
-                    self.context.messages = self.context.messages[:1]
+                    self.context.clearMessages()
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
