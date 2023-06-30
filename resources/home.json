@@ -25,7 +25,7 @@
             "properties": {
                 "temperature": {
                     "type": "number",
-                    "description": "Room temperature in celsius. If omitted, 41 degree"
+                    "description": "Room temperature in celsius."
                 },
                 "room": {
                     "type": "string",
