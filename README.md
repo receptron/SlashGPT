@@ -66,11 +66,11 @@ It defines template-based function implementations (including mockups), alternat
 
 It supports three different methods. 
 
-1. Formatted string (mockups).
+### 1. Formatted string (mockups).
 
 Use this method to develop the front-end of a system before the backend become ready. 
 
-  *message* (string, required): Python-style format string
+- *message* (string, required): Python-style format string
 
 Here is an example (home2).
 
@@ -85,12 +85,12 @@ Here is an example (home2).
   }
 ```
 
-2. REST calls
+### 2. REST calls
 
-Use this method to call REST API (equivalent to ChatGPT's plugin system).
+Use this method to call REST APIs (equivalent to ChatGPT's plugin system).
 
-  *url* (string, required): Python-style format string, which references to function arguments.
-  *method* (string, optional): Specify "POST" if we need to use HTTP-POST. The body will contain a JSON representation of function parameters.
+- *url* (string, required): Python-style format string, which references to function arguments.
+- *method* (string, optional): Specify "POST" if we need to use HTTP-POST. The body will contain a JSON representation of function parameters.
 
 Here is an example (currency).
 
@@ -102,13 +102,13 @@ Here is an example (currency).
   }
 ```
 
-3. data URL
+### 3. data URL
 
 This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
-  *template* (string, required): The location of the template file.
-  *mime_type* (string, required): The mime type of the data.
-  *message* (string, required): Python-style format string, which references to the data-URL as {url}.
+- *template* (string, required): The location of the template file.
+- *mime_type* (string, required): The mime type of the data.
+- *message* (string, required): Python-style format string, which references to the data-URL as {url}.
 
 Here is an example for "make_event" function (cal).
 
