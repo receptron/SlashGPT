@@ -14,11 +14,11 @@ Here are the design goals:
 
     `pip install -r requirements.txt`
 
-2. Create .env file, and spacify your OpenAI key as follows:
+2. Create .env file, and specify your OpenAI key as follows:
 
     `OPENAI_API_KEY=...`
 
-3. You may optionally specify Pinecone key and environment.
+3. You may optionally specify Pinecone key and oehter keys.
 
     `PINECONE_API_KEY=...`
     `PINECONE_ENVIRONMENT=...`
