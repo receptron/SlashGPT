@@ -455,8 +455,8 @@ class Main:
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
                                     function_message = result
-                except:
-                    print("Exception: restarting the chat")
+                except Exception as e:
+                    print("Exception: restarting the chat", e)
                     self.context.clearMessages()
 
 config = ChatConfig()
