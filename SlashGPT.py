@@ -442,7 +442,10 @@ class Main:
                         else:
                             function = self.context.module and self.context.module.get(name) or None
                             if function:
-                                function_message = function(**arguments)
+                                result = function(**arguments)
+                                if isinstance(result, dict):
+                                    result = json.dumps(result)
+                                function_message = result
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
