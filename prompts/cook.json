@@ -7,12 +7,12 @@
   "actions": {
     "wash_vegitable": { "message":"Success. Clean {vegitable} is ready." },
     "chop_vegitable": { "message":"Success. Chopped {vegitable} is ready" },
-    "slice_meat": { "message":"Success. Sliced {meat} is ready." }
+    "slice_meat": { "message":"Success. Sliced {meat} is ready." },
+    "stir_fly": { "message":"Success. Stir fly is ready to eat." }
   },
   "sample": "Prepare chopped cabbage and sliced pork, then stir fry them together",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
-    "Ask for clarification if a user request is ambiguous.",
-    "Always wash vegitable bofore use."
+    "Ask for clarification if a user request is ambiguous."
   ]
 }

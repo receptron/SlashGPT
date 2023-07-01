@@ -1,20 +1,5 @@
 [
     {
-        "name": "wash_vegitable",
-        "description": "Wash vegitable before cooking",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "vegitable": {
-                    "type": "string",
-                    "description": "Vegitable to wash",
-                    "enum": ["asparagus", "cabbage", "onion"]
-                }
-            },
-            "required": ["vegitable"]
-        }
-    },
-    {
         "name": "chop_vegitable",
         "description": "Chop vegitable",
         "parameters": {
