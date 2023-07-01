@@ -9,7 +9,7 @@
     "chop_vegitable": { "message":"Success. Chopped {vegitable} is ready" },
     "slice_meat": { "message":"Success. Sliced {meat} is ready." }
   },
-  "sample": "Prepare chopped cabbage and pork to cook",
+  "sample": "Prepare chopped cabbage and sliced pork, then stir fry them together",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",

@@ -30,7 +30,7 @@
         }
     },
     {
-        "name": "slice_vegitable",
+        "name": "slice_meat",
         "description": "Slice Meat",
         "parameters": {
             "type": "object",
@@ -42,6 +42,24 @@
                 }
             },
             "required": ["meat"]
+        }
+    },
+    {
+        "name": "stir_fly",
+        "description": "Stir fly ingredients",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Ingredient",
+                        "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
         }
     }
 ]
