@@ -4,6 +4,7 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
   "functions": "./resources/cook.json",
+  "resource": "./resources/receipes.json",
   "actions": {
     "chop_vegitable": { "message":"Success. {amount}g of chopped {vegitable} is ready" },
     "slice_meat": { "message":"Success. {amount}g of sliced {meat} is ready." },
@@ -12,6 +13,8 @@
   "sample": "Prepare 100g of chopped cabbage and 100g of sliced pork, then stir fry them together",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
-    "Ask for clarification if a user request is ambiguous."
+    "Ask for clarification if a user request is ambiguous.",
+    "Here are receipies",
+    "{resource}"
   ]
 }

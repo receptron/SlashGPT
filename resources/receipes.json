@@ -1,0 +1,14 @@
+{
+    "name": "Pork vegitable stir fly for one",
+    "ingredients": [
+        {
+          "ingredient": "sliced pork",
+          "amount": 150
+        },
+        {
+          "ingredient": "chopped cabbage",
+          "amount": 200
+        }
+      ],
+    "cooking instruction": "Stir fly them together"
+}
