@@ -4,9 +4,9 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
   "functions": "./resources/cook.json",
-  "resource": "./resources/receipes.json",
+  "resource": "./resources/recipes.json",
   "actions": {
-    "chop_vegitable": { "message":"Success. {amount}g of chopped {vegitable} is ready" },
+    "chop_vegetable": { "message":"Success. {amount}g of chopped {vegetable} is ready" },
     "slice_meat": { "message":"Success. {amount}g of sliced {meat} is ready." },
     "stir_fly": { "message":"Success. Stir fly is ready to eat." }
   },
@@ -14,7 +14,7 @@
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",
-    "Here are receipies",
+    "Here are recipes",
     "{resource}"
   ]
 }

@@ -1,13 +1,13 @@
 [
     {
-        "name": "chop_vegitable",
-        "description": "Chop vegitable",
+        "name": "chop_vegetable",
+        "description": "Chop vegetable",
         "parameters": {
             "type": "object",
             "properties": {
-                "vegitable": {
+                "vegetable": {
                     "type": "string",
-                    "description": "Vegitable to chop",
+                    "description": "vegetable to chop",
                     "enum": ["asparagus", "cabbage", "onion"]
                 },
                 "amount": {
@@ -15,7 +15,7 @@
                     "description": "amount in gram"
                 }
             },
-            "required": ["vegitable", "amount"]
+            "required": ["vegetable", "amount"]
         }
     },
     {
