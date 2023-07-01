@@ -1,0 +1,47 @@
+[
+    {
+        "name": "wash_vegitable",
+        "description": "Wash vegitable before cooking",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "vegitable": {
+                    "type": "string",
+                    "description": "Vegitable to wash",
+                    "enum": ["asparagus", "cabbage", "onion"]
+                }
+            },
+            "required": ["vegitable"]
+        }
+    },
+    {
+        "name": "chop_vegitable",
+        "description": "Chop vegitable",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "vegitable": {
+                    "type": "string",
+                    "description": "Vegitable to chop",
+                    "enum": ["asparagus", "cabbage", "onion"]
+                }
+            },
+            "required": ["vegitable"]
+        }
+    },
+    {
+        "name": "slice_vegitable",
+        "description": "Slice Meat",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "meat": {
+                    "type": "string",
+                    "description": "Meat to slice",
+                    "enum": ["pork", "beef", "chicken"]
+                }
+            },
+            "required": ["meat"]
+        }
+    }
+]

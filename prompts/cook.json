@@ -1,0 +1,18 @@
+{
+  "title": "Home Cooking System",
+  "source": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": "0.0",
+  "functions": "./resources/cook.json",
+  "actions": {
+    "wash_vegitable": { "message":"Success. Clean {vegitable} is ready." },
+    "chop_vegitable": { "message":"Success. Chopped {vegitable} is ready" },
+    "slice_meat": { "message":"Success. Sliced {meat} is ready." }
+  },
+  "sample": "Prepare chopped cabbage and pork to cook",
+  "prompt": [
+    "Don't make any assumptions about what property values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "Always wash vegitable bofore use."
+  ]
+}
