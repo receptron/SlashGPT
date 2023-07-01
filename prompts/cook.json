@@ -8,9 +8,9 @@
   "actions": {
     "chop_vegetable": { "message":"Success. {amount}g of chopped {vegetable} is ready" },
     "slice_meat": { "message":"Success. {amount}g of sliced {meat} is ready." },
-    "stir_fly": { "message":"Success. Stir fly is ready to eat." }
+    "stir_fly": { "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." }
   },
-  "sample": "Prepare 100g of chopped cabbage and 100g of sliced pork, then stir fry them together",
+  "sample": "Cook pork vegetable stir fly for two.",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",
