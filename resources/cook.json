@@ -9,9 +9,13 @@
                     "type": "string",
                     "description": "Vegitable to chop",
                     "enum": ["asparagus", "cabbage", "onion"]
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
                 }
             },
-            "required": ["vegitable"]
+            "required": ["vegitable", "amount"]
         }
     },
     {
@@ -24,9 +28,13 @@
                     "type": "string",
                     "description": "Meat to slice",
                     "enum": ["pork", "beef", "chicken"]
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
                 }
             },
-            "required": ["meat"]
+            "required": ["meat", "amount"]
         }
     },
     {
@@ -38,9 +46,19 @@
                 "ingredients": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "description": "Ingredient",
-                        "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage"]
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "Meat to slice",
+                                "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage"]
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
                     }
                 }
             },

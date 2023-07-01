@@ -10,7 +10,7 @@
     "slice_meat": { "message":"Success. Sliced {meat} is ready." },
     "stir_fly": { "message":"Success. Stir fly is ready to eat." }
   },
-  "sample": "Prepare chopped cabbage and sliced pork, then stir fry them together",
+  "sample": "Prepare 100g of chopped cabbage and 100g of sliced pork, then stir fry them together",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous."
