@@ -10,7 +10,8 @@
     "grind": { "message":"Success. {amount}g of ground {ingredient} is ready" },
     "slice_meat": { "message":"Success. {amount}g of sliced {meat} is ready." },
     "make_sauce": { "message":"Success. The sauce is ready." },
-    "stir_fly": { "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." }
+    "stir_fly": { "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." },
+    "grill": { "message":"Success. Grilled food is ready to eat. Do not explain the recepe. Just tell to enjoy." }
   },
   "sample": "Cook pork vegetable stir fly for four.",
   "prompt": [

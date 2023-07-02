@@ -108,5 +108,32 @@
             },
             "required": ["ingredients"]
         }
+    },
+    {
+        "name": "grill",
+        "description": "grill ingredients",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "ingredient to cook"
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
+        }
     }
 ]

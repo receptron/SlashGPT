@@ -1,4 +1,24 @@
-[ 
+[
+  {
+    "name": "Humberger",
+    "ingredients": [
+      {
+        "ingredient": "ground beef",
+        "amount": 200
+      },
+      {
+        "ingredient": "chopped onion",
+        "amount": 150
+      }
+    ],
+    "sauce": [
+      {
+        "ingredient": "salt",
+        "amount": 4
+      }
+    ],
+    "cooking instruction": "Mix ingredients and grill it"
+  }, 
   {
     "name": "Pork vegetable stir fly for two",
     "ingredients": [
@@ -49,7 +69,6 @@
         "amount": 0.5
       }
     ],
-    
     "cooking instruction": "Stir fly all ingredients with sauce"
   }
 ]
