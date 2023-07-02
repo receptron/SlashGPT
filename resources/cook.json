@@ -8,7 +8,7 @@
                 "vegetable": {
                     "type": "string",
                     "description": "vegetable to chop",
-                    "enum": ["asparagus", "cabbage", "onion"]
+                    "enum": ["asparagus", "cabbage", "onion", "green pepper"]
                 },
                 "amount": {
                     "type": "number",
@@ -78,8 +78,7 @@
                         "properties": {
                             "ingredient": {
                                 "type": "string",
-                                "description": "Meat to slice",
-                                "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage", "sauce"]
+                                "description": "ingredient to cook"
                             },
                             "amount": {
                                 "type": "number",

@@ -1,9 +1,13 @@
 {
-    "name": "Pork vegetable stir fly for one",
+    "name": "Pork vegetable stir fly for two",
     "ingredients": [
         {
           "ingredient": "sliced pork",
           "amount": 150
+        },
+        {
+          "ingredient": "chopped green pepper",
+          "amount": 200
         },
         {
           "ingredient": "chopped cabbage",
@@ -13,15 +17,15 @@
     "sauce": [
       {
         "ingredient": "soy sauce",
-        "amount": 5
+        "amount": 2.5
       },
       {
         "ingredient": "pepper",
-        "amount": 1
+        "amount": 0.5
       },
       {
         "ingredient": "salt",
-        "amount": 3
+        "amount": 0.5
       }
     ],
     
