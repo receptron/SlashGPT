@@ -27,7 +27,7 @@
                     "type": "number",
                     "description": "Room temperature in celsius."
                 },
-                "room": {
+                "location": {
                     "type": "string",
                     "enum": ["kitchen", "living room", "master bedroom", "bedroom 2", "bedroom 3", "all bedrooms"],
                     "description": "The room to set the temperature."
@@ -57,7 +57,7 @@
         "parameters": {
             "type": "object",
             "properties": {
-                "camera": {
+                "location": {
                     "type": "string",
                     "enum": ["entrance", "backyard", "kitchen", "living room"],
                     "description": "Specify the camera to use."
