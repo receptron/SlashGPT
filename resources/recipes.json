@@ -36,6 +36,10 @@
         "amount": 7.5
       },
       {
+        "ingredient": "ground ginger",
+        "amount": 5
+      },
+      {
         "ingredient": "pepper",
         "amount": 0.5
       },

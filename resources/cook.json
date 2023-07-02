@@ -18,6 +18,24 @@
         }
     },
     {
+        "name": "grind",
+        "description": "Grind something",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredient": {
+                    "type": "string",
+                    "description": "ingredient to grind"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["ingredient", "amount"]
+        }
+    },
+    {
         "name": "slice_meat",
         "description": "Slice Meat",
         "parameters": {
@@ -50,7 +68,7 @@
                             "ingredient": {
                                 "type": "string",
                                 "description": "ingredient of sauce",
-                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake", "oystar sauce"]
+                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake", "oystar sauce", "ground ginger"]
                             },
                             "amount": {
                                 "type": "number",
