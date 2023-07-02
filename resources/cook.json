@@ -7,8 +7,7 @@
             "properties": {
                 "vegetable": {
                     "type": "string",
-                    "description": "vegetable to chop",
-                    "enum": ["asparagus", "cabbage", "onion", "green pepper", "carrot"]
+                    "description": "vegetable to chop"
                 },
                 "amount": {
                     "type": "number",
