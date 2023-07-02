@@ -33,7 +33,7 @@
                     "description": "The room to set the temperature."
                 }
             },
-            "required": ["temperature", "room"]
+            "required": ["temperature", "location"]
         }
     },
     {
@@ -60,10 +60,10 @@
                 "location": {
                     "type": "string",
                     "enum": ["entrance", "backyard", "kitchen", "living room"],
-                    "description": "Specify the camera to use."
+                    "description": "Specify the camera location to use."
                 }
             },
-            "required": ["camera"]
+            "required": ["location"]
         }
     },
     {
