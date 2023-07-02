@@ -11,11 +11,12 @@
     "make_sauce": { "message":"Success. The sauce is ready." },
     "stir_fly": { "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." }
   },
-  "sample": "Cook pork vegetable stir fly for four.",
+  "sample": "Cook beef vegetable stir fly for four.",
   "prompt": [
     "Don't make any assumptions about what property values to plug into functions.",
     "Ask for clarification if a user request is ambiguous.",
-    "Here are recipes",
+    "You are a AI cooker. Cook using only the recipes provided below.",
+    "Feel free to add, remove or substitute some ingredients if requested",
     "{resource}"
   ]
 }
