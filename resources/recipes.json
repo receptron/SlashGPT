@@ -16,8 +16,16 @@
       ],
     "sauce": [
       {
+        "ingredient": "sake",
+        "amount": 15
+      },
+      {
         "ingredient": "soy sauce",
-        "amount": 2.5
+        "amount": 7.5
+      },
+      {
+        "ingredient": "oystar sauce",
+        "amount": 7.5
       },
       {
         "ingredient": "pepper",

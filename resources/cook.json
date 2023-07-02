@@ -51,7 +51,7 @@
                             "ingredient": {
                                 "type": "string",
                                 "description": "ingredient of sauce",
-                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake"]
+                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake", "oystar sauce"]
                             },
                             "amount": {
                                 "type": "number",
