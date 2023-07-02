@@ -10,5 +10,20 @@
           "amount": 200
         }
       ],
-    "cooking instruction": "Stir fly them together"
+    "sauce": [
+      {
+        "ingredient": "soy sauce",
+        "amount": 5
+      },
+      {
+        "ingredient": "pepper",
+        "amount": 1
+      },
+      {
+        "ingredient": "salt",
+        "amount": 3
+      }
+    ],
+    
+    "cooking instruction": "Stir fly all ingredients with sauce"
 }

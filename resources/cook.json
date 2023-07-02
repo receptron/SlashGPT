@@ -38,6 +38,34 @@
         }
     },
     {
+        "name": "make_sauce",
+        "description": "mix ingredients to make sauce",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "ingredient of sauce",
+                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake"]
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
+        }
+    },
+    {
         "name": "stir_fly",
         "description": "Stir fly ingredients",
         "parameters": {
@@ -51,7 +79,7 @@
                             "ingredient": {
                                 "type": "string",
                                 "description": "Meat to slice",
-                                "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage"]
+                                "enum": ["sliced pork", "sliced beef", "sliced chicken", "chopped cabbage", "sauce"]
                             },
                             "amount": {
                                 "type": "number",
