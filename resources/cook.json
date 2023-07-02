@@ -8,7 +8,7 @@
                 "vegetable": {
                     "type": "string",
                     "description": "vegetable to chop",
-                    "enum": ["asparagus", "cabbage", "onion", "green pepper"]
+                    "enum": ["asparagus", "cabbage", "onion", "green pepper", "carrot"]
                 },
                 "amount": {
                     "type": "number",

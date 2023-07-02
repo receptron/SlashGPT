@@ -12,6 +12,14 @@
         {
           "ingredient": "chopped cabbage",
           "amount": 200
+        },
+        {
+          "ingredient": "bean sprouts",
+          "amount": 100
+        },
+        {
+          "ingredient": "chopped carrot",
+          "amount": 100
         }
       ],
     "sauce": [
