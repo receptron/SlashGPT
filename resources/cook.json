@@ -36,6 +36,24 @@
         }
     },
     {
+        "name": "grate",
+        "description": "Grate something",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredient": {
+                    "type": "string",
+                    "description": "ingredient to grate"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["ingredient", "amount"]
+        }
+    },
+    {
         "name": "slice_meat",
         "description": "Slice Meat",
         "parameters": {
