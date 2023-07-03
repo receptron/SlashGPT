@@ -304,6 +304,9 @@ class Main:
                     print(self.context.messages[0].get("content"))
                 if self.context.verbose and self.context.functions:
                     print(self.context.functions)
+            elif (key == "functions"):
+                if self.context.functions:
+                    print(json.dumps(self.context.functions, indent=2))
             elif (key == "gpt3"):
                 self.context.model = "gpt-3.5-turbo-0613"
                 self.context.max_token = 4096

@@ -101,9 +101,9 @@
                     "enum": ["on", "off"],
                     "description": "Specify the light switch."
                 },
-                "dimm": {
+                "dim": {
                     "type": "number",
-                    "description": "Specify the dimm level between 0 and 1.0. The 'switch' parameter must be 'on'."
+                    "description": "Specify the dim level between 0 and 1.0. The 'switch' parameter must be 'on'."
                 }
             },
             "required": ["location", "switch"]
