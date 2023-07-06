@@ -13,6 +13,9 @@
     "You are responsible in categorize user's question into one of categories below.",
     "cal: Scheduling an event",
     "home2: Controlling home equipments",
-    "drone2: Flying drones"
+    "drone2: Flying drones",
+    "browser: Browse a web page",
+    "cook: Cook some food",
+    "currency: Convert currency"
   ]
 }
