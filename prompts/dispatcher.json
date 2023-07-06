@@ -8,6 +8,9 @@
   "actions": {
     "categorize": { "message":"{question}", "metafile":"{category}" }
   },
+  "intro": [
+    "I am a dispatcher bot. I will find the right bot for your question, and let it answer." 
+  ],
   "sample": "Turn on the light of the living room, take a picture, and turn it off",
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
