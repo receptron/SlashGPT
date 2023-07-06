@@ -239,6 +239,7 @@ class ChatContext:
             role = "assistant"
         else:
             if self.functions:
+                # print(colored(self.messages, "green"))
                 response = openai.ChatCompletion.create(
                     model=self.model,
                     messages=self.messages,
@@ -381,16 +382,17 @@ class Main:
         function_message = None
         name = None
         while not self.exit:
-            if function_message and name:
+            roleInput = "user"
+            if function_message:
+                if name:
+                    roleInput = "function"
                 question = function_message
-                roleInput = "function"
                 function_message = None
                 if self.context.verbose:
                     print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-                roleInput = "user"
                 name = None
 
             # Process slash commands (if exits)
@@ -427,6 +429,7 @@ class Main:
                                 if metafile:
                                     metafile = metafile.format(**arguments)
                                     self.switchContext(metafile)
+                                    name = None # Withough name, this message will be treated as user prompt.
                                 if appkey:
                                     appkey_value = os.getenv(appkey, "")
                                     if appkey_value:
