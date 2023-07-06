@@ -150,12 +150,14 @@ class ChatContext:
             print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
-            next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
+            next_article = f'\n\nSection:\n"""\n{string}\n"""'
             if (self.num_tokens(articles + next_article + query) + base > token_budget):
                 break
             else:
                 count += 1
                 articles += next_article
+                if self.verbose:
+                    print(len(string), self.num_tokens(string))
         if (self.verbose):
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
