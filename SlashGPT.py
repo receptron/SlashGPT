@@ -418,7 +418,11 @@ class Main:
                                 method = action.get("method")
                                 template = action.get("template")
                                 message_template = action.get("message")
+                                metafile = action.get("metafile")
                                 appkey = action.get("appkey")
+                                if metafile:
+                                    metafile = metafile.format(**arguments)
+                                    self.switchContext(metafile)
                                 if appkey:
                                     appkey_value = os.getenv(appkey, "")
                                     if appkey_value:

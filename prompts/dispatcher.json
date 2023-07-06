@@ -1,0 +1,18 @@
+{
+  "title": "Dispatcher",
+  "source": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "modelx": "gpt-4-0613",
+  "temperature": "0.0",
+  "functions": "./resources/dispatcher.json",
+  "actions": {
+    "categorize": { "message":"{question}", "metafile":"{category}" }
+  },
+  "sample": "Turn on the light of the living room, take a picture, and turn it off",
+  "prompt": [
+    "You are responsible in categorize user's question into one of categories below.",
+    "cal: Scheduling an event",
+    "home2: Controlling home equipments",
+    "drone2: Flying drones"
+  ]
+}
