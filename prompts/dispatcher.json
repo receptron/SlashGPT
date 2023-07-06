@@ -12,6 +12,9 @@
     "I am a dispatcher bot. I will find the right bot for your question, and let it answer." 
   ],
   "sample": "Turn on the light of the living room, take a picture, and turn it off",
+  "sample2": "Please schedule a meeting with Tim Cook from 1pm pacific time for 30 minutes on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
+  "sample3": "Convert 1USD to JPY",
+  "sample4": "Please cook pork vegetable stir fly",
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "cal: Scheduling an event",

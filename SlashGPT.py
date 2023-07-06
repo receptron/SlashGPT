@@ -44,7 +44,6 @@ class ChatContext:
         self.botName = "GPT"
         self.title = ""
         self.intro = None
-        self.sample = None
         self.manifest = manifest
         self.prompt = None
         self.verbose = False
@@ -64,7 +63,6 @@ class ChatContext:
                 self.max_token = 4096 * 4
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
-            self.sample = manifest.get("sample")
             self.actions = manifest.get("actions") or {} 
             module = manifest.get("module")
             if module:
@@ -357,11 +355,12 @@ class Main:
                     print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
-            elif (key == "sample"):
-                if (self.context.sample):
-                    print(self.context.sample)
-                    question = self.context.sample
-                    return ("user", question)
+            elif key[:6] == "sample":
+                sample = self.context.manifest.get(key)
+                if (sample):
+                    print(sample)
+                    return ("user", sample)
+                print(colored(f"Error: No {key} in the manifest file", "red"))
             elif (key == "reset"):
                 self.loadManifests(self.pathManifests)
                 self.context = ChatContext(self.config)
