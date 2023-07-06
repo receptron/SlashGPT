@@ -281,6 +281,21 @@ class Main:
             # print(key, file, data)
             self.manifests[key] = data
 
+    def switchContext(self, key: str):
+        manifest = self.manifests.get(key)
+        if (manifest):
+            self.context = ChatContext(self.config, role=key, manifest = manifest)
+            if not os.path.isdir(f"output/{self.context.role}"):
+                os.makedirs(f"output/{self.context.role}")
+            print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
+
+            if (self.context.intro):
+                intro = self.context.intro[random.randrange(0, len(self.context.intro))]
+                self.context.messages.append({"role":"assistant", "content":intro})
+                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
+        else:            
+            print(colored(f"Invalid slash command: {key}", "red"))
+
     """
     If the question start with "/", process it as a Slash command.
     Otherwise, return (roleInput, question) as is.
@@ -353,19 +368,7 @@ class Main:
                 self.loadManifests('./rpg1')
                 self.context = ChatContext(self.config)
             else:
-                manifest = self.manifests.get(key)
-                if (manifest):
-                    self.context = ChatContext(self.config, role=key, manifest = manifest)
-                    if not os.path.isdir(f"output/{self.context.role}"):
-                        os.makedirs(f"output/{self.context.role}")
-                    print(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})")
-
-                    if (self.context.intro):
-                        intro = self.context.intro[random.randrange(0, len(self.context.intro))]
-                        self.context.messages.append({"role":"assistant", "content":intro})
-                        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
-                else:            
-                    print(f"Invalid slash command: {key}")
+                self.switchContext(key)
         else:
             return (roleInput, question)
         return (None, None)
