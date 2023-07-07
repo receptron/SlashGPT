@@ -310,8 +310,8 @@ class Main:
             commands = key.split(' ')
             if (commands[0] == "help"):
                 if (len(commands) == 1):
-                    list = ", ".join(f"/{key}" for key in sorted(self.manifests.keys()))
-                    print(f"Extensions: {list}")
+                    list = "\n".join(f"/{(key+'         ')[:12]} {self.manifests[key].get('title')}" for key in sorted(self.manifests.keys()))
+                    print(f"Extensions:\n{list}")
                 if (len(commands) == 2):
                     manifest = self.manifests.get(commands[1])
                     if (manifest):
