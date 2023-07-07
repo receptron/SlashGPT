@@ -34,6 +34,20 @@ class ChatConfig:
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
         self.ONELINE_HELP = "System Slashes: /new, /bye, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        self.LONG_HELP = """
+/new:       Start from the scratch
+/bye:       Terminate the app
+/clear:     Clear the current conversation
+/prompt:    Display the current prompt
+/sample:    Make the sample request
+/gpt3:      Switch the model to gpt-3.5-turbo-0613
+/gpt31:     Switch the model to gpt-3.5-turbo-16k-0613
+/gpt4:      Switch the model to gpt-4-0613
+/palm:      Switch the model to Google PaLM
+/verbose:   Toggle verbose switch
+/roles1:    Switch the manifest set to ones in prompts (original)
+/roles2:    Switch the manifest set to ones in roles2
+"""
 
 class ChatContext:
     def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
@@ -310,6 +324,7 @@ class Main:
             commands = key.split(' ')
             if (commands[0] == "help"):
                 if (len(commands) == 1):
+                    print(self.config.LONG_HELP)
                     list = "\n".join(f"/{(key+'         ')[:12]} {self.manifests[key].get('title')}" for key in sorted(self.manifests.keys()))
                     print(f"Extensions:\n{list}")
                 if (len(commands) == 2):

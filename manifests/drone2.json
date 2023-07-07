@@ -1,5 +1,5 @@
 {
-  "title": "Drone Pilot (multiple functions, which is not supported yet)",
+  "title": "Drone Pilot",
   "bot": "Pilot",
   "source": "snakajima",
   "modelx": "gpt-4-0613",

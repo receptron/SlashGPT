@@ -1,8 +1,7 @@
 {
-  "title": "Dispatcher",
+  "title": "Main Dispatcher",
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
-  "modelx": "gpt-4-0613",
   "temperature": "0.0",
   "functions": "./resources/dispatcher.json",
   "actions": {
