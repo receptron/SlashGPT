@@ -33,7 +33,7 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-        self.ONELINE_HELP = "System Slashes: /bye, /reset, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        self.ONELINE_HELP = "System Slashes: /new, /bye, /reset, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
 
 class ChatContext:
     def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
@@ -44,7 +44,6 @@ class ChatContext:
         self.botName = "GPT"
         self.title = ""
         self.intro = None
-        self.sample = None
         self.manifest = manifest
         self.prompt = None
         self.verbose = False
@@ -64,7 +63,6 @@ class ChatContext:
                 self.max_token = 4096 * 4
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
-            self.sample = manifest.get("sample")
             self.actions = manifest.get("actions") or {} 
             module = manifest.get("module")
             if module:
@@ -150,12 +148,14 @@ class ChatContext:
             print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
-            next_article = f'\n\nWikipedia article section:\n"""\n{string}\n"""'
+            next_article = f'\n\nSection:\n"""\n{string}\n"""'
             if (self.num_tokens(articles + next_article + query) + base > token_budget):
                 break
             else:
                 count += 1
                 articles += next_article
+                if self.verbose:
+                    print(len(string), self.num_tokens(string))
         if (self.verbose):
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
@@ -237,6 +237,7 @@ class ChatContext:
             role = "assistant"
         else:
             if self.functions:
+                # print(colored(self.messages, "green"))
                 response = openai.ChatCompletion.create(
                     model=self.model,
                     messages=self.messages,
@@ -354,14 +355,17 @@ class Main:
                     print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
-            elif (key == "sample"):
-                if (self.context.sample):
-                    print(self.context.sample)
-                    question = self.context.sample
-                    return ("user", question)
+            elif key[:6] == "sample":
+                sample = self.context.manifest.get(key)
+                if (sample):
+                    print(sample)
+                    return ("user", sample)
+                print(colored(f"Error: No {key} in the manifest file", "red"))
             elif (key == "reset"):
                 self.loadManifests(self.pathManifests)
                 self.context = ChatContext(self.config)
+            elif key == "new":
+                self.switchContext("dispatcher")
             elif (key == "clear"):
                 self.context.clearMessages()
             elif (key == "rpg1"):
@@ -377,9 +381,11 @@ class Main:
         function_message = None
         name = None
         while not self.exit:
-            if function_message and name:
+            roleInput = "user"
+            if function_message:
+                if name:
+                    roleInput = "function"
                 question = function_message
-                roleInput = "function"
                 function_message = None
                 if self.context.verbose:
                     print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
@@ -389,7 +395,6 @@ class Main:
                   question = input(f"\033[95m\033[1m{self.context.userName}({self.context.title}): \033[95m\033[0m")
                 else:
                   question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-                roleInput = "user"
                 name = None
 
             # Process slash commands (if exits)
@@ -426,6 +431,7 @@ class Main:
                                 if metafile:
                                     metafile = metafile.format(**arguments)
                                     self.switchContext(metafile)
+                                    name = None # Withough name, this message will be treated as user prompt.
                                 if appkey:
                                     appkey_value = os.getenv(appkey, "")
                                     if appkey_value:
@@ -475,5 +481,6 @@ class Main:
 config = ChatConfig()
 print(config.ONELINE_HELP)
 main = Main(config, "./prompts")
+main.switchContext('dispatcher')
 main.start()
 
