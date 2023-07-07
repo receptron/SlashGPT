@@ -306,9 +306,15 @@ class Main:
             print(self.config.ONELINE_HELP)
         elif (question[0] == "/"):
             key = question[1:]
-            if (key == "help"):
-                list = ", ".join(f"/{key}" for key in self.manifests.keys())
-                print(f"Extensions: {list}")
+            commands = key.split(' ')
+            if (commands[0] == "help"):
+                if (len(commands) == 1):
+                    list = ", ".join(f"/{key}" for key in sorted(self.manifests.keys()))
+                    print(f"Extensions: {list}")
+                if (len(commands) == 2):
+                    manifest = self.manifests.get(commands[1])
+                    if (manifest):
+                       print(manifest)
             elif (key == "bye"):
                 self.exit = True;
             elif (key == "verbose"):
