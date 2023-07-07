@@ -338,10 +338,6 @@ class Main:
                 self.context.max_token = 4096 * 4
                 print(f"Model = {self.context.model}")
             elif (key == "gpt4"):
-                self.context.model = "gpt-4"
-                self.context.max_token = 4096
-                print(f"Model = {self.context.model}")
-            elif (key == "gpt41"):
                 self.context.model = "gpt-4-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
