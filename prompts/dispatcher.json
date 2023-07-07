@@ -11,10 +11,13 @@
   "intro": [
     "I am a dispatcher bot. I will find the right bot for your question, and let it answer." 
   ],
-  "sample": "Turn on the light of the living room, take a picture, and turn it off",
-  "sample2": "Please schedule a meeting with Tim Cook from 1pm pacific time for 30 minutes on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
-  "sample3": "Convert 1USD to JPY",
-  "sample4": "Please cook pork vegetable stir fly",
+  "sample": "Please schedule a meeting with Tim Cook from 1pm pacific time for 30 minutes on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
+  "sample2": "Turn on the light of the living room, take a picture, and turn it off",
+  "sample3": "Please let the drone take off from the ground, fly around a building twice (first with height=2 meter2, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
+  "sample4": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "sample5": "Please cook pork vegetable stir fly",
+  "sample6": "Convert 1USD to JPY",
+  "sample7": "What is the weather in Seattle?",
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "cal: Scheduling an event",
