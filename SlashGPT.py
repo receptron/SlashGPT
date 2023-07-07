@@ -315,7 +315,7 @@ class Main:
                 if (len(commands) == 2):
                     manifest = self.manifests.get(commands[1])
                     if (manifest):
-                       print(manifest)
+                       print(json.dumps(manifest, indent=2))
             elif (key == "bye"):
                 self.exit = True;
             elif (key == "verbose"):
