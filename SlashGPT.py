@@ -369,13 +369,16 @@ class Main:
                 print(colored(f"Error: No {key} in the manifest file", "red"))
             elif (key == "reset"):
                 self.loadManifests(self.pathManifests)
-                self.context = ChatContext(self.config)
+                main.switchContext('dispatcher')
             elif key == "new":
                 self.switchContext("dispatcher")
             elif (key == "clear"):
                 self.context.clearMessages()
             elif (key == "rpg1"):
                 self.loadManifests('./rpg1')
+                main.switchContext('bartender')
+            elif (key == "roles2"):
+                self.loadManifests('./roles2')
                 self.context = ChatContext(self.config)
             else:
                 self.switchContext(key)
