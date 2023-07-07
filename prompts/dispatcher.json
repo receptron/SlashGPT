@@ -18,6 +18,7 @@
   "sample5": "Please cook pork vegetable stir fly",
   "sample6": "Convert 1USD to JPY",
   "sample7": "What is the weather in Seattle?",
+  "sample8": "Please show me the latest news about Tesla",
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "cal: Scheduling an event",
@@ -26,6 +27,7 @@
     "browser: Browse a web page",
     "cook: Cook some food",
     "currency: Convert currency",
-    "weather: Weather"
+    "weather: Weather",
+    "worldnews: News"
   ]
 }
