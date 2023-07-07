@@ -385,7 +385,10 @@ class Main:
                     print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
-                question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+                if self.context.title:
+                  question = input(f"\033[95m\033[1m{self.context.userName}({self.context.title}): \033[95m\033[0m")
+                else:
+                  question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 roleInput = "user"
                 name = None
 
