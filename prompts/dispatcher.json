@@ -22,6 +22,7 @@
     "drone2: Flying drones",
     "browser: Browse a web page",
     "cook: Cook some food",
-    "currency: Convert currency"
+    "currency: Convert currency",
+    "weather: Weather"
   ]
 }
