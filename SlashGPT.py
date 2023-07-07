@@ -377,6 +377,9 @@ class Main:
             elif (key == "rpg1"):
                 self.loadManifests('./rpg1')
                 main.switchContext('bartender')
+            elif (key == "roles1"):
+                self.loadManifests('./prompts')
+                self.context = ChatContext(self.config)
             elif (key == "roles2"):
                 self.loadManifests('./roles2')
                 self.context = ChatContext(self.config)
@@ -486,7 +489,7 @@ class Main:
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
-main = Main(config, "./prompts")
+main = Main(config, "./manifests")
 main.switchContext('dispatcher')
 main.start()
 
