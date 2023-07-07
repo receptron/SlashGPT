@@ -1,0 +1,16 @@
+[
+  {
+    "name": "news",
+    "description": "Retrieve news",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string",
+          "description": "News topic"
+        }
+      },
+      "required": []
+    }
+  }
+]

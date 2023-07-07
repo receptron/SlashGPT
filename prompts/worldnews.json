@@ -1,0 +1,15 @@
+{
+  "title": "World News",
+  "source": "https://gptstore.ai/plugins/-simbiss-net",
+  "temperature": "0.0",
+  "functions": "./resources/worldnews.json",
+  "sample": "Please show me the latest news about Tesla",
+  "actions": {
+    "news": {
+      "url": "https://simbiss.net/news?search={search}"
+    }
+  },
+  "prompt": [
+    "You convert currency values based on the latest exchange rates."
+  ]
+}
