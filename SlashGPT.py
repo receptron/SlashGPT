@@ -33,7 +33,7 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-        self.ONELINE_HELP = "System Slashes: /new, /bye, /reset, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        self.ONELINE_HELP = "System Slashes: /new, /bye, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
 
 class ChatContext:
     def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
@@ -367,11 +367,9 @@ class Main:
                     print(sample)
                     return ("user", sample)
                 print(colored(f"Error: No {key} in the manifest file", "red"))
-            elif (key == "reset"):
+            elif (key == "new"):
                 self.loadManifests(self.pathManifests)
                 main.switchContext('dispatcher')
-            elif key == "new":
-                self.switchContext("dispatcher")
             elif (key == "clear"):
                 self.context.clearMessages()
             elif (key == "rpg1"):
