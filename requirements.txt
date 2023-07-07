@@ -4,3 +4,4 @@ pinecone-client
 google-generativeai
 termcolor
 bs4
+tiktoken
