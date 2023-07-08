@@ -51,9 +51,9 @@ class ChatConfig:
 """
 
 class ChatContext:
-    def __init__(self, config: ChatConfig, role: str = "GPT", manifest = None):
+    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = None):
         self.config = config
-        self.role = role
+        self.key = key
         self.time = datetime.now()
         self.userName = "You"
         self.botName = "GPT"
@@ -71,7 +71,7 @@ class ChatContext:
         self.module = None
         if (manifest):
             self.userName = manifest.get("you") or self.userName
-            self.botName = manifest.get("bot") or self.role
+            self.botName = manifest.get("bot") or self.key
             self.model = manifest.get("model") or self.model
             if self.model == "gpt-3.5-turbo-16k-0613":
                 self.max_token = 4096 * 4
@@ -299,9 +299,9 @@ class Main:
     def switchContext(self, key: str, intro: bool = True):
         manifest = self.manifests.get(key)
         if manifest:
-            self.context = ChatContext(self.config, role=key, manifest = manifest)
-            if not os.path.isdir(f"output/{self.context.role}"):
-                os.makedirs(f"output/{self.context.role}")
+            self.context = ChatContext(self.config, key=key, manifest = manifest)
+            if not os.path.isdir(f"output/{self.context.key}"):
+                os.makedirs(f"output/{self.context.key}")
             print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
 
             if intro and self.context.intro:
@@ -427,7 +427,7 @@ class Main:
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
                         self.context.messages.append({"role":role, "content":res})
-                        with open(f"output/{self.context.role}/{self.context.time}.json", 'w') as f:
+                        with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
                             json.dump(self.context.messages, f)
 
                     if (function_call):
