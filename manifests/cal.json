@@ -5,13 +5,14 @@
   "model": "gpt-4-0613",
   "temperature": "0.0",
   "functions": "./resources/calendar.json",
-  "module": "./resources/calendar.py",
+  "x-module": "./resources/calendar.py",
   "actions": {
     "make_event": {
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
       "message": "{{ 'invitation_link': '{url}' }}"
-    }
+    },
+    "send_invitation": { "message":"Success. The invitation was sent to {recipients}" }
   },
   "intro": [
     "Please let me know if there any event you want to add to your calendar" 

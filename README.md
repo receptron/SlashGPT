@@ -40,7 +40,7 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 ## Manifest files
 
-Create a new manifest file in "prompts" folder with following properties:
+Create a new manifest file in "manifests" folder with following properties:
 
 - *title* (string, **required**): Title for the user to see
 - *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
@@ -66,11 +66,12 @@ It defines template-based function implementations (including mockups), alternat
 
 It supports three different methods. 
 
-### 1. Formatted string (mockups).
+### 1. Formatted string.
 
 Use this method to develop the front-end of a system before the backend become ready. 
 
-- *message* (string, required): Python-style format string
+- *message* (format string, required): chat messgae to be added 
+- *metafile* (format string, optional): metafile name to be loaded for chained action
 
 Here is an example (home2).
 
