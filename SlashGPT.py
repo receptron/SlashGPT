@@ -55,7 +55,7 @@ class ChatContext:
         self.config = config
         self.key = key
         self.time = datetime.now()
-        self.userName = "You"
+        self.userName = f"You({key})"
         self.botName = "GPT"
         self.title = ""
         self.intro = None
