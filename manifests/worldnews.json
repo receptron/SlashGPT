@@ -2,6 +2,7 @@
   "title": "World News",
   "source": "https://gptstore.ai/plugins/-simbiss-net",
   "temperature": "0.0",
+  "model": "gpt-3.5-turbo-16k-0613",
   "functions": "./resources/worldnews.json",
   "sample": "Please show me the latest news about Tesla",
   "actions": {
