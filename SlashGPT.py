@@ -431,12 +431,13 @@ class Main:
                             json.dump(self.context.messages, f)
 
                     if (function_call):
+                        name = function_call.get("name")
                         arguments = function_call.get("arguments") 
                         if arguments and isinstance(arguments, str):
                             arguments = json.loads(arguments)      
                             function_call.arguments = arguments
-                        print(colored(function_call, "blue"))
-                        name = function_call.get("name")
+                        params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
+                        print(colored(f"FunctionCall: {name}({params})", "blue"))
                         if name:
                             action = self.context.actions.get(name)
                             if action:
@@ -493,7 +494,7 @@ class Main:
                                         result = json.dumps(result)
                                     function_message = result
                 except Exception as e:
-                    print("Exception: restarting the chat", e)
+                    print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.context.clearMessages()
 
 config = ChatConfig()

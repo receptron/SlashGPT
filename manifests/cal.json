@@ -2,7 +2,7 @@
   "title": "Calendar",
   "bot": "iCal",
   "source": "snakajima",
-  "model": "gpt-4-0613",
+  "x-model": "gpt-4-0613",
   "temperature": "0.0",
   "functions": "./resources/calendar.json",
   "x-module": "./resources/calendar.py",
@@ -10,7 +10,7 @@
     "make_event": {
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
-      "message": "{{ 'invitation_link': '{url}' }}"
+      "message": "{{ 'result':'Success', 'invitation_link': '{url}' }}"
     },
     "send_invitation": { "message":"Success. The invitation was sent to {recipients}" }
   },
