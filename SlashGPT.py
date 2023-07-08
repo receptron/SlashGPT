@@ -26,6 +26,7 @@ class ChatConfig:
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
+        self.verbose = False
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
         openai.api_key = self.OPENAI_API_KEY
@@ -60,7 +61,6 @@ class ChatContext:
         self.intro = None
         self.manifest = manifest
         self.prompt = None
-        self.verbose = False
         self.index = None # pinecone index
         self.temperature = 0.7
         self.model = "gpt-3.5-turbo-0613"
@@ -124,7 +124,7 @@ class ChatContext:
             if functions:
                 with open(f"{functions}", 'r') as f:
                     self.functions = json.load(f)
-                    if self.verbose:
+                    if self.config.verbose:
                         print(self.functions)
 
     def clearMessages(self):
@@ -158,7 +158,7 @@ class ChatContext:
         articles = ""
         count = 0
         base = self.messages_tokens()
-        if (self.verbose):
+        if (self.config.verbose):
             print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
@@ -168,9 +168,9 @@ class ChatContext:
             else:
                 count += 1
                 articles += next_article
-                if self.verbose:
+                if self.config.verbose:
                     print(len(string), self.num_tokens(string))
-        if (self.verbose):
+        if (self.config.verbose):
             print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
         return articles
 
@@ -262,7 +262,7 @@ class ChatContext:
                     model=self.model,
                     messages=self.messages,
                     temperature=self.temperature)
-            if (self.verbose):
+            if (self.config.verbose):
                 print(colored(f"model={response['model']}", "yellow"))
                 print(colored(f"usage={response['usage']}", "yellow"))
             answer = response['choices'][0]['message']
@@ -334,12 +334,12 @@ class Main:
             elif (key == "bye"):
                 self.exit = True;
             elif (key == "verbose"):
-                self.context.verbose = self.context.verbose == False
-                print(f"Verbose Mode: {self.context.verbose}")
+                self.config.verbose = self.config.verbose == False
+                print(f"Verbose Mode: {self.config.verbose}")
             elif (key == "prompt"):
                 if (len(self.context.messages) >= 1):
                     print(self.context.messages[0].get("content"))
-                if self.context.verbose and self.context.functions:
+                if self.config.verbose and self.context.functions:
                     print(self.context.functions)
             elif (key == "functions"):
                 if self.context.functions:
@@ -408,7 +408,7 @@ class Main:
                     roleInput = "function"
                 question = function_message
                 function_message = None
-                if self.context.verbose:
+                if self.config.verbose:
                     print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
@@ -459,12 +459,12 @@ class Main:
                                 if url:
                                     if method == "POST":
                                         headers = {'Content-Type': 'application/json'}
-                                        if self.context.verbose:
+                                        if self.config.verbose:
                                             print(colored(f"Posting to {url}", "yellow"))
                                         response = requests.post(url, headers=headers, json=arguments)
                                     else:
                                         url = url.format(**arguments)
-                                        if self.context.verbose:
+                                        if self.config.verbose:
                                             print(colored(f"Fetching from {url}", "yellow"))
                                         response = requests.get(url)
                                     if response.status_code == 200:
@@ -476,7 +476,7 @@ class Main:
                                     message_template = message_template or f"{url}"
                                     with open(f"{template}", 'r') as f:
                                         template = f.read()
-                                        if self.context.verbose:
+                                        if self.config.verbose:
                                             print(template)
                                         ical = template.format(**arguments)
                                         url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
