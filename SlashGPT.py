@@ -458,10 +458,15 @@ class Main:
                                     else:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
+                                    bearer = action.get("HTTPBearer")
+                                    if bearer:
+                                        bearer = os.getenv(bearer, "")
                                     if method == "POST":
                                         headers = {'Content-Type': 'application/json'}
+                                        if bearer:
+                                            headers["Authorization"] = f"Bearer {bearer}"
                                         if self.config.verbose:
-                                            print(colored(f"Posting to {url}", "yellow"))
+                                            print(colored(f"Posting to {url} {headers}", "yellow"))
                                         response = requests.post(url, headers=headers, json=arguments)
                                     else:
                                         url = url.format(**arguments)
