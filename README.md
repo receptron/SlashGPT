@@ -1,12 +1,14 @@
 # SlashGPT
 
-SlashGPT is a playground for develeopers to make quick prototypes of LLM apps (apps with Natural Language UI).
+SlashGPT is a playground for develeopers to make quick prototypes of LLM agents (or apps with Natural Language UI).
 
 Here are the design goals:
 
-1. Extremely easy to create a new LLM app. You just need to add a new manifest file (in Json).
-2. Instantly switch between apps. Just type "/{appname}"
-3. Extensible enough so that it is possible to implement most of LLM apps without writing any code. 
+1. Extremely easy to create a new LLM agent. You just need to add a new manifest file (in Json).
+2. Instantly switch amang agents, by just typing "/{agent_name}"
+3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
+4. It is possible to integrate ChatGPT plugins as agents without writing any code.
+5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
 
 ## Initialization
 
@@ -29,7 +31,7 @@ Here are the design goals:
 
 1. Type `./SlashGPT.py`
 
-2. When you see "You:", type a message to the chat bot OR type a slash command starting with "/".
+2. When you see "You:", type a message to the agent OR type a slash command starting with "/".
 
 ## Outputs
 
@@ -40,12 +42,13 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 ## Manifest files
 
-Create a new manifest file in "manifests" folder with following properties:
+Create a new manifest file, {agent_name}.json in "manifests" folder with following properties:
 
 - *title* (string, **required**): Title for the user to see
 - *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
-- *promt* (array of strings, **required**): The system prompts which define the bot (required)
-- *bot* (string, optional): Bot name
+- *promt* (array of strings, **required**): The system prompts which define the agent (required)
+- *bot* (string, optional): Agent name
+- *you* (string, optional): User name. The default is You({agent_name}).
 - *sample* (string, optional): Sample question (type "/sample" to send it)
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
