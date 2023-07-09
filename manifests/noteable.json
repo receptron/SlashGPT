@@ -9,6 +9,7 @@
   },
   "prompt": [
     "Don't make assumptions about what values to plug into functions.",
+    "Omit optional parameters if you don't know an appropriate value for it.",
     "Ask for clarification if a user request is ambiguous."
   ]
 }
