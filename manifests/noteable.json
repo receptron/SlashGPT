@@ -1,0 +1,14 @@
+{
+  "title": "World News",
+  "source": "https://gptstore.ai/plugins/chat-noteable-io",
+  "temperature": "0.0",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": "./resources/noteable.json",
+  "sample": "Please show me the latest news about Tesla",
+  "actions": {
+  },
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}
