@@ -10,6 +10,11 @@
       "method": "POST",
       "url": "https://chat.noteable.io/api/origami/p/",
       "HTTPBearer": "NOTEABLE_API_KEY"
+    },
+    "create_notebook": {
+      "method": "POST",
+      "url": "https://chat.noteable.io/api/origami/f/",
+      "HTTPBearer": "NOTEABLE_API_KEY"
     }
   },
   "prompt": [
