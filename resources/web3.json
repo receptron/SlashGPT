@@ -1,0 +1,16 @@
+[
+    {
+        "name": "generate_svg",
+        "description": "Generate SVG data for a given token ID using a smart contract",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "token_id": {
+                    "type": "integer",
+                    "description": "The ID of the token"
+                }
+            },
+            "required": ["token_id"]
+        }
+    }
+]
