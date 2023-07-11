@@ -1,0 +1,29 @@
+{
+  "title": "WIP: Noteable",
+  "source": "https://gptstore.ai/plugins/chat-noteable-io",
+  "temperature": "0.0",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": "./resources/noteable.json",
+  "sample": "Please show me the latest news about Tesla",
+  "actions": {
+    "create_project": {
+      "method": "POST",
+      "url": "https://chat.noteable.io/api/origami/p/",
+      "HTTPBearer": "NOTEABLE_API_KEY"
+    },
+    "create_notebook": {
+      "method": "POST",
+      "url": "https://chat.noteable.io/api/origami/f/",
+      "HTTPBearer": "NOTEABLE_API_KEY"
+    },
+    "user_info": {
+      "url": "https://app.noteable.io/gate/api/users/me",
+      "HTTPBearer": "NOTEABLE_API_KEY"
+    }
+  },
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Omit optional parameters if you don't know an appropriate value for it.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}
