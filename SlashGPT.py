@@ -339,11 +339,16 @@ class Main:
             elif (key == "verbose"):
                 self.config.verbose = self.config.verbose == False
                 print(f"Verbose Mode: {self.config.verbose}")
-            elif key == "audio":
-                if self.config.audio:
+            elif commands[0] == "audio":
+                if len(commands) == 1:
+                    if self.config.audio:
+                        self.config.audio = None
+                    else:
+                        self.config.audio = "en"
+                elif commands[1] == "off":
                     self.config.audio = None
                 else:
-                    self.config.audio = "en"
+                    self.config.audio = commands[1]
                 print(f"Audio mode: {self.config.audio}")
             elif (key == "prompt"):
                 if (len(self.context.messages) >= 1):

@@ -7,3 +7,4 @@ bs4
 tiktoken
 gTTS
 playsound
+pyobjc
