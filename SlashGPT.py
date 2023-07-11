@@ -14,6 +14,8 @@ import google.generativeai.types as safety_types
 from termcolor import colored
 import urllib.parse
 import requests
+from gtts import gTTS
+from playsound import playsound
 
 # Configuration
 
@@ -426,6 +428,11 @@ class Main:
 
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+
+                        audio_obj = gTTS(text=res, lang="en", slow=False)
+                        audio_obj.save("./output/audio.mp3")
+                        playsound("./output/audio.mp3")
+
                         self.context.messages.append({"role":role, "content":res})
                         with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
                             json.dump(self.context.messages, f)
@@ -458,13 +465,14 @@ class Main:
                                     else:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
+                                    headers = {}
                                     bearer = action.get("HTTPBearer")
                                     if bearer:
                                         bearer = os.getenv(bearer, "")
-                                    if method == "POST":
-                                        headers = {'Content-Type': 'application/json'}
                                         if bearer:
                                             headers["Authorization"] = f"Bearer {bearer}"
+                                    if method == "POST":
+                                        headers['Content-Type'] = 'application/json';
                                         if self.config.verbose:
                                             print(colored(f"Posting to {url} {headers}", "yellow"))
                                         response = requests.post(url, headers=headers, json=arguments)
@@ -472,7 +480,7 @@ class Main:
                                         url = url.format(**arguments)
                                         if self.config.verbose:
                                             print(colored(f"Fetching from {url}", "yellow"))
-                                        response = requests.get(url)
+                                        response = requests.get(url, headers=headers)
                                     if response.status_code == 200:
                                         function_message = response.text
                                     else:

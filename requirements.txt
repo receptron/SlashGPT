@@ -5,3 +5,5 @@ google-generativeai
 termcolor
 bs4
 tiktoken
+gTTS
+playsound
