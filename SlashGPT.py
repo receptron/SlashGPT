@@ -29,6 +29,7 @@ class ChatConfig:
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
         self.verbose = False
+        self.audio = None
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
         openai.api_key = self.OPENAI_API_KEY
@@ -338,6 +339,12 @@ class Main:
             elif (key == "verbose"):
                 self.config.verbose = self.config.verbose == False
                 print(f"Verbose Mode: {self.config.verbose}")
+            elif key == "audio":
+                if self.config.audio:
+                    self.config.audio = None
+                else:
+                    self.config.audio = "en"
+                print(f"Audio mode: {self.config.audio}")
             elif (key == "prompt"):
                 if (len(self.context.messages) >= 1):
                     print(self.context.messages[0].get("content"))
@@ -429,9 +436,10 @@ class Main:
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
 
-                        audio_obj = gTTS(text=res, lang="en", slow=False)
-                        audio_obj.save("./output/audio.mp3")
-                        playsound("./output/audio.mp3")
+                        if self.config.audio:
+                            audio_obj = gTTS(text=res, lang=self.config.audio, slow=False)
+                            audio_obj.save("./output/audio.mp3")
+                            playsound("./output/audio.mp3")
 
                         self.context.messages.append({"role":role, "content":res})
                         with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
