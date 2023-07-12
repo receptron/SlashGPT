@@ -1,0 +1,18 @@
+{
+  "title": "Web Pilot AI",
+  "description": "Allows users to input a URL, retrieves the web page content, and returns a comprehensible summary of it.",
+  "source": "https://gptstore.ai/plugins/webpilotai-com",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": "0.5",
+  "functions": "./resources/webpilot.json",
+  "actions": {
+    "visit_web": {
+      "method": "POST",
+      "url": "https://webreader.webpilotai.com/api/visit-web"
+    }
+  },
+  "sample": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "prompt": [
+    "This tool allows users to provide a URL(or URLs) and optionally requests for interacting with, extracting specific information or how to do with the content from the URL. Requests may include rewrite, translate, and others. If there any requests, when accessing the /api/visit-web endpoint, the parameter 'user_has_request' should be set to 'true. And if there's no any requests, 'user_has_request' should be set to 'false'."
+  ]
+}
