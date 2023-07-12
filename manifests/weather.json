@@ -1,5 +1,6 @@
 {
   "title": "Weather Channel",
+  "description": "Gets Weather Info",
   "bot": "Weather",
   "source": "snakajima",
   "temperature": "0.0",

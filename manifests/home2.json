@@ -1,5 +1,6 @@
 {
   "title": "Home Automation",
+  "description": "Controls home equipments",
   "bot": "Home",
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",

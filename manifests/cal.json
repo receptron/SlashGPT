@@ -1,5 +1,6 @@
 {
   "title": "Calendar",
+  "description": "Schedules events",
   "bot": "iCal",
   "source": "snakajima",
   "x-model": "gpt-4-0613",

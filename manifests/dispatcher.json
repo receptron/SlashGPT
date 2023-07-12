@@ -11,6 +11,7 @@
     "I am a dispatcher bot. I will find the right bot for your question, and let it answer." 
   ],
   "sample": "Please convert $1 (US) to Japanese Yen",
+  "agents": ["cal", "home2"],
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "cal: Scheduling an event",
