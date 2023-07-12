@@ -9,8 +9,9 @@
     "visit_web": {
       "method": "POST",
       "url": "https://webreader.webpilotai.com/api/visit-web",
+      "appkey": "WEBPILOT_UID",
       "headers": {
-        "WebPilot-Friend-UID": "70DDB475-B906-4428-998E-547789096AB7"
+        "WebPilot-Friend-UID": "{appkey}"
       }
     }
   },

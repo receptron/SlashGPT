@@ -492,6 +492,7 @@ class Main:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
                                     headers = action.get("headers",{})
+                                    headers = {key:value.format(**arguments) for key,value in headers.items()}
                                     bearer = action.get("HTTPBearer")
                                     if bearer:
                                         bearer = os.getenv(bearer, "")
