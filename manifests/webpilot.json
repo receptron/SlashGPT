@@ -8,7 +8,10 @@
   "actions": {
     "visit_web": {
       "method": "POST",
-      "url": "https://webreader.webpilotai.com/api/visit-web"
+      "url": "https://webreader.webpilotai.com/api/visit-web",
+      "headers": {
+        "WebPilot-Friend-UID": "70DDB475-B906-4428-998E-547789096AB7"
+      }
     }
   },
   "sample": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
