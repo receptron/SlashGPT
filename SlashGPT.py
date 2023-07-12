@@ -386,6 +386,14 @@ class Main:
                     print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
+            elif commands[0] == "sample" and len(commands) > 1:
+                sub_key = commands[1]
+                sub_manifest = self.manifests.get(sub_key)
+                if sub_manifest:
+                    sample = sub_manifest.get("sample")
+                    if sample:
+                        print(sample)
+                        return ("user", sample)
             elif key[:6] == "sample":
                 sample = self.context.manifest.get(key)
                 if (sample):
