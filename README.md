@@ -20,7 +20,7 @@ Here are the design goals:
 
     `OPENAI_API_KEY=...`
 
-3. You need to specify other keys to use following features (optional).
+3. You need to specify other variables to use following features (optional).
 
     - PINECONE_API_KEY, PINECONE_ENVIRONMENT: requred to use embedding vector db.
     - GOOGLE_PALM_KEY: required to switch to PaLM LLC using /palm command.
