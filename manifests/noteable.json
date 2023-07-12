@@ -16,7 +16,7 @@
       "url": "https://chat.noteable.io/api/origami/f/",
       "HTTPBearer": "NOTEABLE_API_KEY"
     },
-    "user_info": {
+    "get_userinfo": {
       "url": "https://app.noteable.io/gate/api/users/me",
       "HTTPBearer": "NOTEABLE_API_KEY"
     }

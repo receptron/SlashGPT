@@ -36,5 +36,18 @@
         }
       }
     }
+  },
+  {
+    "name": "get_userinfo",
+    "description": "Get the information about the user",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "none": {
+          "type": "string",
+          "description": "optional meaningless parameter"
+        }
+      }
+    }
   }
 ]
