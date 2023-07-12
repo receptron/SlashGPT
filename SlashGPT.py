@@ -54,7 +54,7 @@ class ChatConfig:
 """
 
 class ChatContext:
-    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = None):
+    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = None, manifests = None):
         self.config = config
         self.key = key
         self.time = datetime.now()
@@ -115,6 +115,10 @@ class ChatContext:
                 with open(f"{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
+            agents = manifest.get("agents")
+            if agents and manifests:
+                agents = [f"{agent}:{manifests[agent].get('description')}" for agent in agents]
+                self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
             embeddings = manifest.get("embeddings")
             if embeddings:
                 table_name = embeddings.get("name")
@@ -302,7 +306,7 @@ class Main:
     def switchContext(self, key: str, intro: bool = True):
         manifest = self.manifests.get(key)
         if manifest:
-            self.context = ChatContext(self.config, key=key, manifest = manifest)
+            self.context = ChatContext(self.config, key=key, manifest=manifest, manifests=self.manifests)
             if not os.path.isdir(f"output/{self.context.key}"):
                 os.makedirs(f"output/{self.context.key}")
             print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
