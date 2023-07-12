@@ -23,6 +23,12 @@
     "parameters": {
       "type": "object",
       "properties": {
+        "project_id": {
+          "title": "Project ID",
+          "type": "string",
+          "description": "The ID of the project to create the notebook in. Defaults to the user's default project.",
+          "format": "uuid"
+        },
         "notebook_name": {
           "title": "Notebook Name",
           "type": "string",
@@ -34,7 +40,8 @@
           "description": "Whether to start the kernel after creating the notebook.",
           "default": true
         }
-      }
+      },
+      "required": ["notebook_name"]
     }
   },
   {
