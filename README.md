@@ -20,12 +20,15 @@ Here are the design goals:
 
     `OPENAI_API_KEY=...`
 
-3. You may optionally specify Pinecone key and oehter keys.
+3. You need to specify other keys to use following features (optional).
 
-    `PINECONE_API_KEY=...`
-    `PINECONE_ENVIRONMENT=...`
-    `GOOGLE_PALM_KEY=...`
-    `WOLFRAM_API_KEY=...`
+    - PINECONE_API_KEY, PINECONE_ENVIRONMENT: requred to use embedding vector db.
+    - GOOGLE_PALM_KEY: required to switch to PaLM LLC using /palm command.
+    - WOLFRAM_API_KEY: required to use "walfram" agent.
+    - OPENWEATHER_API_KEY: required to use "weather" agent.
+    - NOTEABLE_API_KEY: required to use "noteable" agent.
+    - ALCHEMY_API_KEY: required to use "web3" agent.
+    - WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
 
 ## Execution
 
