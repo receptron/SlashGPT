@@ -6,6 +6,7 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "functions": "./resources/worldnews.json",
   "sample": "Please show me the latest news about Tesla",
+  "sample2": "Format them into links in Markdown format with no double quotes",
   "actions": {
     "news": {
       "url": "https://simbiss.net/news?search={search}"

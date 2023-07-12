@@ -16,6 +16,7 @@ import urllib.parse
 import requests
 from gtts import gTTS
 from playsound import playsound
+import urllib.parse
 
 # Configuration
 
@@ -502,7 +503,7 @@ class Main:
                                             print(colored(f"Posting to {url} {headers}", "yellow"))
                                         response = requests.post(url, headers=headers, json=arguments)
                                     else:
-                                        url = url.format(**arguments)
+                                        url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
                                         if self.config.verbose:
                                             print(colored(f"Fetching from {url}", "yellow"))
                                         response = requests.get(url, headers=headers)

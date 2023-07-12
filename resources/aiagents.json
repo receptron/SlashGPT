@@ -1,0 +1,16 @@
+[
+  {
+    "name": "aiagent",
+    "description": "Talk with a Master AI Agent that will provide guidance and advice to perform your goal",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "description": "the goal to send to the Master AI Agent"
+        }
+      },
+      "required": ["goal"]
+    }
+  }
+]
