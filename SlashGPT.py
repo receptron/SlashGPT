@@ -310,7 +310,10 @@ class Main:
             self.context = ChatContext(self.config, key=key, manifest=manifest, manifests=self.manifests)
             if not os.path.isdir(f"output/{self.context.key}"):
                 os.makedirs(f"output/{self.context.key}")
-            print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
+            if self.config.verbose:
+                print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
+            else:
+                print(colored(f"Activating: {self.context.title}", "blue"))
 
             if intro and self.context.intro:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]
