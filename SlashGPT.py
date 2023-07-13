@@ -334,7 +334,7 @@ class Main:
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
                     list = "\n".join(f"/{(key+'         ')[:12]} {self.manifests[key].get('title')}" for key in sorted(self.manifests.keys()))
-                    print(f"Extensions:\n{list}")
+                    print(f"Agents:\n{list}")
                 if (len(commands) == 2):
                     manifest = self.manifests.get(commands[1])
                     if (manifest):

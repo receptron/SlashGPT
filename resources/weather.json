@@ -7,7 +7,7 @@
       "properties": {
         "location": {
           "type": "string",
-          "description": "The city and state, e.g. San Francisco"
+          "description": "The city, e.g. San Francisco"
         }
       },
       "required": ["location"]
