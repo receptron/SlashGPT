@@ -2,7 +2,7 @@
   "title": "Open Weather",
   "description": "Gets Weather Info",
   "bot": "Weather",
-  "source": "snakajima",
+  "source": "snakajima, https://openweathermap.org",
   "temperature": "0.0",
   "functions": "./resources/weather.json",
   "actions": {
