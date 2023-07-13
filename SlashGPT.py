@@ -493,11 +493,6 @@ class Main:
                                 if url:
                                     headers = action.get("headers",{})
                                     headers = {key:value.format(**arguments) for key,value in headers.items()}
-                                    bearer = action.get("HTTPBearer")
-                                    if bearer:
-                                        bearer = os.getenv(bearer, "")
-                                        if bearer:
-                                            headers["Authorization"] = f"Bearer {bearer}"
                                     if method == "POST":
                                         headers['Content-Type'] = 'application/json';
                                         if self.config.verbose:

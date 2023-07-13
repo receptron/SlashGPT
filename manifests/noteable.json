@@ -10,12 +10,18 @@
     "create_project": {
       "method": "POST",
       "url": "https://chat.noteable.io/api/origami/p/",
-      "HTTPBearer": "NOTEABLE_API_KEY"
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
     },
     "create_notebook": {
       "method": "POST",
       "url": "https://chat.noteable.io/api/origami/f/",
-      "HTTPBearer": "NOTEABLE_API_KEY"
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
     },
     "get_userinfo": {
       "url": "https://app.noteable.io/gate/api/users/me",
