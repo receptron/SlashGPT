@@ -470,7 +470,7 @@ class Main:
                             arguments = json.loads(arguments)      
                             function_call.arguments = arguments
                         params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
-                        print(colored(f"FunctionCall: {name}({params})", "blue"))
+                        print(colored(f"Function: {name}({params})", "blue"))
                         if name:
                             action = self.context.actions.get(name)
                             if action:
