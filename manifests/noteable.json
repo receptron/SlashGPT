@@ -19,7 +19,10 @@
     },
     "get_userinfo": {
       "url": "https://app.noteable.io/gate/api/users/me",
-      "HTTPBearer": "NOTEABLE_API_KEY"
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
     }
   },
   "prompt": [
