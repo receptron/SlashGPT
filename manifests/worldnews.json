@@ -7,6 +7,7 @@
   "functions": "./resources/worldnews.json",
   "sample": "Please show me the latest news about Tesla",
   "sample2": "Format them into links in Markdown format with no double quotes",
+  "sample3": "Get the latest news about Tesla, present them with numbers.",
   "actions": {
     "news": {
       "url": "https://simbiss.net/news?search={search}"

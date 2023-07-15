@@ -1,0 +1,28 @@
+{
+  "title": "News News",
+  "source": "snakajima",
+  "temperature": "0.0",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": "./resources/news2.json",
+  "sample": "Please show me the latest news about Tesla",
+  "sample2": "Format them into links in Markdown format with no double quotes",
+  "sample3": "Get the latest news about Tesla, present them with numbers.",
+  "actions": {
+    "news": {
+      "url": "https://simbiss.net/news?search={search}"
+    },
+    "visit_web": {
+      "method": "POST",
+      "url": "https://webreader.webpilotai.com/api/visit-web",
+      "appkey": "WEBPILOT_UID",
+      "headers": {
+        "WebPilot-Friend-UID": "{appkey}"
+      }
+    }
+  },
+  "prompt": [
+    "When the user ask for news, call 'news' function to retrieve news and present them as numbered list, and ask the user to pick one.",
+    "When the user choose one of news, call 'visit_web' method with the link to retrieve the contents (with user_has_request=true).",
+    "Then, present it in markdown format with the title link at the top and the two paragraph summary in Japanese below.日本語でよろしく。"
+  ]
+}
