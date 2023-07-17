@@ -1,0 +1,30 @@
+[
+  {
+    "name": "create_notebook",
+    "description": "Create a notebook on the Jupyter",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the notebook"
+        }
+      },
+      "required": ["name"]
+    }
+  },
+  {
+    "name": "create_cell",
+    "description": "Create a code cell on Jupyter notebook and execute",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Python code to execute"
+        }
+      },
+      "required": ["code"]
+    }
+  }
+]
