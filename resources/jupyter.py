@@ -6,20 +6,17 @@ import json
 load_dotenv() # Load default environment variables (.env)
 JUPYTER_TOKEN = os.getenv("JUPYTER_TOKEN", "")
 print(f"jupyter token: {JUPYTER_TOKEN}")
+token_response = requests.get("http://localhost:8888/")
+xsrf_token = token_response.cookies.get("_xsrf")
+headers = {
+    "Authorization": f"Token {JUPYTER_TOKEN}",
+    "Content-Type": "application/json",
+    "X-XSRFToken": xsrf_token
+}
+cookies = {"_xsrf": xsrf_token}
+api_endpoint = "http://localhost:8888/api/contents"
 
 def create_notebook(name):
-    response = requests.get("http://localhost:8888/")
-    xsrf_token = response.cookies.get("_xsrf")
-
-    api_endpoint = "http://localhost:8888/api/contents"
-    headers = {
-        "Authorization": f"Token {JUPYTER_TOKEN}",
-        "Content-Type": "application/json",
-        "X-XSRFToken": xsrf_token
-    }
-    cookies = {"_xsrf": xsrf_token}
-    print(headers)
-
     # Create a new notebook
     new_notebook = {
         "type": "notebook",
@@ -34,3 +31,6 @@ def create_notebook(name):
         return notebook_data    
     else:
         print(f"Error creating notebook. Status code: {response.status_code}")
+
+def create_code_cell(name):
+    print(1)

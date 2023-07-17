@@ -14,17 +14,21 @@
     }
   },
   {
-    "name": "create_cell",
-    "description": "Create a code cell on Jupyter notebook and execute",
+    "name": "create_code_cell",
+    "description": "Create a code cell on a specific notebook",
     "parameters": {
       "type": "object",
       "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the notebook"
+        },
         "code": {
           "type": "string",
           "description": "Python code to execute"
         }
       },
-      "required": ["code"]
+      "required": ["path", "code"]
     }
   }
 ]

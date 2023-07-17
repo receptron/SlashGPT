@@ -7,7 +7,7 @@
   "module": "./resources/jupyter.py",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "create a notebook",
-  "sample2": "Calcurate 1+1 using Jupyter notebook",
+  "sample2": "Calcurate 1+1 using that Jupyter notebook",
   "prompt": [
     "You are a front end of Jupyter notebook"
   ]
