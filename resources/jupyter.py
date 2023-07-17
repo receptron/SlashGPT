@@ -31,18 +31,6 @@ def create_notebook(name):
 
     if response.status_code == 201:
         notebook_data = json.loads(response.content)
-        notebook_path = notebook_data["content"]["path"]
-
-        # Execute the notebook
-        execute_endpoint = f"http://localhost:8888/api/notebooks/{notebook_path}/execute"
-        response = requests.post(execute_endpoint, headers=headers)
-
-        if response.status_code == 202:
-            print("Notebook created and executed successfully.")
-        else:
-            print(f"Error executing notebook. Status code: {response.status_code}")
-        print(response.json)        
-        return response.json
-    
+        return notebook_data    
     else:
         print(f"Error creating notebook. Status code: {response.status_code}")
