@@ -11,6 +11,6 @@
   "prompt": [
     "名前のリストを与えられたら、その全ての「読み(hiragana)」と「性別(sex)」をJSONで返してください。",
     "Input: ['太郎','花子']",
-    "Output: [{'name':'太郎', 'hiragana':'たろう', 'sex':'male'}, {'name':'花子', 'hiragana':'はなこ', 'sex':'female'}]"
+    "Output: [{'name':'太郎', 'hiragana':'たろう', 'sex':'male'},\n{'name':'花子', 'hiragana':'はなこ', 'sex':'female'}]"
   ]
 }
