@@ -26,11 +26,34 @@ def create_notebook(name):
 
     response = requests.post(api_endpoint, headers=headers, cookies=cookies, json=new_notebook)
 
-    if response.status_code == 201:
+    if response.ok:
         notebook_data = json.loads(response.content)
         return notebook_data    
     else:
         print(f"Error creating notebook. Status code: {response.status_code}")
+        return "Failed"
 
-def create_code_cell(name):
-    print(1)
+def create_code_cell(path, code):
+    url = f"{api_endpoint}/{path}"
+    response = requests.get(url, headers=headers, cookies=cookies)
+    notebook_data = json.loads(response.content)
+
+    cell = {
+        "cell_type": "code",
+        "metadata": {},
+        "execution_count": None,
+        "source": code,
+        "outputs": []
+    }
+    if notebook_data["content"].get("cells") == None:
+        notebook_data["content"]["cells"] = []
+    notebook_data["content"]["cells"].append(cell)
+
+    response = requests.put(url, headers=headers, cookies=cookies, json=notebook_data)
+    print(response)
+    if response.ok:
+        notebook_data = json.loads(response.content)
+        return notebook_data    
+    else:
+        print(f"Error creating code cell. Status code: {response.status_code}")
+        return "Failed"
