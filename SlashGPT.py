@@ -484,8 +484,11 @@ class Main:
                                 arguments = json.loads(arguments)      
                                 function_call.arguments = arguments
                             except Exception as e:
-                                print(colored(f"Function {name}: Failed to load arguments as json","red"))
-                        params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
+                                print(colored(f"Function {name}: Failed to load arguments as json","yellow"))
+                        if isinstance(arguments, str):
+                            params = arguments
+                        else:
+                            params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
                         print(colored(f"Function: {name}({params})", "blue"))
                         if name:
                             action = self.context.actions.get(name)
@@ -540,7 +543,10 @@ class Main:
                             else:
                                 function = self.context.module and self.context.module.get(name) or None
                                 if function:
-                                    (result, message) = function(**arguments)
+                                    if isinstance(arguments, str):
+                                        (result, message) = function(arguments)
+                                    else:
+                                        (result, message) = function(**arguments)
                                     if message:
                                         self.context.messages.append({"role":"assistant", "content":message})
                                         print(colored(message, "blue"))
