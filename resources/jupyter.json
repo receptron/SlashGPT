@@ -9,18 +9,18 @@
     }
   },
   {
-    "name": "create_code_cell",
-    "description": "Create a code cell on a specific notebook",
+    "name": "run_python_code",
+    "description": "Run a python code on a notebook",
     "parameters": {
       "type": "object",
       "properties": {
         "notebook_name": {
           "type": "string",
-          "description": "Path to the notebook"
+          "description": "Name of the notebook"
         },
         "code": {
           "type": "string",
-          "description": "Python code to execute"
+          "description": "Python code to run"
         }
       },
       "required": ["notebook_name", "code"]

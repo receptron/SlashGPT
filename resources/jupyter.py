@@ -27,9 +27,9 @@ def create_notebook():
 
     ipython = IPython.InteractiveShell()
     shells[notebook_name] = ipython
-    return ({'notebook_name':notebook_name}, None)
+    return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
 
-def create_code_cell(notebook_name, code):
+def run_python_code(notebook_name, code):
     cell = {
         "cell_type": "code",
         "metadata": {},
