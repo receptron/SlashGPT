@@ -27,7 +27,7 @@ def create_notebook():
 
     return json.dumps({'notebook_path':file_name})
 
-def create_code_cell(notebook_path, code):
+def create_code_cell(notebook_name, code):
     cell = {
         "cell_type": "code",
         "metadata": {},
