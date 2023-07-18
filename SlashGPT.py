@@ -531,6 +531,9 @@ class Main:
                                 function = self.context.module and self.context.module.get(name) or None
                                 if function:
                                     (result, message) = function(**arguments)
+                                    if message:
+                                        self.context.messages.append({"role":"assistant", "content":message})
+                                        print(colored(message, "blue"))
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
                                     function_message = result
