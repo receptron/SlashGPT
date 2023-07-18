@@ -4,13 +4,8 @@
     "description": "Create a notebook on the Jupyter",
     "parameters": {
       "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the notebook"
-        }
-      },
-      "required": ["name"]
+      "properties": {},
+      "required": []
     }
   },
   {

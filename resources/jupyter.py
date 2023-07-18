@@ -9,7 +9,7 @@ if not os.path.isdir(folder_path):
 
 ipython = IPython.InteractiveShell()
 
-def create_notebook(name):
+def create_notebook():
     # Create a new notebook
     counter = 0
     file_name = "notebook.ipynb"
