@@ -13,6 +13,8 @@
   "sample": "Load './data/Electric_Vehicle_Population_Data.csv'",
   "sample2": "List the top seven models, along with others combining all other models.",
   "sample3": "Show me the pie chart.",
+  "sample4": "Load ./data/iou_zipcodes_2020.csv",
+  "sample5": "Present the bar code of residential price for each state from low to high.",
   "bootstrap": "First, create a Jupyter notebook and remember its name.",
   "extra": " Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
