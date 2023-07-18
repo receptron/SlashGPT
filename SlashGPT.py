@@ -470,8 +470,11 @@ class Main:
                         name = function_call.get("name")
                         arguments = function_call.get("arguments") 
                         if arguments and isinstance(arguments, str):
-                            arguments = json.loads(arguments)      
-                            function_call.arguments = arguments
+                            try:
+                                arguments = json.loads(arguments)      
+                                function_call.arguments = arguments
+                            except Exception as e:
+                                print(colored(f"Function {name}: Failed to load arguments as json","red"))
                         params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
                         print(colored(f"Function: {name}({params})", "blue"))
                         if name:
@@ -531,6 +534,8 @@ class Main:
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
                                     function_message = result
+                                else:
+                                    print(colored(f"No function {name} in the module"), "red")
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.context.clearMessages()
