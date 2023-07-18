@@ -27,7 +27,7 @@ def create_notebook():
 
     ipython = IPython.InteractiveShell()
     shells[notebook_name] = ipython
-    return json.dumps({'notebook_name':notebook_name})
+    return ({'notebook_name':notebook_name}, None)
 
 def create_code_cell(notebook_name, code):
     cell = {
@@ -41,5 +41,5 @@ def create_code_cell(notebook_name, code):
     ipython.run_cell(code)
     ret = ipython.user_ns['_']
     # print(ret)
-    return str(ret)
+    return (str(ret), f"```Python\n{code}\n```")
 
