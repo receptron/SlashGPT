@@ -319,8 +319,10 @@ class Main:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]
                 self.context.messages.append({"role":"assistant", "content":intro})
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
+            return True
         else:            
             print(colored(f"Invalid slash command: {key}", "red"))
+            return False
 
     """
     If the question start with "/", process it as a Slash command.
@@ -413,6 +415,9 @@ class Main:
                 main.switchContext('dispatcher')
             elif (key == "clear"):
                 self.context.clearMessages()
+                bootstrap = self.context.manifest.get("bootstrap")
+                if bootstrap:
+                    return ("user", bootstrap)
             elif (key == "rpg1"):
                 self.loadManifests('./rpg1')
                 main.switchContext('bartender')
@@ -423,7 +428,10 @@ class Main:
                 self.loadManifests('./roles2')
                 self.context = ChatContext(self.config)
             else:
-                self.switchContext(key)
+                if self.switchContext(key):
+                    bootstrap = self.context.manifest.get("bootstrap")
+                    if bootstrap:
+                        return ("user", bootstrap)
         else:
             return (roleInput, question)
         return (None, None)
@@ -449,6 +457,8 @@ class Main:
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
+                if self.config.verbose and role=="user":
+                    print(f"\033[95m\033[1m{self.context.userName}/bootstrap: \033[95m\033[0m{question}")
                 try:
                     self.context.appendQuestion(role, question, name)
                     # Ask LLM to generate a response.

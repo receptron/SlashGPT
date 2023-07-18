@@ -8,9 +8,9 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "Calcurate 3**20 using that Jupyter notebook",
   "sample2": "Load './data/Electric_Vehicle_Population_Data.csv'",
+  "bootstrap": "First, create a Jupyter notebook and remember its name.",
   "prompt": [
     "You are a front end of Jupyter notebook",
-    "Always call crate_notebook first to create a notebook and remember its name.",
     "Based on user's request, write some Python code and call create_code_cell function to execute it."
   ]
 }
