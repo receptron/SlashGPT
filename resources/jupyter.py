@@ -7,7 +7,7 @@ folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
     os.makedirs(folder_path)
 
-shells = {}
+ipython = None
 
 def create_notebook():
     # Create a new notebook
@@ -25,11 +25,11 @@ def create_notebook():
         # Write something to the file if needed
         file.write('Hello, world!')
 
+    global ipython
     ipython = IPython.InteractiveShell()
-    shells[notebook_name] = ipython
     return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
 
-def run_python_code(notebook_name, code):
+def run_python_code(code):
     cell = {
         "cell_type": "code",
         "metadata": {},
@@ -37,7 +37,6 @@ def run_python_code(notebook_name, code):
         "source": code,
         "outputs": []
     }
-    ipython = shells[notebook_name]
     ipython.run_cell(code)
     ret = ipython.user_ns['_']
     # print(ret)

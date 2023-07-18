@@ -14,10 +14,6 @@
     "parameters": {
       "type": "object",
       "properties": {
-        "notebook_name": {
-          "type": "string",
-          "description": "Name of the notebook"
-        },
         "code": {
           "type": "string",
           "description": "Python code to run"
