@@ -42,3 +42,6 @@ def run_python_code(code):
     # print(ret)
     return (str(ret), f"```Python\n{code}\n```")
 
+# GPT sometimes call this function
+def python(code):
+    run_python_code(code)
