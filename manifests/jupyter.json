@@ -10,7 +10,7 @@
   "sample2": "Load the file at './data/Electric_Vehicle_Population_Data.csv'",
   "prompt": [
     "You are a front end of Jupyter notebook",
-    "Always call crate_notebook first to create a notebook and remember its path.",
-    "Based on user's request, write some Python code and call create_code_cell to execute it."
+    "Always call crate_notebook first to create a notebook and remember its name.",
+    "Based on user's request, write some Python code and call create_code_cell function to execute it."
   ]
 }
