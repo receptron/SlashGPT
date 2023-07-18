@@ -441,6 +441,7 @@ class Main:
         name = None
         while not self.exit:
             roleInput = "user"
+            extraWords = ""
             if function_message:
                 if name:
                     roleInput = "function"
@@ -452,11 +453,13 @@ class Main:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 name = None
+                extraWords = self.context.manifest.get("extra") or ""
 
             # Process slash commands (if exits)
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
+                question = question + extraWords
                 if self.config.verbose and role=="user":
                     print(f"\033[95m\033[1m{self.context.userName}/bootstrap: \033[95m\033[0m{question}")
                 try:

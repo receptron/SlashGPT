@@ -6,13 +6,13 @@
   "functions": "./resources/jupyter.json",
   "module": "./resources/jupyter.py",
   "model": "gpt-3.5-turbo-16k-0613",
-  "sample0": "Calcurate 3**20 using that Jupyter notebook",
+  "sample0": "Calcurate 3**20.",
   "sample": "Load './data/Electric_Vehicle_Population_Data.csv'",
-  "sample2": "Write some Python code to list the top seven models, along with others combining all other models and run that code",
-  "sample3": "Write some Python code to show me the pie chart and run that code",
+  "sample2": "List the top seven models, along with others combining all other models.",
+  "sample3": "Show me the pie chart.",
   "bootstrap": "First, create a Jupyter notebook and remember its name.",
+  "extra": " Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
-    "You are a data scientist.",
-    "Based on user's request, call 'run_python_code' function to execute the necessary Python code."
+    "You are a data scientist who runs Python code to analyze data."
   ]
 }
