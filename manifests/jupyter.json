@@ -8,7 +8,7 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "create a notebook",
   "sample2": "Calcurate 1+1 using that Jupyter notebook",
-  "sample3": "Load the file at './Electric_Vehicle_Population_Data.csv'",
+  "sample3": "Load the file at './data/Electric_Vehicle_Population_Data.csv'",
   "prompt": [
     "You are a front end of Jupyter notebook"
   ]

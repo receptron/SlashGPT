@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import json
+import IPython
 
 load_dotenv() # Load default environment variables (.env)
 JUPYTER_TOKEN = os.getenv("JUPYTER_TOKEN", "")
@@ -15,6 +16,8 @@ headers = {
 }
 cookies = {"_xsrf": xsrf_token}
 api_endpoint = "http://localhost:8888/api/contents"
+
+ipython = IPython.InteractiveShell()
 
 def create_notebook(name):
     # Create a new notebook
@@ -51,8 +54,12 @@ def create_code_cell(path, code):
     response = requests.put(url, headers=headers, cookies=cookies, json=notebook_data)
     print(response)
     if response.ok:
-        notebook_data = json.loads(response.content)
-        return notebook_data    
+        # notebook_data = json.loads(response.content)
+        ipython.run_cell(code)
+        ret = ipython.user_ns['_']
+        print(ret)
+        return str(ret)
     else:
         print(f"Error creating code cell. Status code: {response.status_code}")
         return "Failed"
+
