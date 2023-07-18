@@ -19,7 +19,7 @@
     "parameters": {
       "type": "object",
       "properties": {
-        "notebook": {
+        "notebook_path": {
           "type": "string",
           "description": "Path to the notebook"
         },
@@ -28,7 +28,7 @@
           "description": "Python code to execute"
         }
       },
-      "required": ["notebook", "code"]
+      "required": ["notebook_path", "code"]
     }
   }
 ]

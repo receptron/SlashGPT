@@ -1,45 +1,33 @@
 import os
-from dotenv import load_dotenv
 import requests
 import json
 import IPython
 
-load_dotenv() # Load default environment variables (.env)
-JUPYTER_TOKEN = os.getenv("JUPYTER_TOKEN", "")
-print(f"jupyter token: {JUPYTER_TOKEN}")
-token_response = requests.get("http://localhost:8888/")
-xsrf_token = token_response.cookies.get("_xsrf")
-headers = {
-    "Authorization": f"Token {JUPYTER_TOKEN}",
-    "Content-Type": "application/json",
-    "X-XSRFToken": xsrf_token
-}
-cookies = {"_xsrf": xsrf_token}
-api_endpoint = "http://localhost:8888/api/contents"
+folder_path = "./output/notebooks"
+if not os.path.isdir(folder_path):
+    os.makedirs(folder_path)
 
 ipython = IPython.InteractiveShell()
 
 def create_notebook(name):
     # Create a new notebook
-    new_notebook = {
-        "type": "notebook",
-        "content": {}
-    }
+    counter = 0
+    file_name = "notebook.ipynb"
+    file_path = os.path.join(folder_path, file_name)
 
-    response = requests.post(api_endpoint, headers=headers, cookies=cookies, json=new_notebook)
+    while os.path.exists(file_path):
+        counter += 1
+        file_name = f"notebook{counter}.ipynb"
+        file_path = os.path.join(folder_path, file_name)
 
-    if response.ok:
-        notebook_data = json.loads(response.content)
-        return notebook_data    
-    else:
-        print(f"Error creating notebook. Status code: {response.status_code}")
-        return "Failed"
+    # Create the file
+    with open(file_path, 'w') as file:
+        # Write something to the file if needed
+        file.write('Hello, world!')
 
-def create_code_cell(notebook, code):
-    url = f"{api_endpoint}/{notebook}"
-    response = requests.get(url, headers=headers, cookies=cookies)
-    notebook_data = json.loads(response.content)
+    return json.dumps({'notebook_path':file_name})
 
+def create_code_cell(notebook_path, code):
     cell = {
         "cell_type": "code",
         "metadata": {},
@@ -47,19 +35,8 @@ def create_code_cell(notebook, code):
         "source": code,
         "outputs": []
     }
-    if notebook_data["content"].get("cells") == None:
-        notebook_data["content"]["cells"] = []
-    notebook_data["content"]["cells"].append(cell)
-
-    response = requests.put(url, headers=headers, cookies=cookies, json=notebook_data)
-    print(response)
-    if response.ok:
-        # notebook_data = json.loads(response.content)
-        ipython.run_cell(code)
-        ret = ipython.user_ns['_']
-        print(ret)
-        return str(ret)
-    else:
-        print(f"Error creating code cell. Status code: {response.status_code}")
-        return "Failed"
+    ipython.run_cell(code)
+    ret = ipython.user_ns['_']
+    # print(ret)
+    return str(ret)
 
