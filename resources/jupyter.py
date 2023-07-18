@@ -12,13 +12,13 @@ shells = {}
 def create_notebook():
     # Create a new notebook
     counter = 0
-    file_name = "notebook"
-    file_path = os.path.join(folder_path, f"{file_name}.ipynb")
+    notebook_name = "notebook"
+    file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
 
     while os.path.exists(file_path):
         counter += 1
-        file_name = f"notebook{counter}"
-        file_path = os.path.join(folder_path, f"{file_name}.ipynb")
+        notebook_name = f"notebook{counter}"
+        file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
 
     # Create the file
     with open(file_path, 'w') as file:
@@ -26,8 +26,8 @@ def create_notebook():
         file.write('Hello, world!')
 
     ipython = IPython.InteractiveShell()
-    shells[file_name] = ipython
-    return json.dumps({'notebook_path':file_name})
+    shells[notebook_name] = ipython
+    return json.dumps({'notebook_name':notebook_name})
 
 def create_code_cell(notebook_name, code):
     cell = {
