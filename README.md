@@ -51,6 +51,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
 - *promt* (array of strings, **required**): The system prompts which define the agent (required)
 - *bootstrap* (string): The initial user message to be automatically generated first.
+- *extra* (string): Extra words to be added to each user's query.
 - *bot* (string, optional): Agent name
 - *you* (string, optional): User name. The default is You({agent_name}).
 - *sample* (string, optional): Sample question (type "/sample" to send it)
