@@ -35,8 +35,8 @@ def create_notebook(name):
         print(f"Error creating notebook. Status code: {response.status_code}")
         return "Failed"
 
-def create_code_cell(path, code):
-    url = f"{api_endpoint}/{path}"
+def create_code_cell(notebook, code):
+    url = f"{api_endpoint}/{notebook}"
     response = requests.get(url, headers=headers, cookies=cookies)
     notebook_data = json.loads(response.content)
 
