@@ -20,7 +20,6 @@ def create_notebook(name):
     # Create a new notebook
     new_notebook = {
         "type": "notebook",
-        "name": 'my_new_notebook.ipynb',
         "content": {}
     }
 
