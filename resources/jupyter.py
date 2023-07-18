@@ -37,6 +37,8 @@ def run_python_code(code):
         "source": code,
         "outputs": []
     }
+    if isinstance(code, list):
+        code = "\n".join(code)
     ipython.run_cell(code)
     ret = ipython.user_ns['_']
     # print(ret)
