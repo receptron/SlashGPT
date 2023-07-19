@@ -48,6 +48,9 @@ def run_python_code(code, query:str):
         }
         notebook["cells"].append(cell)
 
+    for i in range(len(code)):
+        if not code[i].endswith('\n'):
+            code[i] += '\n'
     cell = {
         "cell_type": "code",
         "metadata": {},
