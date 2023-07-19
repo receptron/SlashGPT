@@ -9,6 +9,7 @@ Here are the design goals:
 3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
 4. It is possible to integrate ChatGPT plugins as agents without writing any code.
 5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
+6. It is able to run generated Python code like Code Interpreter (see "jupyter" agent).
 
 ## Initialization
 
