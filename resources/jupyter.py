@@ -8,11 +8,14 @@ if not os.path.isdir(folder_path):
     os.makedirs(folder_path)
 
 ipython = None
+notebook = {}
+file_path = ""
 
 def create_notebook():
     # Create a new notebook
     counter = 0
     notebook_name = "notebook"
+    global file_path
     file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
 
     while os.path.exists(file_path):
@@ -20,10 +23,16 @@ def create_notebook():
         notebook_name = f"notebook{counter}"
         file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
 
+    global notebook
+    notebook = {
+        "cells": [],
+        "metadata": {},
+        "nbformat": 4,
+        "nbformat_minor": 5
+    }
     # Create the file
     with open(file_path, 'w') as file:
-        # Write something to the file if needed
-        file.write('Hello, world!')
+        json.dump(notebook, file)
 
     global ipython
     ipython = IPython.InteractiveShell()
@@ -37,6 +46,11 @@ def run_python_code(code):
         "source": code,
         "outputs": []
     }
+    global notebook, file_path
+    notebook["cells"].append(cell)
+    with open(file_path, 'w') as file:
+        json.dump(notebook, file)
+
     if isinstance(code, list):
         code = "\n".join(code)
     ipython.run_cell(code)
