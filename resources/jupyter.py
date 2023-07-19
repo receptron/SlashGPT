@@ -70,13 +70,14 @@ def run_python_code(code, query:str):
         exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
 
     # Handle stdout
+    '''
     if stdout.getvalue():
         cell["outputs"].append({
             "output_type": "stream",
             "name": "stdout",
             "text": stdout.getvalue()
         })
-
+    '''
     # Handle stderr
     if stderr.getvalue():
         cell["outputs"].append({
