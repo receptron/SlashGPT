@@ -1,7 +1,11 @@
 import os
-import requests
 import json
 import IPython
+import io
+import contextlib
+import matplotlib.pyplot as plt
+import base64
+from IPython.display import display, Image
 
 folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
@@ -58,16 +62,61 @@ def run_python_code(code, query:str):
         "source": code,
         "outputs": []
     }
-    notebook["cells"].append(cell)
 
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
+
+    # Handle stdout
+    if stdout.getvalue():
+        cell["outputs"].append({
+            "output_type": "stream",
+            "name": "stdout",
+            "text": stdout.getvalue()
+        })
+
+    # Handle stderr
+    if stderr.getvalue():
+        cell["outputs"].append({
+            "output_type": "stream",
+            "name": "stderr",
+            "text": stderr.getvalue()
+        })
+
+    # Handle execution result
+    if exec_result.result is not None:
+        cell["outputs"].append({
+            "output_type": "execute_result",
+            "execution_count": None,
+            "data": {
+                "text/plain": str(exec_result.result)
+            },
+            "metadata": {}
+        })
+
+    # Handle matplotlib figures
+    for fig_num in plt.get_fignums():
+        fig = plt.figure(fig_num)
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        img_str = base64.b64encode(buf.read()).decode('utf-8')
+        cell["outputs"].append({
+            "output_type": "display_data",
+            "data": {
+                "image/png": img_str
+            },
+            "metadata": {}
+        })
+
+    notebook["cells"].append(cell)
     global file_path
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
-    ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
-    ret = ipython.user_ns['_']
-    # print(ret)
-    return (str(ret), f"```Python\n{code}\n```")
+    return (str(exec_result.result), f"```Python\n{code}\n```")
 
 # GPT sometimes call this function
 def python(code):
