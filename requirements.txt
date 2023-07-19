@@ -8,3 +8,7 @@ tiktoken
 gTTS
 playsound
 pyobjc
+IPython
+matplotlib
+numpy
+scipy
