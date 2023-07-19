@@ -20,9 +20,13 @@
             "type": "string"
           },
           "description": "Python code to run"
+        },
+        "query": {
+          "type": "string",
+          "description": "Query from the user as-is"
         }
       },
-      "required": ["notebook_name", "code"]
+      "required": ["code", "query"]
     }
   }
 ]

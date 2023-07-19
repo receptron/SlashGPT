@@ -38,7 +38,16 @@ def create_notebook():
     ipython = IPython.InteractiveShell()
     return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
 
-def run_python_code(code):
+def run_python_code(code, query:str):
+    global notebook
+    if query:
+        cell = {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [f"**User**: {query}"]
+        }
+        notebook["cells"].append(cell)
+
     cell = {
         "cell_type": "code",
         "metadata": {},
@@ -46,8 +55,9 @@ def run_python_code(code):
         "source": code,
         "outputs": []
     }
-    global notebook, file_path
     notebook["cells"].append(cell)
+
+    global file_path
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
@@ -60,4 +70,4 @@ def run_python_code(code):
 
 # GPT sometimes call this function
 def python(code):
-    run_python_code(code)
+    run_python_code(code, None)
