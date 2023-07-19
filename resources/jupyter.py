@@ -64,9 +64,7 @@ def run_python_code(code, query:str):
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
-    if isinstance(code, list):
-        code = "\n".join(code)
-    ipython.run_cell(code)
+    ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
     ret = ipython.user_ns['_']
     # print(ret)
     return (str(ret), f"```Python\n{code}\n```")
