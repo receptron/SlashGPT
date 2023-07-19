@@ -35,7 +35,7 @@ Here are the design goals:
 
 1. Type `./SlashGPT.py`
 
-2. When you see "You:", type a message to the agent OR type a slash command starting with "/".
+2. When you see "You({agent_name}):", type a message to the agent OR type a slash command starting with "/".
 
 ## Outputs
 
