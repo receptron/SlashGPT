@@ -29,6 +29,7 @@ class ChatConfig:
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
+        self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
         self.verbose = False
         self.audio = None
 
@@ -380,6 +381,13 @@ class Main:
                 self.context.model = "gpt-4-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
+            elif (key == "llama2"):
+                if self.config.REPLICATE_API_TOKEN:
+                    self.context.model = "llama2"
+                    self.context.max_token = 4096
+                    print(f"Model = {self.context.model}")
+                else:
+                    print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
             elif (key == "palm"):
                 if (self.config.GOOGLE_PALM_KEY):
                     self.context.model = "palm"
