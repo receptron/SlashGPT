@@ -18,6 +18,7 @@ from gtts import gTTS
 from playsound import playsound
 import urllib.parse
 import replicate
+import my_jupyter as jp
 
 # Configuration
 
@@ -335,6 +336,10 @@ class Main:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
+            isNotebook = manifest.get("notebook")
+            if isNotebook:
+                print(colored("Creating a notebook", "blue"))
+                jp.create_notebook()
 
             if intro and self.context.intro:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]

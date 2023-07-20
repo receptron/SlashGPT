@@ -15,6 +15,7 @@
   "sample4": "Load ./data/iou_zipcodes_2020.csv",
   "sample5": "Present the bar code of residential price for each state from low to high.",
   "form": "Write some Python code to {question} (surround it with ```).",
+  "notebook": true,
   "prompt": [
     "You are a data scientist who runs Python code to analyze data."
   ]
