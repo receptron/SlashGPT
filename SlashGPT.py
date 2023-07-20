@@ -206,6 +206,7 @@ class ChatContext:
         role = None
         res = None
         function_call = None
+        function_result = None
         if (self.model == "palm"):
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -279,7 +280,6 @@ class ChatContext:
             )
 
             if self.manifest.get("notebook"):
-                print("*** notebook")
                 res = ''.join(output)
                 lines = res.splitlines()
                 codes = None
@@ -291,9 +291,8 @@ class ChatContext:
                             break
                     elif codes is not None:
                         codes.append(line)
-                print("*** codes", codes)
-                (result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
-                print("***", colored(result, "blue"))
+                (function_result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
+                print("***", colored(function_result, "blue"))
 
             role = "assistant"
         else:
@@ -316,7 +315,7 @@ class ChatContext:
             res = answer['content']
             role = answer['role']
             function_call = answer.get('function_call')
-        return (role, res, function_call)
+        return (role, res, function_call, function_result)
 
 class Main:
     def __init__(self, config: ChatConfig, pathManifests: str):
@@ -516,7 +515,7 @@ class Main:
                 try:
                     self.context.appendQuestion(role, question, name)
                     # Ask LLM to generate a response.
-                    (role, res, function_call) = self.context.generateResponse()
+                    (role, res, function_call, function_result) = self.context.generateResponse()
 
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
@@ -530,7 +529,10 @@ class Main:
                         with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
                             json.dump(self.context.messages, f)
 
-                    if (function_call):
+                    if function_result:
+                        name = "call_python_code" #anything is fine actually
+                        function_message = function_result
+                    elif function_call:
                         name = function_call.get("name")
                         arguments = function_call.get("arguments") 
                         if arguments and isinstance(arguments, str):

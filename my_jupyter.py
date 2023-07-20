@@ -68,7 +68,6 @@ def run_python_code(code, query:str):
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
         exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
 
-    print("***", exec_result, "***")
     # Handle stdout
     if stdout.getvalue():
         cell["outputs"].append({
