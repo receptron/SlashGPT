@@ -202,7 +202,7 @@ class ChatContext:
     Let the LLM generate a message and append it to the message list
     returns (role, res) if a message was appended.
     """
-    def generateResponse(self):
+    def generateResponse(self, original_question):
         role = None
         res = None
         function_call = None
@@ -292,8 +292,10 @@ class ChatContext:
                     elif codes is not None:
                         codes.append(line)
                 if codes:
-                    (function_result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
-                    # print("***", colored(function_result, "blue"))
+                    print(colored('\n'.join(codes), "blue"))
+                    (function_result, foo) = jp.run_python_code(codes, original_question)
+                    function_result = f"Here is the result.\n\n{function_result}"
+                    print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
                 else:
                     print(colored("code section is empty", "yellow"))
             role = "assistant"
@@ -510,6 +512,7 @@ class Main:
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
+                original_question = question
                 if form:
                     question = form.format(question = question)
                 if self.config.verbose and role=="user":
@@ -517,7 +520,7 @@ class Main:
                 try:
                     self.context.appendQuestion(role, question, name)
                     # Ask LLM to generate a response.
-                    (role, res, function_call, function_result) = self.context.generateResponse()
+                    (role, res, function_call, function_result) = self.context.generateResponse(original_question)
 
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
