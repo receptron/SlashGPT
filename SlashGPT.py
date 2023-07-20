@@ -292,13 +292,16 @@ class ChatContext:
                     elif codes is not None:
                         codes.append(line)
                 if codes:
-                    print(colored('\n'.join(codes), "blue"))
+                    res = '\n'.join(codes) # Ignore except code
+                    res = f"Here is the code.\n```\n{res}\n```"
+                    self.messages.append({"role":"assistant", "content":res})
+                    print(colored(res, "blue"))
+                    res = None # we have already appended it
                     (function_result, foo) = jp.run_python_code(codes, original_question)
                     function_result = f"Here is the result.\n\n{function_result}"
                     print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
-                    res = None # Ignore the total output!
                 else:
-                    print(colored("code section is empty", "yellow"))
+                    print(colored("Debug Message: code code in this reply", "yellow"))
             role = "assistant"
         else:
             if self.functions:
@@ -348,6 +351,7 @@ class Main:
             self.manifests[key] = data
 
     def switchContext(self, key: str, intro: bool = True):
+        self.key = key
         manifest = self.manifests.get(key)
         if manifest:
             self.context = ChatContext(self.config, key=key, manifest=manifest, manifests=self.manifests)
@@ -468,7 +472,10 @@ class Main:
                 self.loadManifests(self.pathManifests)
                 main.switchContext('dispatcher')
             elif (key == "clear"):
-                self.context.clearMessages()
+                if self.key:
+                    self.switchContext(self.key)
+                else:
+                    self.context.clearMessages()
                 bootstrap = self.context.manifest.get("bootstrap")
                 if bootstrap:
                     return ("user", bootstrap)
@@ -610,6 +617,7 @@ class Main:
                                     else:
                                         (result, message) = function(**arguments)
                                     if message:
+                                        # Embed code for the context
                                         self.context.messages.append({"role":"assistant", "content":message})
                                         print(colored(message, "blue"))
                                     if isinstance(result, dict):
