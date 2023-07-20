@@ -16,7 +16,7 @@
   "sample4": "Load ./data/iou_zipcodes_2020.csv",
   "sample5": "Present the bar code of residential price for each state from low to high.",
   "bootstrap": "First, create a Jupyter notebook and remember its name.",
-  "extra": " Write some Python code and call 'run_python_code' function to fullfil this request.",
+  "form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
     "You are a data scientist who writes Python code to analyze data."
   ]
