@@ -474,7 +474,6 @@ class Main:
         name = None
         while not self.exit:
             roleInput = "user"
-            extraWords = ""
             form = None
             if function_message:
                 if name:
@@ -487,14 +486,12 @@ class Main:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
                 name = None
-                extraWords = self.context.manifest.get("extra") or ""
                 form = self.context.manifest.get("form")
 
             # Process slash commands (if exits)
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
-                question = question + extraWords
                 if form:
                     question = form.format(question = question)
                 if self.config.verbose and role=="user":
