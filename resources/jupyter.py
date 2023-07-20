@@ -4,8 +4,6 @@ import IPython
 import io
 import contextlib
 import matplotlib.pyplot as plt
-import base64
-from IPython.display import display, Image
 
 folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
@@ -97,6 +95,7 @@ def run_python_code(code, query:str):
             "metadata": {}
         })
 
+    '''
     # Handle matplotlib figures
     for fig_num in plt.get_fignums():
         fig = plt.figure(fig_num)
@@ -111,6 +110,7 @@ def run_python_code(code, query:str):
             },
             "metadata": {}
         })
+    '''
 
     notebook["cells"].append(cell)
     global file_path
