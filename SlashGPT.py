@@ -57,7 +57,7 @@ class ChatConfig:
 """
 
 class ChatContext:
-    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = None, manifests = None):
+    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}, manifests = None):
         self.config = config
         self.key = key
         self.time = datetime.now()
@@ -75,7 +75,7 @@ class ChatContext:
         self.functions = None
         self.actions = {}
         self.module = None
-        if (manifest):
+        if len(manifest.keys()) > 0:
             self.userName = manifest.get("you") or self.userName
             self.botName = manifest.get("bot") or self.key
             self.model = manifest.get("model") or self.model
@@ -266,6 +266,10 @@ class ChatContext:
                 content = message["content"]
                 if (content):
                     prompts.append(f"{role}:{message['content']}")
+            if self.functions:
+                last = prompts.pop()
+                prompts.append(f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.")
+                prompts.append(last)
             prompts.append("assistant:")
 
             output = replicate.run(
