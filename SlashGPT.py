@@ -277,7 +277,24 @@ class ChatContext:
                "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
                 input={"prompt": '\n'.join(prompts)}
             )
-            res = ''.join(output)
+
+            if self.manifest.get("notebook"):
+                print("*** notebook")
+                res = ''.join(output)
+                lines = res.splitlines()
+                codes = None
+                for line in lines:
+                    if line[:3] == "```":
+                        if codes is None:
+                            codes = []
+                        else:
+                            break
+                    elif codes is not None:
+                        codes.append(line)
+                print("*** codes", codes)
+                (result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
+                print("***", colored(result, "blue"))
+
             role = "assistant"
         else:
             if self.functions:
