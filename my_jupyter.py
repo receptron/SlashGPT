@@ -121,10 +121,14 @@ def run_python_code(code, query:str):
     if exec_result.result is None:
         exec_result.result = stdout.getvalue()
         if exec_result.result is None:
-            exec_result.result = "Done"
+            exec_result.result = stderr.getvalue()
+            if exec_result.result is None:
+                exec_result.result = "Done"
 
     return (str(exec_result.result), f"```Python\n{code}\n```")
 
 # GPT sometimes call this function
 def python(code):
+    if isinstance(code,str):
+        code = [code]
     run_python_code(code, None)

@@ -291,9 +291,11 @@ class ChatContext:
                             break
                     elif codes is not None:
                         codes.append(line)
-                (function_result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
-                print("***", colored(function_result, "blue"))
-
+                if codes:
+                    (function_result, foo) = jp.run_python_code(codes, self.messages[len(self.messages)-1].get("content") or "N/A")
+                    # print("***", colored(function_result, "blue"))
+                else:
+                    print(colored("code section is empty", "yellow"))
             role = "assistant"
         else:
             if self.functions:
@@ -614,6 +616,8 @@ class Main:
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.context.clearMessages()
+                    if self.config.verbose:
+                        raise
 
 config = ChatConfig()
 print(config.ONELINE_HELP)
