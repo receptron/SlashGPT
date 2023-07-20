@@ -296,6 +296,7 @@ class ChatContext:
                     (function_result, foo) = jp.run_python_code(codes, original_question)
                     function_result = f"Here is the result.\n\n{function_result}"
                     print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
+                    res = None # Ignore the total output!
                 else:
                     print(colored("code section is empty", "yellow"))
             role = "assistant"
