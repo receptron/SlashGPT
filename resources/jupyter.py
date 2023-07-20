@@ -117,6 +117,9 @@ def run_python_code(code, query:str):
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
+    if exec_result.result is None:
+        exec_result.result = "Done"
+
     return (str(exec_result.result), f"```Python\n{code}\n```")
 
 # GPT sometimes call this function
