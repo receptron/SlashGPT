@@ -12,3 +12,4 @@ IPython
 matplotlib
 numpy
 scipy
+replicate

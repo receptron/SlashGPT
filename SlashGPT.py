@@ -17,6 +17,7 @@ import requests
 from gtts import gTTS
 from playsound import playsound
 import urllib.parse
+import replicate
 
 # Configuration
 
@@ -29,6 +30,7 @@ class ChatConfig:
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
+        self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
         self.verbose = False
         self.audio = None
 
@@ -257,6 +259,21 @@ class ChatContext:
             )
             res = response.result
             role = "assistant"
+        elif (self.model == "llama2"):
+            prompts = []
+            for message in self.messages:
+                role = message["role"]
+                content = message["content"]
+                if (content):
+                    prompts.append(f"{role}:{message['content']}")
+            prompts.append("assistant:")
+
+            output = replicate.run(
+               "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
+                input={"prompt": '\n'.join(prompts)}
+            )
+            res = ''.join(output)
+            role = "assistant"
         else:
             if self.functions:
                 # print(colored(self.messages, "green"))
@@ -380,6 +397,13 @@ class Main:
                 self.context.model = "gpt-4-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
+            elif (key == "llama2"):
+                if self.config.REPLICATE_API_TOKEN:
+                    self.context.model = "llama2"
+                    self.context.max_token = 4096
+                    print(f"Model = {self.context.model}")
+                else:
+                    print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
             elif (key == "palm"):
                 if (self.config.GOOGLE_PALM_KEY):
                     self.context.model = "palm"
@@ -557,7 +581,7 @@ class Main:
                                         result = json.dumps(result)
                                     function_message = result
                                 else:
-                                    print(colored(f"No function {name} in the module"), "red")
+                                    print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.context.clearMessages()

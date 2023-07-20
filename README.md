@@ -30,6 +30,7 @@ Here are the design goals:
     - NOTEABLE_API_KEY: required to use "noteable" agent.
     - ALCHEMY_API_KEY: required to use "web3" agent.
     - WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
+    - REPLICATE_API_TOKEN: required to use "llama2" model.
 
 ## Execution
 
