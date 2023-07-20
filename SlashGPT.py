@@ -567,7 +567,7 @@ class Main:
                                         result = json.dumps(result)
                                     function_message = result
                                 else:
-                                    print(colored(f"No function {name} in the module"), "red")
+                                    print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.context.clearMessages()
