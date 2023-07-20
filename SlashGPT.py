@@ -17,6 +17,7 @@ import requests
 from gtts import gTTS
 from playsound import playsound
 import urllib.parse
+import replicate
 
 # Configuration
 
@@ -259,7 +260,20 @@ class ChatContext:
             res = response.result
             role = "assistant"
         elif (self.model == "llama2"):
-            print(colored("llama2: work in progress", "yellow"))
+            prompts = []
+            for message in self.messages:
+                role = message["role"]
+                content = message["content"]
+                if (content):
+                    prompts.append(f"{role}:{message['content']}")
+            prompts.append("assistant:")
+
+            output = replicate.run(
+               "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
+                input={"prompt": '\n'.join(prompts)}
+            )
+            res = ''.join(output)
+            role = "assistant"
         else:
             if self.functions:
                 # print(colored(self.messages, "green"))
