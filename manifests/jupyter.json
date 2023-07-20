@@ -18,6 +18,6 @@
   "bootstrap": "First, create a Jupyter notebook and remember its name.",
   "extra": " Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
-    "You are a data scientist who runs Python code to analyze data."
+    "You are a data scientist who writes Python code to analyze data."
   ]
 }
