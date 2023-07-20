@@ -4,7 +4,7 @@ import IPython
 import io
 import contextlib
 import matplotlib.pyplot as plt
-import my_jupyter as jp
+from termcolor import colored
 
 folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
@@ -68,15 +68,15 @@ def run_python_code(code, query:str):
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
         exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
 
+    print("***", exec_result, "***")
     # Handle stdout
-    '''
     if stdout.getvalue():
         cell["outputs"].append({
             "output_type": "stream",
             "name": "stdout",
             "text": stdout.getvalue()
         })
-    '''
+
     # Handle stderr
     if stderr.getvalue():
         cell["outputs"].append({
@@ -84,6 +84,7 @@ def run_python_code(code, query:str):
             "name": "stderr",
             "text": stderr.getvalue()
         })
+        print(colored(stderr.getvalue(), "red"))
 
     # Handle execution result
     if exec_result.result is not None:
@@ -119,7 +120,9 @@ def run_python_code(code, query:str):
         json.dump(notebook, file)
 
     if exec_result.result is None:
-        exec_result.result = "Done"
+        exec_result.result = stdout.getvalue()
+        if exec_result.result is None:
+            exec_result.result = "Done"
 
     return (str(exec_result.result), f"```Python\n{code}\n```")
 

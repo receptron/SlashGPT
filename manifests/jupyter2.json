@@ -1,6 +1,6 @@
 {
   "title": "Jupyter Notebook",
-  "bot": "Jupyter",
+  "bot": "Jupyter(Llamma2)",
   "source": "snakajima",
   "temperature": "0.0",
   "model": "llama2",

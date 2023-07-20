@@ -10,6 +10,7 @@
   "sample_pri": "Show me the first 50 prime nubmers",
   "sample_fibo": "Show me the first 20 fibonacci sequence",
   "sample_lorenz": "Draw Lorenz attractor",
+  "sample_sine": "Draw a sine curve.",
   "sample": "Load './data/Electric_Vehicle_Population_Data.csv'",
   "sample2": "List the top seven models, along with others combining all other models.",
   "sample3": "Show me the pie chart.",
