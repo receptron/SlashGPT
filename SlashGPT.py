@@ -495,10 +495,8 @@ class Main:
 
             if role and question:
                 question = question + extraWords
-                print("***", form)
                 if form:
                     question = form.format(question = question)
-                print("***", question)
                 if self.config.verbose and role=="user":
                     print(f"\033[95m\033[1m{self.context.userName}/bootstrap: \033[95m\033[0m{question}")
                 try:
