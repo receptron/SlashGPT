@@ -295,7 +295,7 @@ class ChatContext:
                     res = '\n'.join(codes) # Ignore except code
                     res = f"Here is the code.\n```\n{res}\n```"
                     self.messages.append({"role":"assistant", "content":res})
-                    print(colored(res, "blue"))
+                    print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {res}")
                     res = None # we have already appended it
                     (function_result, foo) = jp.run_python_code(codes, original_question)
                     function_result = f"Here is the result.\n\n{function_result}"

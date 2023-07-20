@@ -10,7 +10,7 @@
   "sample_lorenz": "draw Lorenz attractor.",
   "sample_sine": "draw a sine curve.",
   "sample_hello": "print 'Hello World'.",
-  "sample": "load './data/Electric_Vehicle_Population_Data.csv'",
+  "sample": "load a data file from './data/Electric_Vehicle_Population_Data.csv' and list first five rows",
   "sample2": "list the top seven models, along with others combining all other models.",
   "sample3": "show me the pie chart.",
   "sample4": "load ./data/iou_zipcodes_2020.csv and list first 10 rows",
