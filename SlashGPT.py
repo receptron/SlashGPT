@@ -258,6 +258,8 @@ class ChatContext:
             )
             res = response.result
             role = "assistant"
+        elif (self.model == "llama2"):
+            print(colored("llama2: work in progress", "yellow"))
         else:
             if self.functions:
                 # print(colored(self.messages, "green"))
