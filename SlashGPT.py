@@ -368,8 +368,8 @@ class Main:
                 print(colored(f"Activating: {self.context.title}", "blue"))
             isNotebook = manifest.get("notebook")
             if isNotebook:
-                print(colored("Creating a notebook", "blue"))
-                jp.create_notebook()
+                (result, _) = jp.create_notebook(self.context.model)
+                print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
             if intro and self.context.intro:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]

@@ -14,7 +14,7 @@ ipython = None
 notebook = {}
 file_path = ""
 
-def create_notebook():
+def create_notebook(module:str):
     # Create a new notebook
     counter = 0
     notebook_name = "notebook"
@@ -28,7 +28,11 @@ def create_notebook():
 
     global notebook
     notebook = {
-        "cells": [],
+        "cells": [{
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [f"# {module}"]
+        }],
         "metadata": {},
         "nbformat": 4,
         "nbformat_minor": 5
