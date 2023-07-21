@@ -259,6 +259,8 @@ class ChatContext:
             res = response.last
             if res:
                 function_call = self.extractPython(res, original_question)
+                if function_call:
+                    res = None
             else:
                 print(colored(response.filters, "red"))
             role = "assistant"
@@ -306,6 +308,8 @@ class ChatContext:
             res = ''.join(output)
 
             function_call = self.extractPython(res, original_question)
+            if function_call:
+                res = None
             role = "assistant"
         else:
             if self.functions:
@@ -554,7 +558,7 @@ class Main:
                                 function_call["arguments"] = arguments
                             except Exception as e:
                                 print(colored(f"Function {name}: Failed to load arguments as json","yellow"))
-                        print(colored(json.dumps(function_call), "blue"))
+                        print(colored(json.dumps(function_call, indent=2), "blue"))
                         '''
                         if isinstance(arguments, str):
                             params = arguments
@@ -625,7 +629,6 @@ class Main:
                                     if message:
                                         # Embed code for the context
                                         self.context.messages.append({"role":"assistant", "content":message})
-                                        print(colored(message, "blue"))
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
                                     result_form = self.context.manifest.get("result_form")
