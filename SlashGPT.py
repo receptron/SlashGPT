@@ -198,9 +198,8 @@ class ChatContext:
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             }
 
-    def processPython(self, output:str, original_question:str):
+    def extractPython(self, res:str, original_question:str):
         if self.manifest.get("notebook"):
-            res = ''.join(output)
             lines = res.splitlines()
             codes = None
             for line in lines:
@@ -212,16 +211,16 @@ class ChatContext:
                 elif codes is not None:
                     codes.append(line)
             if codes:
-                res = '\n'.join(codes) # Ignore except code
-                res = f"Here is the code.\n```\n{res}\n```"
-                self.messages.append({"role":"assistant", "content":res})
-                print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {res}")
-                res = None # we have already appended it
-                (function_result, _) = jp.run_python_code(codes, original_question)
-                function_result = f"Here is the result.\n\n{function_result}"
-                print(f"\033[95m\033[1mfunction(run_python_code): \033[95m\033[0m{function_result}")
-            else:
-                print(colored("Debug Message: code code in this reply", "yellow"))
+                return {
+                    "name": "run_python_code",
+                    "arguments": {
+                        "code": codes,
+                        "query": original_question
+                    }
+                } 
+            
+        print(colored("Debug Message: no code in this reply", "yellow"))
+        return None
 
     """
     Let the LLM generate a message and append it to the message list
@@ -231,7 +230,6 @@ class ChatContext:
         role = None
         res = None
         function_call = None
-        function_result = None
         if (self.model == "palm"):
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -260,9 +258,11 @@ class ChatContext:
             )
             res = response.last
             if res:
-                res = self.processPython(res, original_question)
+                function_call = self.extractPython(res, original_question)
+                if function_call:
+                    res = None # Ignore the responce
             else:
-                print(response.filters)
+                print(colored(response.filters, "red"))
             role = "assistant"
         elif (self.model == "palmt"):
             defaults = {
@@ -305,8 +305,11 @@ class ChatContext:
                "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
                 input={"prompt": '\n'.join(prompts)}
             )
+            res = ''.join(output)
 
-            res = self.processPython(output, original_question)
+            function_call = self.extractPython(res, original_question)
+            if function_call:
+                res = None # Ignore the responce
             role = "assistant"
         else:
             if self.functions:
@@ -328,7 +331,7 @@ class ChatContext:
             res = answer['content']
             role = answer['role']
             function_call = answer.get('function_call')
-        return (role, res, function_call, function_result)
+        return (role, res, function_call)
 
 class Main:
     def __init__(self, config: ChatConfig, pathManifests: str):
@@ -532,7 +535,7 @@ class Main:
                 try:
                     self.context.appendQuestion(role, question, name)
                     # Ask LLM to generate a response.
-                    (role, res, function_call, function_result) = self.context.generateResponse(original_question)
+                    (role, res, function_call) = self.context.generateResponse(original_question)
 
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
@@ -546,23 +549,23 @@ class Main:
                         with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
                             json.dump(self.context.messages, f)
 
-                    if function_result:
-                        name = "call_python_code" 
-                        function_message = function_result
-                    elif function_call:
+                    if function_call:
                         name = function_call.get("name")
                         arguments = function_call.get("arguments") 
                         if arguments and isinstance(arguments, str):
                             try:
                                 arguments = json.loads(arguments)      
-                                function_call.arguments = arguments
+                                function_call["arguments"] = arguments
                             except Exception as e:
                                 print(colored(f"Function {name}: Failed to load arguments as json","yellow"))
+                        print(colored(json.dumps(function_call), "blue"))
+                        '''
                         if isinstance(arguments, str):
                             params = arguments
                         else:
-                            params = ','.join(f"{key}={function_call.arguments[key]}" for key in function_call.arguments.keys())
+                            params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
                         print(colored(f"Function: {name}({params})", "blue"))
+                        '''
                         if name:
                             action = self.context.actions.get(name)
                             if action:
