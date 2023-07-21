@@ -17,6 +17,7 @@
   "sample5": "present the bar code of residential price for each state from low to high.",
   "form": "Write some Python code to {question} (surround it with ```).",
   "result_form": "Here is the result\n```\n{result}\n```\n",
+  "skip_function_result": true,
   "notebook": true,
   "prompt": [
     "You are a data scientist who runs Python code to analyze data.",
