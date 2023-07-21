@@ -5,14 +5,22 @@ import io
 import contextlib
 import matplotlib.pyplot as plt
 from termcolor import colored
+from dotenv import load_dotenv
+import codeboxapi as cb
 
 folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
     os.makedirs(folder_path)
 
+load_dotenv() # Load default environment variables (.env)
+CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
+if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
+    cb.set_api_key(CODEBOX_API_KEY)
+
 ipython = None
 notebook = {}
 file_path = ""
+codebox = None
 
 def create_notebook(module:str):
     # Create a new notebook
@@ -41,8 +49,11 @@ def create_notebook(module:str):
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
-    global ipython
-    ipython = IPython.InteractiveShell()
+    global ipython, codebox
+    if CODEBOX_API_KEY:
+        codebox = cb.Codebox()
+    else:
+        ipython = IPython.InteractiveShell()
     return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
 
 def run_python_code(code, query:str):

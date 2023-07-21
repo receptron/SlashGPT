@@ -13,3 +13,4 @@ matplotlib
 numpy
 scipy
 replicate
+codeboxapi
