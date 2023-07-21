@@ -1,14 +1,5 @@
 [
   {
-    "name": "create_notebook",
-    "description": "Create a notebook on the Jupyter",
-    "parameters": {
-      "type": "object",
-      "properties": {},
-      "required": []
-    }
-  },
-  {
     "name": "run_python_code",
     "description": "Run a python code on a notebook",
     "parameters": {
