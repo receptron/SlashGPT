@@ -198,6 +198,31 @@ class ChatContext:
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             }
 
+    def processPython(self, output:str, original_question:str):
+        if self.manifest.get("notebook"):
+            res = ''.join(output)
+            lines = res.splitlines()
+            codes = None
+            for line in lines:
+                if line[:3] == "```":
+                    if codes is None:
+                        codes = []
+                    else:
+                        break
+                elif codes is not None:
+                    codes.append(line)
+            if codes:
+                res = '\n'.join(codes) # Ignore except code
+                res = f"Here is the code.\n```\n{res}\n```"
+                self.messages.append({"role":"assistant", "content":res})
+                print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {res}")
+                res = None # we have already appended it
+                (function_result, foo) = jp.run_python_code(codes, original_question)
+                function_result = f"Here is the result.\n\n{function_result}"
+                print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
+            else:
+                print(colored("Debug Message: code code in this reply", "yellow"))
+
     """
     Let the LLM generate a message and append it to the message list
     returns (role, res) if a message was appended.
@@ -279,29 +304,7 @@ class ChatContext:
                 input={"prompt": '\n'.join(prompts)}
             )
 
-            if self.manifest.get("notebook"):
-                res = ''.join(output)
-                lines = res.splitlines()
-                codes = None
-                for line in lines:
-                    if line[:3] == "```":
-                        if codes is None:
-                            codes = []
-                        else:
-                            break
-                    elif codes is not None:
-                        codes.append(line)
-                if codes:
-                    res = '\n'.join(codes) # Ignore except code
-                    res = f"Here is the code.\n```\n{res}\n```"
-                    self.messages.append({"role":"assistant", "content":res})
-                    print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {res}")
-                    res = None # we have already appended it
-                    (function_result, foo) = jp.run_python_code(codes, original_question)
-                    function_result = f"Here is the result.\n\n{function_result}"
-                    print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
-                else:
-                    print(colored("Debug Message: code code in this reply", "yellow"))
+            res = self.processPython(output, original_question)
             role = "assistant"
         else:
             if self.functions:
