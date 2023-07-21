@@ -547,7 +547,7 @@ class Main:
                             json.dump(self.context.messages, f)
 
                     if function_result:
-                        name = "call_python_code" #anything is fine actually
+                        name = "call_python_code" 
                         function_message = function_result
                     elif function_call:
                         name = function_call.get("name")
