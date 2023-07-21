@@ -4,7 +4,6 @@
   "source": "snakajima",
   "temperature": "0.0",
   "functions": "./resources/jupyter.json",
-  "module": "./my_jupyter.py",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample0": "Calcurate 3**20.",
   "sample_pri": "Show me the first 50 prime nubmers",
@@ -16,7 +15,7 @@
   "sample3": "Show me the pie chart.",
   "sample4": "Load ./data/iou_zipcodes_2020.csv",
   "sample5": "Present the bar code of residential price for each state from low to high.",
-  "bootstrap": "First, create a Jupyter notebook and remember its name.",
+  "notebook": true,
   "form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
     "You are a data scientist who writes Python code to analyze data."

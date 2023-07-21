@@ -615,7 +615,10 @@ class Main:
                                 else: 
                                     function_message = "Success"
                             else:
-                                function = self.context.module and self.context.module.get(name) or None
+                                if self.context.manifest.get("notebook"):
+                                    function = getattr(jp, name)
+                                else:
+                                    function = self.context.module and self.context.module.get(name) or None
                                 if function:
                                     if isinstance(arguments, str):
                                         (result, message) = function(arguments)
