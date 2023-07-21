@@ -633,6 +633,10 @@ class Main:
                                         function_message = result_form.format(result = result)
                                     else:
                                         function_message = result
+                                    if self.context.manifest.get("skip_function_result"):
+                                        print(f"\033[95m\033[1m{function}({name}): \033[95m\033[0m{function_message}")
+                                        self.context.appendQuestion("function", function_message, name)
+                                        function_message = None
                                 else:
                                     print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
