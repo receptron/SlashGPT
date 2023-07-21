@@ -259,7 +259,9 @@ class ChatContext:
                 messages=messages
             )
             res = response.last
-            if (res == None):
+            if res:
+                res = self.processPython(res, original_question)
+            else:
                 print(response.filters)
             role = "assistant"
         elif (self.model == "palmt"):
