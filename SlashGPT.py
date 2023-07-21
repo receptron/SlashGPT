@@ -217,9 +217,9 @@ class ChatContext:
                 self.messages.append({"role":"assistant", "content":res})
                 print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {res}")
                 res = None # we have already appended it
-                (function_result, foo) = jp.run_python_code(codes, original_question)
+                (function_result, _) = jp.run_python_code(codes, original_question)
                 function_result = f"Here is the result.\n\n{function_result}"
-                print(f"\033[95m\033[1mFunction(function): \033[95m\033[0m{function_result}")
+                print(f"\033[95m\033[1mfunction(run_python_code): \033[95m\033[0m{function_result}")
             else:
                 print(colored("Debug Message: code code in this reply", "yellow"))
 
@@ -513,8 +513,7 @@ class Main:
                     roleInput = "function"
                 question = function_message
                 function_message = None
-                if self.config.verbose:
-                    print(f"\033[95m\033[1mFunction({name}): \033[95m\033[0m{question}")
+                print(f"\033[95m\033[1m{roleInput}({name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")

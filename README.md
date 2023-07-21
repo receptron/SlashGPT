@@ -185,3 +185,11 @@ The definition of "make_event" function.
   }
 }
 ```
+
+## Code Interpreter
+
+To be filled
+
+- graph common moving average
+- Draw histogram
+- Load data from https://query1.finance.yahoo.com/v8/finance/chart/AAPL
