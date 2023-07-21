@@ -259,8 +259,6 @@ class ChatContext:
             res = response.last
             if res:
                 function_call = self.extractPython(res, original_question)
-                if function_call:
-                    res = None # Ignore the responce
             else:
                 print(colored(response.filters, "red"))
             role = "assistant"
@@ -308,8 +306,6 @@ class ChatContext:
             res = ''.join(output)
 
             function_call = self.extractPython(res, original_question)
-            if function_call:
-                res = None # Ignore the responce
             role = "assistant"
         else:
             if self.functions:
@@ -632,7 +628,11 @@ class Main:
                                         print(colored(message, "blue"))
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
-                                    function_message = result
+                                    result_form = self.context.manifest.get("result_form")
+                                    if result_form:
+                                        function_message = result_form.format(result = result)
+                                    else:
+                                        function_message = result
                                 else:
                                     print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
