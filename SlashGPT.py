@@ -648,7 +648,7 @@ class Main:
                                     else:
                                         function_message = result
                                     if self.context.manifest.get("skip_function_result"):
-                                        print(f"\033[95m\033[1m{function}({name}): \033[95m\033[0m{function_message}")
+                                        print(f"\033[95m\033[1mfunction({name}): \033[95m\033[0m{function_message}")
                                         self.context.appendQuestion("function", function_message, name)
                                         function_message = None
                                 else:
