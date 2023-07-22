@@ -93,10 +93,10 @@ def run_python_code(code, query:str):
         if output.type == "text":
             cell["outputs"].append({
                 "output_type": "execute_result",
-                "execution_count": None,
                 "data": {
                     "text/plain": str(output)
                 },
+                "execution_count": 1,
                 "metadata": {}
             })
             result = str(output)
@@ -146,7 +146,7 @@ def run_python_code(code, query:str):
         if exec_result.result is not None:
             cell["outputs"].append({
                 "output_type": "execute_result",
-                "execution_count": None,
+                "execution_count": 1,
                 "data": {
                     "text/plain": str(exec_result.result)
                 },
