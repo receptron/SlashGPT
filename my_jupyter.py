@@ -14,8 +14,10 @@ if not os.path.isdir(folder_path):
 
 load_dotenv() # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
+'''
 if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
     cb.set_api_key(CODEBOX_API_KEY)
+'''
 
 ipython = None
 notebook = {}
@@ -52,6 +54,7 @@ def create_notebook(module:str):
     global ipython, codebox
     if CODEBOX_API_KEY:
         codebox = cb.CodeBox()
+        codebox.start()
     else:
         ipython = IPython.InteractiveShell()
     return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
@@ -80,6 +83,11 @@ def run_python_code(code, query:str):
     stdout = io.StringIO()
     stderr = io.StringIO()
 
+    if codebox:
+        result = codebox.run(''.join(code))
+        print("***", result)
+        return (str(result), f"```Python\n{code}\n```")
+    
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
         exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
 
