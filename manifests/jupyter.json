@@ -15,10 +15,13 @@
   "sample3": "Show me the pie chart.",
   "sample4": "Load ./data/iou_zipcodes_2020.csv",
   "sample5": "Present the bar code of residential price for each state from low to high.",
+  "sample_stock": "Graph 4 year stock price of apple and tesla using yfinance",
   "notebook": true,
-  "form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
+  "x_form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
     "You are a data scientist who writes Python code to analyze data.",
+    "When you write Python code, call 'run_python_code' function.",
+    "When you see errors in your code, fix it and rerun it up to three times",
     "Current time is {now}."
   ]
 }

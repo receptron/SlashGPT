@@ -169,4 +169,4 @@ def run_python_code(code, query:str):
 def python(code):
     if isinstance(code,str):
         code = [code]
-    run_python_code(code, None)
+    return run_python_code(code, None)

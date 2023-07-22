@@ -15,13 +15,14 @@
   "sample3": "show me the pie chart.",
   "sample4": "load ./data/iou_zipcodes_2020.csv and list first 10 rows",
   "sample5": "present the bar code of residential price for each state from low to high.",
-  "form": "Write some Python code to {question} (surround it with ```).",
+  "sample_stock": "Graph 4 year stock price of apple and tesla using yfinance",
   "result_form": "Here is the result\n```\n{result}\n```\n",
   "skip_function_result": true,
   "notebook": true,
   "prompt": [
     "You are a data scientist who runs Python code to analyze data.",
-    "When you write code, make it sure that you expicitly import all necessary libraries including numpy",
+    "When you write code, make it sure that you expicitly import all necessary libraries",
+    "When you see errors in your code, fix it and rerun it up to three times",
     "Current time is {now}."
   ]
 }

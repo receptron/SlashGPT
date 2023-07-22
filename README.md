@@ -195,4 +195,4 @@ To be filled
 
 - graph common moving average
 - Draw histogram
-- Graph 4 year stock price of apple and tesla
+- Graph 4 year stock price of apple and tesla using yfinance
