@@ -115,7 +115,7 @@ def run_python_code(code, query:str):
                 "output_type": "display_data",
                 "metadata": {}
             })
-            result = "Image was successfully generated."
+            result = "Image was successfully generated and presented."
         else:
             result = f"Something went wrong ({output.type})"
     else:
