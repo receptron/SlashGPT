@@ -99,20 +99,26 @@ def run_python_code(code, query:str):
                 },
                 "metadata": {}
             })
+            cell["execution_count"] = 1
             result = str(output)
         elif output.type == "error":
             cell["outputs"].append({
                 "output_type": "stream",
                 "name": "stderr",
-                "text": str(output)
+                "text": str(output),
+                "metadata": {}
             })
+            cell["execution_count"] = 1
             result = str(output)
         elif output.type == "image/png":
             cell["outputs"].append({
                 "data": {
                     "image/png": output.content
-                }
+                },
+                "output_type": "display_data",
+                "metadata": {}
             })
+            cell["execution_count"] = 1
             result = "Image was successfully generated."
         else:
             result = f"Something went wrong ({output.type})"
@@ -161,7 +167,7 @@ def run_python_code(code, query:str):
     notebook["cells"].append(cell)
     global file_path
     with open(file_path, 'w') as file:
-        json.dump(notebook, file)
+        json.dump(notebook, file, indent=2)
 
     return (str(result), f"```Python\n{code}\n```")
 
