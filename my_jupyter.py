@@ -108,7 +108,11 @@ def run_python_code(code, query:str):
             })
             result = str(output)
         elif output.type == "image/png":
-            # to be implemented
+            cell["outputs"].append({
+                "data": {
+                    "image/png": output.content
+                }
+            })
             result = "Image was successfully generated."
         else:
             result = f"Something went wrong ({output.type})"
