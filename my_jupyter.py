@@ -83,7 +83,7 @@ def run_python_code(code, query:str):
     cell = {
         "cell_type": "code",
         "metadata": {},
-        "execution_count": None,
+        "execution_count": 1,
         "source": code,
         "outputs": []
     }
@@ -99,16 +99,13 @@ def run_python_code(code, query:str):
                 },
                 "metadata": {}
             })
-            cell["execution_count"] = 1
             result = str(output)
         elif output.type == "error":
             cell["outputs"].append({
                 "output_type": "stream",
                 "name": "stderr",
-                "text": str(output),
-                "metadata": {}
+                "text": str(output)
             })
-            cell["execution_count"] = 1
             result = str(output)
         elif output.type == "image/png":
             cell["outputs"].append({
@@ -118,7 +115,6 @@ def run_python_code(code, query:str):
                 "output_type": "display_data",
                 "metadata": {}
             })
-            cell["execution_count"] = 1
             result = "Image was successfully generated."
         else:
             result = f"Something went wrong ({output.type})"
