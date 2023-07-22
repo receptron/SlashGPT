@@ -31,6 +31,7 @@ Here are the design goals:
     - ALCHEMY_API_KEY: required to use "web3" agent.
     - WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
     - REPLICATE_API_TOKEN: required to use "llama2" model.
+    - CODEBOX_API_KEY: set this to "local" to use CodeBox's LocalBox instead of IPython
 
 ## Execution
 

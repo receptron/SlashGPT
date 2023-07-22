@@ -84,9 +84,9 @@ def run_python_code(code, query:str):
     stderr = io.StringIO()
 
     if codebox:
-        result = codebox.run(''.join(code))
-        print("***", result)
-        return (str(result), f"```Python\n{code}\n```")
+        output: cb.CodeBoxOutput = codebox.run(''.join(code))
+        print("***", output.type)
+        return (str(output), f"```Python\n{code}\n```")
     
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
         exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
