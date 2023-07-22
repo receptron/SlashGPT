@@ -404,6 +404,7 @@ class Main:
                     if (manifest):
                        print(json.dumps(manifest, indent=2))
             elif (key == "bye"):
+                jp.stop()
                 self.exit = True;
             elif (key == "verbose"):
                 self.config.verbose = self.config.verbose == False
