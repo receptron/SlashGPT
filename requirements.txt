@@ -13,4 +13,5 @@ matplotlib
 numpy
 scipy
 replicate
+pydantic==1.10
 codeboxapi

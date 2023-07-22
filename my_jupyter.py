@@ -51,7 +51,7 @@ def create_notebook(module:str):
 
     global ipython, codebox
     if CODEBOX_API_KEY:
-        codebox = cb.Codebox()
+        codebox = cb.CodeBox()
     else:
         ipython = IPython.InteractiveShell()
     return ({'result':'created a notebook', 'notebook_name':notebook_name}, None)
