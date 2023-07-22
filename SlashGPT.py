@@ -82,6 +82,12 @@ class ChatContext:
             self.model = manifest.get("model") or self.model
             if self.model == "gpt-3.5-turbo-16k-0613":
                 self.max_token = 4096 * 4
+            elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
+                print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
+                self.model = "gpt-3.5-turbo-0613"
+            elif self.model == "llama2" and config.REPLICATE_API_TOKEN is None:
+                print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
+                self.model = "gpt-3.5-turbo-0613"
             self.title = manifest.get("title")
             self.intro = manifest.get("intro")
             self.actions = manifest.get("actions") or {} 
