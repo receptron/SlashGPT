@@ -88,75 +88,78 @@ def run_python_code(code, query:str):
         "outputs": []
     }
 
-    stdout = io.StringIO()
-    stderr = io.StringIO()
-
     if codebox:
         output: cb.CodeBoxOutput = codebox.run(''.join(code))
-        print("***", output.type)
-        return (str(output), f"```Python\n{code}\n```")
-    
-    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-        exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
+        if output.type == "text":
+            cell["outputs"].append({
+                "output_type": "execute_result",
+                "execution_count": None,
+                "data": {
+                    "text/plain": str(output)
+                },
+                "metadata": {}
+            })
+            result = str(output)
+        elif output.type == "error":
+            cell["outputs"].append({
+                "output_type": "stream",
+                "name": "stderr",
+                "text": str(output)
+            })
+            result = str(output)
+        elif output.type == "image/png":
+            # to be implemented
+            result = "Image was successfully generated."
+        else:
+            result = f"Something went wrong ({output.type})"
+    else:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
 
-    # Handle stdout
-    if stdout.getvalue():
-        cell["outputs"].append({
-            "output_type": "stream",
-            "name": "stdout",
-            "text": stdout.getvalue()
-        })
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
 
-    # Handle stderr
-    if stderr.getvalue():
-        cell["outputs"].append({
-            "output_type": "stream",
-            "name": "stderr",
-            "text": stderr.getvalue()
-        })
-        print(colored(stderr.getvalue(), "red"))
+        # Handle stdout
+        if stdout.getvalue():
+            cell["outputs"].append({
+                "output_type": "stream",
+                "name": "stdout",
+                "text": stdout.getvalue()
+            })
 
-    # Handle execution result
-    if exec_result.result is not None:
-        cell["outputs"].append({
-            "output_type": "execute_result",
-            "execution_count": None,
-            "data": {
-                "text/plain": str(exec_result.result)
-            },
-            "metadata": {}
-        })
+        # Handle stderr
+        if stderr.getvalue():
+            cell["outputs"].append({
+                "output_type": "stream",
+                "name": "stderr",
+                "text": stderr.getvalue()
+            })
+            print(colored(stderr.getvalue(), "red"))
 
-    '''
-    # Handle matplotlib figures
-    for fig_num in plt.get_fignums():
-        fig = plt.figure(fig_num)
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
-        img_str = base64.b64encode(buf.read()).decode('utf-8')
-        cell["outputs"].append({
-            "output_type": "display_data",
-            "data": {
-                "image/png": img_str
-            },
-            "metadata": {}
-        })
-    '''
+        # Handle execution result
+        if exec_result.result is not None:
+            cell["outputs"].append({
+                "output_type": "execute_result",
+                "execution_count": None,
+                "data": {
+                    "text/plain": str(exec_result.result)
+                },
+                "metadata": {}
+            })
+        result = exec_result.result
+        if result is None:
+            result = stdout.getvalue()
+            if result is None:
+                result = stderr.getvalue()
+                if result is None:
+                    result = "Done"
 
     notebook["cells"].append(cell)
     global file_path
     with open(file_path, 'w') as file:
         json.dump(notebook, file)
 
-    if exec_result.result is None:
-        exec_result.result = stdout.getvalue()
-        if exec_result.result is None:
-            exec_result.result = stderr.getvalue()
-            if exec_result.result is None:
-                exec_result.result = "Done"
-
-    return (str(exec_result.result), f"```Python\n{code}\n```")
+    return (str(result), f"```Python\n{code}\n```")
 
 # GPT sometimes call this function
 def python(code):
