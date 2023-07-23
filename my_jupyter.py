@@ -85,7 +85,7 @@ def run_python_code(code, query:str):
         "cell_type": "code",
         "metadata": {},
         "execution_count": 1,
-        "source": code,
+        "source": ''.join(code),
         "outputs": []
     }
 
