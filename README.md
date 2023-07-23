@@ -65,7 +65,7 @@ jupyter (GPT3.5) works just like Code Interpreter. It is able to respond to the 
 
 jupyterp (PaLM2) and jupyter2 (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
 
-For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox writes them into the notebook, but does not display them immediately. 
+For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
 Sample queries.
 

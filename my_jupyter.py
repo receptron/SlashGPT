@@ -123,7 +123,8 @@ def run_python_code(code, query:str):
             image_stream = io.BytesIO(image_data)
             image_array = mpimg.imread(image_stream, format='png')
             plt.imshow(image_array)
-            plt.show()
+            plt.axis('off')
+            plt.show(block=False)
         else:
             result = f"Something went wrong ({output.type})"
     else:
