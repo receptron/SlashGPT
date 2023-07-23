@@ -39,12 +39,39 @@ Here are the design goals:
 
 2. When you see "You({agent_name}):", type a message to the agent OR type a slash command starting with "/".
 
+3. It activate "dispatcher" agent first, which is able to dispatch queries to appropriate agents.
+
+4. Type "/help" to see the list of system commands and available agents.
+
 ## Outputs
 
 1. Each conversation will be store as a json file under the "output/{context}" folder, 
 where the context is "GTP" for general chat, and the app id for a specialized chat.
 
 2. Please notice that the "output" folder is ignored by git. 
+
+3. Code Interpreter agents will generate Jupyter notebook in "output/notebooks" folder.
+
+## Code Interpreter Agents
+
+Some of agents are built to mimic the behaviors of ChatGPT code intepreter (or Noteable plugin)
+with various LLMs.
+
+- jupyter: GPT3.5
+- jupyterp: PaLM2 (GOOGLE_PALM_KEY key is required)
+- juypter2: LlaMA (REPLICATE_API_TOKEN is required)
+
+jupyter (GPT3.5) works just like Code Interpreter. It is able to respond to the output of nenerated code appropriately.
+
+jupyterp (PaLM2) and jupyter2 (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
+
+Sample queries.
+
+- Draw sine curve
+- List first 50 prime numbers
+- graph common moving average
+- Draw histogram
+- Graph 4 year stock price of apple and tesla using yfinance
 
 ## Manifest files
 
@@ -188,11 +215,3 @@ The definition of "make_event" function.
   }
 }
 ```
-
-## Code Interpreter
-
-To be filled
-
-- graph common moving average
-- Draw histogram
-- Graph 4 year stock price of apple and tesla using yfinance
