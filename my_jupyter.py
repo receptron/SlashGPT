@@ -14,10 +14,8 @@ if not os.path.isdir(folder_path):
 
 load_dotenv() # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
-'''
 if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
     cb.set_api_key(CODEBOX_API_KEY)
-'''
 
 ipython = None
 notebook = {}
