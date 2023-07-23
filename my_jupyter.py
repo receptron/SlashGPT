@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from termcolor import colored
 from dotenv import load_dotenv
 import codeboxapi as cb
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import base64
 
 folder_path = "./output/notebooks"
 if not os.path.isdir(folder_path):
@@ -114,6 +117,13 @@ def run_python_code(code, query:str):
                 "metadata": {}
             })
             result = "Image was successfully generated and presented."
+
+            # Present it in a pop up window
+            image_data = base64.b64decode(output.content)
+            image_stream = io.BytesIO(image_data)
+            image_array = mpimg.imread(image_stream, format='png')
+            plt.imshow(image_array)
+            plt.show()
         else:
             result = f"Something went wrong ({output.type})"
     else:
