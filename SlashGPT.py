@@ -27,11 +27,15 @@ LONG_HELP = """
 /bye:       Terminate the app
 /new:       Start a new chat session
 /prompt:    Display the current prompt
+/history:   Display the chat history
 /sample:    Make the sample request
 /gpt3:      Switch the model to gpt-3.5-turbo-0613
 /gpt31:     Switch the model to gpt-3.5-turbo-16k-0613
 /gpt4:      Switch the model to gpt-4-0613
 /palm:      Switch the model to Google PaLM
+/llama2:    Switch the model to LlaMA2 7b
+/llama270:  Switch the model to LlaMA2 70b
+/vicuna:    Switch the model to Vicuna 16b
 /verbose:   Toggle verbose switch
 /roles1:    Switch the manifest set to ones in prompts (original)
 /roles2:    Switch the manifest set to ones in roles2
@@ -58,7 +62,7 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-        self.ONELINE_HELP = "System Slashes: /new, /bye, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
+        self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
 
     def loadManifests(self, path):
