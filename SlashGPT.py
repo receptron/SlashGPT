@@ -22,9 +22,25 @@ import jupyter_runtime as jp
 
 # Configuration
 
+LONG_HELP = """
+/new:       Start from the scratch
+/bye:       Terminate the app
+/clear:     Clear the current conversation
+/prompt:    Display the current prompt
+/sample:    Make the sample request
+/gpt3:      Switch the model to gpt-3.5-turbo-0613
+/gpt31:     Switch the model to gpt-3.5-turbo-16k-0613
+/gpt4:      Switch the model to gpt-4-0613
+/palm:      Switch the model to Google PaLM
+/verbose:   Toggle verbose switch
+/roles1:    Switch the manifest set to ones in prompts (original)
+/roles2:    Switch the manifest set to ones in roles2
+"""
+
 class ChatConfig:
     def __init__(self, pathManifests):
-        load_dotenv() # Load default environment variables (.env)
+        # Load various keys from .env file
+        load_dotenv() 
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
         assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
         self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
@@ -43,20 +59,7 @@ class ChatConfig:
         if (self.GOOGLE_PALM_KEY):
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
         self.ONELINE_HELP = "System Slashes: /new, /bye, /clear, /prompt, /sample, /gpt3, /gpt4, /palm, /verbose, /help"
-        self.LONG_HELP = """
-/new:       Start from the scratch
-/bye:       Terminate the app
-/clear:     Clear the current conversation
-/prompt:    Display the current prompt
-/sample:    Make the sample request
-/gpt3:      Switch the model to gpt-3.5-turbo-0613
-/gpt31:     Switch the model to gpt-3.5-turbo-16k-0613
-/gpt4:      Switch the model to gpt-4-0613
-/palm:      Switch the model to Google PaLM
-/verbose:   Toggle verbose switch
-/roles1:    Switch the manifest set to ones in prompts (original)
-/roles2:    Switch the manifest set to ones in roles2
-"""
+        self.LONG_HELP = LONG_HELP
 
     def loadManifests(self, path):
         self.manifests = {}
@@ -65,7 +68,6 @@ class ChatConfig:
             key = file.split('.')[0]
             with open(f"{path}/{file}", 'r') as f:
                 data = json.load(f)
-            # print(key, file, data)
             self.manifests[key] = data
 
 class ChatSession:
