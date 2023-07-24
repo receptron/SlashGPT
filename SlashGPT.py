@@ -157,15 +157,15 @@ class ChatSession:
                     if self.config.verbose:
                         print(self.functions)
 
-    def num_tokens(self, text: str) -> int:
+    def _num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
         encoding = tiktoken.encoding_for_model(self.model)
         return len(encoding.encode(text))
     
-    def messages_tokens(self) -> int:
-        return sum([self.num_tokens(message["content"]) for message in self.messages])
+    def _messages_tokens(self) -> int:
+        return sum([self._num_tokens(message["content"]) for message in self.messages])
     
-    def fetch_related_articles(
+    def _fetch_related_articles(
         self,
         token_budget: int
     ) -> str:
@@ -184,21 +184,21 @@ class ChatSession:
 
         articles = ""
         count = 0
-        base = self.messages_tokens()
+        base = self._messages_tokens()
         if (self.config.verbose):
             print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
             next_article = f'\n\nSection:\n"""\n{string}\n"""'
-            if (self.num_tokens(articles + next_article + query) + base > token_budget):
+            if (self._num_tokens(articles + next_article + query) + base > token_budget):
                 break
             else:
                 count += 1
                 articles += next_article
                 if self.config.verbose:
-                    print(len(string), self.num_tokens(string))
+                    print(len(string), self._num_tokens(string))
         if (self.config.verbose):
-            print(f"Articles:{count}, Tokens:{self.num_tokens(articles + query)}")
+            print(f"Articles:{count}, Tokens:{self._num_tokens(articles + query)}")
         return articles
 
     def appendQuestion(self, role: str, question: str, name):
@@ -207,14 +207,18 @@ class ChatSession:
         else:
             self.messages.append({"role":role, "content":question })
         if self.index:
-            articles = self.fetch_related_articles(self.max_token - 500)
+            articles = self._fetch_related_articles(self.max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             }
 
-    def extractPython(self, res:str, original_question:str):
+    '''
+    Extract the Python from the string if the agent is a code interpreter.
+    Returns it in the "function call" format. 
+    '''
+    def _extractPython(self, res:str, original_question:str):
         if self.manifest.get("notebook"):
             lines = res.splitlines()
             codes = None
@@ -235,7 +239,7 @@ class ChatSession:
                     }
                 } 
             
-        print(colored("Debug Message: no code in this reply", "yellow"))
+            print(colored("Debug Message: no code in this reply", "yellow"))
         return None
 
     """
@@ -274,35 +278,11 @@ class ChatSession:
             )
             res = response.last
             if res:
-                function_call = self.extractPython(res, original_question)
+                function_call = self._extractPython(res, original_question)
                 if function_call:
                     res = None
             else:
                 print(colored(response.filters, "red"))
-            role = "assistant"
-        elif (self.model == "palmt"):
-            defaults = {
-                'model': 'models/text-bison-001',
-                'temperature': self.temperature,
-                'candidate_count': 1,
-                'top_k': 40,
-                'top_p': 0.95,
-            }
-            prompts = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if (content):
-                    if (role == "system"):
-                        prompts.append(message["content"])
-                    else:
-                        prompts.append(f"{role}:{message['content']}")
-            prompts.append("assistant:")
-            response = palm.generate_text(
-                **defaults,
-                prompt='\n'.join(prompts)
-            )
-            res = response.result
             role = "assistant"
         elif (self.model[:6] == "llama2" or self.model == "vicuna"):
             prompts = []
@@ -329,7 +309,7 @@ class ChatSession:
             )
             res = ''.join(output)
 
-            function_call = self.extractPython(res, original_question)
+            function_call = self._extractPython(res, original_question)
             if function_call:
                 res = None
             role = "assistant"
@@ -462,14 +442,6 @@ class Main:
                     self.context.model = "palm"
                     if (self.context.botName == "GPT"):
                         self.context.botName = "PaLM"
-                    print(f"Model = {self.context.model}")
-                else:
-                    print("Error: Missing GOOGLE_PALM_KEY")
-            elif (key == "palmt"):
-                if (self.config.GOOGLE_PALM_KEY):
-                    self.context.model = "palmt"
-                    if (self.context.botName == "GPT"):
-                        self.context.botName = "PaLM(Text)"
                     print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
