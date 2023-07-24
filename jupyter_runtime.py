@@ -181,3 +181,17 @@ def python(code):
     if isinstance(code,str):
         code = [code]
     return run_python_code(code, None)
+
+def draw_diagram(code:str, query:str):
+    codes = [
+        "from graphviz import Source\n",
+        "from IPython.display import display\n",
+        'diagram = """\n',
+        code,
+        '"""\n',
+        "graph = Source(diagram)",
+        "display(graph)"
+    ]
+
+    (res, message) = run_python_code(codes, query)
+    return (res, message)

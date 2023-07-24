@@ -1,0 +1,20 @@
+[
+  {
+    "name": "draw_diagram",
+    "description": "Draw a diagram using Graphviz",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Diagram to draw in DOT language"
+        },
+        "query": {
+          "type": "string",
+          "description": "Query from the user as-is"
+        }
+      },
+      "required": ["code", "query"]
+    }
+  }
+]
