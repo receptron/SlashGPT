@@ -308,8 +308,10 @@ class ChatContext:
             prompts.append("assistant:")
 
             output = replicate.run(
-               "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
-                input={"prompt": '\n'.join(prompts)}
+                "replicate/llama70b-v2-chat:2d19859030ff705a87c746f7e96eea03aefb71f166725aee39692f1476566d48",
+                # "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
+                input={"prompt": '\n'.join(prompts)},
+                temperature = self.temperature
             )
             res = ''.join(output)
 
