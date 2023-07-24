@@ -23,7 +23,7 @@ import jupyter_runtime as jp
 # Configuration
 
 class ChatConfig:
-    def __init__(self):
+    def __init__(self, pathManifests):
         load_dotenv() # Load default environment variables (.env)
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
         assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
@@ -34,6 +34,7 @@ class ChatConfig:
         self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
         self.verbose = False
         self.audio = None
+        self.loadManifests(pathManifests)
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
         openai.api_key = self.OPENAI_API_KEY
@@ -57,8 +58,18 @@ class ChatConfig:
 /roles2:    Switch the manifest set to ones in roles2
 """
 
+    def loadManifests(self, path):
+        self.manifests = {}
+        files = os.listdir(path)
+        for file in files:
+            key = file.split('.')[0]
+            with open(f"{path}/{file}", 'r') as f:
+                data = json.load(f)
+            # print(key, file, data)
+            self.manifests[key] = data
+
 class ChatSession:
-    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}, manifests = None):
+    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}):
         self.config = config
         self.key = key
         self.time = datetime.now()
@@ -126,8 +137,8 @@ class ChatSession:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
             agents = manifest.get("agents")
-            if agents and manifests:
-                agents = [f"{agent}:{manifests[agent].get('description')}" for agent in agents]
+            if agents:
+                agents = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
                 self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
             embeddings = manifest.get("embeddings")
             if embeddings:
@@ -346,7 +357,7 @@ class ChatSession:
         return (role, res, function_call)
 
 class Main:
-    def __init__(self, config: ChatConfig, pathManifests: str):
+    def __init__(self, config: ChatConfig):
         self.config = config
 
         # Prepare output folders
@@ -355,26 +366,14 @@ class Main:
         if not os.path.isdir("output/GPT"):
             os.makedirs("output/GPT")
 
-        self.loadManifests(pathManifests)
         self.context = ChatSession(self.config)
         self.exit = False
-        self.pathManifests = pathManifests
-
-    def loadManifests(self, path):
-        self.manifests = {}
-        files = os.listdir(path)
-        for file in files:
-            key = file.split('.')[0]
-            with open(f"{path}/{file}", 'r') as f:
-                data = json.load(f)
-            # print(key, file, data)
-            self.manifests[key] = data
 
     def switchContext(self, key: str, intro: bool = True):
         self.key = key
-        manifest = self.manifests.get(key)
+        manifest = self.config.manifests.get(key)
         if manifest:
-            self.context = ChatSession(self.config, key=key, manifest=manifest, manifests=self.manifests)
+            self.context = ChatSession(self.config, key=key, manifest=manifest)
             if not os.path.isdir(f"output/{self.context.key}"):
                 os.makedirs(f"output/{self.context.key}")
             if self.config.verbose:
@@ -409,10 +408,10 @@ class Main:
             if (commands[0] == "help"):
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
-                    list = "\n".join(f"/{(key+'         ')[:12]} {self.manifests[key].get('title')}" for key in sorted(self.manifests.keys()))
+                    list = "\n".join(f"/{(key+'         ')[:12]} {self.config.manifests[key].get('title')}" for key in sorted(self.config.manifests.keys()))
                     print(f"Agents:\n{list}")
                 if (len(commands) == 2):
-                    manifest = self.manifests.get(commands[1])
+                    manifest = self.config.manifests.get(commands[1])
                     if (manifest):
                        print(json.dumps(manifest, indent=2))
             elif (key == "bye"):
@@ -477,7 +476,7 @@ class Main:
                     print("Error: Missing GOOGLE_PALM_KEY")
             elif commands[0] == "sample" and len(commands) > 1:
                 sub_key = commands[1]
-                sub_manifest = self.manifests.get(sub_key)
+                sub_manifest = self.config.manifests.get(sub_key)
                 if sub_manifest:
                     sample = sub_manifest.get("sample")
                     if sample:
@@ -490,7 +489,7 @@ class Main:
                     return ("user", sample)
                 print(colored(f"Error: No {key} in the manifest file", "red"))
             elif (key == "new"):
-                self.loadManifests(self.pathManifests)
+                self.config.loadManifests("./manifests")
                 main.switchContext('dispatcher')
             elif (key == "clear"):
                 if self.key:
@@ -501,13 +500,13 @@ class Main:
                 if bootstrap:
                     return ("user", bootstrap)
             elif (key == "rpg1"):
-                self.loadManifests('./rpg1')
+                self.config.loadManifests('./rpg1')
                 main.switchContext('bartender')
             elif (key == "roles1"):
-                self.loadManifests('./prompts')
+                self.config.loadManifests('./prompts')
                 self.context = ChatSession(self.config)
             elif (key == "roles2"):
-                self.loadManifests('./roles2')
+                self.config.loadManifests('./roles2')
                 self.context = ChatSession(self.config)
             else:
                 if self.switchContext(key):
@@ -665,9 +664,9 @@ class Main:
                     if self.config.verbose:
                         raise
 
-config = ChatConfig()
+config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
-main = Main(config, "./manifests")
+main = Main(config)
 main.switchContext('dispatcher')
 main.start()
 
