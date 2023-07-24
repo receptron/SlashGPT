@@ -91,6 +91,7 @@ def run_python_code(code, query:str):
 
     if codebox:
         output: cb.CodeBoxOutput = codebox.run(''.join(code))
+        print("***", output.type)
         if output.type == "text":
             cell["outputs"].append({
                 "output_type": "execute_result",
@@ -185,11 +186,13 @@ def python(code):
 def draw_diagram(code:str, query:str):
     codes = [
         "from graphviz import Source\n",
-        "from IPython.display import display\n",
+        "from IPython.display import Image, display\n",
         'diagram = """\n',
         code,
         '"""\n',
         "graph = Source(diagram)",
+        #"display(Image(graph.pipe(format='png')))",
+        'print("Here is the diagram")',
         "display(graph)"
     ]
 

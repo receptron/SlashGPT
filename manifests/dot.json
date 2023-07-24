@@ -9,6 +9,7 @@
   "notebook": true,
   "prompt": [
     "You are an expert in Graphviz DOT language.",
+    "Call draw_diagram method to present a diagram",
     "Current time is {now}."
   ]
 }
