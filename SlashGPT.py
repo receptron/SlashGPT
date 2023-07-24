@@ -157,9 +157,6 @@ class ChatSession:
                     if self.config.verbose:
                         print(self.functions)
 
-    def clearMessages(self):
-        self.messages = self.messages[:1]
-
     def num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
         encoding = tiktoken.encoding_for_model(self.model)
@@ -373,6 +370,8 @@ class Main:
 
     def switchContext(self, key: str, intro: bool = True):
         self.key = key
+        if key is None:
+            self.context = ChatSession(self.config)
         manifest = self.config.manifests.get(key)
         if manifest:
             self.context = ChatSession(self.config, key=key, manifest=manifest)
@@ -391,10 +390,8 @@ class Main:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]
                 self.context.messages.append({"role":"assistant", "content":intro})
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
-            return True
         else:            
             print(colored(f"Invalid slash command: {key}", "red"))
-            return False
 
     """
     If the question start with "/", process it as a Slash command.
@@ -494,13 +491,7 @@ class Main:
                 self.config.loadManifests("./manifests")
                 main.switchContext('dispatcher')
             elif (key == "clear"):
-                if self.key:
-                    self.switchContext(self.key)
-                else:
-                    self.context.clearMessages()
-                bootstrap = self.context.manifest.get("bootstrap")
-                if bootstrap:
-                    return ("user", bootstrap)
+                self.switchContext(self.key)
             elif (key == "rpg1"):
                 self.config.loadManifests('./rpg1')
                 main.switchContext('bartender')
@@ -511,10 +502,7 @@ class Main:
                 self.config.loadManifests('./roles2')
                 self.context = ChatSession(self.config)
             else:
-                if self.switchContext(key):
-                    bootstrap = self.context.manifest.get("bootstrap")
-                    if bootstrap:
-                        return ("user", bootstrap)
+                self.switchContext(key)
         else:
             return (roleInput, question)
         return (None, None)
@@ -548,8 +536,6 @@ class Main:
                 original_question = question
                 if form:
                     question = form.format(question = question)
-                if self.config.verbose and role=="user":
-                    print(f"\033[95m\033[1m{self.context.userName}/bootstrap: \033[95m\033[0m{question}")
                 try:
                     self.context.appendQuestion(role, question, name)
                     # Ask LLM to generate a response.
@@ -662,7 +648,7 @@ class Main:
                                     print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
-                    self.context.clearMessages()
+                    self.switchContext(self.key)
                     if self.config.verbose:
                         raise
 
