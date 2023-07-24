@@ -18,7 +18,7 @@ from gtts import gTTS
 from playsound import playsound
 import urllib.parse
 import replicate
-import my_jupyter as jp
+import jupyter_runtime as jp
 
 # Configuration
 
