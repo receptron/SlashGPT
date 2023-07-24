@@ -23,9 +23,9 @@ import jupyter_runtime as jp
 # Configuration
 
 LONG_HELP = """
-/new:       Start from the scratch
+/root:      Start from the scratch (going back to dispatcher)
 /bye:       Terminate the app
-/clear:     Clear the current conversation
+/new:       Start a new chat session
 /prompt:    Display the current prompt
 /sample:    Make the sample request
 /gpt3:      Switch the model to gpt-3.5-turbo-0613
@@ -487,10 +487,10 @@ class Main:
                     print(sample)
                     return ("user", sample)
                 print(colored(f"Error: No {key} in the manifest file", "red"))
-            elif (key == "new"):
+            elif (key == "root"):
                 self.config.loadManifests("./manifests")
                 main.switchContext('dispatcher')
-            elif (key == "clear"):
+            elif (key == "new"):
                 self.switchContext(self.key)
             elif (key == "rpg1"):
                 self.config.loadManifests('./rpg1')

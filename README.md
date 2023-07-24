@@ -82,7 +82,6 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *title* (string, **required**): Title for the user to see
 - *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
 - *promt* (array of strings, **required**): The system prompts which define the agent (required)
-- *bootstrap* (string): The initial user message to be automatically generated first.
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
 - *skip_function_result* (boolean): skip the chat completion right after the function call.
