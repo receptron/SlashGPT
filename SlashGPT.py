@@ -85,7 +85,7 @@ class ChatContext:
             elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
                 print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
                 self.model = "gpt-3.5-turbo-0613"
-            elif self.model == "llama2" and config.REPLICATE_API_TOKEN is None:
+            elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
                 print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
                 self.model = "gpt-3.5-turbo-0613"
             self.title = manifest.get("title")
@@ -294,7 +294,7 @@ class ChatContext:
             )
             res = response.result
             role = "assistant"
-        elif (self.model == "llama2"):
+        elif (self.model[:6] == "llama2" or self.model == "vicuna"):
             prompts = []
             for message in self.messages:
                 role = message["role"]
@@ -307,9 +307,13 @@ class ChatContext:
                 prompts.append(last)
             prompts.append("assistant:")
 
+            replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
+            if self.model == "llama270":
+                replicate_model = "replicate/llama70b-v2-chat:2d19859030ff705a87c746f7e96eea03aefb71f166725aee39692f1476566d48"
+            if self.model == "vicuna":
+                replicate_model = "replicate/vicuna-13b:6282abe6a492de4145d7bb601023762212f9ddbbe78278bd6771c8b3b2f2a13b"
             output = replicate.run(
-                "replicate/llama70b-v2-chat:2d19859030ff705a87c746f7e96eea03aefb71f166725aee39692f1476566d48",
-                # "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
+                replicate_model,
                 input={"prompt": '\n'.join(prompts)},
                 temperature = self.temperature
             )
@@ -448,9 +452,9 @@ class Main:
                 self.context.model = "gpt-4-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
-            elif (key == "llama2"):
+            elif (key == "llama2" or key == "llama270" or key == "vicuna"):
                 if self.config.REPLICATE_API_TOKEN:
-                    self.context.model = "llama2"
+                    self.context.model = key
                     self.context.max_token = 4096
                     print(f"Model = {self.context.model}")
                 else:
