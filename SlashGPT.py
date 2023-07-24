@@ -201,12 +201,16 @@ class ChatSession:
             print(f"Articles:{count}, Tokens:{self._num_tokens(articles + query)}")
         return articles
 
-    def appendQuestion(self, role: str, question: str, name):
+    """
+    Append a message to the chat session, specifying the role ("user", "system" or "function").
+    In case of a function message, the name specifies the function name.
+    """
+    def appendMessage(self, role: str, message: str, name = None):
         if name:
-            self.messages.append({"role":role, "content":question, "name":name })
+            self.messages.append({"role":role, "content":message, "name":name })
         else:
-            self.messages.append({"role":role, "content":question })
-        if self.index:
+            self.messages.append({"role":role, "content":message })
+        if self.index and role == "user":
             articles = self._fetch_related_articles(self.max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
@@ -214,10 +218,10 @@ class ChatSession:
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             }
 
-    '''
+    """
     Extract the Python from the string if the agent is a code interpreter.
     Returns it in the "function call" format. 
-    '''
+    """
     def _extractFunctionCall(self, res:str, original_question:str):
         if self.manifest.get("notebook"):
             lines = res.splitlines()
@@ -243,8 +247,10 @@ class ChatSession:
         return (None, res)
 
     """
-    Let the LLM generate a message and append it to the message list
-    returns (role, res) if a message was appended.
+    Let the LLM generate a message
+    role: "assistent"
+    res: message
+    function_call: json representing the function call (optional)
     """
     def generateResponse(self, original_question):
         role = None
@@ -363,7 +369,7 @@ class Main:
 
             if intro and self.context.intro:
                 intro = self.context.intro[random.randrange(0, len(self.context.intro))]
-                self.context.messages.append({"role":"assistant", "content":intro})
+                self.context.appendMessage("assistant", intro)
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
         else:            
             print(colored(f"Invalid slash command: {key}", "red"))
@@ -504,7 +510,7 @@ class Main:
                 if form:
                     question = form.format(question = question)
                 try:
-                    self.context.appendQuestion(role, question, name)
+                    self.context.appendMessage(role, question, name)
                     # Ask LLM to generate a response.
                     (role, res, function_call) = self.context.generateResponse(original_question)
 
@@ -516,7 +522,7 @@ class Main:
                             audio_obj.save("./output/audio.mp3")
                             playsound("./output/audio.mp3")
 
-                        self.context.messages.append({"role":role, "content":res})
+                        self.context.appendMessage(role, res)
                         with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
                             json.dump(self.context.messages, f)
 
@@ -599,7 +605,7 @@ class Main:
                                         (result, message) = function(**arguments)
                                     if message:
                                         # Embed code for the context
-                                        self.context.messages.append({"role":"assistant", "content":message})
+                                        self.context.appendMessage("assistant", message)
                                     if isinstance(result, dict):
                                         result = json.dumps(result)
                                     result_form = self.context.manifest.get("result_form")
@@ -609,7 +615,7 @@ class Main:
                                         function_message = result
                                     if self.context.manifest.get("skip_function_result"):
                                         print(f"\033[95m\033[1mfunction({name}): \033[95m\033[0m{function_message}")
-                                        self.context.appendQuestion("function", function_message, name)
+                                        self.context.appendMessage("function", function_message, name)
                                         function_message = None
                                 else:
                                     print(colored(f"No function {name} in the module", "red"))
