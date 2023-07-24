@@ -218,7 +218,7 @@ class ChatSession:
     Extract the Python from the string if the agent is a code interpreter.
     Returns it in the "function call" format. 
     '''
-    def _extractPython(self, res:str, original_question:str):
+    def _extractFunctionCall(self, res:str, original_question:str):
         if self.manifest.get("notebook"):
             lines = res.splitlines()
             codes = None
@@ -231,16 +231,16 @@ class ChatSession:
                 elif codes is not None:
                     codes.append(line)
             if codes:
-                return {
+                return ({
                     "name": "run_python_code",
                     "arguments": {
                         "code": codes,
                         "query": original_question
                     }
-                } 
+                }, None) 
             
             print(colored("Debug Message: no code in this reply", "yellow"))
-        return None
+        return (None, res)
 
     """
     Let the LLM generate a message and append it to the message list
@@ -278,9 +278,7 @@ class ChatSession:
             )
             res = response.last
             if res:
-                function_call = self._extractPython(res, original_question)
-                if function_call:
-                    res = None
+                (function_call, res) = self._extractFunctionCall(res, original_question)
             else:
                 print(colored(response.filters, "red"))
             role = "assistant"
@@ -307,11 +305,8 @@ class ChatSession:
                 input={"prompt": '\n'.join(prompts)},
                 temperature = self.temperature
             )
-            res = ''.join(output)
 
-            function_call = self._extractPython(res, original_question)
-            if function_call:
-                res = None
+            (function_call, res) = self._extractFunctionCall(''.join(output), original_question)
             role = "assistant"
         else:
             if self.functions:
