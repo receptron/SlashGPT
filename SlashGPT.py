@@ -57,7 +57,7 @@ class ChatConfig:
 /roles2:    Switch the manifest set to ones in roles2
 """
 
-class ChatContext:
+class ChatSession:
     def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}, manifests = None):
         self.config = config
         self.key = key
@@ -356,7 +356,7 @@ class Main:
             os.makedirs("output/GPT")
 
         self.loadManifests(pathManifests)
-        self.context = ChatContext(self.config)
+        self.context = ChatSession(self.config)
         self.exit = False
         self.pathManifests = pathManifests
 
@@ -374,7 +374,7 @@ class Main:
         self.key = key
         manifest = self.manifests.get(key)
         if manifest:
-            self.context = ChatContext(self.config, key=key, manifest=manifest, manifests=self.manifests)
+            self.context = ChatSession(self.config, key=key, manifest=manifest, manifests=self.manifests)
             if not os.path.isdir(f"output/{self.context.key}"):
                 os.makedirs(f"output/{self.context.key}")
             if self.config.verbose:
@@ -505,10 +505,10 @@ class Main:
                 main.switchContext('bartender')
             elif (key == "roles1"):
                 self.loadManifests('./prompts')
-                self.context = ChatContext(self.config)
+                self.context = ChatSession(self.config)
             elif (key == "roles2"):
                 self.loadManifests('./roles2')
-                self.context = ChatContext(self.config)
+                self.context = ChatSession(self.config)
             else:
                 if self.switchContext(key):
                     bootstrap = self.context.manifest.get("bootstrap")
