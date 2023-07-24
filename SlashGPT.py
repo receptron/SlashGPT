@@ -284,6 +284,8 @@ class ChatSession:
             )
             res = response.last
             if res:
+                if self.config.verbose:
+                    print(colored(res, "magenta"))
                 (function_call, res) = self._extractFunctionCall(res, original_question)
             else:
                 print(colored(response.filters, "red"))
