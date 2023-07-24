@@ -132,7 +132,7 @@ def run_python_code(code, query:str):
         stderr = io.StringIO()
 
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-            exec_result = ipython.run_cell("\n".join(code) if isinstance(code, list) else code)
+            exec_result = ipython.run_cell("".join(code) if isinstance(code, list) else code)
 
         # Handle stdout
         if stdout.getvalue():
@@ -174,7 +174,7 @@ def run_python_code(code, query:str):
     with open(file_path, 'w') as file:
         json.dump(notebook, file, indent=2)
 
-    return (str(result), f"```Python\n{code}\n```")
+    return (str(result), f"```Python\n{''.join(code)}\n```")
 
 # GPT sometimes call this function
 def python(code):

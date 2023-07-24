@@ -418,6 +418,8 @@ class Main:
                     print(self.context.messages[0].get("content"))
                 if self.config.verbose and self.context.functions:
                     print(self.context.functions)
+            elif key == "history":
+                print(json.dumps(self.context.messages, indent=2))
             elif (key == "functions"):
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
