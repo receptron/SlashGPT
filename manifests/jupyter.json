@@ -17,6 +17,9 @@
   "sample4": "Load ./data/iou_zipcodes_2020.csv",
   "sample5": "Present the bar code of residential price for each state from low to high.",
   "sample_stock": "Graph 4 year stock price of apple and tesla using yfinance",
+  "sample_stock2": "Get marketcaps of apple, microsoft, amazon, tesla, nvidia, google and meta using yfinance. Use yf.Ticker({ticker}) to get the company info.",
+  "sample_stock3": "Get last closing price of those companies.",
+  "sample_stock4": "using those numbers, estimate shares outstanding of those companies",
   "notebook": true,
   "x_form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
