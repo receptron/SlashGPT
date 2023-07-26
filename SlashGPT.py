@@ -55,8 +55,12 @@ class ChatConfig:
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
         self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
+
+        # Initialize other settings and load all manifests
         self.verbose = False
         self.audio = None
+        self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
+        self.LONG_HELP = LONG_HELP
         self.loadManifests(pathManifests)
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
@@ -65,8 +69,6 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-        self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
-        self.LONG_HELP = LONG_HELP
 
     """
     Load a set of manifests. 
@@ -101,6 +103,7 @@ class ChatSession:
         if manifest.get("temperature"):
             self.temperature = float(manifest.get("temperature"))
 
+        # Load the model name and make it sure that we have required keys
         self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
         self.max_token = 4096
         if self.model == "gpt-3.5-turbo-16k-0613":
@@ -112,6 +115,7 @@ class ChatSession:
             print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
             self.model = "gpt-3.5-turbo-0613"
 
+        # Load the prompt, fill variables and append it as the system message
         self.prompt = manifest.get("prompt")
         if isinstance(self.prompt,list):
             self.prompt = '\n'.join(self.prompt)
@@ -141,7 +145,8 @@ class ChatSession:
                 self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
             self.messages = [{"role":"system", "content":self.prompt}]
 
-        self.index = None # pinecone index
+        # Prepare embedded database index
+        self.index = None
         embeddings = manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
@@ -149,6 +154,7 @@ class ChatSession:
                 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
                 self.index = pinecone.Index(table_name)
 
+        # Load agent specific python modules (for external function calls) if necessary
         self.module = None
         module = manifest.get("module")
         if module:
@@ -161,6 +167,7 @@ class ChatSession:
                 except ImportError:
                     print(f"Failed to import module: {module}")
 
+        # Load functions file if it is specified
         self.functions = None
         functions = manifest.get("functions")
         if functions:
