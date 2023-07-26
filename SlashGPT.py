@@ -41,6 +41,9 @@ LONG_HELP = """
 /roles2:    Switch the manifest set to ones in roles2
 """
 
+"""
+ChatConfig is a singleton, which holds global states, including various secret keys and the list of manifests.
+"""
 class ChatConfig:
     def __init__(self, pathManifests):
         # Load various keys from .env file
@@ -79,47 +82,41 @@ class ChatSession:
         self.config = config
         self.key = key
         self.time = datetime.now()
-        self.userName = f"You({key})"
-        self.botName = "GPT"
-        self.title = ""
-        self.intro = None
+        self.userName = manifest.get("you") or f"You({key})"
+        self.botName = manifest.get("bot") or "GPT"
+        self.title = manifest.get("title") or ""
+        self.intro = manifest.get("intro")
         self.manifest = manifest
         self.prompt = None
         self.index = None # pinecone index
         self.temperature = 0.7
-        self.model = "gpt-3.5-turbo-0613"
+        if (manifest.get("temperature")):
+            self.temperature = float(manifest.get("temperature"))
+        self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
+        if self.model == "gpt-3.5-turbo-16k-0613":
+            self.max_token = 4096 * 4
+        elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
+            print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
+            self.model = "gpt-3.5-turbo-0613"
+        elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
+            print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
+            self.model = "gpt-3.5-turbo-0613"
         self.max_token = 4096
         self.messages = []
         self.functions = None
-        self.actions = {}
+        self.actions = manifest.get("actions") or {} 
         self.module = None
+        module = manifest.get("module")
+        if module:
+            with open(f"{module}", 'r') as f:
+                try:
+                    code = f.read()
+                    namespace = {}
+                    exec(code, namespace)
+                    self.module = namespace
+                except ImportError:
+                    print(f"Failed to import module: {module}")
         if len(manifest.keys()) > 0:
-            self.userName = manifest.get("you") or self.userName
-            self.botName = manifest.get("bot") or self.key
-            self.model = manifest.get("model") or self.model
-            if self.model == "gpt-3.5-turbo-16k-0613":
-                self.max_token = 4096 * 4
-            elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
-                print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
-                self.model = "gpt-3.5-turbo-0613"
-            elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
-                print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
-                self.model = "gpt-3.5-turbo-0613"
-            self.title = manifest.get("title")
-            self.intro = manifest.get("intro")
-            self.actions = manifest.get("actions") or {} 
-            module = manifest.get("module")
-            if module:
-                with open(f"{module}", 'r') as f:
-                    try:
-                        code = f.read()
-                        namespace = {}
-                        exec(code, namespace)
-                        self.module = namespace
-                    except ImportError:
-                        print(f"Failed to import module: {module}")
-            if (manifest.get("temperature")):
-                self.temperature = float(manifest.get("temperature"))
             self.prompt = '\n'.join(manifest["prompt"])
             if(re.search("\\{now\\}", self.prompt)):
                 # not isoformat (notice that the timezone is hardcoded)
