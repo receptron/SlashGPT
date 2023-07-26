@@ -61,9 +61,9 @@ class ChatConfig:
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
         openai.api_key = self.OPENAI_API_KEY
-        if (self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT):
+        if self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
-        if (self.GOOGLE_PALM_KEY):
+        if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
         self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
@@ -89,7 +89,7 @@ class ChatSession:
         self.manifest = manifest
 
         self.temperature = 0.7
-        if (manifest.get("temperature")):
+        if manifest.get("temperature"):
             self.temperature = float(manifest.get("temperature"))
         self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
         if self.model == "gpt-3.5-turbo-16k-0613":
@@ -176,7 +176,7 @@ class ChatSession:
         """Return related articles with the question using the embedding vector search."""
         query = ""
         for message in self.messages:
-            if (message["role"] == "user"):
+            if message["role"] == "user":
                 query = message["content"] + "\n" + query
         query_embedding_response = openai.Embedding.create(
             model=self.config.EMBEDDING_MODEL,
@@ -189,19 +189,19 @@ class ChatSession:
         articles = ""
         count = 0
         base = self._messages_tokens()
-        if (self.config.verbose):
+        if self.config.verbose:
             print(f"messages token:{base}")
         for match in results["matches"]:
             string = match["metadata"]["text"]
             next_article = f'\n\nSection:\n"""\n{string}\n"""'
-            if (self._num_tokens(articles + next_article + query) + base > token_budget):
+            if self._num_tokens(articles + next_article + query) + base > token_budget:
                 break
             else:
                 count += 1
                 articles += next_article
                 if self.config.verbose:
                     print(len(string), self._num_tokens(string))
-        if (self.config.verbose):
+        if self.config.verbose:
             print(f"Articles:{count}, Tokens:{self._num_tokens(articles + query)}")
         return articles
 
@@ -260,7 +260,7 @@ class ChatSession:
         role = None
         res = None
         function_call = None
-        if (self.model == "palm"):
+        if self.model == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
                 'temperature': self.temperature,
@@ -274,10 +274,10 @@ class ChatSession:
             for message in self.messages:
                 role = message["role"]
                 content = message["content"]
-                if (content):
-                    if (role == "system"):
+                if content:
+                    if role == "system":
                         system = message["content"]
-                    elif (len(messages)>0 or role != "assistant"):
+                    elif len(messages)>0 or role != "assistant":
                         messages.append(message["content"])
 
             response = palm.chat(
@@ -294,12 +294,12 @@ class ChatSession:
             else:
                 print(colored(response.filters, "red"))
             role = "assistant"
-        elif (self.model[:6] == "llama2" or self.model == "vicuna"):
+        elif self.model[:6] == "llama2" or self.model == "vicuna":
             prompts = []
             for message in self.messages:
                 role = message["role"]
                 content = message["content"]
-                if (content):
+                if content:
                     prompts.append(f"{role}:{message['content']}")
             if self.functions:
                 last = prompts.pop()
@@ -333,7 +333,7 @@ class ChatSession:
                     model=self.model,
                     messages=self.messages,
                     temperature=self.temperature)
-            if (self.config.verbose):
+            if self.config.verbose:
                 print(colored(f"model={response['model']}", "yellow"))
                 print(colored(f"usage={response['usage']}", "yellow"))
             answer = response['choices'][0]['message']
@@ -386,12 +386,12 @@ class Main:
     Notice that some Slash commands returns (role, question) as well.
     """
     def processSlash(self, roleInput:str, question: str):
-        if (len(question) == 0):
+        if len(question) == 0:
             print(self.config.ONELINE_HELP)
-        elif (question[0] == "/"):
+        elif question[0] == "/":
             key = question[1:]
             commands = key.split(' ')
-            if (commands[0] == "help"):
+            if commands[0] == "help":
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
                     list = "\n".join(f"/{(key+'         ')[:12]} {self.config.manifests[key].get('title')}" for key in sorted(self.config.manifests.keys()))
@@ -400,10 +400,10 @@ class Main:
                     manifest = self.config.manifests.get(commands[1])
                     if (manifest):
                        print(json.dumps(manifest, indent=2))
-            elif (key == "bye"):
+            elif key == "bye":
                 self.runtime.stop()
                 self.exit = True;
-            elif (key == "verbose"):
+            elif key == "verbose":
                 self.config.verbose = self.config.verbose == False
                 print(f"Verbose Mode: {self.config.verbose}")
             elif commands[0] == "audio":
@@ -417,39 +417,39 @@ class Main:
                 else:
                     self.config.audio = commands[1]
                 print(f"Audio mode: {self.config.audio}")
-            elif (key == "prompt"):
-                if (len(self.context.messages) >= 1):
+            elif key == "prompt":
+                if len(self.context.messages) >= 1:
                     print(self.context.messages[0].get("content"))
                 if self.config.verbose and self.context.functions:
                     print(self.context.functions)
             elif key == "history":
                 print(json.dumps(self.context.messages, indent=2))
-            elif (key == "functions"):
+            elif key == "functions":
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
-            elif (key == "gpt3"):
+            elif key == "gpt3":
                 self.context.model = "gpt-3.5-turbo-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
-            elif (key == "gpt31"):
+            elif key == "gpt31":
                 self.context.model = "gpt-3.5-turbo-16k-0613"
                 self.context.max_token = 4096 * 4
                 print(f"Model = {self.context.model}")
-            elif (key == "gpt4"):
+            elif key == "gpt4":
                 self.context.model = "gpt-4-0613"
                 self.context.max_token = 4096
                 print(f"Model = {self.context.model}")
-            elif (key == "llama2" or key == "llama270" or key == "vicuna"):
+            elif key == "llama2" or key == "llama270" or key == "vicuna":
                 if self.config.REPLICATE_API_TOKEN:
                     self.context.model = key
                     self.context.max_token = 4096
                     print(f"Model = {self.context.model}")
                 else:
                     print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
-            elif (key == "palm"):
-                if (self.config.GOOGLE_PALM_KEY):
+            elif key == "palm":
+                if self.config.GOOGLE_PALM_KEY:
                     self.context.model = "palm"
-                    if (self.context.botName == "GPT"):
+                    if self.context.botName == "GPT":
                         self.context.botName = "PaLM"
                     print(f"Model = {self.context.model}")
                 else:
@@ -464,22 +464,22 @@ class Main:
                         return ("user", sample)
             elif key[:6] == "sample":
                 sample = self.context.manifest.get(key)
-                if (sample):
+                if sample:
                     print(sample)
                     return ("user", sample)
                 print(colored(f"Error: No {key} in the manifest file", "red"))
-            elif (key == "root"):
+            elif key == "root":
                 self.config.loadManifests("./manifests")
                 main.switchContext('dispatcher')
-            elif (key == "new"):
+            elif key == "new":
                 self.switchContext(self.context.key)
-            elif (key == "rpg1"):
+            elif key == "rpg1":
                 self.config.loadManifests('./rpg1')
                 main.switchContext('bartender')
-            elif (key == "roles1"):
+            elif key == "roles1":
                 self.config.loadManifests('./prompts')
                 self.context = ChatSession(self.config)
-            elif (key == "roles2"):
+            elif key == "roles2":
                 self.config.loadManifests('./roles2')
                 self.context = ChatSession(self.config)
             else:
