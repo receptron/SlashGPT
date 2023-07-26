@@ -354,7 +354,7 @@ class Main:
 
         self.context = ChatSession(self.config)
         self.exit = False
-        self.runtime = PythonRuntime()
+        self.runtime = PythonRuntime("./output/notebooks")
 
     def switchContext(self, key: str, intro: bool = True):
         if key is None:

@@ -11,33 +11,31 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import base64
 
-folder_path = "./output/notebooks"
-if not os.path.isdir(folder_path):
-    os.makedirs(folder_path)
-
 load_dotenv() # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
 if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
     cb.set_api_key(CODEBOX_API_KEY)
 
-
 class PythonRuntime:
-    def __init__(self):
+    def __init__(self, path):
         self.ipython = None
         self.notebook = {}
         self.file_path = ""
         self.codebox = None
+        self.folder_path = path
+        if not os.path.isdir(self.folder_path):
+            os.makedirs(self.folder_path)
 
     def create_notebook(self, module:str):
         # Create a new notebook
         counter = 0
         notebook_name = "notebook"
-        self.file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
+        self.file_path = os.path.join(self.folder_path, f"{notebook_name}.ipynb")
 
         while os.path.exists(self.file_path):
             counter += 1
             notebook_name = f"notebook{counter}"
-            self.file_path = os.path.join(folder_path, f"{notebook_name}.ipynb")
+            self.file_path = os.path.join(self.folder_path, f"{notebook_name}.ipynb")
 
         self.notebook = {
             "cells": [{
