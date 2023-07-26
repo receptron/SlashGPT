@@ -87,7 +87,7 @@ class ChatSession:
         self.title = manifest.get("title") or ""
         self.intro = manifest.get("intro")
         self.manifest = manifest
-        self.index = None # pinecone index
+
         self.temperature = 0.7
         if (manifest.get("temperature")):
             self.temperature = float(manifest.get("temperature"))
@@ -101,11 +101,9 @@ class ChatSession:
             print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
             self.model = "gpt-3.5-turbo-0613"
         self.max_token = 4096
-        self.messages = []
-        self.functions = None
         self.actions = manifest.get("actions") or {} 
-        self.module = None
 
+        self.messages = []
         self.prompt = manifest.get("prompt")
         if isinstance(self.prompt,list):
             self.prompt = '\n'.join(self.prompt)
@@ -133,7 +131,17 @@ class ChatSession:
             if agents:
                 agents = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
                 self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
+            self.messages = [{"role":"system", "content":self.prompt}]
 
+        self.index = None # pinecone index
+        embeddings = manifest.get("embeddings")
+        if embeddings:
+            table_name = embeddings.get("name")
+            if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
+                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
+                self.index = pinecone.Index(table_name)
+
+        self.module = None
         module = manifest.get("module")
         if module:
             with open(f"{module}", 'r') as f:
@@ -145,21 +153,13 @@ class ChatSession:
                 except ImportError:
                     print(f"Failed to import module: {module}")
 
-        if len(manifest.keys()) > 0:
-            embeddings = manifest.get("embeddings")
-            if embeddings:
-                table_name = embeddings.get("name")
-                if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
-                    assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                    self.index = pinecone.Index(table_name)
-
-            self.messages = [{"role":"system", "content":self.prompt}]
-            functions = manifest.get("functions")
-            if functions:
-                with open(f"{functions}", 'r') as f:
-                    self.functions = json.load(f)
-                    if self.config.verbose:
-                        print(self.functions)
+        self.functions = None
+        functions = manifest.get("functions")
+        if functions:
+            with open(f"{functions}", 'r') as f:
+                self.functions = json.load(f)
+                if self.config.verbose:
+                    print(self.functions)
 
     def _num_tokens(self, text: str) -> int:
         """Return the number of tokens in a string."""
