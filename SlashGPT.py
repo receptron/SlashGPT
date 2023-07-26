@@ -470,12 +470,12 @@ class Main:
                 print(colored(f"Error: No {key} in the manifest file", "red"))
             elif key == "root":
                 self.config.loadManifests("./manifests")
-                main.switchContext('dispatcher')
+                self.switchContext('dispatcher')
             elif key == "new":
                 self.switchContext(self.context.key)
             elif key == "rpg1":
                 self.config.loadManifests('./rpg1')
-                main.switchContext('bartender')
+                self.switchContext('bartender')
             elif key == "roles1":
                 self.config.loadManifests('./prompts')
                 self.context = ChatSession(self.config)
