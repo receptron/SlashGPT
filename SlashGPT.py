@@ -88,17 +88,21 @@ class ChatSession:
     def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}):
         self.config = config
         self.key = key
+        self.manifest = manifest
         self.time = datetime.now()
         self.userName = manifest.get("you") or f"You({key})"
         self.botName = manifest.get("bot") or "GPT"
         self.title = manifest.get("title") or ""
         self.intro = manifest.get("intro")
-        self.manifest = manifest
+        self.messages = []
+        self.actions = manifest.get("actions") or {} 
 
         self.temperature = 0.7
         if manifest.get("temperature"):
             self.temperature = float(manifest.get("temperature"))
+
         self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
+        self.max_token = 4096
         if self.model == "gpt-3.5-turbo-16k-0613":
             self.max_token = 4096 * 4
         elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
@@ -107,10 +111,7 @@ class ChatSession:
         elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
             print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
             self.model = "gpt-3.5-turbo-0613"
-        self.max_token = 4096
-        self.actions = manifest.get("actions") or {} 
 
-        self.messages = []
         self.prompt = manifest.get("prompt")
         if isinstance(self.prompt,list):
             self.prompt = '\n'.join(self.prompt)
@@ -168,14 +169,16 @@ class ChatSession:
                 if self.config.verbose:
                     print(self.functions)
 
+    # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
-        """Return the number of tokens in a string."""
         encoding = tiktoken.encoding_for_model(self.model)
         return len(encoding.encode(text))
-    
+
+    # Returns the total number of tokens in messages    
     def _messages_tokens(self) -> int:
         return sum([self._num_tokens(message["content"]) for message in self.messages])
-    
+
+    # Fetch artciles related to user messages    
     def _fetch_related_articles(
         self,
         token_budget: int
@@ -258,15 +261,18 @@ class ChatSession:
         return (None, res)
 
     """
-    Let the LLM generate a message
-    role: "assistent"
-    res: message
-    function_call: json representing the function call (optional)
+    Let the LLM generate a responce based on the messasges in this session.
+    Return values:
+        role: "assistent"
+        res: message
+        function_call: json representing the function call (optional)
     """
     def generateResponse(self, original_question):
         role = None
         res = None
         function_call = None
+        role = "assistant"
+
         if self.model == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
@@ -299,8 +305,9 @@ class ChatSession:
                     print(colored(res, "magenta"))
                 (function_call, res) = self._extractFunctionCall(res, original_question)
             else:
+                # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
-            role = "assistant"
+
         elif self.model[:6] == "llama2" or self.model == "vicuna":
             prompts = []
             for message in self.messages:
@@ -324,9 +331,8 @@ class ChatSession:
                 input={"prompt": '\n'.join(prompts)},
                 temperature = self.temperature
             )
-
             (function_call, res) = self._extractFunctionCall(''.join(output), original_question)
-            role = "assistant"
+
         else:
             if self.functions:
                 # print(colored(self.messages, "green"))
