@@ -87,7 +87,6 @@ class ChatSession:
         self.title = manifest.get("title") or ""
         self.intro = manifest.get("intro")
         self.manifest = manifest
-        self.prompt = None
         self.index = None # pinecone index
         self.temperature = 0.7
         if (manifest.get("temperature")):
@@ -106,22 +105,13 @@ class ChatSession:
         self.functions = None
         self.actions = manifest.get("actions") or {} 
         self.module = None
-        module = manifest.get("module")
-        if module:
-            with open(f"{module}", 'r') as f:
-                try:
-                    code = f.read()
-                    namespace = {}
-                    exec(code, namespace)
-                    self.module = namespace
-                except ImportError:
-                    print(f"Failed to import module: {module}")
-        if len(manifest.keys()) > 0:
-            self.prompt = '\n'.join(manifest["prompt"])
-            if(re.search("\\{now\\}", self.prompt)):
-                # not isoformat (notice that the timezone is hardcoded)
+
+        self.prompt = manifest.get("prompt")
+        if isinstance(self.prompt,list):
+            self.prompt = '\n'.join(self.prompt)
+        if self.prompt:
+            if re.search("\\{now\\}", self.prompt):
                 self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%SZ'), self.prompt, 1)
-            
             data = manifest.get("data")
             if data:
                 # Shuffle 
@@ -143,6 +133,19 @@ class ChatSession:
             if agents:
                 agents = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
                 self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
+
+        module = manifest.get("module")
+        if module:
+            with open(f"{module}", 'r') as f:
+                try:
+                    code = f.read()
+                    namespace = {}
+                    exec(code, namespace)
+                    self.module = namespace
+                except ImportError:
+                    print(f"Failed to import module: {module}")
+
+        if len(manifest.keys()) > 0:
             embeddings = manifest.get("embeddings")
             if embeddings:
                 table_name = embeddings.get("name")
