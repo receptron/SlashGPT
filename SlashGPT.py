@@ -236,8 +236,9 @@ class ChatSession:
     Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format. 
     """
-    def _extractFunctionCall(self, res:str, original_question:str):
+    def _extractFunctionCall(self, res:str):
         if self.manifest.get("notebook"):
+            print("***", self.messages[-1]["content"])
             lines = res.splitlines()
             codes = None
             for line in lines:
@@ -253,7 +254,7 @@ class ChatSession:
                     "name": "run_python_code",
                     "arguments": {
                         "code": codes,
-                        "query": original_question
+                        "query": self.messages[-1]["content"]
                     }
                 }, None) 
             
@@ -267,7 +268,7 @@ class ChatSession:
         res: message
         function_call: json representing the function call (optional)
     """
-    def generateResponse(self, original_question):
+    def generateResponse(self):
         role = None
         res = None
         function_call = None
@@ -303,7 +304,7 @@ class ChatSession:
             if res:
                 if self.config.verbose:
                     print(colored(res, "magenta"))
-                (function_call, res) = self._extractFunctionCall(res, original_question)
+                (function_call, res) = self._extractFunctionCall(res)
             else:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
@@ -331,7 +332,7 @@ class ChatSession:
                 input={"prompt": '\n'.join(prompts)},
                 temperature = self.temperature
             )
-            (function_call, res) = self._extractFunctionCall(''.join(output), original_question)
+            (function_call, res) = self._extractFunctionCall(''.join(output))
 
         else:
             if self.functions:
@@ -537,13 +538,12 @@ class Main:
             (role, question) = self.processSlash(roleInput, question)
 
             if role and question:
-                original_question = question
                 if form:
                     question = form.format(question = question)
                 try:
                     self.context.appendMessage(role, question, name)
                     # Ask LLM to generate a response.
-                    (role, res, function_call) = self.context.generateResponse(original_question)
+                    (role, res, function_call) = self.context.generateResponse()
 
                     if role and res:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
