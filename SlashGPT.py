@@ -245,7 +245,6 @@ class ChatSession:
     """
     def _extractFunctionCall(self, res:str):
         if self.manifest.get("notebook"):
-            print("***", self.messages[-1]["content"])
             lines = res.splitlines()
             codes = None
             for line in lines:
@@ -343,7 +342,6 @@ class ChatSession:
 
         else:
             if self.functions:
-                # print(colored(self.messages, "green"))
                 response = openai.ChatCompletion.create(
                     model=self.model,
                     messages=self.messages,
