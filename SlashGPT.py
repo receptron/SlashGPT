@@ -169,9 +169,9 @@ class ChatSession:
 
         # Load functions file if it is specified
         self.functions = None
-        functions = manifest.get("functions")
-        if functions:
-            with open(f"{functions}", 'r') as f:
+        functions_file = manifest.get("functions")
+        if functions_file:
+            with open(functions_file, 'r') as f:
                 self.functions = json.load(f)
                 if self.config.verbose:
                     print(self.functions)
