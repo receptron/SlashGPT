@@ -629,7 +629,7 @@ class Main:
                                     print(colored(f"No function {name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
-                    self.switchContext(self.key)
+                    self.switchContext(self.context.key)
                     if self.config.verbose:
                         raise
 
