@@ -68,6 +68,10 @@ class ChatConfig:
         self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
 
+    """
+    Load a set of manifests. 
+    It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
+    """
     def loadManifests(self, path):
         self.manifests = {}
         files = os.listdir(path)
@@ -77,6 +81,11 @@ class ChatConfig:
                 data = json.load(f)
             self.manifests[key] = data
 
+"""
+ChatSession represents a chat session with a particular AI agent.
+The key is the identifier of the agent.
+The manifest specifies behaviors of the agent.
+"""
 class ChatSession:
     def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}):
         self.config = config
@@ -223,7 +232,7 @@ class ChatSession:
             }
 
     """
-    Extract the Python from the string if the agent is a code interpreter.
+    Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format. 
     """
     def _extractFunctionCall(self, res:str, original_question:str):
@@ -342,6 +351,9 @@ class ChatSession:
             function_call = answer.get('function_call')
         return (role, res, function_call)
 
+"""
+Main is a singleton, which process the input from the user and manage chat sessions.
+"""
 class Main:
     def __init__(self, config: ChatConfig):
         self.config = config
@@ -356,6 +368,10 @@ class Main:
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
 
+    """
+    switchContext terminate the current chat session and start a new.
+    The key specifies the AI agent.
+    """
     def switchContext(self, key: str, intro: bool = True):
         if key is None:
             self.context = ChatSession(self.config)
@@ -487,7 +503,10 @@ class Main:
         else:
             return (roleInput, question)
         return (None, None)
-    
+
+    """
+    the main loop
+    """    
     def start(self):
         function_message = None
         name = None
@@ -638,4 +657,3 @@ print(config.ONELINE_HELP)
 main = Main(config)
 main.switchContext('dispatcher')
 main.start()
-
