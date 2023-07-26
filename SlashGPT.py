@@ -486,9 +486,9 @@ class Main:
                 print(colored(f"Error: No {key} in the manifest file", "red"))
             elif key == "root":
                 self.config.loadManifests("./manifests")
-                self.switchContext('dispatcher')
+                self.switchContext('dispatcher', intro = False)
             elif key == "new":
-                self.switchContext(self.context.key)
+                self.switchContext(self.context.key, intro = False)
             elif key == "rpg1":
                 self.config.loadManifests('./rpg1')
                 self.switchContext('bartender')

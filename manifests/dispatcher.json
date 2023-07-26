@@ -1,5 +1,6 @@
 {
   "title": "Main Dispatcher",
+  "bot": "Dispatcher",
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
