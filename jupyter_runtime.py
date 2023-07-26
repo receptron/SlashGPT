@@ -173,10 +173,10 @@ class PythonRuntime:
         return (str(result), f"```Python\n{''.join(code)}\n```")
 
     # GPT sometimes call this function
-    def python(self, code):
+    def python(self, code, query:str):
         if isinstance(code,str):
             code = [code]
-        return self.run_python_code(code, None)
+        return self.run_python_code(code, query)
 
     def draw_diagram(self, code:str, query:str):
         codes = [

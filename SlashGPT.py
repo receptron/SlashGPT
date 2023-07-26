@@ -626,6 +626,12 @@ class Main:
                                     function_message = "Success"
                             else:
                                 if self.context.manifest.get("notebook"):
+                                    if name == "python" and isinstance(arguments, str):
+                                        print(colored("python function was called", "yellow"))
+                                        arguments = {
+                                            "code": arguments,
+                                            "query": self.context.messages[-1]["content"]
+                                        }
                                     function = getattr(self.runtime, name)
                                 else:
                                     function = self.context.module and self.context.module.get(name) or None
