@@ -76,10 +76,8 @@ class ChatConfig:
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
-            key = file.split('.')[0]
             with open(f"{path}/{file}", 'r') as f:
-                data = json.load(f)
-            self.manifests[key] = data
+                self.manifests[file.split('.')[0]] = json.load(f)
 
 """
 ChatSession represents a chat session with a particular AI agent.
