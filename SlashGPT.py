@@ -18,7 +18,7 @@ from gtts import gTTS
 from playsound import playsound
 import urllib.parse
 import replicate
-import jupyter_runtime as jp
+from jupyter_runtime import PythonRuntime
 
 # Configuration
 
@@ -354,6 +354,7 @@ class Main:
 
         self.context = ChatSession(self.config)
         self.exit = False
+        self.runtime = PythonRuntime()
 
     def switchContext(self, key: str, intro: bool = True):
         if key is None:
@@ -369,7 +370,7 @@ class Main:
                 print(colored(f"Activating: {self.context.title}", "blue"))
             isNotebook = manifest.get("notebook")
             if isNotebook:
-                (result, _) = jp.create_notebook(self.context.model)
+                (result, _) = self.runtime.create_notebook(self.context.model)
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
             if intro and self.context.intro:
@@ -400,7 +401,7 @@ class Main:
                     if (manifest):
                        print(json.dumps(manifest, indent=2))
             elif (key == "bye"):
-                jp.stop()
+                self.runtime.stop()
                 self.exit = True;
             elif (key == "verbose"):
                 self.config.verbose = self.config.verbose == False
@@ -602,7 +603,7 @@ class Main:
                                     function_message = "Success"
                             else:
                                 if self.context.manifest.get("notebook"):
-                                    function = getattr(jp, name)
+                                    function = getattr(self.runtime, name)
                                 else:
                                     function = self.context.module and self.context.module.get(name) or None
                                 if function:
