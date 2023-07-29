@@ -115,6 +115,8 @@ class ChatSession:
             print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
             self.model = "gpt-3.5-turbo-0613"
 
+        agents = manifest.get("agents")
+
         # Load the prompt, fill variables and append it as the system message
         self.prompt = manifest.get("prompt")
         if isinstance(self.prompt,list):
@@ -139,10 +141,9 @@ class ChatSession:
                 with open(f"{resource}", 'r') as f:
                     contents = f.read()
                     self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
-            agents = manifest.get("agents")
             if agents:
-                agents = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
-                self.prompt = re.sub("\\{agents\\}", "\n".join(agents), self.prompt, 1)
+                descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
+                self.prompt = re.sub("\\{agents\\}", "\n".join(descriptions), self.prompt, 1)
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
@@ -173,6 +174,12 @@ class ChatSession:
         if functions_file:
             with open(functions_file, 'r') as f:
                 self.functions = json.load(f)
+                if agents:
+                    # WARNING: It assumes that categorize(category, ...) function
+                    for function in self.functions:
+                        if function.get("name") == "categorize":
+                            function["parameters"]["properties"]["category"]["enum"] = agents
+
                 if self.config.verbose:
                     print(self.functions)
 
