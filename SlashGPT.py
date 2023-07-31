@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
-import readline # So that input can handle Kanji & delete
+import platform
+if platform.system() == "Darwin":
+    import readline # So that input can handle Kanji & delete
 import openai
 from dotenv import load_dotenv
 import json
@@ -78,7 +80,7 @@ class ChatConfig:
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
-            with open(f"{path}/{file}", 'r') as f:
+            with open(f"{path}/{file}", 'r',encoding="utf-8") as f:	# encoding add for Win
                 self.manifests[file.split('.')[0]] = json.load(f)
 
 """
@@ -566,7 +568,9 @@ class Main:
                             playsound("./output/audio.mp3")
 
                         self.context.appendMessage(role, res)
-                        with open(f"output/{self.context.key}/{self.context.time}.json", 'w') as f:
+# Windows patch
+                        timeStr = self.context.time.strftime("%Y-%m-%d %H-%M-%S.%f")
+                        with open(f'output/{self.context.key}/{timeStr}.json', 'w') as f:   
                             json.dump(self.context.messages, f)
 
                     if function_call:
