@@ -19,6 +19,9 @@ from playsound import playsound
 import urllib.parse
 import replicate
 from jupyter_runtime import PythonRuntime
+import litellm
+from litellm import completion, embedding
+
 
 # Configuration
 
@@ -295,67 +298,35 @@ class ChatSession:
                 'top_k': 40,
                 'top_p': 0.95,
             }
-            system = ""
-            examples = []
-            messages = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if content:
-                    if role == "system":
-                        system = message["content"]
-                    elif len(messages)>0 or role != "assistant":
-                        messages.append(message["content"])
-
-            response = palm.chat(
-                **defaults,
-                context=system,
-                examples=examples,
-                messages=messages
-            )
-            res = response.last
-            if res:
+            response = completion("chat-bison-001", self.messages)
+            if response:
                 if self.config.verbose:
                     print(colored(res, "magenta"))
-                (function_call, res) = self._extractFunctionCall(res)
+                (function_call, res) = self._extractFunctionCall(response[0].message.content)
             else:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
         elif self.model[:6] == "llama2" or self.model == "vicuna":
-            prompts = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if content:
-                    prompts.append(f"{role}:{message['content']}")
             if self.functions:
-                last = prompts.pop()
-                prompts.append(f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.")
-                prompts.append(last)
-            prompts.append("assistant:")
-
+                self.messages[{"content": f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.assistant:"}]
             replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
             if self.model == "llama270":
                 replicate_model = "replicate/llama70b-v2-chat:2d19859030ff705a87c746f7e96eea03aefb71f166725aee39692f1476566d48"
             if self.model == "vicuna":
                 replicate_model = "replicate/vicuna-13b:6282abe6a492de4145d7bb601023762212f9ddbbe78278bd6771c8b3b2f2a13b"
-            output = replicate.run(
-                replicate_model,
-                input={"prompt": '\n'.join(prompts)},
-                temperature = self.temperature
-            )
-            (function_call, res) = self._extractFunctionCall(''.join(output))
+            response = completion(mode=replicate_model, messages=self.messages, temperature=self.temperature)
+            (function_call, res) = self._extractFunctionCall(''.join(response[0].message.content))
 
         else:
             if self.functions:
-                response = openai.ChatCompletion.create(
+                response = completion(
                     model=self.model,
                     messages=self.messages,
                     functions=self.functions,
                     temperature=self.temperature)
             else:
-                response = openai.ChatCompletion.create(
+                response = completion(
                     model=self.model,
                     messages=self.messages,
                     temperature=self.temperature)
