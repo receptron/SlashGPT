@@ -318,6 +318,12 @@ class ChatSession:
             response = completion(mode=replicate_model, messages=self.messages, temperature=self.temperature)
             (function_call, res) = self._extractFunctionCall(''.join(response[0].message.content))
 
+        elif self.model == "claude":
+            if self.functions:
+                self.messages[{"content": f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.assistant:"}]
+            response = completion(mode="claude-instant-1", messages=self.messages)
+            (function_call, res) = self._extractFunctionCall(''.join(response[0].message.content))
+            
         else:
             if self.functions:
                 response = completion(
