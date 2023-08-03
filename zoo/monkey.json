@@ -1,0 +1,20 @@
+{
+  "title": "Monkey Area",
+  "bot": "Monkey",
+  "source": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": "0.0",
+  "functions": "./resources/dispatcher.json",
+  "actions": {
+    "categorize": { "message":"{question}", "metafile":"{category}" }
+  },
+  "intro": [
+    "霊長類に関しては何でも聞いてください" 
+  ],
+  "sample": "日本猿について教えて",
+  "agents": ["chimp", "gorilla", "pongo", "papio", "saru"],
+  "prompt": [
+    "You are responsible in categorize user's question into one of categories below.",
+    "{agents}"
+  ]
+}

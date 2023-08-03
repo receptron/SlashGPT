@@ -509,6 +509,9 @@ class Main:
             elif key == "rpg1":
                 self.config.loadManifests('./rpg1')
                 self.switchContext('bartender')
+            elif key == "zoo":
+                self.config.loadManifests('./zoo')
+                self.switchContext('monkey')
             elif key == "roles1":
                 self.config.loadManifests('./prompts')
                 self.context = ChatSession(self.config)
