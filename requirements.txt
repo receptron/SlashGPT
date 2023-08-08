@@ -7,7 +7,7 @@ bs4
 tiktoken
 gTTS
 playsound
-pyobjc
+pyobjc; sys_platform == 'darwin' 
 IPython
 matplotlib
 numpy
