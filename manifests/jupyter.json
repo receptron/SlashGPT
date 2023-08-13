@@ -22,6 +22,7 @@
   "sample_stock4": "using those numbers, estimate shares outstanding of those companies",
   "sample_map": "Find public restrooms in Bellevue WA using Overpass API, then display them using folium.",
   "sample_gql": "Retrieve schema of 'Query' field from GraphQL endpoint, https://spacex-production.up.railway.app/",
+  "sample_starwars": "Retrieve 'allFilms' from GraphQL endpoint, https://swapi-graphql.netlify.app/.netlify/functions/index",
   "notebook": true,
   "x_form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
