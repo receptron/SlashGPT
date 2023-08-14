@@ -619,10 +619,13 @@ class Main:
                                         transport = RequestsHTTPTransport(url=url, use_json=True)
                                         client = Client(transport=transport)
                                         query = arguments.get("query")
-                                        query = f"query {query}"
+                                        query = gql(f"query {query}")
                                         print("**** graphQL", url)
                                         print("**** graphQL", query)
-                                        function_message = client.execute(query)
+
+                                        response = client.execute(query)
+                                        print(response)
+                                        function_message = json.dumps(response)
                                     else:
                                         headers = action.get("headers",{})
                                         headers = {key:value.format(**arguments) for key,value in headers.items()}
