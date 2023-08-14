@@ -620,8 +620,11 @@ class Main:
                                         client = Client(transport=transport)
                                         query = arguments.get("query")
                                         query = gql(f"query {query}")
-                                        response = client.execute(query)
-                                        function_message = json.dumps(response)
+                                        try:
+                                            response = client.execute(query)
+                                            function_message = json.dumps(response)
+                                        except Exception as e:
+                                            function_message = str(e)
                                     else:
                                         headers = action.get("headers",{})
                                         headers = {key:value.format(**arguments) for key,value in headers.items()}
