@@ -1,10 +1,11 @@
 {
-  "title": "Open Weather",
-  "description": "Gets Weather Info",
-  "bot": "Weather",
-  "source": "snakajima, https://openweathermap.org",
+  "title": "SpaceX Information",
+  "description": "Anything about SpaceX",
+  "bot": "spacex",
+  "source": "snakajima",
   "temperature": "0.0",
   "functions": "./resources/graphQL.json",
+  "resource": "./resources/spacex.json",
   "actions": {
     "call_graphQL": {
       "graphQL": true,
@@ -13,10 +14,15 @@
   },
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "Get company info",
+  "sample1": "Next launch",
+  "sample2": "Last 10 laucnhes",
+  "sample3": "List all rockets",
+  "sample4": "List all ships",
+  "sample5": "List all launchpads",
   "prompt": [
     "You are an expert in GraphQL and use call_graphQL function to retrieve necessary information.",
     "Ask for clarification if a user request is ambiguous.",
     "Here is the schema of GraphQL query:",
-    "{'__type': {'name': 'Query', 'fields': [{'name': 'capsule', 'type': {'name': 'Capsule', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'capsules', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Capsule', 'kind': 'OBJECT'}}}, {'name': 'capsulesPast', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Capsule', 'kind': 'OBJECT'}}}, {'name': 'capsulesUpcoming', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Capsule', 'kind': 'OBJECT'}}}, {'name': 'company', 'type': {'name': 'Info', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'core', 'type': {'name': 'Core', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'cores', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Core', 'kind': 'OBJECT'}}}, {'name': 'coresPast', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Core', 'kind': 'OBJECT'}}}, {'name': 'coresUpcoming', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Core', 'kind': 'OBJECT'}}}, {'name': 'dragon', 'type': {'name': 'Dragon', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'dragons', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Dragon', 'kind': 'OBJECT'}}}, {'name': 'histories', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'History', 'kind': 'OBJECT'}}}, {'name': 'historiesResult', 'type': {'name': 'HistoriesResult', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'history', 'type': {'name': 'History', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'landpad', 'type': {'name': 'Landpad', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'landpads', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Landpad', 'kind': 'OBJECT'}}}, {'name': 'launch', 'type': {'name': 'Launch', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'launchLatest', 'type': {'name': 'Launch', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'launchNext', 'type': {'name': 'Launch', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'launches', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Launch', 'kind': 'OBJECT'}}}, {'name': 'launchesPast', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Launch', 'kind': 'OBJECT'}}}, {'name': 'launchesPastResult', 'type': {'name': 'LaunchesPastResult', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'launchesUpcoming', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Launch', 'kind': 'OBJECT'}}}, {'name': 'launchpad', 'type': {'name': 'Launchpad', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'launchpads', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Launchpad', 'kind': 'OBJECT'}}}, {'name': 'payload', 'type': {'name': 'Payload', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'payloads', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Payload', 'kind': 'OBJECT'}}}, {'name': 'roadster', 'type': {'name': 'Roadster', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'rocket', 'type': {'name': 'Rocket', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'rockets', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Rocket', 'kind': 'OBJECT'}}}, {'name': 'rocketsResult', 'type': {'name': 'RocketsResult', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'ship', 'type': {'name': 'Ship', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'ships', 'type': {'name': None, 'kind': 'LIST', 'ofType': {'name': 'Ship', 'kind': 'OBJECT'}}}, {'name': 'shipsResult', 'type': {'name': 'ShipsResult', 'kind': 'OBJECT', 'ofType': None}}, {'name': 'users', 'type': {'name': None, 'kind': 'NON_NULL', 'ofType': {'name': None, 'kind': 'LIST'}}}, {'name': 'users_aggregate', 'type': {'name': None, 'kind': 'NON_NULL', 'ofType': {'name': 'users_aggregate', 'kind': 'OBJECT'}}}, {'name': 'users_by_pk', 'type': {'name': 'users', 'kind': 'OBJECT', 'ofType': None}}, {'name': '_service', 'type': {'name': None, 'kind': 'NON_NULL', 'ofType': {'name': '_Service', 'kind': 'OBJECT'}}}]}}"
+    "{resource}"
   ]
 }

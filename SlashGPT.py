@@ -620,11 +620,7 @@ class Main:
                                         client = Client(transport=transport)
                                         query = arguments.get("query")
                                         query = gql(f"query {query}")
-                                        print("**** graphQL", url)
-                                        print("**** graphQL", query)
-
                                         response = client.execute(query)
-                                        print(response)
                                         function_message = json.dumps(response)
                                     else:
                                         headers = action.get("headers",{})
