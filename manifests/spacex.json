@@ -13,11 +13,11 @@
     }
   },
   "model": "gpt-3.5-turbo-16k-0613",
-  "sample": "Get company info",
-  "sample1": "Next launch",
-  "sample2": "Last 10 laucnhes",
-  "sample3": "List all rockets",
-  "sample4": "List all ships",
+  "sample": "Who is CEO?",
+  "sample1": "What kind of information are you able to get?",
+  "sample2": "Get all the information of last 10 launches",
+  "sample3": "Next Launch",
+  "sample4": "Get names of all rockets",
   "sample5": "List all launchpads",
   "prompt": [
     "You are an expert in GraphQL and use call_graphQL function to retrieve necessary information.",
