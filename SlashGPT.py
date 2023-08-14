@@ -21,6 +21,8 @@ from playsound import playsound
 import urllib.parse
 import replicate
 from jupyter_runtime import PythonRuntime
+from gql import gql, Client
+from gql.transport.requests import RequestsHTTPTransport
 
 # Configuration
 
@@ -613,22 +615,31 @@ class Main:
                                     else:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
-                                    headers = action.get("headers",{})
-                                    headers = {key:value.format(**arguments) for key,value in headers.items()}
-                                    if method == "POST":
-                                        headers['Content-Type'] = 'application/json';
-                                        if self.config.verbose:
-                                            print(colored(f"Posting to {url} {headers}", "yellow"))
-                                        response = requests.post(url, headers=headers, json=arguments)
+                                    if action.get("graphQL"):
+                                        transport = RequestsHTTPTransport(url=url, use_json=True)
+                                        client = Client(transport=transport)
+                                        query = arguments.get("query")
+                                        query = f"query {query}"
+                                        print("**** graphQL", url)
+                                        print("**** graphQL", query)
+                                        function_message = client.execute(query)
                                     else:
-                                        url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-                                        if self.config.verbose:
-                                            print(colored(f"Fetching from {url}", "yellow"))
-                                        response = requests.get(url, headers=headers)
-                                    if response.status_code == 200:
-                                        function_message = response.text
-                                    else:
-                                        print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+                                        headers = action.get("headers",{})
+                                        headers = {key:value.format(**arguments) for key,value in headers.items()}
+                                        if method == "POST":
+                                            headers['Content-Type'] = 'application/json';
+                                            if self.config.verbose:
+                                                print(colored(f"Posting to {url} {headers}", "yellow"))
+                                            response = requests.post(url, headers=headers, json=arguments)
+                                        else:
+                                            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
+                                            if self.config.verbose:
+                                                print(colored(f"Fetching from {url}", "yellow"))
+                                            response = requests.get(url, headers=headers)
+                                        if response.status_code == 200:
+                                            function_message = response.text
+                                        else:
+                                            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
                                 elif template:
                                     mime_type = action.get("mime_type") or ""
                                     message_template = message_template or f"{url}"
