@@ -621,15 +621,7 @@ class Main:
                                         headers = action.get("headers",{})
                                         function_message = self.httpRequest(url, method, headers, arguments, self.config.verbose)
                                 elif template:
-                                    mime_type = action.get("mime_type") or ""
-                                    message_template = message_template or f"{url}"
-                                    with open(f"{template}", 'r') as f:
-                                        template = f.read()
-                                        if self.config.verbose:
-                                            print(template)
-                                        ical = template.format(**arguments)
-                                        url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                        function_message = message_template.format(url = url)
+                                    function_message = self.readiCalTemplate(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
                                 elif message_template:
                                     function_message = message_template.format(**arguments)
                                 else: 
@@ -700,7 +692,19 @@ class Main:
             else:
                 print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
 
+    def readiCalTemplate(self, template, mime_type, message_template, arguments, verbose):
+        _mime_type = mime_type or ""
+        message_template = message_template or f"{url}"
+        with open(f"{template}", 'r') as f:
+            template = f.read()
+            if self.config.verbose:
+                print(template)
+            ical = template.format(**arguments)
+            url = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
+            return message_template.format(url = url)
         
+
+                
 config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
 main = Main(config)
