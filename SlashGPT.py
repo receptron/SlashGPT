@@ -533,20 +533,20 @@ class Main:
     """    
     def start(self):
         function_message = None
-        functionName = None
+        function_name = None
         while not self.exit:
             roleInput = "user"
             form = None
             if function_message:
-                if functionName:
+                if function_name:
                     roleInput = "function"
                 question = function_message
                 function_message = None
-                print(f"\033[95m\033[1m{roleInput}({functionName}): \033[95m\033[0m{question}")
+                print(f"\033[95m\033[1m{roleInput}({function_name}): \033[95m\033[0m{question}")
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-                functionName = None
+                function_name = None
                 if question[:1] == "`":
                     print(colored("skipping form", "blue"))
                     question = question[1:]
@@ -560,7 +560,7 @@ class Main:
                 if form:
                     question = form.format(question = question)
                 try:
-                    self.context.appendMessage(role, question, functionName)
+                    self.context.appendMessage(role, question, function_name)
                     # Ask LLM to generate a response.
                     (role, res, function_call) = self.context.generateResponse()
 
@@ -579,24 +579,24 @@ class Main:
                             json.dump(self.context.messages, f)
 
                     if function_call:
-                        functionName = function_call.get("name")
+                        function_name = function_call.get("name")
                         arguments = function_call.get("arguments") 
                         if arguments and isinstance(arguments, str):
                             try:
                                 arguments = json.loads(arguments)      
                                 function_call["arguments"] = arguments
                             except Exception as e:
-                                print(colored(f"Function {functionName}: Failed to load arguments as json","yellow"))
+                                print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
                         print(colored(json.dumps(function_call, indent=2), "blue"))
                         '''
                         if isinstance(arguments, str):
                             params = arguments
                         else:
                             params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
-                        print(colored(f"Function: {functionName}({params})", "blue"))
+                        print(colored(f"Function: {function_name}({params})", "blue"))
                         '''
-                        if functionName:
-                            action = self.context.actions.get(functionName)
+                        if function_name:
+                            action = self.context.actions.get(function_name)
                             if action:
                                 url = action.get("url")
                                 method = action.get("method")
@@ -607,7 +607,7 @@ class Main:
                                 if metafile:
                                     metafile = metafile.format(**arguments)
                                     self.switchContext(metafile, intro = False)
-                                    functionName = None # Withough name, this message will be treated as user prompt.
+                                    function_name = None # Withough name, this message will be treated as user prompt.
                                 if appkey:
                                     appkey_value = os.getenv(appkey, "")
                                     if appkey_value:
@@ -658,15 +658,15 @@ class Main:
                                     function_message = "Success"
                             else:
                                 if self.context.manifest.get("notebook"):
-                                    if functionName == "python" and isinstance(arguments, str):
+                                    if function_name == "python" and isinstance(arguments, str):
                                         print(colored("python function was called", "yellow"))
                                         arguments = {
                                             "code": arguments,
                                             "query": self.context.messages[-1]["content"]
                                         }
-                                    function = getattr(self.runtime, functionName)
+                                    function = getattr(self.runtime, function_name)
                                 else:
-                                    function = self.context.module and self.context.module.get(functionName) or None
+                                    function = self.context.module and self.context.module.get(function_name) or None
                                 if function:
                                     if isinstance(arguments, str):
                                         (result, message) = function(arguments)
@@ -683,11 +683,11 @@ class Main:
                                     else:
                                         function_message = result
                                     if self.context.manifest.get("skip_function_result"):
-                                        print(f"\033[95m\033[1mfunction({functionName}): \033[95m\033[0m{function_message}")
-                                        self.context.appendMessage("function", function_message, functionName)
+                                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
+                                        self.context.appendMessage("function", function_message, function_name)
                                         function_message = None
                                 else:
-                                    print(colored(f"No function {functionName} in the module", "red"))
+                                    print(colored(f"No function {function_name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.switchContext(self.context.key)
