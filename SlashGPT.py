@@ -619,9 +619,9 @@ class Main:
                                     else:
                                         headers = action.get("headers",{})
                                         method = action.get("method")
-                                        function_message = self.httpRequest(url, method, headers, arguments, self.config.verbose)
+                                        function_message = self.http_request(url, method, headers, arguments, self.config.verbose)
                                 elif template:
-                                    function_message = self.readiCalTemplate(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
+                                    function_message = self.read_iCal_template(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
                                 elif message_template:
                                     function_message = message_template.format(**arguments)
                                 else: 
@@ -675,7 +675,7 @@ class Main:
         except Exception as e:
             return str(e)
 
-    def httpRequest(self, url, method, headers, arguments, verbose):
+    def http_request(self, url, method, headers, arguments, verbose):
         headers = {key:value.format(**arguments) for key,value in headers.items()}
         if method == "POST":
             headers['Content-Type'] = 'application/json';
@@ -692,7 +692,7 @@ class Main:
             else:
                 print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
 
-    def readiCalTemplate(self, template, mime_type, message_template, arguments, verbose):
+    def read_iCal_template(self, template, mime_type, message_template, arguments, verbose):
         _mime_type = mime_type or ""
         message_template = message_template or f"{url}"
         with open(f"{template}", 'r') as f:
