@@ -231,6 +231,11 @@ class ChatSession:
                 if self.config.verbose:
                     print(self.functions)
 
+    def set_model(self, model, max_token = 4096):
+        self.model = model
+        self.max_token = max_token
+        print(f"Model = {self.model}")
+    
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
@@ -509,30 +514,21 @@ class Main:
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
             elif key == "gpt3":
-                self.context.model = "gpt-3.5-turbo-0613"
-                self.context.max_token = 4096
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-3.5-turbo-0613")
             elif key == "gpt31":
-                self.context.model = "gpt-3.5-turbo-16k-0613"
-                self.context.max_token = 4096 * 4
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-3.5-turbo-16k-0613", 4096 * 4)
             elif key == "gpt4":
-                self.context.model = "gpt-4-0613"
-                self.context.max_token = 4096
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-4-0613")
             elif key == "llama2" or key == "llama270" or key == "vicuna":
                 if self.config.REPLICATE_API_TOKEN:
-                    self.context.model = key
-                    self.context.max_token = 4096
-                    print(f"Model = {self.context.model}")
+                    self.context.set_model(key)
                 else:
                     print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
             elif key == "palm":
                 if self.config.GOOGLE_PALM_KEY:
-                    self.context.model = "palm"
+                    self.context.set_model("palm")
                     if self.context.botName == "GPT":
                         self.context.botName = "PaLM"
-                    print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
             elif commands[0] == "sample" and len(commands) > 1:
