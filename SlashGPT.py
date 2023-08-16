@@ -599,7 +599,6 @@ class Main:
                             action = self.context.actions.get(name)
                             if action:
                                 url = action.get("url")
-                                method = action.get("method")
                                 template = action.get("template")
                                 message_template = action.get("message")
                                 metafile = action.get("metafile")
@@ -619,6 +618,7 @@ class Main:
                                         function_message = self.graphQLRequest(url, arguments)
                                     else:
                                         headers = action.get("headers",{})
+                                        method = action.get("method")
                                         function_message = self.httpRequest(url, method, headers, arguments, self.config.verbose)
                                 elif template:
                                     function_message = self.readiCalTemplate(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
