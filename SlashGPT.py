@@ -144,7 +144,24 @@ def get_manifest_data(manifest = {}):
             data[i] = data[j]
             data[j] = temp
         return data
+    
+def replace_random(prompt, data):
+    j = 0
+    while(re.search("\\{random\\}", prompt)):
+        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
+        j += 1
+    return prompt
 
+def replace_from_resource_file(prompt, resource_file_name):
+    with open(f"{resource_file_name}", 'r') as f:
+        contents = f.read()
+        return re.sub("\\{resource\\}", contents, prompt, 1)
+
+def apply_agent(prompt, agents, config):    
+    descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
+    return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
+
+    
 """
 ChatSession represents a chat session with a particular AI agent.
 The key is the identifier of the agent.
@@ -176,18 +193,12 @@ class ChatSession:
         if self.prompt:
             data = get_manifest_data(manifest)
             if data:
-                j = 0
-                while(re.search("\\{random\\}", self.prompt)):
-                    self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
-                    j += 1
+                self.prompt = replace_random(self.prompt, data)
             resource = manifest.get("resource")
             if resource:
-                with open(f"{resource}", 'r') as f:
-                    contents = f.read()
-                    self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
+                self.prompt = replace_from_resource_file(self.prompt, resource)
             if agents:
-                descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
-                self.prompt = re.sub("\\{agents\\}", "\n".join(descriptions), self.prompt, 1)
+                self.prompt = apply_agent(self.prompt, agents, self.config)
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
