@@ -616,32 +616,10 @@ class Main:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
                                     if action.get("graphQL"):
-                                        transport = RequestsHTTPTransport(url=url, use_json=True)
-                                        client = Client(transport=transport)
-                                        query = arguments.get("query")
-                                        query = gql(f"query {query}")
-                                        try:
-                                            response = client.execute(query)
-                                            function_message = json.dumps(response)
-                                        except Exception as e:
-                                            function_message = str(e)
+                                        function_message = self.graphQLRequest(url, arguments)
                                     else:
                                         headers = action.get("headers",{})
-                                        headers = {key:value.format(**arguments) for key,value in headers.items()}
-                                        if method == "POST":
-                                            headers['Content-Type'] = 'application/json';
-                                            if self.config.verbose:
-                                                print(colored(f"Posting to {url} {headers}", "yellow"))
-                                            response = requests.post(url, headers=headers, json=arguments)
-                                        else:
-                                            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-                                            if self.config.verbose:
-                                                print(colored(f"Fetching from {url}", "yellow"))
-                                            response = requests.get(url, headers=headers)
-                                        if response.status_code == 200:
-                                            function_message = response.text
-                                        else:
-                                            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+                                        function_message = self.httpRequest(url, method, headers, arguments, self.config.verbose)
                                 elif template:
                                     mime_type = action.get("mime_type") or ""
                                     message_template = message_template or f"{url}"
@@ -694,6 +672,35 @@ class Main:
                     if self.config.verbose:
                         raise
 
+    def graphQLRequest(self, url, arguments):
+        transport = RequestsHTTPTransport(url=url, use_json=True)
+        client = Client(transport=transport)
+        query = arguments.get("query")
+        graphQuery = gql(f"query {query}")
+        try:
+            response = client.execute(graphQuery)
+            return json.dumps(response)
+        except Exception as e:
+            return str(e)
+
+    def httpRequest(self, url, method, headers, arguments, verbose):
+        headers = {key:value.format(**arguments) for key,value in headers.items()}
+        if method == "POST":
+            headers['Content-Type'] = 'application/json';
+            if self.config.verbose:
+                print(colored(f"Posting to {url} {headers}", "yellow"))
+                response = requests.post(url, headers=headers, json=arguments)
+            else:
+                url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
+                if self.config.verbose:
+                    print(colored(f"Fetching from {url}", "yellow"))
+                    response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return response.text
+            else:
+                print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+
+        
 config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
 main = Main(config)
