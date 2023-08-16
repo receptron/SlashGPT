@@ -86,6 +86,66 @@ class ChatConfig:
                 self.manifests[file.split('.')[0]] = json.load(f)
 
 """
+Read Module
+Read Python file if module is in manifest.
+"""
+def read_module(module: str):
+  with open(f"{module}", 'r') as f:
+      try:
+          code = f.read()
+          namespace = {}
+          exec(code, namespace)
+          print(f" {module}")
+          return namespace
+      except ImportError:
+          print(f"Failed to import module: {module}")
+
+"""
+Get module name from manifest and set max_token.
+"""
+def get_model_and_max_token(config: ChatConfig, manifest = {}): 
+    max_token = 4096
+    model = manifest.get("model") or "gpt-3.5-turbo-0613"
+    if model == "gpt-3.5-turbo-16k-0613":
+        return (model, max_token * 4)
+    elif model == "palm":
+        if config.GOOGLE_PALM_KEY is not None:
+            return (mode, max_token)
+        print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
+    elif model[:6] == "llama2":
+        if config.REPLICATE_API_TOKEN is not None:
+            return (model, max_token)
+        print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
+    return ("gpt-3.5-turbo-0613", max_token)
+
+"""
+Read and create prompt string
+"""
+def read_prompt(manifest = {}):
+    prompt = manifest.get("prompt")
+    if isinstance(prompt,list):
+        prompt = '\n'.join(prompt)
+    if prompt:
+        if re.search("\\{now\\}", prompt):
+            time = datetime.now()
+            prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
+    return prompt            
+
+"""
+Read manifest data and shuffle data
+"""
+def get_manifest_data(manifest = {}):
+    data = manifest.get("data")
+    if data:
+        # Shuffle 
+        for i in range(len(data)):
+            j = random.randrange(0, len(data))
+            temp = data[i]
+            data[i] = data[j]
+            data[j] = temp
+        return data
+
+"""
 ChatSession represents a chat session with a particular AI agent.
 The key is the identifier of the agent.
 The manifest specifies behaviors of the agent.
@@ -95,7 +155,6 @@ class ChatSession:
         self.config = config
         self.key = key
         self.manifest = manifest
-        self.time = datetime.now()
         self.userName = manifest.get("you") or f"You({key})"
         self.botName = manifest.get("bot") or "GPT"
         self.title = manifest.get("title") or ""
@@ -108,34 +167,15 @@ class ChatSession:
             self.temperature = float(manifest.get("temperature"))
 
         # Load the model name and make it sure that we have required keys
-        self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
-        self.max_token = 4096
-        if self.model == "gpt-3.5-turbo-16k-0613":
-            self.max_token = 4096 * 4
-        elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
-            print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
-            self.model = "gpt-3.5-turbo-0613"
-        elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
-            print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
-            self.model = "gpt-3.5-turbo-0613"
+        (self.model, self.max_token) = get_model_and_max_token(config, manifest)
 
         agents = manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = manifest.get("prompt")
-        if isinstance(self.prompt,list):
-            self.prompt = '\n'.join(self.prompt)
+        self.prompt = read_prompt(manifest)
         if self.prompt:
-            if re.search("\\{now\\}", self.prompt):
-                self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%SZ'), self.prompt, 1)
-            data = manifest.get("data")
+            data = get_manifest_data(manifest)
             if data:
-                # Shuffle 
-                for i in range(len(data)):
-                    j = random.randrange(0, len(data))
-                    temp = data[i]
-                    data[i] = data[j]
-                    data[j] = temp
                 j = 0
                 while(re.search("\\{random\\}", self.prompt)):
                     self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
@@ -163,14 +203,7 @@ class ChatSession:
         self.module = None
         module = manifest.get("module")
         if module:
-            with open(f"{module}", 'r') as f:
-                try:
-                    code = f.read()
-                    namespace = {}
-                    exec(code, namespace)
-                    self.module = namespace
-                except ImportError:
-                    print(f"Failed to import module: {module}")
+            self.module = read_module(module)
 
         # Load functions file if it is specified
         self.functions = None
@@ -574,7 +607,8 @@ class Main:
 
                         self.context.appendMessage(role, res)
 # Windows patch
-                        timeStr = self.context.time.strftime("%Y-%m-%d %H-%M-%S.%f")
+                        time = datetime.now()
+                        timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
                         with open(f'output/{self.context.key}/{timeStr}.json', 'w') as f:   
                             json.dump(self.context.messages, f)
 
