@@ -602,6 +602,36 @@ class Main:
             else:
                 self.switchContext(key)
 
+
+    def processLlm(self, role, question, function_name, form = ""):
+        is_next_function = False
+        if form:
+            question = form.format(question = question)
+        try:
+            self.context.appendMessage(role, question, function_name)
+            # Ask LLM to generate a response.
+            (responseRole, res, function_call) = self.context.generateResponse()
+
+            if responseRole and res:
+                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+
+                if self.config.audio:
+                    play_text(res, self.config.audio)
+
+                self.context.appendMessage(responseRole, res)
+                save_log(self.context.manifest_key, self.context.messages, self.context.time)
+
+            if function_call:
+                (question, function_name) = self.process_function_call(function_call)
+                if question and function_name:
+                    is_next_function = True
+        except Exception as e:
+            print(colored(f"Exception: Restarting the chat :{e}","red"))
+            self.switchContext(self.context.manifest_key)
+            if self.config.verbose:
+                raise
+        return (question, function_name, is_next_function)                 
+
     """
     the main loop
     """    
@@ -609,10 +639,11 @@ class Main:
         function_name = None
         is_next_function = False
         while not self.exit:
-            roleInput = "function" if is_next_function else "user"
             form = None
             if is_next_function:
+                is_next_function = False
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+                (question, function_name, is_next_function) = self.processLlm("function", question, function_name)
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -622,45 +653,19 @@ class Main:
                     question = question[1:]
                 else:
                     form = self.context.manifest.get("form")
-            is_next_function = False
 
-            mode = self.processMode(question)
-            if mode == "help":
-                self.processHelp()
-            elif mode == "slash":
-                self.processSlash(question)
-            elif mode == "sample" or mode == "talk":
-                if mode == "sample":
-                    (role, question) = self.processSample(question)
-                else:
-                    (role, question) = (roleInput, question)
-                if role and question:
-                    if form:
-                        question = form.format(question = question)
-                    try:
-                        self.context.appendMessage(role, question, function_name)
-                        # Ask LLM to generate a response.
-                        (responseRole, res, function_call) = self.context.generateResponse()
-
-                        if responseRole and res:
-                            print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
-
-                            if self.config.audio:
-                                play_text(res, self.config.audio)
-
-                            self.context.appendMessage(responseRole, res)
-                            save_log(self.context.manifest_key, self.context.messages, self.context.time)
-
-                        if function_call:
-                            (question, function_name) = self.process_function_call(function_call)
-                            if question and function_name:
-                                is_next_function = True
-                    except Exception as e:
-                        print(colored(f"Exception: Restarting the chat :{e}","red"))
-                        self.switchContext(self.context.manifest_key)
-                        if self.config.verbose:
-                            raise
-
+                mode = self.processMode(question)
+                if mode == "help":
+                    self.processHelp()
+                elif mode == "slash":
+                    self.processSlash(question)
+                elif mode == "sample" or mode == "talk":
+                    if mode == "sample":
+                        (role, question) = self.processSample(question)
+                    else:
+                        (role, question) = ("user", question)
+                    if role and question:
+                        (question, function_name, is_next_function) = self.processLlm(role, question, function_name, form)
                     
     def process_function_call(self, function_call):
         function_message = None
