@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import os
 import json
 import openai
-from datetime import datetime
+import pinecone
+import google.generativeai as palm
 
 LONG_HELP = """
 /root:      Start from the scratch (going back to dispatcher)
