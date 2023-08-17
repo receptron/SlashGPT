@@ -591,11 +591,9 @@ class Main:
         function_message = None
         function_name = None
         while not self.exit:
-            roleInput = "user"
+            roleInput = "function" if function_message and function_name else "user"
             form = None
             if function_message:
-                if function_name:
-                    roleInput = "function"
                 question = function_message
                 function_message = None
                 print(f"\033[95m\033[1m{roleInput}({function_name}): \033[95m\033[0m{question}")
