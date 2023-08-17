@@ -613,7 +613,6 @@ class Main:
             form = None
             if is_next_function:
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-                is_next_function = False
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -623,6 +622,7 @@ class Main:
                     question = question[1:]
                 else:
                     form = self.context.manifest.get("form")
+            is_next_function = False
 
             mode = self.processMode(question)
             if mode == "help":
@@ -630,7 +630,10 @@ class Main:
             elif mode == "slash":
                 self.processSlash(question)
             elif mode == "sample" or mode == "talk":
-                (role, question) = self.processSample(question) if mode == "sample" else (roleInput, question)
+                if mode == "sample":
+                    (role, question) = self.processSample(question)
+                else:
+                    (role, question) = (roleInput, question)
                 if role and question:
                     if form:
                         question = form.format(question = question)
