@@ -172,6 +172,7 @@ class ChatSession:
         self.config = config
         self.manifest_key = manifest_key
         self.manifest = manifest
+        self.time = datetime.now()
         self.userName = manifest.get("you") or f"You({manifest_key})"
         self.botName = manifest.get("bot") or "GPT"
         self.title = manifest.get("title") or ""
@@ -431,8 +432,7 @@ def play_text(text, lang):
     audio_obj.save("./output/audio.mp3")
     playsound("./output/audio.mp3")
 
-def save_log(manifest_key, messages):
-    time = datetime.now()
+def save_log(manifest_key, messages, time):
     timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
     with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
         json.dump(messages, f)
@@ -625,8 +625,7 @@ class Main:
                             play_text(res, self.config.audio)
 
                         self.context.appendMessage(role, res)
-# Windows patch
-                        save_log(self.context.manifest_key, self.context.messages)
+                        save_log(self.context.manifest_key, self.context.messages, self.context.time)
 
                     if function_call:
                         (function_message, function_name) = self.process_function_call(function_call)
