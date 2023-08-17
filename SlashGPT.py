@@ -720,16 +720,16 @@ class Main:
             headers['Content-Type'] = 'application/json';
             if self.config.verbose:
                 print(colored(f"Posting to {url} {headers}", "yellow"))
-                response = requests.post(url, headers=headers, json=arguments)
-            else:
-                url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-                if self.config.verbose:
-                    print(colored(f"Fetching from {url}", "yellow"))
-                    response = requests.get(url, headers=headers)
-            if response.status_code == 200:
-                return response.text
-            else:
-                print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+            response = requests.post(url, headers=headers, json=arguments)
+        else:
+            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
+            if self.config.verbose:
+                print(colored(f"Fetching from {url}", "yellow"))
+            response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.text
+        else:
+            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
 
     def read_iCal_template(self, template, mime_type, message_template, arguments, verbose):
         _mime_type = mime_type or ""
