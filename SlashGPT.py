@@ -611,7 +611,7 @@ class Main:
             roleInput = "function" if is_next_function else "user"
             form = None
             if is_next_function:
-                print(f"\033[95m\033[1m{roleInput}({function_name}): \033[95m\033[0m{question}")
+                print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                 is_next_function = False
             else:
                 # Otherwise, retrieve the input from the user.
