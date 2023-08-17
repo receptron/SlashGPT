@@ -517,6 +517,7 @@ class Main:
                 print(sample)
                 return ("user", sample)
             print(colored(f"Error: No {key} in the manifest file", "red"))
+        return (None, None)
             
     """
     If the question start with "/", process it as a Slash command.
