@@ -617,9 +617,7 @@ class Main:
                                     if action.get("graphQL"):
                                         function_message = self.graphQLRequest(url, arguments)
                                     else:
-                                        headers = action.get("headers",{})
-                                        method = action.get("method")
-                                        function_message = self.http_request(url, method, headers, arguments, self.config.verbose)
+                                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments, self.config.verbose)
                                 elif template:
                                     function_message = self.read_iCal_template(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
                                 elif message_template:
