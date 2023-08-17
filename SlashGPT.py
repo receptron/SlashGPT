@@ -510,14 +510,14 @@ class Main:
                 sample = sub_manifest.get("sample")
                 if sample:
                     print(sample)
-                    return ("user", sample)
+                    return sample
         elif key[:6] == "sample":
             sample = self.context.manifest.get(key)
             if sample:
                 print(sample)
-                return ("user", sample)
+                return sample
             print(colored(f"Error: No {key} in the manifest file", "red"))
-        return (None, None)
+        return None
             
     """
     If the question start with "/", process it as a Slash command.
@@ -662,11 +662,9 @@ class Main:
                     self.processSlash(question)
                 elif mode == "sample" or mode == "talk":
                     if mode == "sample":
-                        (role, question) = self.processSample(question)
-                    else:
-                        (role, question) = ("user", question)
-                    if role and question:
-                        (question, function_name, is_next_function) = self.processLlm(role, question, function_name, form)
+                        question = self.processSample(question)
+                    if question:
+                        (question, function_name, is_next_function) = self.processLlm("user", question, function_name, form)
                     
     def process_function_call(self, function_call):
         function_message = None
