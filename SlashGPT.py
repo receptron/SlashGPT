@@ -640,7 +640,6 @@ class Main:
                             action = self.context.actions.get(name)
                             if action:
                                 url = action.get("url")
-                                method = action.get("method")
                                 template = action.get("template")
                                 message_template = action.get("message")
                                 metafile = action.get("metafile")
@@ -657,42 +656,11 @@ class Main:
                                         print(colored(f"Missing {appkey} in .env file.", "red"))
                                 if url:
                                     if action.get("graphQL"):
-                                        transport = RequestsHTTPTransport(url=url, use_json=True)
-                                        client = Client(transport=transport)
-                                        query = arguments.get("query")
-                                        query = gql(f"query {query}")
-                                        try:
-                                            response = client.execute(query)
-                                            function_message = json.dumps(response)
-                                        except Exception as e:
-                                            function_message = str(e)
+                                        function_message = self.graphQLRequest(url, arguments)
                                     else:
-                                        headers = action.get("headers",{})
-                                        headers = {key:value.format(**arguments) for key,value in headers.items()}
-                                        if method == "POST":
-                                            headers['Content-Type'] = 'application/json';
-                                            if self.config.verbose:
-                                                print(colored(f"Posting to {url} {headers}", "yellow"))
-                                            response = requests.post(url, headers=headers, json=arguments)
-                                        else:
-                                            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-                                            if self.config.verbose:
-                                                print(colored(f"Fetching from {url}", "yellow"))
-                                            response = requests.get(url, headers=headers)
-                                        if response.status_code == 200:
-                                            function_message = response.text
-                                        else:
-                                            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+                                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments, self.config.verbose)
                                 elif template:
-                                    mime_type = action.get("mime_type") or ""
-                                    message_template = message_template or f"{url}"
-                                    with open(f"{template}", 'r') as f:
-                                        template = f.read()
-                                        if self.config.verbose:
-                                            print(template)
-                                        ical = template.format(**arguments)
-                                        url = f"data:{mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-                                        function_message = message_template.format(url = url)
+                                    function_message = self.read_iCal_template(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
                                 elif message_template:
                                     function_message = message_template.format(**arguments)
                                 else: 
@@ -735,6 +703,47 @@ class Main:
                     if self.config.verbose:
                         raise
 
+    def graphQLRequest(self, url, arguments):
+        transport = RequestsHTTPTransport(url=url, use_json=True)
+        client = Client(transport=transport)
+        query = arguments.get("query")
+        graphQuery = gql(f"query {query}")
+        try:
+            response = client.execute(graphQuery)
+            return json.dumps(response)
+        except Exception as e:
+            return str(e)
+
+    def http_request(self, url, method, headers, arguments, verbose):
+        headers = {key:value.format(**arguments) for key,value in headers.items()}
+        if method == "POST":
+            headers['Content-Type'] = 'application/json';
+            if self.config.verbose:
+                print(colored(f"Posting to {url} {headers}", "yellow"))
+                response = requests.post(url, headers=headers, json=arguments)
+            else:
+                url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
+                if self.config.verbose:
+                    print(colored(f"Fetching from {url}", "yellow"))
+                    response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return response.text
+            else:
+                print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
+
+    def read_iCal_template(self, template, mime_type, message_template, arguments, verbose):
+        _mime_type = mime_type or ""
+        message_template = message_template or f"{url}"
+        with open(f"{template}", 'r') as f:
+            template = f.read()
+            if self.config.verbose:
+                print(template)
+            ical = template.format(**arguments)
+            url = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
+            return message_template.format(url = url)
+        
+
+                
 config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
 main = Main(config)
