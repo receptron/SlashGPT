@@ -604,7 +604,7 @@ class Main:
 
 
     def processLlm(self, role, question, function_name, form = ""):
-        is_next_function = False
+        skip_input = False
         if form:
             question = form.format(question = question)
         try:
@@ -624,27 +624,27 @@ class Main:
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
                 if question:
-                    is_next_function = True
+                    skip_input = True
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
             self.switchContext(self.context.manifest_key)
             if self.config.verbose:
                 raise
-        return (question, function_name, is_next_function)                 
+        return (question, function_name, skip_input)
 
     """
     the main loop
     """    
     def start(self):
         function_name = None
-        is_next_function = False
+        skip_input = False
         while not self.exit:
             form = None
-            if is_next_function:
-                is_next_function = False
+            if skip_input:
+                skip_input = False
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                 role = "function" if function_name else "user"
-                (question, function_name, is_next_function) = self.processLlm(role, question, function_name)
+                (question, function_name, skip_input) = self.processLlm(role, question, function_name)
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -664,7 +664,7 @@ class Main:
                     if mode == "sample":
                         question = self.processSample(question)
                     if question:
-                        (question, function_name, is_next_function) = self.processLlm("user", question, function_name, form)
+                        (question, function_name, skip_input) = self.processLlm("user", question, function_name, form)
                     
     def process_function_call(self, function_call):
         function_message = None
