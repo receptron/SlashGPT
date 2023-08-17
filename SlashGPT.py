@@ -421,6 +421,22 @@ class ChatSession:
             function_call = answer.get('function_call')
         return (role, res, function_call)
 
+    
+"""
+utility functions for Main class
+"""
+
+def play_text(text, lang):
+    audio_obj = gTTS(text=text, lang=lang, slow=False)
+    audio_obj.save("./output/audio.mp3")
+    playsound("./output/audio.mp3")
+
+def save_log(manifest_key, messages):
+    time = datetime.now()
+    timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
+    with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
+        json.dump(messages, f)
+
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
@@ -608,100 +624,104 @@ class Main:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
 
                         if self.config.audio:
-                            audio_obj = gTTS(text=res, lang=self.config.audio, slow=False)
-                            audio_obj.save("./output/audio.mp3")
-                            playsound("./output/audio.mp3")
+                            play_text(res, self.config.audio)
 
                         self.context.appendMessage(role, res)
 # Windows patch
-                        time = datetime.now()
-                        timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
-                        with open(f'output/{self.context.manifest_key}/{timeStr}.json', 'w') as f:   
-                            json.dump(self.context.messages, f)
+                        save_log(self.context.manifest_key, self.context.messages)
 
                     if function_call:
-                        function_name = function_call.get("name")
-                        arguments = function_call.get("arguments") 
-                        if arguments and isinstance(arguments, str):
-                            try:
-                                arguments = json.loads(arguments)      
-                                function_call["arguments"] = arguments
-                            except Exception as e:
-                                print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
-                        print(colored(json.dumps(function_call, indent=2), "blue"))
-                        '''
-                        if isinstance(arguments, str):
-                            params = arguments
-                        else:
-                            params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
-                        print(colored(f"Function: {function_name}({params})", "blue"))
-                        '''
-                        if function_name:
-                            action = self.context.actions.get(function_name)
-                            if action:
-                                url = action.get("url")
-                                template = action.get("template")
-                                message_template = action.get("message")
-                                metafile = action.get("metafile")
-                                appkey = action.get("appkey")
-                                if metafile:
-                                    metafile = metafile.format(**arguments)
-                                    self.switchContext(metafile, intro = False)
-                                    function_name = None # Withough name, this message will be treated as user prompt.
-                                if appkey:
-                                    appkey_value = os.getenv(appkey, "")
-                                    if appkey_value:
-                                        arguments["appkey"] = appkey_value
-                                    else:
-                                        print(colored(f"Missing {appkey} in .env file.", "red"))
-                                if url:
-                                    if action.get("graphQL"):
-                                        function_message = self.graphQLRequest(url, arguments)
-                                    else:
-                                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments)
-                                elif template:
-                                    function_message = self.read_dataURL_template(template, action.get("mime_type"), message_template, arguments)
-                                elif message_template:
-                                    function_message = message_template.format(**arguments)
-                                else: 
-                                    function_message = "Success"
-                            else:
-                                if self.context.manifest.get("notebook"):
-                                    if function_name == "python" and isinstance(arguments, str):
-                                        print(colored("python function was called", "yellow"))
-                                        arguments = {
-                                            "code": arguments,
-                                            "query": self.context.messages[-1]["content"]
-                                        }
-                                    function = getattr(self.runtime, function_name)
-                                else:
-                                    function = self.context.module and self.context.module.get(function_name) or None
-                                if function:
-                                    if isinstance(arguments, str):
-                                        (result, message) = function(arguments)
-                                    else:
-                                        (result, message) = function(**arguments)
-                                    if message:
-                                        # Embed code for the context
-                                        self.context.appendMessage("assistant", message)
-                                    if isinstance(result, dict):
-                                        result = json.dumps(result)
-                                    result_form = self.context.manifest.get("result_form")
-                                    if result_form:
-                                        function_message = result_form.format(result = result)
-                                    else:
-                                        function_message = result
-                                    if self.context.manifest.get("skip_function_result"):
-                                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
-                                        self.context.appendMessage("function", function_message, function_name)
-                                        function_message = None
-                                else:
-                                    print(colored(f"No function {function_name} in the module", "red"))
+                        (function_message, function_name) = self.process_function_call(function_call)
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
                     self.switchContext(self.context.manifest_key)
                     if self.config.verbose:
                         raise
+
+                    
+    def process_function_call(self, function_call):
+        function_message = None
+        function_name = function_call.get("name")
+        arguments = function_call.get("arguments") 
+        if arguments and isinstance(arguments, str):
+            try:
+                arguments = json.loads(arguments)      
+                function_call["arguments"] = arguments
+            except Exception as e:
+                print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
+                
+        print(colored(json.dumps(function_call, indent=2), "blue"))
+        '''
+        if isinstance(arguments, str):
+            params = arguments
+        else:
+            params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
+        print(colored(f"Function: {function_name}({params})", "blue"))
+        '''
+        if function_name:
+            action = self.context.actions.get(function_name)
+            if action:
+                url = action.get("url")
+                template = action.get("template")
+                message_template = action.get("message")
+                metafile = action.get("metafile")
+                appkey = action.get("appkey")
+                if metafile:
+                    metafile = metafile.format(**arguments)
+                    self.switchContext(metafile, intro = False)
+                    function_name = None # Withough name, this message will be treated as user prompt.
+
+                if appkey:
+                    appkey_value = os.getenv(appkey, "")
+                    if appkey_value:
+                        arguments["appkey"] = appkey_value
+                    else:
+                        print(colored(f"Missing {appkey} in .env file.", "red"))
+                if url:
+                    if action.get("graphQL"):
+                        function_message = self.graphQLRequest(url, arguments)
+                    else:
+                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments)
+                elif template:
+                    function_message = self.read_dataURL_template(template, action.get("mime_type"), message_template, arguments)
+                elif message_template:
+                    function_message = message_template.format(**arguments)
+                else: 
+                    function_message = "Success"
+            else:
+                if self.context.manifest.get("notebook"):
+                    if function_name == "python" and isinstance(arguments, str):
+                        print(colored("python function was called", "yellow"))
+                        arguments = {
+                            "code": arguments,
+                            "query": self.context.messages[-1]["content"]
+                        }
+                        function = getattr(self.runtime, function_name)
+                    else:
+                        function = self.context.module and self.context.module.get(function_name) or None
+                if function:
+                    if isinstance(arguments, str):
+                        (result, message) = function(arguments)
+                    else:
+                        (result, message) = function(**arguments)
+                    if message:
+                        # Embed code for the context
+                        self.context.appendMessage("assistant", message)
+                    if isinstance(result, dict):
+                        result = json.dumps(result)
+                    result_form = self.context.manifest.get("result_form")
+                    if result_form:
+                        function_message = result_form.format(result = result)
+                    else:
+                        function_message = result
+                    if self.context.manifest.get("skip_function_result"):
+                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
+                        self.context.appendMessage("function", function_message, function_name)
+                        function_message = None
+                else:
+                    print(colored(f"No function {function_name} in the module", "red"))
+        return (function_message, function_name)
+
 
     def graphQLRequest(self, url, arguments):
         transport = RequestsHTTPTransport(url=url, use_json=True)
