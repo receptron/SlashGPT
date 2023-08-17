@@ -658,9 +658,9 @@ class Main:
                                     if action.get("graphQL"):
                                         function_message = self.graphQLRequest(url, arguments)
                                     else:
-                                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments, self.config.verbose)
+                                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments)
                                 elif template:
-                                    function_message = self.read_iCal_template(template, action.get("mime_type"), message_template, arguments, self.config.verbose)
+                                    function_message = self.read_dataURL_template(template, action.get("mime_type"), message_template, arguments)
                                 elif message_template:
                                     function_message = message_template.format(**arguments)
                                 else: 
@@ -714,7 +714,7 @@ class Main:
         except Exception as e:
             return str(e)
 
-    def http_request(self, url, method, headers, arguments, verbose):
+    def http_request(self, url, method, headers, arguments):
         headers = {key:value.format(**arguments) for key,value in headers.items()}
         if method == "POST":
             headers['Content-Type'] = 'application/json';
@@ -731,16 +731,16 @@ class Main:
         else:
             print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
 
-    def read_iCal_template(self, template, mime_type, message_template, arguments, verbose):
+    def read_dataURL_template(self, template, mime_type, message_template, arguments):
         _mime_type = mime_type or ""
         message_template = message_template or f"{url}"
         with open(f"{template}", 'r') as f:
             template = f.read()
             if self.config.verbose:
                 print(template)
-            ical = template.format(**arguments)
-            url = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(ical)}"
-            return message_template.format(url = url)
+            data = template.format(**arguments)
+            dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
+            return message_template.format(url = dataURL)
         
 
                 
