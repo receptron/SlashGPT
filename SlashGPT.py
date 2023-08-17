@@ -426,6 +426,12 @@ def play_text(text, lang):
     audio_obj.save("./output/audio.mp3")
     playsound("./output/audio.mp3")
 
+def save_log(manifest_key, messages):
+    time = datetime.now()
+    timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
+    with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
+        json.dump(messages, f)
+
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
@@ -617,10 +623,7 @@ class Main:
 
                         self.context.appendMessage(role, res)
 # Windows patch
-                        time = datetime.now()
-                        timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
-                        with open(f'output/{self.context.manifest_key}/{timeStr}.json', 'w') as f:   
-                            json.dump(self.context.messages, f)
+                        save_log(self.context.manifest_key, self.context.messages)
 
                     if function_call:
                         function_name = function_call.get("name")
