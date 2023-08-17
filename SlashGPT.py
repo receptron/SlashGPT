@@ -482,15 +482,50 @@ class Main:
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
+
+    def processMode(self, question: str):
+        key = question[1:]
+        commands = key.split(' ')
+        if len(question) == 0:
+            return "help"
+        elif commands[0] == "sample" and len(commands) > 1:
+            return "sample"
+        elif key[:6] == "sample":
+            return "sample"
+        elif question[0] == "/":
+            return "slash"
+        else:
+            return "talk"
+
+    def processHelp(self):
+        print(self.config.ONELINE_HELP)
+
+    def processSample(self, question: str):
+        key = question[1:]
+        commands = key.split(' ')
+        if commands[0] == "sample" and len(commands) > 1:
+            sub_key = commands[1]
+            sub_manifest = self.config.manifests.get(sub_key)
+            if sub_manifest:
+                sample = sub_manifest.get("sample")
+                if sample:
+                    print(sample)
+                    return sample
+        elif key[:6] == "sample":
+            sample = self.context.manifest.get(key)
+            if sample:
+                print(sample)
+                return sample
+            print(colored(f"Error: No {key} in the manifest file", "red"))
+        return None
+            
     """
     If the question start with "/", process it as a Slash command.
     Otherwise, return (roleInput, question) as is.
     Notice that some Slash commands returns (role, question) as well.
     """
-    def processSlash(self, roleInput:str, question: str):
-        if len(question) == 0:
-            print(self.config.ONELINE_HELP)
-        elif question[0] == "/":
+    def processSlash(self, question: str):
+        if question[0] == "/": # TODO remove
             key = question[1:]
             commands = key.split(' ')
             if commands[0] == "help":
@@ -547,20 +582,6 @@ class Main:
                         self.context.botName = "PaLM"
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
-            elif commands[0] == "sample" and len(commands) > 1:
-                sub_key = commands[1]
-                sub_manifest = self.config.manifests.get(sub_key)
-                if sub_manifest:
-                    sample = sub_manifest.get("sample")
-                    if sample:
-                        print(sample)
-                        return ("user", sample)
-            elif key[:6] == "sample":
-                sample = self.context.manifest.get(key)
-                if sample:
-                    print(sample)
-                    return ("user", sample)
-                print(colored(f"Error: No {key} in the manifest file", "red"))
             elif key == "root":
                 self.config.loadManifests("./manifests")
                 self.switchContext('dispatcher', intro = False)
@@ -580,23 +601,48 @@ class Main:
                 self.context = ChatSession(self.config)
             else:
                 self.switchContext(key)
-        else:
-            return (roleInput, question)
-        return (None, None)
+
+
+    def processLlm(self, role, question, function_name, form = ""):
+        skip_input = False
+        if form:
+            question = form.format(question = question)
+        try:
+            self.context.appendMessage(role, question, function_name)
+            # Ask LLM to generate a response.
+            (responseRole, res, function_call) = self.context.generateResponse()
+
+            if responseRole and res:
+                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+
+                if self.config.audio:
+                    play_text(res, self.config.audio)
+
+                self.context.appendMessage(responseRole, res)
+                save_log(self.context.manifest_key, self.context.messages, self.context.time)
+
+            if function_call:
+                (question, function_name) = self.process_function_call(function_call)
+                if question:
+                    skip_input = True
+        except Exception as e:
+            print(colored(f"Exception: Restarting the chat :{e}","red"))
+            self.switchContext(self.context.manifest_key)
+            if self.config.verbose:
+                raise
+        return (question, function_name, skip_input)
 
     """
     the main loop
     """    
     def start(self):
-        function_message = None
-        function_name = None
+        skip_input = False
         while not self.exit:
-            roleInput = "function" if function_message and function_name else "user"
             form = None
-            if function_message:
-                question = function_message
-                function_message = None
-                print(f"\033[95m\033[1m{roleInput}({function_name}): \033[95m\033[0m{question}")
+            if skip_input:
+                print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+                role = "function" if function_name else "user"
+                (question, function_name, skip_input) = self.processLlm(role, question, function_name)
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -607,34 +653,16 @@ class Main:
                 else:
                     form = self.context.manifest.get("form")
 
-            # Process slash commands (if exits)
-            (role, question) = self.processSlash(roleInput, question)
-
-            if role and question:
-                if form:
-                    question = form.format(question = question)
-                try:
-                    self.context.appendMessage(role, question, function_name)
-                    # Ask LLM to generate a response.
-                    (role, res, function_call) = self.context.generateResponse()
-
-                    if role and res:
-                        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
-
-                        if self.config.audio:
-                            play_text(res, self.config.audio)
-
-                        self.context.appendMessage(role, res)
-                        save_log(self.context.manifest_key, self.context.messages, self.context.time)
-
-                    if function_call:
-                        (function_message, function_name) = self.process_function_call(function_call)
-                except Exception as e:
-                    print(colored(f"Exception: Restarting the chat :{e}","red"))
-                    self.switchContext(self.context.manifest_key)
-                    if self.config.verbose:
-                        raise
-
+                mode = self.processMode(question)
+                if mode == "help":
+                    self.processHelp()
+                elif mode == "slash":
+                    self.processSlash(question)
+                elif mode == "sample" or mode == "talk":
+                    if mode == "sample":
+                        question = self.processSample(question)
+                    if question:
+                        (question, function_name, skip_input) = self.processLlm("user", question, function_name, form)
                     
     def process_function_call(self, function_call):
         function_message = None
@@ -693,9 +721,9 @@ class Main:
                             "code": arguments,
                             "query": self.context.messages[-1]["content"]
                         }
-                        function = getattr(self.runtime, function_name)
-                    else:
-                        function = self.context.module and self.context.module.get(function_name) or None
+                    function = getattr(self.runtime, function_name)
+                else:
+                    function = self.context.module and self.context.module.get(function_name) or None
                 if function:
                     if isinstance(arguments, str):
                         (result, message) = function(arguments)
