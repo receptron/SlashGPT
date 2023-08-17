@@ -724,9 +724,9 @@ class Main:
                             "code": arguments,
                             "query": self.context.messages[-1]["content"]
                         }
-                        function = getattr(self.runtime, function_name)
-                    else:
-                        function = self.context.module and self.context.module.get(function_name) or None
+                    function = getattr(self.runtime, function_name)
+                else:
+                    function = self.context.module and self.context.module.get(function_name) or None
                 if function:
                     if isinstance(arguments, str):
                         (result, message) = function(arguments)
