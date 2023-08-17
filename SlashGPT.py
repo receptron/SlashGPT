@@ -605,15 +605,14 @@ class Main:
     the main loop
     """    
     def start(self):
-        function_message = None
         function_name = None
+        is_next_function = False
         while not self.exit:
-            roleInput = "function" if function_message and function_name else "user"
+            roleInput = "function" if is_next_function else "user"
             form = None
-            if function_message:
-                question = function_message
-                function_message = None
+            if is_next_function:
                 print(f"\033[95m\033[1m{roleInput}({function_name}): \033[95m\033[0m{question}")
+                is_next_function = False
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -649,7 +648,9 @@ class Main:
                             save_log(self.context.manifest_key, self.context.messages, self.context.time)
 
                         if function_call:
-                            (function_message, function_name) = self.process_function_call(function_call)
+                            (question, function_name) = self.process_function_call(function_call)
+                            if question and function_name:
+                                is_next_function = True
                     except Exception as e:
                         print(colored(f"Exception: Restarting the chat :{e}","red"))
                         self.switchContext(self.context.manifest_key)
