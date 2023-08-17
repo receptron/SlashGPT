@@ -168,11 +168,11 @@ The key is the identifier of the agent.
 The manifest specifies behaviors of the agent.
 """
 class ChatSession:
-    def __init__(self, config: ChatConfig, key: str = "GPT", manifest = {}):
+    def __init__(self, config: ChatConfig, manifest_key: str = "GPT", manifest = {}):
         self.config = config
-        self.key = key
+        self.manifest_key = manifest_key
         self.manifest = manifest
-        self.userName = manifest.get("you") or f"You({key})"
+        self.userName = manifest.get("you") or f"You({manifest_key})"
         self.botName = manifest.get("bot") or "GPT"
         self.title = manifest.get("title") or ""
         self.intro = manifest.get("intro")
@@ -442,14 +442,14 @@ class Main:
     switchContext terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
-    def switchContext(self, key: str, intro: bool = True):
-        if key is None:
+    def switchContext(self, manifest_key: str, intro: bool = True):
+        if manifest_key is None:
             self.context = ChatSession(self.config)
-        manifest = self.config.manifests.get(key)
+        manifest = self.config.manifests.get(manifest_key)
         if manifest:
-            self.context = ChatSession(self.config, key=key, manifest=manifest)
-            if not os.path.isdir(f"output/{self.context.key}"):
-                os.makedirs(f"output/{self.context.key}")
+            self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
+            if not os.path.isdir(f"output/{self.context.manifest_key}"):
+                os.makedirs(f"output/{self.context.manifest_key}")
             if self.config.verbose:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
@@ -464,7 +464,7 @@ class Main:
                 self.context.appendMessage("assistant", intro)
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
         else:            
-            print(colored(f"Invalid slash command: {key}", "red"))
+            print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
     """
     If the question start with "/", process it as a Slash command.
@@ -549,7 +549,7 @@ class Main:
                 self.config.loadManifests("./manifests")
                 self.switchContext('dispatcher', intro = False)
             elif key == "new":
-                self.switchContext(self.context.key, intro = False)
+                self.switchContext(self.context.manifest_key, intro = False)
             elif key == "rpg1":
                 self.config.loadManifests('./rpg1')
                 self.switchContext('bartender')
@@ -616,7 +616,7 @@ class Main:
 # Windows patch
                         time = datetime.now()
                         timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
-                        with open(f'output/{self.context.key}/{timeStr}.json', 'w') as f:   
+                        with open(f'output/{self.context.manifest_key}/{timeStr}.json', 'w') as f:   
                             json.dump(self.context.messages, f)
 
                     if function_call:
@@ -699,7 +699,7 @@ class Main:
                                     print(colored(f"No function {function_name} in the module", "red"))
                 except Exception as e:
                     print(colored(f"Exception: Restarting the chat :{e}","red"))
-                    self.switchContext(self.context.key)
+                    self.switchContext(self.context.manifest_key)
                     if self.config.verbose:
                         raise
 
