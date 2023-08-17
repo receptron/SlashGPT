@@ -33,6 +33,31 @@ def save_log(manifest_key, messages, time):
     with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
         json.dump(messages, f)
 
+
+manifests = {
+    "root": {
+        "manifests_dir": "manifests",
+        "default_manifest_key": "dispatcher",
+    },
+    "rpg1": {
+        "manifests_dir": "rpg1",
+        "default_manifest_key": "bartender",
+    },
+    "zoo": {
+        "manifests_dir": "zoo",
+        "default_manifest_key": "monkey",
+    },
+    "roles1": {
+        "manifests_dir": "prompts",
+        "default_manifest_key": None,
+    },
+    "roles2": {
+        "manifests_dir": "roles2",
+        "default_manifest_key": None,
+    },
+};
+
+
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
@@ -179,23 +204,12 @@ class Main:
                         self.context.botName = "PaLM"
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
-            elif key == "root":
-                self.config.loadManifests("./manifests")
-                self.switchContext('dispatcher', intro = False)
             elif key == "new":
                 self.switchContext(self.context.manifest_key, intro = False)
-            elif key == "rpg1":
-                self.config.loadManifests('./rpg1')
-                self.switchContext('bartender')
-            elif key == "zoo":
-                self.config.loadManifests('./zoo')
-                self.switchContext('monkey')
-            elif key == "roles1":
-                self.config.loadManifests('./prompts')
-                self.switchContext(None)
-            elif key == "roles2":
-                self.config.loadManifests('./roles2')
-                self.switchContext(None)
+            elif manifests[key]:
+                m = manifests[key]
+                self.config.loadManifests("./" + m["manifests_dir"])
+                self.switchContext(m["default_manifest_key"])
             else:
                 self.switchContext(key)
 
