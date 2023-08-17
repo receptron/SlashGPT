@@ -421,6 +421,11 @@ class ChatSession:
             function_call = answer.get('function_call')
         return (role, res, function_call)
 
+def play_text(text, lang):
+    audio_obj = gTTS(text=text, lang=lang, slow=False)
+    audio_obj.save("./output/audio.mp3")
+    playsound("./output/audio.mp3")
+
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
@@ -608,9 +613,7 @@ class Main:
                         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
 
                         if self.config.audio:
-                            audio_obj = gTTS(text=res, lang=self.config.audio, slow=False)
-                            audio_obj.save("./output/audio.mp3")
-                            playsound("./output/audio.mp3")
+                            play_text(res, self.config.audio)
 
                         self.context.appendMessage(role, res)
 # Windows patch
