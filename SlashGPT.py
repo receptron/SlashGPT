@@ -86,6 +86,83 @@ class ChatConfig:
                 self.manifests[file.split('.')[0]] = json.load(f)
 
 """
+Read Module
+Read Python file if module is in manifest.
+"""
+def read_module(module: str):
+  with open(f"{module}", 'r') as f:
+      try:
+          code = f.read()
+          namespace = {}
+          exec(code, namespace)
+          print(f" {module}")
+          return namespace
+      except ImportError:
+          print(f"Failed to import module: {module}")
+
+"""
+Get module name from manifest and set max_token.
+"""
+def get_model_and_max_token(config: ChatConfig, manifest = {}): 
+    max_token = 4096
+    model = manifest.get("model") or "gpt-3.5-turbo-0613"
+    if model == "gpt-3.5-turbo-16k-0613":
+        return (model, max_token * 4)
+    elif model == "palm":
+        if config.GOOGLE_PALM_KEY is not None:
+            return (mode, max_token)
+        print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
+    elif model[:6] == "llama2":
+        if config.REPLICATE_API_TOKEN is not None:
+            return (model, max_token)
+        print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
+    return ("gpt-3.5-turbo-0613", max_token)
+
+"""
+Read and create prompt string
+"""
+def read_prompt(manifest = {}):
+    prompt = manifest.get("prompt")
+    if isinstance(prompt,list):
+        prompt = '\n'.join(prompt)
+    if prompt:
+        if re.search("\\{now\\}", prompt):
+            time = datetime.now()
+            prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
+    return prompt            
+
+"""
+Read manifest data and shuffle data
+"""
+def get_manifest_data(manifest = {}):
+    data = manifest.get("data")
+    if data:
+        # Shuffle 
+        for i in range(len(data)):
+            j = random.randrange(0, len(data))
+            temp = data[i]
+            data[i] = data[j]
+            data[j] = temp
+        return data
+    
+def replace_random(prompt, data):
+    j = 0
+    while(re.search("\\{random\\}", prompt)):
+        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
+        j += 1
+    return prompt
+
+def replace_from_resource_file(prompt, resource_file_name):
+    with open(f"{resource_file_name}", 'r') as f:
+        contents = f.read()
+        return re.sub("\\{resource\\}", contents, prompt, 1)
+
+def apply_agent(prompt, agents, config):    
+    descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
+    return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
+
+    
+"""
 ChatSession represents a chat session with a particular AI agent.
 The key is the identifier of the agent.
 The manifest specifies behaviors of the agent.
@@ -95,7 +172,6 @@ class ChatSession:
         self.config = config
         self.key = key
         self.manifest = manifest
-        self.time = datetime.now()
         self.userName = manifest.get("you") or f"You({key})"
         self.botName = manifest.get("bot") or "GPT"
         self.title = manifest.get("title") or ""
@@ -108,46 +184,21 @@ class ChatSession:
             self.temperature = float(manifest.get("temperature"))
 
         # Load the model name and make it sure that we have required keys
-        self.model = manifest.get("model") or "gpt-3.5-turbo-0613"
-        self.max_token = 4096
-        if self.model == "gpt-3.5-turbo-16k-0613":
-            self.max_token = 4096 * 4
-        elif self.model == "palm" and config.GOOGLE_PALM_KEY is None:
-            print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
-            self.model = "gpt-3.5-turbo-0613"
-        elif self.model[:6] == "llama2" and config.REPLICATE_API_TOKEN is None:
-            print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
-            self.model = "gpt-3.5-turbo-0613"
+        (self.model, self.max_token) = get_model_and_max_token(config, manifest)
 
         agents = manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = manifest.get("prompt")
-        if isinstance(self.prompt,list):
-            self.prompt = '\n'.join(self.prompt)
+        self.prompt = read_prompt(manifest)
         if self.prompt:
-            if re.search("\\{now\\}", self.prompt):
-                self.prompt = re.sub("\\{now\\}", self.time.strftime('%Y%m%dT%H%M%SZ'), self.prompt, 1)
-            data = manifest.get("data")
+            data = get_manifest_data(manifest)
             if data:
-                # Shuffle 
-                for i in range(len(data)):
-                    j = random.randrange(0, len(data))
-                    temp = data[i]
-                    data[i] = data[j]
-                    data[j] = temp
-                j = 0
-                while(re.search("\\{random\\}", self.prompt)):
-                    self.prompt = re.sub("\\{random\\}", data[j], self.prompt, 1)
-                    j += 1
+                self.prompt = replace_random(self.prompt, data)
             resource = manifest.get("resource")
             if resource:
-                with open(f"{resource}", 'r') as f:
-                    contents = f.read()
-                    self.prompt = re.sub("\\{resource\\}", contents, self.prompt, 1)
+                self.prompt = replace_from_resource_file(self.prompt, resource)
             if agents:
-                descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
-                self.prompt = re.sub("\\{agents\\}", "\n".join(descriptions), self.prompt, 1)
+                self.prompt = apply_agent(self.prompt, agents, self.config)
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
@@ -163,14 +214,7 @@ class ChatSession:
         self.module = None
         module = manifest.get("module")
         if module:
-            with open(f"{module}", 'r') as f:
-                try:
-                    code = f.read()
-                    namespace = {}
-                    exec(code, namespace)
-                    self.module = namespace
-                except ImportError:
-                    print(f"Failed to import module: {module}")
+            self.module = read_module(module)
 
         # Load functions file if it is specified
         self.functions = None
@@ -187,6 +231,11 @@ class ChatSession:
                 if self.config.verbose:
                     print(self.functions)
 
+    def set_model(self, model, max_token = 4096):
+        self.model = model
+        self.max_token = max_token
+        print(f"Model = {self.model}")
+    
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
@@ -465,30 +514,21 @@ class Main:
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
             elif key == "gpt3":
-                self.context.model = "gpt-3.5-turbo-0613"
-                self.context.max_token = 4096
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-3.5-turbo-0613")
             elif key == "gpt31":
-                self.context.model = "gpt-3.5-turbo-16k-0613"
-                self.context.max_token = 4096 * 4
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-3.5-turbo-16k-0613", 4096 * 4)
             elif key == "gpt4":
-                self.context.model = "gpt-4-0613"
-                self.context.max_token = 4096
-                print(f"Model = {self.context.model}")
+                self.context.set_model("gpt-4-0613")
             elif key == "llama2" or key == "llama270" or key == "vicuna":
                 if self.config.REPLICATE_API_TOKEN:
-                    self.context.model = key
-                    self.context.max_token = 4096
-                    print(f"Model = {self.context.model}")
+                    self.context.set_model(key)
                 else:
                     print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
             elif key == "palm":
                 if self.config.GOOGLE_PALM_KEY:
-                    self.context.model = "palm"
+                    self.context.set_model("palm")
                     if self.context.botName == "GPT":
                         self.context.botName = "PaLM"
-                    print(f"Model = {self.context.model}")
                 else:
                     print("Error: Missing GOOGLE_PALM_KEY")
             elif commands[0] == "sample" and len(commands) > 1:
@@ -574,7 +614,8 @@ class Main:
 
                         self.context.appendMessage(role, res)
 # Windows patch
-                        timeStr = self.context.time.strftime("%Y-%m-%d %H-%M-%S.%f")
+                        time = datetime.now()
+                        timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
                         with open(f'output/{self.context.key}/{timeStr}.json', 'w') as f:   
                             json.dump(self.context.messages, f)
 
