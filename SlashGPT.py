@@ -636,12 +636,10 @@ class Main:
     the main loop
     """    
     def start(self):
-        function_name = None
         skip_input = False
         while not self.exit:
             form = None
             if skip_input:
-                skip_input = False
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                 role = "function" if function_name else "user"
                 (question, function_name, skip_input) = self.processLlm(role, question, function_name)
