@@ -13,7 +13,7 @@
     }
   },
   "model": "gpt-3.5-turbo-16k-0613",
-  "sample": "Who is CEO?",
+  "sample": "Who is CEO of SpaceX?",
   "sample1": "What kind of information are you able to get?",
   "sample2": "Get all the information of last 10 launches",
   "sample3": "Next Launch",

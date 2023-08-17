@@ -12,7 +12,7 @@
     "I am a dispatcher agent. I will find the right agent for your question, and let it answer." 
   ],
   "sample": "Please convert $1 (US) to Japanese Yen",
-  "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews"],
+  "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "{agents}"
