@@ -623,7 +623,7 @@ class Main:
 
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
-                if question and function_name:
+                if question:
                     is_next_function = True
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
@@ -643,7 +643,8 @@ class Main:
             if is_next_function:
                 is_next_function = False
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-                (question, function_name, is_next_function) = self.processLlm("function", question, function_name)
+                role = "function" if function_name else "user"
+                (question, function_name, is_next_function) = self.processLlm(role, question, function_name)
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
