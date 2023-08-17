@@ -461,6 +461,7 @@ class Main:
     def switchContext(self, manifest_key: str, intro: bool = True):
         if manifest_key is None:
             self.context = ChatSession(self.config)
+            return
         manifest = self.config.manifests.get(manifest_key)
         if manifest:
             self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
@@ -574,10 +575,10 @@ class Main:
                 self.switchContext('monkey')
             elif key == "roles1":
                 self.config.loadManifests('./prompts')
-                self.context = ChatSession(self.config)
+                self.switchContext(None)
             elif key == "roles2":
                 self.config.loadManifests('./roles2')
-                self.context = ChatSession(self.config)
+                self.switchContext(None)
             else:
                 self.switchContext(key)
         else:
