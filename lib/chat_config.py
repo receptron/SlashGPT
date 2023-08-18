@@ -6,7 +6,9 @@ import pinecone
 import google.generativeai as palm
 
 LONG_HELP = """
-/root:      Start from the scratch (going back to dispatcher)
+/switch root:      Start from the scratch (going back to dispatcher)
+/switch roles1:    Switch the manifest set to ones in prompts (original)
+/switch roles2:    Switch the manifest set to ones in roles2
 /bye:       Terminate the app
 /new:       Start a new chat session
 /prompt:    Display the current prompt
@@ -20,8 +22,6 @@ LONG_HELP = """
 /llama270:  Switch the model to LlaMA2 70b
 /vicuna:    Switch the model to Vicuna 16b
 /verbose:   Toggle verbose switch
-/roles1:    Switch the manifest set to ones in prompts (original)
-/roles2:    Switch the manifest set to ones in roles2
 """
 
 """
@@ -42,7 +42,7 @@ class ChatConfig:
         # Initialize other settings and load all manifests
         self.verbose = False
         self.audio = None
-        self.ONELINE_HELP = "System Slashes: /root, /bye, /new, /prompt, /sample, /help, ..."
+        self.ONELINE_HELP = "System Slashes: /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
         self.loadManifests(pathManifests)
 
