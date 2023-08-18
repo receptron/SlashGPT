@@ -296,7 +296,7 @@ def get_model_and_max_token(config: ChatConfig, manifest = {}):
         return (model, max_token * 4)
     elif model == "palm":
         if config.GOOGLE_PALM_KEY is not None:
-            return (mode, max_token)
+            return (model, max_token)
         print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
     elif model[:6] == "llama2":
         if config.REPLICATE_API_TOKEN is not None:
