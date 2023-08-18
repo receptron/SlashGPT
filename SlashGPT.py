@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import platform
+import re
 if platform.system() == "Darwin":
     import readline # So that input can handle Kanji & delete
 import json
@@ -112,7 +113,7 @@ class Main:
 
     def processMode(self, question: str):
         key = question[1:]
-        commands = key.split(' ')
+        commands = re.split('\s+', key)
         if len(question) == 0:
             return InputStyle.HELP
         elif key[:6] == "sample":
@@ -127,7 +128,7 @@ class Main:
 
     def processSample(self, question: str):
         key = question[1:]
-        commands = key.split(' ')
+        commands = re.split('\s+', key)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
             sub_manifest = self.config.manifests.get(sub_key)
@@ -152,7 +153,7 @@ class Main:
     def processSlash(self, question: str):
         if question[0] == "/": # TODO remove
             key = question[1:]
-            commands = key.split(' ')
+            commands = re.split('\s+', key)
             if commands[0] == "help":
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
