@@ -206,7 +206,7 @@ class Main:
                     print("Error: Missing GOOGLE_PALM_KEY")
             elif key == "new":
                 self.switchContext(self.context.manifest_key, intro = False)
-            elif manifests[key]:
+            elif manifests.get(key):
                 m = manifests[key]
                 self.config.loadManifests("./" + m["manifests_dir"])
                 self.switchContext(m["default_manifest_key"])
