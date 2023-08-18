@@ -4,7 +4,7 @@ import platform
 if platform.system() == "Darwin":
     import readline # So that input can handle Kanji & delete
 import json
-import re
+from enum import Enum
 import random
 from termcolor import colored
 import requests
@@ -17,7 +17,12 @@ from gql.transport.requests import RequestsHTTPTransport
 
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
-# Configuration
+
+class InputStyle(Enum):
+  HELP = 1
+  TALK = 2
+  SLASH = 3
+  SAMPLE = 4
 
 """
 utility functions for Main class
@@ -109,15 +114,13 @@ class Main:
         key = question[1:]
         commands = key.split(' ')
         if len(question) == 0:
-            return "help"
-        elif commands[0] == "sample" and len(commands) > 1:
-            return "sample"
+            return InputStyle.HELP
         elif key[:6] == "sample":
-            return "sample"
+            return InputStyle.SAMPLE
         elif question[0] == "/":
-            return "slash"
+            return InputStyle.SLASH
         else:
-            return "talk"
+            return InputStyle.TALK
 
     def processHelp(self):
         print(self.config.ONELINE_HELP)
@@ -265,12 +268,12 @@ class Main:
                     form = self.context.manifest.get("form")
 
                 mode = self.processMode(question)
-                if mode == "help":
+                if mode == InputStyle.HELP:
                     self.processHelp()
-                elif mode == "slash":
+                elif mode == InputStyle.SLASH:
                     self.processSlash(question)
-                elif mode == "sample" or mode == "talk":
-                    if mode == "sample":
+                else:
+                    if mode == InputStyle.SAMPLE:
                         question = self.processSample(question)
                     if question:
                         (question, function_name, skip_input) = self.processLlm("user", question, function_name, form)
