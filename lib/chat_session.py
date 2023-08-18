@@ -344,6 +344,6 @@ def replace_from_resource_file(prompt, resource_file_name):
         return re.sub("\\{resource\\}", contents, prompt, 1)
 
 def apply_agent(prompt, agents, config):    
-    descriptions = [f"{agent}:{config.manifests[agent].get('description')}" for agent in agents]
+    descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]
     return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 

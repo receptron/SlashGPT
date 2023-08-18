@@ -15,6 +15,7 @@
   "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
+    "Call categorize function with one of categories below.",
     "{agents}"
   ]
 }
