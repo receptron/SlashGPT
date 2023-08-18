@@ -204,7 +204,7 @@ class Main:
                 self.switchContext(self.context.manifest_key, intro = False)
             elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]
-                self.config.loadManifests("./" + m["manifests_dir"])
+                self.config.load_manifests("./" + m["manifests_dir"])
                 self.switchContext(m["default_manifest_key"])
             else:
                 self.switchContext(key)
