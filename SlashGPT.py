@@ -12,10 +12,10 @@ import requests
 from gtts import gTTS
 from playsound import playsound
 import urllib.parse
-from jupyter_runtime import PythonRuntime
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 
+from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
 from lib.common import llms
