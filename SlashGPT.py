@@ -193,7 +193,7 @@ class Main:
             elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
                 llm = llms[commands[1]]
                 if llm.get("api_key"):
-                    if not self.config.existKey(llm["api_key"]):
+                    if not self.config.exist_key(llm["api_key"]):
                         print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
                         return
                 if llm.get("max_token"):
