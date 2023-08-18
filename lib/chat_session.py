@@ -1,4 +1,6 @@
 from lib.chat_config import ChatConfig
+from lib.common import llms
+
 from datetime import datetime
 import re
 import json
@@ -239,10 +241,11 @@ class ChatSession:
             prompts.append("assistant:")
 
             replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-            if self.model == "llama270":
-                replicate_model = "replicate/llama70b-v2-chat:2d19859030ff705a87c746f7e96eea03aefb71f166725aee39692f1476566d48"
-            if self.model == "vicuna":
-                replicate_model = "replicate/vicuna-13b:6282abe6a492de4145d7bb601023762212f9ddbbe78278bd6771c8b3b2f2a13b"
+            if llms.get(self.model):
+                llm = llms.get(self.model)
+                if llm.get("replicate_model"):
+                    replicate_model = llm.get("replicate_model")
+                
             output = replicate.run(
                 replicate_model,
                 input={"prompt": '\n'.join(prompts)},
