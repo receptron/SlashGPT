@@ -229,7 +229,6 @@ class Main:
                     self.context.set_model(llm.get("model_name"), llm.get("max_token"))
                 else:
                     self.context.set_model(llm.get("model_name"))
-                print(llm)
             elif key == "new":
                 self.switchContext(self.context.manifest_key, intro = False)
             elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
