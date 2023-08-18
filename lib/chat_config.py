@@ -64,3 +64,10 @@ class ChatConfig:
             with open(f"{path}/{file}", 'r',encoding="utf-8") as f:	# encoding add for Win
                 self.manifests[file.split('.')[0]] = json.load(f)
 
+
+    def existKey(self, key):
+        if key == "REPLICATE_API_TOKEN":
+            return self.REPLICATE_API_TOKEN != None
+        if key == "GOOGLE_PALM_KEY":
+            return self.GOOGLE_PALM_KEY != None
+        return False

@@ -62,7 +62,36 @@ manifests = {
         "default_manifest_key": None,
     },
 };
-
+llms = {
+    "gpt3": {
+        "model_name": "gpt-3.5-turbo-0613",
+        "max_token": 4096,
+    },
+    "gpt31": {
+        "model_name": "gpt-3.5-turbo-16k-0613",
+        "max_token": 4096 * 4
+    },
+    "gpt4": {
+        "model_name": "gpt-4-0613",
+        "max_token": 4096,
+    },
+    "llama2": {
+        "model_name": "llama2",
+        "api_key": "REPLICATE_API_TOKEN",
+    },
+    "llama270": {
+        "model_name": "llama270",
+        "api_key": "REPLICATE_API_TOKEN",
+    },
+    "vicuna": {
+        "model_name": "vicuna",
+        "api_key": "REPLICATE_API_TOKEN",
+    },
+    "palm": {
+        "model_name": "palm",
+        "api_key": "GOOGLE_PALM_KEY",
+    },
+}
 
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
@@ -190,6 +219,17 @@ class Main:
             elif key == "functions":
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
+            elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
+                llm = llms[commands[1]]
+                if llm.get("api_key"):
+                    if not self.config.existKey(llm["api_key"]):
+                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                        return
+                if llm.get("max_token"):
+                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+                else:
+                    self.context.set_model(llm.get("model_name"))
+                print(llm)
             elif key == "gpt3":
                 self.context.set_model("gpt-3.5-turbo-0613")
             elif key == "gpt31":
@@ -197,12 +237,12 @@ class Main:
             elif key == "gpt4":
                 self.context.set_model("gpt-4-0613")
             elif key == "llama2" or key == "llama270" or key == "vicuna":
-                if self.config.REPLICATE_API_TOKEN:
+                if self.config.existKey("REPLICATE_API_TOKEN"):
                     self.context.set_model(key)
                 else:
                     print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
             elif key == "palm":
-                if self.config.GOOGLE_PALM_KEY:
+                if self.config.existKey("GOOGLE_PALM_KEY"):
                     self.context.set_model("palm")
                     if self.context.botName == "GPT":
                         self.context.botName = "PaLM"
