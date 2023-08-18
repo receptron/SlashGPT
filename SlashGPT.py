@@ -230,24 +230,6 @@ class Main:
                 else:
                     self.context.set_model(llm.get("model_name"))
                 print(llm)
-            elif key == "gpt3":
-                self.context.set_model("gpt-3.5-turbo-0613")
-            elif key == "gpt31":
-                self.context.set_model("gpt-3.5-turbo-16k-0613", 4096 * 4)
-            elif key == "gpt4":
-                self.context.set_model("gpt-4-0613")
-            elif key == "llama2" or key == "llama270" or key == "vicuna":
-                if self.config.existKey("REPLICATE_API_TOKEN"):
-                    self.context.set_model(key)
-                else:
-                    print(colored("You need to set REPLICATE_API_TOKEN to use this model","red"))
-            elif key == "palm":
-                if self.config.existKey("GOOGLE_PALM_KEY"):
-                    self.context.set_model("palm")
-                    if self.context.botName == "GPT":
-                        self.context.botName = "PaLM"
-                else:
-                    print("Error: Missing GOOGLE_PALM_KEY")
             elif key == "new":
                 self.switchContext(self.context.manifest_key, intro = False)
             elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
