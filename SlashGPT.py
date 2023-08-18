@@ -6,7 +6,6 @@ if platform.system() == "Darwin":
     import readline # So that input can handle Kanji & delete
 import json
 from enum import Enum
-import random
 from termcolor import colored
 import requests
 from gtts import gTTS
@@ -103,10 +102,8 @@ class Main:
                 (result, _) = self.runtime.create_notebook(self.context.model)
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
-            if intro and self.context.intro:
-                intro = self.context.intro[random.randrange(0, len(self.context.intro))]
-                self.context.appendMessage("assistant", intro)
-                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
+            if intro:
+                self.context.set_intro()
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
