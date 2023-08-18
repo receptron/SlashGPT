@@ -18,6 +18,7 @@ from gql.transport.requests import RequestsHTTPTransport
 
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
+from lib.common import llms
 
 class InputStyle(Enum):
   HELP = 1
@@ -62,36 +63,6 @@ manifests = {
         "default_manifest_key": None,
     },
 };
-llms = {
-    "gpt3": {
-        "model_name": "gpt-3.5-turbo-0613",
-        "max_token": 4096,
-    },
-    "gpt31": {
-        "model_name": "gpt-3.5-turbo-16k-0613",
-        "max_token": 4096 * 4
-    },
-    "gpt4": {
-        "model_name": "gpt-4-0613",
-        "max_token": 4096,
-    },
-    "llama2": {
-        "model_name": "llama2",
-        "api_key": "REPLICATE_API_TOKEN",
-    },
-    "llama270": {
-        "model_name": "llama270",
-        "api_key": "REPLICATE_API_TOKEN",
-    },
-    "vicuna": {
-        "model_name": "vicuna",
-        "api_key": "REPLICATE_API_TOKEN",
-    },
-    "palm": {
-        "model_name": "palm",
-        "api_key": "GOOGLE_PALM_KEY",
-    },
-}
 
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
