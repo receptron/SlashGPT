@@ -10,3 +10,6 @@ output/
 
 # Python
 .ipynb_checkpoints/
+
+# emacs
+*~
