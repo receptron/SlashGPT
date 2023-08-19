@@ -299,7 +299,7 @@ Get module name from manifest and set max_token.
 """
 def get_model_and_max_token(config: ChatConfig, manifest = {}): 
     max_token = 4096
-    model = manifest.get("model") or "gpt-3.5-turbo-0613"
+    model = manifest.model()
     if model == "gpt-3.5-turbo-16k-0613":
         return (model, max_token * 4)
     elif model == "palm":

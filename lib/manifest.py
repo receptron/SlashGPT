@@ -21,6 +21,10 @@ class Manifest:
             return float(cls.get("temperature"))
         return 0.7
 
+    def model(cls):
+        return cls.get("model") or "gpt-3.5-turbo-0613";
+
+    
     def read_prompt(cls):
         prompt = cls.get("prompt")
         if isinstance(prompt, list):
