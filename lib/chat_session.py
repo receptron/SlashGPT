@@ -21,37 +21,40 @@ The key is the identifier of the agent.
 The manifest specifies behaviors of the agent.
 """
 class ChatSession:
-    def __init__(self, config: ChatConfig, manifest_key: str = "GPT", manifest = {}):
+    def __init__(self, config: ChatConfig, manifest_key: str = "GPT"):
         self.config = config
         self.manifest_key = manifest_key
-        self.manifest = manifest
+
+        self.set_manifest()
+
         self.time = datetime.now()
-        self.userName = manifest.get("you") or f"You({manifest_key})"
-        self.botName = manifest.get("bot") or "GPT"
-        self.title = manifest.get("title") or ""
-        self.intro = manifest.get("intro")
+        self.userName = self.manifest.get("you") or f"You({manifest_key})"
+        self.botName = self.manifest.get("bot") or "GPT"
+        self.title = self.manifest.get("title") or ""
+        self.intro = self.manifest.get("intro")
         self.messages = []
-        self.actions = manifest.get("actions") or {} 
+        self.actions = self.manifest.get("actions") or {} 
+
 
         self.temperature = 0.7
-        if manifest.get("temperature"):
-            self.temperature = float(manifest.get("temperature"))
+        if self.manifest.get("temperature"):
+            self.temperature = float(self.manifest.get("temperature"))
 
         # init log dir
         create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
-        (self.model, self.max_token) = get_model_and_max_token(config, manifest)
+        (self.model, self.max_token) = get_model_and_max_token(config, self.manifest)
 
-        agents = manifest.get("agents")
+        agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = read_prompt(manifest)
+        self.prompt = read_prompt(self.manifest)
         if self.prompt:
-            data = get_manifest_data(manifest)
+            data = get_manifest_data(self.manifest)
             if data:
                 self.prompt = replace_random(self.prompt, data)
-            resource = manifest.get("resource")
+            resource = self.manifest.get("resource")
             if resource:
                 self.prompt = replace_from_resource_file(self.prompt, resource)
             if agents:
@@ -60,7 +63,7 @@ class ChatSession:
 
         # Prepare embedded database index
         self.index = None
-        embeddings = manifest.get("embeddings")
+        embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
             if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
@@ -69,13 +72,13 @@ class ChatSession:
 
         # Load agent specific python modules (for external function calls) if necessary
         self.module = None
-        module = manifest.get("module")
+        module = self.manifest.get("module")
         if module:
             self.module = read_module(module)
 
         # Load functions file if it is specified
         self.functions = None
-        functions_file = manifest.get("functions")
+        functions_file = self.manifest.get("functions")
         if functions_file:
             with open(functions_file, 'r') as f:
                 self.functions = json.load(f)
@@ -87,6 +90,10 @@ class ChatSession:
 
                 if self.config.verbose:
                     print(self.functions)
+
+    def set_manifest(self):
+        manifest = self.config.get_manifest(self.manifest_key)
+        self.manifest = manifest if manifest else {}
 
     def set_model(self, model, max_token = 4096):
         self.model = model

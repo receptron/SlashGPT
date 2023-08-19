@@ -78,7 +78,7 @@ class Main:
             return
         manifest = self.config.get_manifest(manifest_key)
         if manifest:
-            self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
+            self.context = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
