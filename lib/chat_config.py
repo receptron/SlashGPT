@@ -3,6 +3,7 @@ import os
 import json
 import openai
 import pinecone
+import re
 import google.generativeai as palm
 
 LONG_HELP = """
@@ -61,8 +62,9 @@ class ChatConfig:
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
-            with open(f"{path}/{file}", 'r',encoding="utf-8") as f:	# encoding add for Win
-                self.manifests[file.split('.')[0]] = json.load(f)
+            if re.search("\.json$", file):
+                with open(f"{path}/{file}", 'r',encoding="utf-8") as f:	# encoding add for Win
+                    self.manifests[file.split('.')[0]] = json.load(f)
 
     def get_manifest_data(self, key):
         return self.manifests.get(key)
