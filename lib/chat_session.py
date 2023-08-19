@@ -158,6 +158,12 @@ class ChatSession:
 
     def save_log(self):
         save_log(self.manifest_key, self.messages, self.time)
+        
+    def set_intro(self):
+        if self.intro:
+            intro = self.intro[random.randrange(0, len(self.intro))]
+            self.appendMessage("assistant", intro)
+            print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {intro}")
 
     """
     Extract the Python code from the string if the agent is a code interpreter.
