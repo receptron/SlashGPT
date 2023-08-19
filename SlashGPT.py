@@ -198,9 +198,9 @@ class Main:
         if form:
             question = form.format(question = question)
         try:
-            self.context.appendMessage(role, question, function_name)
+            self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
-            (responseRole, res, function_call) = self.context.generateResponse()
+            (responseRole, res, function_call) = self.context.generate_response()
 
             if responseRole and res:
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
@@ -208,7 +208,7 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-                self.context.appendMessage(responseRole, res)
+                self.context.append_message(responseRole, res)
                 self.context.save_log()
 
             if function_call:
@@ -321,7 +321,7 @@ class Main:
                         (result, message) = function(**arguments)
                     if message:
                         # Embed code for the context
-                        self.context.appendMessage("assistant", message)
+                        self.context.append_message("assistant", message)
                     if isinstance(result, dict):
                         result = json.dumps(result)
                     result_form = self.context.manifest.get("result_form")
@@ -331,7 +331,7 @@ class Main:
                         function_message = result
                     if self.context.manifest.get("skip_function_result"):
                         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
-                        self.context.appendMessage("function", function_message, function_name)
+                        self.context.append_message("function", function_message, function_name)
                         function_message = None
                 else:
                     print(colored(f"No function {function_name} in the module", "red"))
