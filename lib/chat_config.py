@@ -44,7 +44,7 @@ class ChatConfig:
         self.audio = None
         self.ONELINE_HELP = "System Slashes: /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
-        self.loadManifests(pathManifests)
+        self.load_manifests(pathManifests)
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
         openai.api_key = self.OPENAI_API_KEY
@@ -57,7 +57,7 @@ class ChatConfig:
     Load a set of manifests. 
     It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
     """
-    def loadManifests(self, path):
+    def load_manifests(self, path):
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
@@ -65,7 +65,7 @@ class ChatConfig:
                 self.manifests[file.split('.')[0]] = json.load(f)
 
 
-    def existKey(self, key):
+    def exist_key(self, key):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN != None
         if key == "GOOGLE_PALM_KEY":

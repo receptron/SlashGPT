@@ -72,7 +72,7 @@ class Main:
     switchContext terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
-    def switchContext(self, manifest_key: str, intro: bool = True):
+    def switch_context(self, manifest_key: str, intro: bool = True):
         if manifest_key is None:
             self.context = ChatSession(self.config)
             return
@@ -94,7 +94,7 @@ class Main:
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
 
-    def processMode(self, question: str):
+    def detect_input_style(self, question: str):
         key = question[1:]
         commands = re.split('\s+', key)
         if len(question) == 0:
@@ -106,10 +106,10 @@ class Main:
         else:
             return InputStyle.TALK
 
-    def processHelp(self):
+    def display_oneline_help(self):
         print(self.config.ONELINE_HELP)
 
-    def processSample(self, question: str):
+    def process_sample(self, question: str):
         key = question[1:]
         commands = re.split('\s+', key)
         if commands[0] == "sample" and len(commands) > 1:
@@ -133,7 +133,7 @@ class Main:
     Otherwise, return (roleInput, question) as is.
     Notice that some Slash commands returns (role, question) as well.
     """
-    def processSlash(self, question: str):
+    def process_slash(self, question: str):
         if question[0] == "/": # TODO remove
             key = question[1:]
             commands = re.split('\s+', key)
@@ -176,7 +176,7 @@ class Main:
             elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
                 llm = llms[commands[1]]
                 if llm.get("api_key"):
-                    if not self.config.existKey(llm["api_key"]):
+                    if not self.config.exist_key(llm["api_key"]):
                         print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
                         return
                 if llm.get("max_token"):
@@ -184,23 +184,23 @@ class Main:
                 else:
                     self.context.set_model(llm.get("model_name"))
             elif key == "new":
-                self.switchContext(self.context.manifest_key, intro = False)
+                self.switch_context(self.context.manifest_key, intro = False)
             elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]
-                self.config.loadManifests("./" + m["manifests_dir"])
-                self.switchContext(m["default_manifest_key"])
+                self.config.load_manifests("./" + m["manifests_dir"])
+                self.switch_context(m["default_manifest_key"])
             else:
-                self.switchContext(key)
+                self.switch_context(key)
 
 
-    def processLlm(self, role, question, function_name, form = ""):
+    def process_llm(self, role, question, function_name, form = ""):
         skip_input = False
         if form:
             question = form.format(question = question)
         try:
-            self.context.appendMessage(role, question, function_name)
+            self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
-            (responseRole, res, function_call) = self.context.generateResponse()
+            (responseRole, res, function_call) = self.context.generate_response()
 
             if responseRole and res:
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
@@ -208,7 +208,7 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-                self.context.appendMessage(responseRole, res)
+                self.context.append_message(responseRole, res)
                 self.context.save_log()
 
             if function_call:
@@ -217,7 +217,7 @@ class Main:
                     skip_input = True
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
-            self.switchContext(self.context.manifest_key)
+            self.switch_context(self.context.manifest_key)
             if self.config.verbose:
                 raise
         return (question, function_name, skip_input)
@@ -232,7 +232,7 @@ class Main:
             if skip_input:
                 print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                 role = "function" if function_name else "user"
-                (question, function_name, skip_input) = self.processLlm(role, question, function_name)
+                (question, function_name, skip_input) = self.process_llm(role, question, function_name)
             else:
                 # Otherwise, retrieve the input from the user.
                 question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -243,16 +243,16 @@ class Main:
                 else:
                     form = self.context.manifest.get("form")
 
-                mode = self.processMode(question)
+                mode = self.detect_input_style(question)
                 if mode == InputStyle.HELP:
-                    self.processHelp()
+                    self.display_oneline_help()
                 elif mode == InputStyle.SLASH:
-                    self.processSlash(question)
+                    self.process_slash(question)
                 else:
                     if mode == InputStyle.SAMPLE:
-                        question = self.processSample(question)
+                        question = self.process_sample(question)
                     if question:
-                        (question, function_name, skip_input) = self.processLlm("user", question, function_name, form)
+                        (question, function_name, skip_input) = self.process_llm("user", question, function_name, form)
                     
     def process_function_call(self, function_call):
         function_message = None
@@ -283,7 +283,7 @@ class Main:
                 appkey = action.get("appkey")
                 if metafile:
                     metafile = metafile.format(**arguments)
-                    self.switchContext(metafile, intro = False)
+                    self.switch_context(metafile, intro = False)
                     function_name = None # Withough name, this message will be treated as user prompt.
 
                 if appkey:
@@ -321,7 +321,7 @@ class Main:
                         (result, message) = function(**arguments)
                     if message:
                         # Embed code for the context
-                        self.context.appendMessage("assistant", message)
+                        self.context.append_message("assistant", message)
                     if isinstance(result, dict):
                         result = json.dumps(result)
                     result_form = self.context.manifest.get("result_form")
@@ -331,7 +331,7 @@ class Main:
                         function_message = result
                     if self.context.manifest.get("skip_function_result"):
                         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
-                        self.context.appendMessage("function", function_message, function_name)
+                        self.context.append_message("function", function_message, function_name)
                         function_message = None
                 else:
                     print(colored(f"No function {function_name} in the module", "red"))
@@ -382,5 +382,5 @@ class Main:
 config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
 main = Main(config)
-main.switchContext('dispatcher')
+main.switch_context('dispatcher')
 main.start()
