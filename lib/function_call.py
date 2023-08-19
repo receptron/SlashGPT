@@ -1,12 +1,12 @@
 from termcolor import colored
 import json
 
-class FuncitonCall:
+class FunctionCall:
     @classmethod
     def factory(cls, function_call_data):
         if function_call_data == None:
             return None
-        return FuncitonCall(function_call_data)
+        return FunctionCall(function_call_data)
         
     
     def __init__(self, function_call_data):
