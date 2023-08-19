@@ -83,7 +83,7 @@ class Main:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
-            isNotebook = manifest.get("notebook")
+            isNotebook = self.context.get_manifest_attr("notebook")
             if isNotebook:
                 (result, _) = self.runtime.create_notebook(self.context.model)
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
@@ -121,7 +121,7 @@ class Main:
                     print(sample)
                     return sample
         elif key[:6] == "sample":
-            sample = self.context.manifest.get(key)
+            sample = self.context.get_manifest_attr(key)
             if sample:
                 print(sample)
                 return sample
@@ -241,7 +241,7 @@ class Main:
                     print(colored("skipping form", "blue"))
                     question = question[1:]
                 else:
-                    form = self.context.manifest.get("form")
+                    form = self.context.get_manifest_attr("form")
 
                 mode = self.detect_input_style(question)
                 if mode == InputStyle.HELP:
@@ -304,7 +304,7 @@ class Main:
                 else: 
                     function_message = "Success"
             else:
-                if self.context.manifest.get("notebook"):
+                if self.context.get_manifest_attr("notebook"):
                     if function_name == "python" and isinstance(arguments, str):
                         print(colored("python function was called", "yellow"))
                         arguments = {
@@ -324,12 +324,12 @@ class Main:
                         self.context.append_message("assistant", message)
                     if isinstance(result, dict):
                         result = json.dumps(result)
-                    result_form = self.context.manifest.get("result_form")
+                    result_form = self.context.get_manifest_attr("result_form")
                     if result_form:
                         function_message = result_form.format(result = result)
                     else:
                         function_message = result
-                    if self.context.manifest.get("skip_function_result"):
+                    if self.context.get_manifest_attr("skip_function_result"):
                         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
                         self.context.append_message("function", function_message, function_name)
                         function_message = None

@@ -99,7 +99,10 @@ class ChatSession:
         self.model = model
         self.max_token = max_token
         print(f"Model = {self.model}")
-    
+
+    def get_manifest_attr(self, key):
+        return self.manifest.get(key)
+
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
