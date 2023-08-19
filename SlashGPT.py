@@ -89,7 +89,7 @@ class Main:
         if manifest_key is None:
             self.context = ChatSession(self.config)
             return
-        manifest = self.config.manifests.get(manifest_key)
+        manifest = self.config.get_manifest(manifest_key)
         if manifest:
             self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
             if not os.path.isdir(f"output/{self.context.manifest_key}"):
@@ -131,7 +131,7 @@ class Main:
         commands = re.split('\s+', key)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
-            sub_manifest = self.config.manifests.get(sub_key)
+            sub_manifest = self.config.get_manifest(sub_key)
             if sub_manifest:
                 sample = sub_manifest.get("sample")
                 if sample:
@@ -160,7 +160,7 @@ class Main:
                     list = "\n".join(f"/{(key+'         ')[:12]} {self.config.manifests[key].get('title')}" for key in sorted(self.config.manifests.keys()))
                     print(f"Agents:\n{list}")
                 if (len(commands) == 2):
-                    manifest = self.config.manifests.get(commands[1])
+                    manifest = self.config.get_manifest(commands[1])
                     if (manifest):
                        print(json.dumps(manifest, indent=2))
             elif key == "bye":

@@ -66,6 +66,9 @@ class ChatConfig:
             with open(f"{path}/{file}", 'r',encoding="utf-8") as f:	# encoding add for Win
                 self.manifests[file.split('.')[0]] = json.load(f)
 
+    def get_manifest(self, key):
+        return self.manifests.get(key)
+        
     def exist_key(self, key):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN != None
