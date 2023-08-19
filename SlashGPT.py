@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import platform
 import re
 if platform.system() == "Darwin":
@@ -7,12 +6,8 @@ if platform.system() == "Darwin":
 import json
 from enum import Enum
 from termcolor import colored
-import requests
 from gtts import gTTS
 from playsound import playsound
-import urllib.parse
-from gql import gql, Client
-from gql.transport.requests import RequestsHTTPTransport
 
 from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
@@ -287,28 +282,7 @@ class Main:
                     self.switch_context(action.get_manifest_key(arguments),  intro = False)
                     function_name = None # Without name, this message will be treated as user prompt.
                     
-                url = action.get("url")
-                template = action.get("template")
-                message_template = action.get("message")
-                appkey = action.get("appkey")
-
-                if appkey:
-                    appkey_value = os.getenv(appkey, "")
-                    if appkey_value:
-                        arguments["appkey"] = appkey_value
-                    else:
-                        print(colored(f"Missing {appkey} in .env file.", "red"))
-                if url:
-                    if action.get("graphQL"):
-                        function_message = self.graphQLRequest(url, arguments)
-                    else:
-                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments)
-                elif template:
-                    function_message = self.read_dataURL_template(template, action.get("mime_type"), message_template, arguments)
-                elif message_template:
-                    function_message = message_template.format(**arguments)
-                else: 
-                    function_message = "Success"
+                function_message = action.call_api(arguments, self.config.verbose)
             else:
                 if self.context.get_manifest_attr("notebook"):
                     if function_name == "python" and isinstance(arguments, str):
@@ -344,44 +318,6 @@ class Main:
         return (function_message, function_name)
 
 
-    def graphQLRequest(self, url, arguments):
-        transport = RequestsHTTPTransport(url=url, use_json=True)
-        client = Client(transport=transport)
-        query = arguments.get("query")
-        graphQuery = gql(f"query {query}")
-        try:
-            response = client.execute(graphQuery)
-            return json.dumps(response)
-        except Exception as e:
-            return str(e)
-
-    def http_request(self, url, method, headers, arguments):
-        headers = {key:value.format(**arguments) for key,value in headers.items()}
-        if method == "POST":
-            headers['Content-Type'] = 'application/json';
-            if self.config.verbose:
-                print(colored(f"Posting to {url} {headers}", "yellow"))
-            response = requests.post(url, headers=headers, json=arguments)
-        else:
-            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-            if self.config.verbose:
-                print(colored(f"Fetching from {url}", "yellow"))
-            response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            return response.text
-        else:
-            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
-
-    def read_dataURL_template(self, template, mime_type, message_template, arguments):
-        _mime_type = mime_type or ""
-        message_template = message_template or f"{url}"
-        with open(f"{template}", 'r') as f:
-            template = f.read()
-            if self.config.verbose:
-                print(template)
-            data = template.format(**arguments)
-            dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
-            return message_template.format(url = dataURL)
         
 if __name__ == '__main__':
     config = ChatConfig("./manifests/manifests")
