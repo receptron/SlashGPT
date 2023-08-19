@@ -4,20 +4,20 @@ import random
 
 class Manifest:
     def __init__(cls, manifest = {}, manifest_key = None):
-        cls.manifest = manifest
-        cls.manifest_key = manifest_key
+        cls.__manifest = manifest
+        cls.__manifest_key = manifest_key
         
     def get(cls, key):
-        return cls.manifest.get(key)
+        return cls.__manifest.get(key)
 
     def username(cls):
-        return cls.get("you") or f"You({cls.manifest_key})"
+        return cls.get("you") or f"You({cls.__manifest_key})"
 
     def botname(cls):
         return cls.get("bot") or "GPT"
 
     def temperature(cls):
-        if "temperature" in cls.manifest:
+        if "temperature" in cls.__manifest:
             return float(cls.get("temperature"))
         return 0.7
 
