@@ -35,12 +35,6 @@ def play_text(text, lang):
     audio_obj.save("./output/audio.mp3")
     playsound("./output/audio.mp3")
 
-def save_log(manifest_key, messages, time):
-    timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
-    with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
-        json.dump(messages, f)
-
-
 manifests = {
     "root": {
         "manifests_dir": "manifests",
@@ -71,12 +65,6 @@ class Main:
     def __init__(self, config: ChatConfig):
         self.config = config
 
-        # Prepare output folders
-        if not os.path.isdir("output"):
-            os.makedirs("output")
-        if not os.path.isdir("output/GPT"):
-            os.makedirs("output/GPT")
-
         self.context = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
@@ -92,8 +80,6 @@ class Main:
         manifest = self.config.manifests.get(manifest_key)
         if manifest:
             self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
-            if not os.path.isdir(f"output/{self.context.manifest_key}"):
-                os.makedirs(f"output/{self.context.manifest_key}")
             if self.config.verbose:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
@@ -226,7 +212,7 @@ class Main:
                     play_text(res, self.config.audio)
 
                 self.context.appendMessage(responseRole, res)
-                save_log(self.context.manifest_key, self.context.messages, self.context.time)
+                self.context.save_log()
 
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
