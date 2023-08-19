@@ -36,23 +36,23 @@ def play_text(text, lang):
 
 manifests = {
     "root": {
-        "manifests_dir": "manifests",
+        "manifests_dir": "manifests/manifests",
         "default_manifest_key": "dispatcher",
     },
     "rpg1": {
-        "manifests_dir": "rpg1",
+        "manifests_dir": "manifests/rpg1",
         "default_manifest_key": "bartender",
     },
     "zoo": {
-        "manifests_dir": "zoo",
+        "manifests_dir": "manifests/zoo",
         "default_manifest_key": "monkey",
     },
     "roles1": {
-        "manifests_dir": "prompts",
+        "manifests_dir": "manifests/prompts",
         "default_manifest_key": None,
     },
     "roles2": {
-        "manifests_dir": "roles2",
+        "manifests_dir": "manifests/roles2",
         "default_manifest_key": None,
     },
 };
@@ -379,7 +379,7 @@ class Main:
         
 
                 
-config = ChatConfig("./manifests")
+config = ChatConfig("./manifests/manifests")
 print(config.ONELINE_HELP)
 main = Main(config)
 main.switch_context('dispatcher')
