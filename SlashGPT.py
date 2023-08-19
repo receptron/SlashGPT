@@ -200,10 +200,8 @@ class Main:
                 print(colored(f"Invalid slash command: {key}", "red"))
 
 
-    def process_llm(self, role, question, function_name, form = ""):
+    def process_llm(self, role, question, function_name):
         skip_input = False
-        if form:
-            question = form.format(question = question)
         try:
             self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
@@ -259,7 +257,9 @@ class Main:
                     if mode == InputStyle.SAMPLE:
                         question = self.process_sample(question)
                     if question:
-                        (question, function_name, skip_input) = self.process_llm("user", question, function_name, form)
+                        if form:
+                            question = form.format(question = question)
+                        (question, function_name, skip_input) = self.process_llm("user", question, function_name)
                     
     def process_function_call(self, function_call):
         function_message = None
