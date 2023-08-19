@@ -25,29 +25,6 @@ class Manifest:
         return cls.get("model") or "gpt-3.5-turbo-0613";
 
     
-    def read_prompt(cls):
-        prompt = cls.get("prompt")
-        if isinstance(prompt, list):
-            prompt = '\n'.join(prompt)
-        if prompt:
-            if re.search("\\{now\\}", prompt):
-                time = datetime.now()
-                prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
-        return prompt
-
-    """
-    Read manifest data and shuffle data
-    """
-    def get_random_manifest_data(cls):
-        data = cls.get("data")
-        if data:
-            # Shuffle 
-            for i in range(len(data)):
-                j = random.randrange(0, len(data))
-                temp = data[i]
-                data[i] = data[j]
-                data[j] = temp
-            return data
 
     """
     Read Module
@@ -67,3 +44,53 @@ class Manifest:
                     print(f"Failed to import module: {module}")
 
         return None
+
+    
+    def __read_prompt(cls):
+        prompt = cls.get("prompt")
+        if isinstance(prompt, list):
+            prompt = '\n'.join(prompt)
+        if prompt:
+            if re.search("\\{now\\}", prompt):
+                time = datetime.now()
+                prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
+        return prompt
+
+    """
+    Read manifest data and shuffle data
+    """
+    def __get_random_manifest_data(cls):
+        data = cls.get("data")
+        if data:
+            # Shuffle 
+            for i in range(len(data)):
+                j = random.randrange(0, len(data))
+                temp = data[i]
+                data[i] = data[j]
+                data[j] = temp
+            return data
+        
+    def __replace_random(cls, prompt, data):
+        j = 0
+        while(re.search("\\{random\\}", prompt)):
+            prompt = re.sub("\\{random\\}", data[j], prompt, 1)
+            j += 1
+        return prompt
+
+    def __replace_from_resource_file(cls, prompt, resource_file_name):
+        with open(f"{resource_file_name}", 'r') as f:
+            contents = f.read()
+            return re.sub("\\{resource\\}", contents, prompt, 1)
+
+    
+    def prompt_data(cls):
+        prompt = cls.__read_prompt()
+        if prompt:
+            data = cls.__get_random_manifest_data()
+            if data:
+                prompt = cls.__replace_random(prompt, data)
+            resource = cls.get("resource")
+            if resource:
+                prompt = cls.__replace_from_resource_file(prompt, resource)
+            return prompt
+            

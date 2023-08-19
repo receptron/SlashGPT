@@ -47,14 +47,8 @@ class ChatSession:
         agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.read_prompt()
+        self.prompt = self.manifest.prompt_data()
         if self.prompt:
-            data = self.manifest.get_random_manifest_data()
-            if data:
-                self.prompt = replace_random(self.prompt, data)
-            resource = self.manifest.get("resource")
-            if resource:
-                self.prompt = replace_from_resource_file(self.prompt, resource)
             if agents:
                 self.prompt = apply_agent(self.prompt, agents, self.config)
             self.messages = [{"role":"system", "content":self.prompt}]
@@ -313,17 +307,7 @@ def get_model_and_max_token(config: ChatConfig, manifest = {}):
     return ("gpt-3.5-turbo-0613", max_token)
 
     
-def replace_random(prompt, data):
-    j = 0
-    while(re.search("\\{random\\}", prompt)):
-        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
-        j += 1
-    return prompt
 
-def replace_from_resource_file(prompt, resource_file_name):
-    with open(f"{resource_file_name}", 'r') as f:
-        contents = f.read()
-        return re.sub("\\{resource\\}", contents, prompt, 1)
 
 def apply_agent(prompt, agents, config):    
     descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]
