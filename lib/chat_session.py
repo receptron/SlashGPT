@@ -69,11 +69,8 @@ class ChatSession:
                 self.index = pinecone.Index(table_name)
 
         # Load agent specific python modules (for external function calls) if necessary
-        self.module = None
-        module = self.manifest.get("module")
-        if module:
-            self.module = read_module(module)
-
+        self.module = self.manifest.read_module()
+        
         # Load functions file if it is specified
         self.functions = None
         functions_file = self.manifest.get("functions")
@@ -296,20 +293,6 @@ class ChatSession:
             function_call = answer.get('function_call')
         return (role, res, function_call)
 
-"""
-Read Module
-Read Python file if module is in manifest.
-"""
-def read_module(module: str):
-  with open(f"{module}", 'r') as f:
-      try:
-          code = f.read()
-          namespace = {}
-          exec(code, namespace)
-          print(f" {module}")
-          return namespace
-      except ImportError:
-          print(f"Failed to import module: {module}")
 
 """
 Get module name from manifest and set max_token.

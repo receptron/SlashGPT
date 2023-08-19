@@ -44,3 +44,22 @@ class Manifest:
                 data[i] = data[j]
                 data[j] = temp
             return data
+
+    """
+    Read Module
+    Read Python file if module is in manifest.
+    """
+    def read_module(cls):
+        module = cls.manifest.get("module")
+        if module:
+            with open(f"{module}", 'r') as f:
+                try:
+                    code = f.read()
+                    namespace = {}
+                    exec(code, namespace)
+                    print(f" {module}")
+                    return namespace
+                except ImportError:
+                    print(f"Failed to import module: {module}")
+
+        return None
