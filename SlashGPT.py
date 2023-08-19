@@ -93,10 +93,13 @@ class Main:
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
-
-    def detect_input_style(self, question: str):
-        key = question[1:]
+    def parse_question(self, question: str):
+        key = question[1:].strip()
         commands = re.split('\s+', key)
+        return (key, commands);
+            
+    def detect_input_style(self, question: str):
+        (key, commands) = self.parse_question(question)
         if len(question) == 0:
             return InputStyle.HELP
         elif key[:6] == "sample":
@@ -110,8 +113,7 @@ class Main:
         print(self.config.ONELINE_HELP)
 
     def process_sample(self, question: str):
-        key = question[1:]
-        commands = re.split('\s+', key)
+        (key, commands) = self.parse_question(question)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
             sub_manifest = self.config.manifests.get(sub_key)
@@ -134,9 +136,8 @@ class Main:
     Notice that some Slash commands returns (role, question) as well.
     """
     def process_slash(self, question: str):
+        (key, commands) = self.parse_question(question)
         if question[0] == "/": # TODO remove
-            key = question[1:]
-            commands = re.split('\s+', key)
             if commands[0] == "help":
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
