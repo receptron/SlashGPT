@@ -76,7 +76,7 @@ class ChatConfig:
     def help_list(self):
         return (f"/{(key+'         ')[:12]} {self.get_manifest_data(key).get('title')}" for key in self.get_manifests_keys())
     
-    def exist_key(self, key):
+    def has_value_for_key(self, key):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN != None
         if key == "GOOGLE_PALM_KEY":
