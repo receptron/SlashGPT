@@ -61,12 +61,12 @@ manifests = {
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
 class Main:
-    def __init__(self, config: ChatConfig):
+    def __init__(self, config: ChatConfig, manifest_key: str):
         self.config = config
 
-        self.context = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
+        self.switch_context(manifest_key)
 
     """
     switchContext terminate the current chat session and start a new.
@@ -381,6 +381,5 @@ class Main:
                 
 config = ChatConfig("./manifests")
 print(config.ONELINE_HELP)
-main = Main(config)
-main.switch_context('dispatcher')
+main = Main(config, 'dispatcher')
 main.start()
