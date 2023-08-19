@@ -82,8 +82,7 @@ class Main:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
-            isNotebook = self.context.get_manifest_attr("notebook")
-            if isNotebook:
+            if self.context.get_manifest_attr("notebook"):
                 (result, _) = self.runtime.create_notebook(self.context.model)
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
