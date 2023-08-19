@@ -15,6 +15,7 @@ import replicate
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
+from lib.function_call import FuncitonCall
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -177,13 +178,13 @@ class ChatSession:
                 elif codes is not None:
                     codes.append(line)
             if codes:
-                return ({
+                return (FuncitonCall({
                     "name": "run_python_code",
                     "arguments": {
                         "code": codes,
                         "query": self.messages[-1]["content"]
                     }
-                }, None) 
+                }), None) 
             
             print(colored("Debug Message: no code in this reply", "yellow"))
         return (None, res)
@@ -280,7 +281,7 @@ class ChatSession:
             answer = response['choices'][0]['message']
             res = answer['content']
             role = answer['role']
-            function_call = answer.get('function_call')
+            function_call = FuncitonCall.factory(answer.get('function_call'))
         return (role, res, function_call)
 
 
