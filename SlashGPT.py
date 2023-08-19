@@ -176,7 +176,7 @@ class Main:
             elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
                 llm = llms[commands[1]]
                 if llm.get("api_key"):
-                    if not self.config.existKey(llm["api_key"]):
+                    if not self.config.exist_key(llm["api_key"]):
                         print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
                         return
                 if llm.get("max_token"):
@@ -187,7 +187,7 @@ class Main:
                 self.switch_context(self.context.manifest_key, intro = False)
             elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]
-                self.config.loadManifests("./" + m["manifests_dir"])
+                self.config.load_manifests("./" + m["manifests_dir"])
                 self.switch_context(m["default_manifest_key"])
             else:
                 self.switch_context(key)
