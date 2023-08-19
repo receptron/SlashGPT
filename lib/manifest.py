@@ -18,11 +18,11 @@ class Manifest:
 
     def temperature(cls):
         if "temperature" in cls.manifest:
-            return float(cls.manifest.get("temperature"))
+            return float(cls.get("temperature"))
         return 0.7
 
     def read_prompt(cls):
-        prompt = cls.manifest.get("prompt")
+        prompt = cls.get("prompt")
         if isinstance(prompt, list):
             prompt = '\n'.join(prompt)
         if prompt:
@@ -35,7 +35,7 @@ class Manifest:
     Read manifest data and shuffle data
     """
     def get_random_manifest_data(cls):
-        data = cls.manifest.get("data")
+        data = cls.get("data")
         if data:
             # Shuffle 
             for i in range(len(data)):
@@ -50,7 +50,7 @@ class Manifest:
     Read Python file if module is in manifest.
     """
     def read_module(cls):
-        module = cls.manifest.get("module")
+        module = cls.get("module")
         if module:
             with open(f"{module}", 'r') as f:
                 try:
