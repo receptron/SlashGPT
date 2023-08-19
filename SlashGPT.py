@@ -281,17 +281,16 @@ class Main:
         print(colored(f"Function: {function_name}({params})", "blue"))
         '''
         if function_name:
-            action = self.context.actions.get(function_name)
+            action = self.context.get_action(function_name)
             if action:
+                if action.is_switch_context():
+                    self.switch_context(action.get_manifest_key(arguments),  intro = False)
+                    function_name = None # Without name, this message will be treated as user prompt.
+                    
                 url = action.get("url")
                 template = action.get("template")
                 message_template = action.get("message")
-                metafile = action.get("metafile")
                 appkey = action.get("appkey")
-                if metafile:
-                    metafile = metafile.format(**arguments)
-                    self.switch_context(metafile, intro = False)
-                    function_name = None # Withough name, this message will be treated as user prompt.
 
                 if appkey:
                     appkey_value = os.getenv(appkey, "")
