@@ -135,69 +135,68 @@ class Main:
     """
     def process_slash(self, question: str):
         (key, commands) = self.parse_question(question)
-        if question[0] == "/": # TODO remove
-            if commands[0] == "help":
-                if (len(commands) == 1):
-                    print(self.config.LONG_HELP)
-                    list = "\n".join(self.config.help_list())
-                    print(f"Agents:\n{list}")
-                if (len(commands) == 2):
-                    manifest_data = self.config.get_manifest_data(commands[1])
-                    if (manifest_data):
-                       print(json.dumps(manifest_data, indent=2))
-            elif key == "bye":
-                self.runtime.stop()
-                self.exit = True;
-            elif key == "verbose":
-                self.config.verbose = self.config.verbose == False
-                print(f"Verbose Mode: {self.config.verbose}")
-            elif commands[0] == "audio":
-                if len(commands) == 1:
-                    if self.config.audio:
-                        self.config.audio = None
-                    else:
-                        self.config.audio = "en"
-                elif commands[1] == "off":
+        if commands[0] == "help":
+            if (len(commands) == 1):
+                print(self.config.LONG_HELP)
+                list = "\n".join(self.config.help_list())
+                print(f"Agents:\n{list}")
+            if (len(commands) == 2):
+                manifest_data = self.config.get_manifest_data(commands[1])
+                if (manifest_data):
+                   print(json.dumps(manifest_data, indent=2))
+        elif key == "bye":
+            self.runtime.stop()
+            self.exit = True;
+        elif key == "verbose":
+            self.config.verbose = self.config.verbose == False
+            print(f"Verbose Mode: {self.config.verbose}")
+        elif commands[0] == "audio":
+            if len(commands) == 1:
+                if self.config.audio:
                     self.config.audio = None
                 else:
-                    self.config.audio = commands[1]
-                print(f"Audio mode: {self.config.audio}")
-            elif key == "prompt":
-                if len(self.context.messages) >= 1:
-                    print(self.context.messages[0].get("content"))
-                if self.config.verbose and self.context.functions:
-                    print(self.context.functions)
-            elif key == "history":
-                print(json.dumps(self.context.messages, indent=2))
-            elif key == "functions":
-                if self.context.functions:
-                    print(json.dumps(self.context.functions, indent=2))
-            elif commands[0] == "llm":
-                if len(commands) > 1 and llms.get(commands[1]):
-                    llm = llms[commands[1]]
-                    if llm.get("api_key"):
-                        if not self.config.has_value_for_key(llm["api_key"]):
-                            print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
-                            return
-                    if llm.get("max_token"):
-                        self.context.set_model(llm.get("model_name"), llm.get("max_token"))
-                    else:
-                        self.context.set_model(llm.get("model_name"))
-                else:
-                    print("/llm: " + ",".join(llms.keys()))
-            elif key == "new":
-                self.switch_context(self.context.manifest_key, intro = False)
-            elif commands[0] == "switch":
-                if len(commands) > 1 and manifests.get(commands[1]):
-                    m = manifests[commands[1]]
-                    self.config.load_manifests("./" + m["manifests_dir"])
-                    self.switch_context(m["default_manifest_key"])
-                else:
-                    print("/switch {manifest}: " +  ",".join(manifests.keys()))
-            elif self.config.has_manifest(key):
-                    self.switch_context(key)
+                    self.config.audio = "en"
+            elif commands[1] == "off":
+                self.config.audio = None
             else:
-                print(colored(f"Invalid slash command: {key}", "red"))
+                self.config.audio = commands[1]
+            print(f"Audio mode: {self.config.audio}")
+        elif key == "prompt":
+            if len(self.context.messages) >= 1:
+                print(self.context.messages[0].get("content"))
+            if self.config.verbose and self.context.functions:
+                print(self.context.functions)
+        elif key == "history":
+            print(json.dumps(self.context.messages, indent=2))
+        elif key == "functions":
+            if self.context.functions:
+                print(json.dumps(self.context.functions, indent=2))
+        elif commands[0] == "llm":
+            if len(commands) > 1 and llms.get(commands[1]):
+                llm = llms[commands[1]]
+                if llm.get("api_key"):
+                    if not self.config.has_value_for_key(llm["api_key"]):
+                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                        return
+                if llm.get("max_token"):
+                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+                else:
+                    self.context.set_model(llm.get("model_name"))
+            else:
+                print("/llm: " + ",".join(llms.keys()))
+        elif key == "new":
+            self.switch_context(self.context.manifest_key, intro = False)
+        elif commands[0] == "switch":
+            if len(commands) > 1 and manifests.get(commands[1]):
+                m = manifests[commands[1]]
+                self.config.load_manifests("./" + m["manifests_dir"])
+                self.switch_context(m["default_manifest_key"])
+            else:
+                print("/switch {manifest}: " +  ",".join(manifests.keys()))
+        elif self.config.has_manifest(key):
+                self.switch_context(key)
+        else:
+            print(colored(f"Invalid slash command: {key}", "red"))
 
 
     def process_llm(self, role, question, function_name, form = ""):
