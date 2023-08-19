@@ -14,6 +14,7 @@ from termcolor import colored
 import replicate
 
 from lib.log import create_log_dir, save_log
+from lib.manifest import Manifest
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -28,18 +29,15 @@ class ChatSession:
         self.set_manifest()
 
         self.time = datetime.now()
-        self.userName = self.manifest.get("you") or f"You({manifest_key})"
-        self.botName = self.manifest.get("bot") or "GPT"
+        self.userName = self.manifest.username()
+        self.botName = self.manifest.botname()
         self.title = self.manifest.get("title") or ""
         self.intro = self.manifest.get("intro")
         self.messages = []
         self.actions = self.manifest.get("actions") or {} 
 
-
-        self.temperature = 0.7
-        if self.manifest.get("temperature"):
-            self.temperature = float(self.manifest.get("temperature"))
-
+        self.temperature = self.manifest.temperature()
+        
         # init log dir
         create_log_dir(manifest_key)
 
@@ -49,9 +47,9 @@ class ChatSession:
         agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = read_prompt(self.manifest)
+        self.prompt = self.manifest.read_prompt()
         if self.prompt:
-            data = get_manifest_data(self.manifest)
+            data = self.manifest.get_random_manifest_data()
             if data:
                 self.prompt = replace_random(self.prompt, data)
             resource = self.manifest.get("resource")
@@ -92,8 +90,8 @@ class ChatSession:
                     print(self.functions)
 
     def set_manifest(self):
-        manifest = self.config.get_manifest(self.manifest_key)
-        self.manifest = manifest if manifest else {}
+        manifest_data = self.config.get_manifest_data(self.manifest_key)
+        self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def set_model(self, model, max_token = 4096):
         self.model = model
@@ -331,32 +329,6 @@ def get_model_and_max_token(config: ChatConfig, manifest = {}):
         print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
     return ("gpt-3.5-turbo-0613", max_token)
 
-"""
-Read and create prompt string
-"""
-def read_prompt(manifest = {}):
-    prompt = manifest.get("prompt")
-    if isinstance(prompt,list):
-        prompt = '\n'.join(prompt)
-    if prompt:
-        if re.search("\\{now\\}", prompt):
-            time = datetime.now()
-            prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
-    return prompt            
-
-"""
-Read manifest data and shuffle data
-"""
-def get_manifest_data(manifest = {}):
-    data = manifest.get("data")
-    if data:
-        # Shuffle 
-        for i in range(len(data)):
-            j = random.randrange(0, len(data))
-            temp = data[i]
-            data[i] = data[j]
-            data[j] = temp
-        return data
     
 def replace_random(prompt, data):
     j = 0

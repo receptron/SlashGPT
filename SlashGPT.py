@@ -76,8 +76,7 @@ class Main:
         if manifest_key is None:
             self.context = ChatSession(self.config)
             return
-        manifest = self.config.get_manifest(manifest_key)
-        if manifest:
+        if self.config.exist_manifest(manifest_key):
             self.context = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
@@ -114,9 +113,9 @@ class Main:
         commands = re.split('\s+', key)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
-            sub_manifest = self.config.get_manifest(sub_key)
-            if sub_manifest:
-                sample = sub_manifest.get("sample")
+            sub_manifest_data = self.config.get_manifest_data(sub_key)
+            if sub_manifest_data:
+                sample = sub_manifest_data.get("sample")
                 if sample:
                     print(sample)
                     return sample
@@ -140,12 +139,12 @@ class Main:
             if commands[0] == "help":
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
-                    list = "\n".join(f"/{(key+'         ')[:12]} {self.config.manifests[key].get('title')}" for key in sorted(self.config.manifests.keys()))
+                    list = "\n".join(self.config.help_list())
                     print(f"Agents:\n{list}")
                 if (len(commands) == 2):
-                    manifest = self.config.get_manifest(commands[1])
-                    if (manifest):
-                       print(json.dumps(manifest, indent=2))
+                    manifest_data = self.config.get_manifest_data(commands[1])
+                    if (manifest_data):
+                       print(json.dumps(manifest_data, indent=2))
             elif key == "bye":
                 self.runtime.stop()
                 self.exit = True;
