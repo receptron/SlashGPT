@@ -31,13 +31,12 @@ class ChatSession:
         self.time = datetime.now()
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()
-        self.title = self.manifest.get("title") or ""
+        self.title = self.manifest.title()
         self.intro = self.manifest.get("intro")
-        self.messages = []
-        self.actions = self.manifest.get("actions") or {} 
-
+        self.actions = self.manifest.actions()
         self.temperature = self.manifest.temperature()
         
+        self.messages = []
         # init log dir
         create_log_dir(manifest_key)
 
@@ -66,19 +65,16 @@ class ChatSession:
         self.module = self.manifest.read_module()
         
         # Load functions file if it is specified
-        self.functions = None
-        functions_file = self.manifest.get("functions")
-        if functions_file:
-            with open(functions_file, 'r') as f:
-                self.functions = json.load(f)
-                if agents:
-                    # WARNING: It assumes that categorize(category, ...) function
-                    for function in self.functions:
-                        if function.get("name") == "categorize":
-                            function["parameters"]["properties"]["category"]["enum"] = agents
+        self.functions = self.manifest.function()
+        if self.functions:
+            if agents:
+                # WARNING: It assumes that categorize(category, ...) function
+                for function in self.functions:
+                    if function.get("name") == "categorize":
+                        function["parameters"]["properties"]["category"]["enum"] = agents
 
-                if self.config.verbose:
-                    print(self.functions)
+            if self.config.verbose:
+                print(self.functions)
 
     def set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)

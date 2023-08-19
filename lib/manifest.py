@@ -1,6 +1,7 @@
 from datetime import datetime
 import re
 import random
+import json
 
 class Manifest:
     def __init__(cls, manifest = {}, manifest_key = None):
@@ -16,6 +17,12 @@ class Manifest:
     def botname(cls):
         return cls.get("bot") or "GPT"
 
+    def actions(cls):
+        return cls.get("actions") or {}
+
+    def title(cls):
+        return cls.get("title") or ""
+    
     def temperature(cls):
         if "temperature" in cls.__manifest:
             return float(cls.get("temperature"))
@@ -24,8 +31,13 @@ class Manifest:
     def model(cls):
         return cls.get("model") or "gpt-3.5-turbo-0613";
 
-    
-
+    def function(cls):
+        functions_file = cls.get("functions")
+        if functions_file:
+            with open(functions_file, 'r') as f:
+                return json.load(f)
+        return None
+            
     """
     Read Module
     Read Python file if module is in manifest.
