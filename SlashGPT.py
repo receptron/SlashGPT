@@ -91,10 +91,13 @@ class Main:
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
-
-    def detect_input_style(self, question: str):
-        key = question[1:]
+    def parse_question(self, question: str):
+        key = question[1:].strip()
         commands = re.split('\s+', key)
+        return (key, commands);
+            
+    def detect_input_style(self, question: str):
+        (key, commands) = self.parse_question(question)
         if len(question) == 0:
             return InputStyle.HELP
         elif key[:6] == "sample":
@@ -108,8 +111,7 @@ class Main:
         print(self.config.ONELINE_HELP)
 
     def process_sample(self, question: str):
-        key = question[1:]
-        commands = re.split('\s+', key)
+        (key, commands) = self.parse_question(question)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
             sub_manifest_data = self.config.get_manifest_data(sub_key)
@@ -132,9 +134,8 @@ class Main:
     Notice that some Slash commands returns (role, question) as well.
     """
     def process_slash(self, question: str):
+        (key, commands) = self.parse_question(question)
         if question[0] == "/": # TODO remove
-            key = question[1:]
-            commands = re.split('\s+', key)
             if commands[0] == "help":
                 if (len(commands) == 1):
                     print(self.config.LONG_HELP)
@@ -171,24 +172,32 @@ class Main:
             elif key == "functions":
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
-            elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
-                llm = llms[commands[1]]
-                if llm.get("api_key"):
-                    if not self.config.has_value_for_key(llm["api_key"]):
-                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
-                        return
-                if llm.get("max_token"):
-                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+            elif commands[0] == "llm":
+                if len(commands) > 1 and llms.get(commands[1]):
+                    llm = llms[commands[1]]
+                    if llm.get("api_key"):
+                        if not self.config.has_value_for_key(llm["api_key"]):
+                            print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                            return
+                    if llm.get("max_token"):
+                        self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+                    else:
+                        self.context.set_model(llm.get("model_name"))
                 else:
-                    self.context.set_model(llm.get("model_name"))
+                    print("/llm: " + ",".join(llms.keys()))
             elif key == "new":
                 self.switch_context(self.context.manifest_key, intro = False)
-            elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
-                m = manifests[commands[1]]
-                self.config.load_manifests("./" + m["manifests_dir"])
-                self.switch_context(m["default_manifest_key"])
+            elif commands[0] == "switch":
+                if len(commands) > 1 and manifests.get(commands[1]):
+                    m = manifests[commands[1]]
+                    self.config.load_manifests("./" + m["manifests_dir"])
+                    self.switch_context(m["default_manifest_key"])
+                else:
+                    print("/switch {manifest}: " +  ",".join(manifests.keys()))
+            elif self.config.has_manifest(key):
+                    self.switch_context(key)
             else:
-                self.switch_context(key)
+                print(colored(f"Invalid slash command: {key}", "red"))
 
 
     def process_llm(self, role, question, function_name, form = ""):

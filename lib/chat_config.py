@@ -82,3 +82,6 @@ class ChatConfig:
         if key == "GOOGLE_PALM_KEY":
             return self.GOOGLE_PALM_KEY != None
         return False
+
+    def has_manifest(self, key):
+        return key in self.manifests
