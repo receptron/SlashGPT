@@ -13,6 +13,8 @@ import google.generativeai.types as safety_types
 from termcolor import colored
 import replicate
 
+from lib.log import create_log_dir, save_log
+
 """
 ChatSession represents a chat session with a particular AI agent.
 The key is the identifier of the agent.
@@ -34,6 +36,9 @@ class ChatSession:
         self.temperature = 0.7
         if manifest.get("temperature"):
             self.temperature = float(manifest.get("temperature"))
+
+        # init log dir
+        create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
         (self.model, self.max_token) = get_model_and_max_token(config, manifest)
@@ -150,6 +155,15 @@ class ChatSession:
                 "role":"system", 
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             }
+
+    def save_log(self):
+        save_log(self.manifest_key, self.messages, self.time)
+        
+    def set_intro(self):
+        if self.intro:
+            intro = self.intro[random.randrange(0, len(self.intro))]
+            self.appendMessage("assistant", intro)
+            print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {intro}")
 
     """
     Extract the Python code from the string if the agent is a code interpreter.

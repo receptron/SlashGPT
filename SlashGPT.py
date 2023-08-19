@@ -6,16 +6,15 @@ if platform.system() == "Darwin":
     import readline # So that input can handle Kanji & delete
 import json
 from enum import Enum
-import random
 from termcolor import colored
 import requests
 from gtts import gTTS
 from playsound import playsound
 import urllib.parse
-from jupyter_runtime import PythonRuntime
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 
+from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
 from lib.common import llms
@@ -34,12 +33,6 @@ def play_text(text, lang):
     audio_obj = gTTS(text=text, lang=lang, slow=False)
     audio_obj.save("./output/audio.mp3")
     playsound("./output/audio.mp3")
-
-def save_log(manifest_key, messages, time):
-    timeStr = time.strftime("%Y-%m-%d %H-%M-%S.%f")
-    with open(f'output/{manifest_key}/{timeStr}.json', 'w') as f:   
-        json.dump(messages, f)
-
 
 manifests = {
     "root": {
@@ -71,12 +64,6 @@ class Main:
     def __init__(self, config: ChatConfig):
         self.config = config
 
-        # Prepare output folders
-        if not os.path.isdir("output"):
-            os.makedirs("output")
-        if not os.path.isdir("output/GPT"):
-            os.makedirs("output/GPT")
-
         self.context = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
@@ -92,8 +79,6 @@ class Main:
         manifest = self.config.get_manifest(manifest_key)
         if manifest:
             self.context = ChatSession(self.config, manifest_key=manifest_key, manifest=manifest)
-            if not os.path.isdir(f"output/{self.context.manifest_key}"):
-                os.makedirs(f"output/{self.context.manifest_key}")
             if self.config.verbose:
                 print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
             else:
@@ -103,10 +88,8 @@ class Main:
                 (result, _) = self.runtime.create_notebook(self.context.model)
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
-            if intro and self.context.intro:
-                intro = self.context.intro[random.randrange(0, len(self.context.intro))]
-                self.context.appendMessage("assistant", intro)
-                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {intro}")
+            if intro:
+                self.context.set_intro()
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
@@ -226,7 +209,7 @@ class Main:
                     play_text(res, self.config.audio)
 
                 self.context.appendMessage(responseRole, res)
-                save_log(self.context.manifest_key, self.context.messages, self.context.time)
+                self.context.save_log()
 
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
