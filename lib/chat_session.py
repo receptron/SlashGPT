@@ -14,6 +14,7 @@ from termcolor import colored
 import replicate
 
 from lib.log import create_log_dir, save_log
+from lib.manifest import Manifest
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -21,46 +22,39 @@ The key is the identifier of the agent.
 The manifest specifies behaviors of the agent.
 """
 class ChatSession:
-    def __init__(self, config: ChatConfig, manifest_key: str = "GPT", manifest = {}):
+    def __init__(self, config: ChatConfig, manifest_key: str = "GPT"):
         self.config = config
         self.manifest_key = manifest_key
-        self.manifest = manifest
+
+        self.set_manifest()
+
         self.time = datetime.now()
-        self.userName = manifest.get("you") or f"You({manifest_key})"
-        self.botName = manifest.get("bot") or "GPT"
-        self.title = manifest.get("title") or ""
-        self.intro = manifest.get("intro")
+        self.userName = self.manifest.username()
+        self.botName = self.manifest.botname()
+        self.title = self.manifest.title()
+        self.intro = self.manifest.get("intro")
+        self.actions = self.manifest.actions()
+        self.temperature = self.manifest.temperature()
+        
         self.messages = []
-        self.actions = manifest.get("actions") or {} 
-
-        self.temperature = 0.7
-        if manifest.get("temperature"):
-            self.temperature = float(manifest.get("temperature"))
-
         # init log dir
         create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
-        (self.model, self.max_token) = get_model_and_max_token(config, manifest)
+        (self.model, self.max_token) = get_model_and_max_token(config, self.manifest)
 
-        agents = manifest.get("agents")
+        agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = read_prompt(manifest)
+        self.prompt = self.manifest.prompt_data()
         if self.prompt:
-            data = get_manifest_data(manifest)
-            if data:
-                self.prompt = replace_random(self.prompt, data)
-            resource = manifest.get("resource")
-            if resource:
-                self.prompt = replace_from_resource_file(self.prompt, resource)
             if agents:
                 self.prompt = apply_agent(self.prompt, agents, self.config)
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
         self.index = None
-        embeddings = manifest.get("embeddings")
+        embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
             if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
@@ -68,31 +62,32 @@ class ChatSession:
                 self.index = pinecone.Index(table_name)
 
         # Load agent specific python modules (for external function calls) if necessary
-        self.module = None
-        module = manifest.get("module")
-        if module:
-            self.module = read_module(module)
-
+        self.module = self.manifest.read_module()
+        
         # Load functions file if it is specified
-        self.functions = None
-        functions_file = manifest.get("functions")
-        if functions_file:
-            with open(functions_file, 'r') as f:
-                self.functions = json.load(f)
-                if agents:
-                    # WARNING: It assumes that categorize(category, ...) function
-                    for function in self.functions:
-                        if function.get("name") == "categorize":
-                            function["parameters"]["properties"]["category"]["enum"] = agents
+        self.functions = self.manifest.function()
+        if self.functions:
+            if agents:
+                # WARNING: It assumes that categorize(category, ...) function
+                for function in self.functions:
+                    if function.get("name") == "categorize":
+                        function["parameters"]["properties"]["category"]["enum"] = agents
 
-                if self.config.verbose:
-                    print(self.functions)
+            if self.config.verbose:
+                print(self.functions)
+
+    def set_manifest(self):
+        manifest_data = self.config.get_manifest_data(self.manifest_key)
+        self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def set_model(self, model, max_token = 4096):
         self.model = model
         self.max_token = max_token
         print(f"Model = {self.model}")
-    
+
+    def get_manifest_attr(self, key):
+        return self.manifest.get(key)
+
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
@@ -288,27 +283,13 @@ class ChatSession:
             function_call = answer.get('function_call')
         return (role, res, function_call)
 
-"""
-Read Module
-Read Python file if module is in manifest.
-"""
-def read_module(module: str):
-  with open(f"{module}", 'r') as f:
-      try:
-          code = f.read()
-          namespace = {}
-          exec(code, namespace)
-          print(f" {module}")
-          return namespace
-      except ImportError:
-          print(f"Failed to import module: {module}")
 
 """
 Get module name from manifest and set max_token.
 """
 def get_model_and_max_token(config: ChatConfig, manifest = {}): 
     max_token = 4096
-    model = manifest.get("model") or "gpt-3.5-turbo-0613"
+    model = manifest.model()
     if model == "gpt-3.5-turbo-16k-0613":
         return (model, max_token * 4)
     elif model == "palm":
@@ -321,44 +302,8 @@ def get_model_and_max_token(config: ChatConfig, manifest = {}):
         print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
     return ("gpt-3.5-turbo-0613", max_token)
 
-"""
-Read and create prompt string
-"""
-def read_prompt(manifest = {}):
-    prompt = manifest.get("prompt")
-    if isinstance(prompt,list):
-        prompt = '\n'.join(prompt)
-    if prompt:
-        if re.search("\\{now\\}", prompt):
-            time = datetime.now()
-            prompt = re.sub("\\{now\\}", time.strftime('%Y%m%dT%H%M%SZ'), prompt, 1)
-    return prompt            
-
-"""
-Read manifest data and shuffle data
-"""
-def get_manifest_data(manifest = {}):
-    data = manifest.get("data")
-    if data:
-        # Shuffle 
-        for i in range(len(data)):
-            j = random.randrange(0, len(data))
-            temp = data[i]
-            data[i] = data[j]
-            data[j] = temp
-        return data
     
-def replace_random(prompt, data):
-    j = 0
-    while(re.search("\\{random\\}", prompt)):
-        prompt = re.sub("\\{random\\}", data[j], prompt, 1)
-        j += 1
-    return prompt
 
-def replace_from_resource_file(prompt, resource_file_name):
-    with open(f"{resource_file_name}", 'r') as f:
-        contents = f.read()
-        return re.sub("\\{resource\\}", contents, prompt, 1)
 
 def apply_agent(prompt, agents, config):    
     descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]
