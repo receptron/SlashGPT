@@ -65,7 +65,7 @@ class ChatConfig:
                 self.manifests[file.split('.')[0]] = json.load(f)
 
 
-    def exist_key(self, key):
+    def has_value_for_key(self, key):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN != None
         if key == "GOOGLE_PALM_KEY":
