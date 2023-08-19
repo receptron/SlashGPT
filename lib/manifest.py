@@ -4,35 +4,35 @@ import random
 import json
 
 class Manifest:
-    def __init__(cls, manifest = {}, manifest_key = None):
-        cls.__manifest = manifest
-        cls.__manifest_key = manifest_key
+    def __init__(self, manifest = {}, manifest_key = None):
+        self.__manifest = manifest
+        self.__manifest_key = manifest_key
         
-    def get(cls, key):
-        return cls.__manifest.get(key)
+    def get(self, key):
+        return self.__manifest.get(key)
 
-    def username(cls):
-        return cls.get("you") or f"You({cls.__manifest_key})"
+    def username(self):
+        return self.get("you") or f"You({self.__manifest_key})"
 
-    def botname(cls):
-        return cls.get("bot") or "GPT"
+    def botname(self):
+        return self.get("bot") or "GPT"
 
-    def actions(cls):
-        return cls.get("actions") or {}
+    def actions(self):
+        return self.get("actions") or {}
 
-    def title(cls):
-        return cls.get("title") or ""
+    def title(self):
+        return self.get("title") or ""
     
-    def temperature(cls):
-        if "temperature" in cls.__manifest:
-            return float(cls.get("temperature"))
+    def temperature(self):
+        if "temperature" in self.__manifest:
+            return float(self.get("temperature"))
         return 0.7
 
-    def model(cls):
-        return cls.get("model") or "gpt-3.5-turbo-0613";
+    def model(self):
+        return self.get("model") or "gpt-3.5-turbo-0613";
 
-    def function(cls):
-        functions_file = cls.get("functions")
+    def function(self):
+        functions_file = self.get("functions")
         if functions_file:
             with open(functions_file, 'r') as f:
                 return json.load(f)
@@ -42,8 +42,8 @@ class Manifest:
     Read Module
     Read Python file if module is in manifest.
     """
-    def read_module(cls):
-        module = cls.get("module")
+    def read_module(self):
+        module = self.get("module")
         if module:
             with open(f"{module}", 'r') as f:
                 try:
@@ -58,8 +58,8 @@ class Manifest:
         return None
 
     
-    def __read_prompt(cls):
-        prompt = cls.get("prompt")
+    def __read_prompt(self):
+        prompt = self.get("prompt")
         if isinstance(prompt, list):
             prompt = '\n'.join(prompt)
         if prompt:
@@ -71,8 +71,8 @@ class Manifest:
     """
     Read manifest data and shuffle data
     """
-    def __get_random_manifest_data(cls):
-        data = cls.get("data")
+    def __get_random_manifest_data(self):
+        data = self.get("data")
         if data:
             # Shuffle 
             for i in range(len(data)):
@@ -82,27 +82,27 @@ class Manifest:
                 data[j] = temp
             return data
         
-    def __replace_random(cls, prompt, data):
+    def __replace_random(self, prompt, data):
         j = 0
         while(re.search("\\{random\\}", prompt)):
             prompt = re.sub("\\{random\\}", data[j], prompt, 1)
             j += 1
         return prompt
 
-    def __replace_from_resource_file(cls, prompt, resource_file_name):
+    def __replace_from_resource_file(self, prompt, resource_file_name):
         with open(f"{resource_file_name}", 'r') as f:
             contents = f.read()
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
     
-    def prompt_data(cls):
-        prompt = cls.__read_prompt()
+    def prompt_data(self):
+        prompt = self.__read_prompt()
         if prompt:
-            data = cls.__get_random_manifest_data()
+            data = self.__get_random_manifest_data()
             if data:
-                prompt = cls.__replace_random(prompt, data)
-            resource = cls.get("resource")
+                prompt = self.__replace_random(prompt, data)
+            resource = self.get("resource")
             if resource:
-                prompt = cls.__replace_from_resource_file(prompt, resource)
+                prompt = self.__replace_from_resource_file(prompt, resource)
             return prompt
             
