@@ -174,24 +174,32 @@ class Main:
             elif key == "functions":
                 if self.context.functions:
                     print(json.dumps(self.context.functions, indent=2))
-            elif commands[0] == "llm" and len(commands) > 1 and llms.get(commands[1]):
-                llm = llms[commands[1]]
-                if llm.get("api_key"):
-                    if not self.config.has_value_for_key(llm["api_key"]):
-                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
-                        return
-                if llm.get("max_token"):
-                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+            elif commands[0] == "llm":
+                if len(commands) > 1 and llms.get(commands[1]):
+                    llm = llms[commands[1]]
+                    if llm.get("api_key"):
+                        if not self.config.has_value_for_key(llm["api_key"]):
+                            print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                            return
+                    if llm.get("max_token"):
+                        self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+                    else:
+                        self.context.set_model(llm.get("model_name"))
                 else:
-                    self.context.set_model(llm.get("model_name"))
+                    print("/llm: " + ",".join(llms.keys()))
             elif key == "new":
                 self.switch_context(self.context.manifest_key, intro = False)
-            elif commands[0] == "switch" and len(commands) > 1 and manifests.get(commands[1]):
-                m = manifests[commands[1]]
-                self.config.load_manifests("./" + m["manifests_dir"])
-                self.switch_context(m["default_manifest_key"])
+            elif commands[0] == "switch":
+                if len(commands) > 1 and manifests.get(commands[1]):
+                    m = manifests[commands[1]]
+                    self.config.load_manifests("./" + m["manifests_dir"])
+                    self.switch_context(m["default_manifest_key"])
+                else:
+                    print("/switch {manifest}: " +  ",".join(manifests.keys()))
+            elif self.config.has_manifest(key):
+                    self.switch_context(key)
             else:
-                self.switch_context(key)
+                print(colored(f"Invalid slash command: {key}", "red"))
 
 
     def process_llm(self, role, question, function_name, form = ""):
