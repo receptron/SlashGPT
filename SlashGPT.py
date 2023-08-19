@@ -384,9 +384,8 @@ class Main:
             dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
             return message_template.format(url = dataURL)
         
-
-                
-config = ChatConfig("./manifests/manifests")
-print(config.ONELINE_HELP)
-main = Main(config, 'dispatcher')
-main.start()
+if __name__ == '__main__':
+    config = ChatConfig("./manifests/manifests")
+    print(config.ONELINE_HELP)
+    main = Main(config, 'dispatcher')
+    main.start()
