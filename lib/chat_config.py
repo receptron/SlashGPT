@@ -44,8 +44,6 @@ class ChatConfig:
         self.audio = None
         self.ONELINE_HELP = "System Slashes: /bye, /new, /prompt, /sample, /help, ..."
         self.LONG_HELP = LONG_HELP
-
-        # manifests
         self.load_manifests(pathManifests)
 
         # Initialize OpenAI and optinoally Pinecone and Palm 
@@ -68,7 +66,7 @@ class ChatConfig:
 
     def get_manifest(self, key):
         return self.manifests.get(key)
-        
+
     def exist_key(self, key):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN != None

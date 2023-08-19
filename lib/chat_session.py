@@ -150,7 +150,7 @@ class ChatSession:
     Append a message to the chat session, specifying the role ("user", "system" or "function").
     In case of a function message, the name specifies the function name.
     """
-    def appendMessage(self, role: str, message: str, name = None):
+    def append_message(self, role: str, message: str, name = None):
         if name:
             self.messages.append({"role":role, "content":message, "name":name })
         else:
@@ -165,18 +165,18 @@ class ChatSession:
 
     def save_log(self):
         save_log(self.manifest_key, self.messages, self.time)
-        
+
     def set_intro(self):
         if self.intro:
             intro = self.intro[random.randrange(0, len(self.intro))]
-            self.appendMessage("assistant", intro)
+            self.append_message("assistant", intro)
             print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {intro}")
 
     """
     Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format. 
     """
-    def _extractFunctionCall(self, res:str):
+    def _extract_function_call(self, res:str):
         if self.manifest.get("notebook"):
             lines = res.splitlines()
             codes = None
@@ -207,7 +207,7 @@ class ChatSession:
         res: message
         function_call: json representing the function call (optional)
     """
-    def generateResponse(self):
+    def generate_response(self):
         role = None
         res = None
         function_call = None
@@ -243,7 +243,7 @@ class ChatSession:
             if res:
                 if self.config.verbose:
                     print(colored(res, "magenta"))
-                (function_call, res) = self._extractFunctionCall(res)
+                (function_call, res) = self._extract_function_call(res)
             else:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
@@ -272,7 +272,7 @@ class ChatSession:
                 input={"prompt": '\n'.join(prompts)},
                 temperature = self.temperature
             )
-            (function_call, res) = self._extractFunctionCall(''.join(output))
+            (function_call, res) = self._extract_function_call(''.join(output))
 
         else:
             if self.functions:
