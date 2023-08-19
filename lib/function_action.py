@@ -20,10 +20,6 @@ class FunctionAction:
     def __get(self, key):
         return self.__function_action_data.get(key)        
 
-    def get(self, key):
-        return self.__function_action_data.get(key)        
-
-    
     def is_switch_context(self):
         return "metafile" in self.__function_action_data
 
