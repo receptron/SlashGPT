@@ -200,9 +200,8 @@ class Main:
             print(colored(f"Invalid slash command: {key}", "red"))
 
 
-    def process_llm(self, role, question, function_name = None):
+    def process_llm(self):
         try:
-            self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
             (responseRole, res, function_call) = self.context.generate_response()
 
@@ -218,11 +217,11 @@ class Main:
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
                 if question:
-                    if self.context.get_manifest_attr("skip_function_result"):
-                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-                        self.context.append_message("function", question, function_name)
-                    else:
-                        self.talk_without_input(function_name, question)
+                    role = "function" if function_name or self.context.skip_function_result() else "user"
+                    print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+                    self.context.append_message(role, question, function_name)
+                    if not self.context.skip_function_result():
+                        self.process_llm()
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
@@ -237,11 +236,6 @@ class Main:
         while not self.exit:
             self.talk_with_input()
             
-    def talk_without_input(self, function_name, question):
-        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-        role = "function" if function_name else "user"
-        self.process_llm(role, question, function_name)
-
     def talk_with_input(self):
         form = None
         question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
@@ -261,8 +255,10 @@ class Main:
                 question = self.process_sample(question)
             if question and form:
                 question = form.format(question = question)
+
             if question:
-                self.process_llm("user", question)
+                self.context.append_message("user", question)
+                self.process_llm()
             
     def process_function_call(self, function_call):
         function_message = None
