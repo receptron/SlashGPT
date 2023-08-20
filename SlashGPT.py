@@ -200,10 +200,8 @@ class Main:
                 print(colored(f"Invalid slash command: {key}", "red"))
 
 
-    def process_llm(self, role, question, function_name, form = ""):
+    def process_llm(self, role, question, function_name = None):
         skip_input = False
-        if form:
-            question = form.format(question = question)
         try:
             self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
@@ -233,34 +231,39 @@ class Main:
     the main loop
     """    
     def start(self):
-        skip_input = False
         while not self.exit:
-            form = None
-            if skip_input:
-                print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-                role = "function" if function_name else "user"
-                (question, function_name, skip_input) = self.process_llm(role, question, function_name)
-            else:
-                # Otherwise, retrieve the input from the user.
-                question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-                function_name = None
-                if question[:1] == "`":
-                    print(colored("skipping form", "blue"))
-                    question = question[1:]
-                else:
-                    form = self.context.get_manifest_attr("form")
+            self.talk_with_input()
+            
+    def talk_without_input(self, function_name, question):
+        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+        role = "function" if function_name else "user"
+        (question, function_name, skip_input) = self.process_llm(role, question, function_name)
+        if (skip_input):
+            self.talk_without_input(function_name, question)
 
-                mode = self.detect_input_style(question)
-                if mode == InputStyle.HELP:
-                    self.display_oneline_help()
-                elif mode == InputStyle.SLASH:
-                    self.process_slash(question)
-                else:
-                    if mode == InputStyle.SAMPLE:
-                        question = self.process_sample(question)
-                    if question:
-                        (question, function_name, skip_input) = self.process_llm("user", question, function_name, form)
-                    
+    def talk_with_input(self):
+        form = None
+        question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+        if question[:1] == "`":
+            print(colored("skipping form", "blue"))
+            question = question[1:]
+        else:
+            form = self.context.get_manifest_attr("form")
+
+        mode = self.detect_input_style(question)
+        if mode == InputStyle.HELP:
+            self.display_oneline_help()
+        elif mode == InputStyle.SLASH:
+            self.process_slash(question)
+        else:
+            if mode == InputStyle.SAMPLE:
+                question = self.process_sample(question)
+            if question and form:
+                question = form.format(question = question)
+            (question, function_name, skip_input) = self.process_llm("user", question)
+            if (skip_input):
+                self.talk_without_input(function_name, question)
+            
     def process_function_call(self, function_call):
         function_message = None
         function_name = function_call.get("name")
@@ -384,9 +387,8 @@ class Main:
             dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
             return message_template.format(url = dataURL)
         
-
-                
-config = ChatConfig("./manifests/manifests")
-print(config.ONELINE_HELP)
-main = Main(config, 'dispatcher')
-main.start()
+if __name__ == '__main__':
+    config = ChatConfig("./manifests/manifests")
+    print(config.ONELINE_HELP)
+    main = Main(config, 'dispatcher')
+    main.start()
