@@ -1,5 +1,5 @@
 from lib.chat_config import ChatConfig
-from lib.llms.models import llms, search_llm_model
+from lib.llms.models import llms, get_llm_model
 
 from datetime import datetime
 import re
@@ -93,6 +93,7 @@ class ChatSession:
                 return
 
         self.llm_model = llm_model
+        # TODO: remove max_token after pinecone branch merge
         self.max_token = self.llm_model.get("max_token") or 4096
         print(f"Model = {self.llm_model.get('model_name')}")
 
@@ -305,16 +306,6 @@ class ChatSession:
             function_call = FunctionCall.factory(answer.get('function_call'))
         return (role, res, function_call)
 
-
-"""
-Get module name from manifest and set max_token.
-"""
-def get_llm_model(config: ChatConfig, manifest = {}): 
-    max_token = 4096
-    llm_model_name = manifest.model()
-    llm_model = search_llm_model(llm_model_name)
-    
-    return llm_model
 
 
 def apply_agent(prompt, agents, config):    

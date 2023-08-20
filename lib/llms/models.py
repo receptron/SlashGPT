@@ -1,3 +1,5 @@
+from lib.chat_config import ChatConfig
+
 llms = {
     "gpt3": {
         "engine": "openai-gpt",
@@ -49,3 +51,10 @@ def search_llm_model(llm_model_name):
         return llm_model
     else:
         return llms.get("gpt3")
+
+
+def get_llm_model(config: ChatConfig, manifest): 
+    llm_model_name = manifest.model()
+    llm_model = search_llm_model(llm_model_name)
+    
+    return llm_model
