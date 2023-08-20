@@ -7,9 +7,10 @@ import re
 import google.generativeai as palm
 
 LONG_HELP = """
-/switch root:      Start from the scratch (going back to dispatcher)
-/switch roles1:    Switch the manifest set to ones in prompts (original)
-/switch roles2:    Switch the manifest set to ones in roles2
+/switch main:      Switch to the manifest set in main (default)
+/switch roles1:    Switch to the manifest set in roles1 (original)
+/switch roles2:    Switch to the manifest set in roles2
+/switch rpg1:      Switch to the manifest set in rpg1
 /bye:       Terminate the app
 /new:       Start a new chat session
 /prompt:    Display the current prompt

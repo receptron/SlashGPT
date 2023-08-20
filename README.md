@@ -23,14 +23,14 @@ Here are the design goals:
 
 3. You need to specify other variables to use following features (optional).
 
-    - PINECONE_API_KEY, PINECONE_ENVIRONMENT: requred to use embedding vector db.
-    - GOOGLE_PALM_KEY: required to switch to PaLM LLC using /palm command.
+    - PINECONE_API_KEY, PINECONE_ENVIRONMENT: required to use embedding vector db.
+    - GOOGLE_PALM_KEY: required to switch to "palm" model with /llm command.
+    - REPLICATE_API_TOKEN: required to switch to "llama2" model with /llm command.
     - WOLFRAM_API_KEY: required to use "walfram" agent.
     - OPENWEATHER_API_KEY: required to use "weather" agent.
     - NOTEABLE_API_KEY: required to use "noteable" agent.
     - ALCHEMY_API_KEY: required to use "web3" agent.
     - WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
-    - REPLICATE_API_TOKEN: required to use "llama2" model.
     - CODEBOX_API_KEY: set this to "local" to use CodeBox's LocalBox instead of IPython
 
 ## Execution
@@ -85,7 +85,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
 - *skip_function_result* (boolean): skip the chat completion right after the function call.
-- *notepad* (boolean): create a new notebook at the beginning of each session (for jupyter2)
+- *notebook* (boolean): create a new notebook at the beginning of each session (for jupyter2)
 - *bot* (string, optional): Agent name
 - *you* (string, optional): User name. The default is You({agent_name}).
 - *sample* (string, optional): Sample question (type "/sample" to send it)
@@ -225,22 +225,22 @@ This is the standard test squence.
 # Test REST API
 Input: /sample currency
 Expected Output: 1 USD is equivalent to 146.31 JPY.
-Input: /switch root
+Input: /switch main
 
 # Test REST API with appkey header (WEBPILOT_UID in .env is required)
 Input: /sample webpilot
 Expected Output: Title: France riorts ...\nSummary: The fourth night ...
-Input: /switch root
+Input: /switch main
 
 # Test GraphQL
 You: /sample spacex
 Expected Output: The CEO of SpaceX is Elon Musk.
-Input: /switch root
+Input: /switch main
 
 # Test DataURL
 You: /sample cal
 Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM UTC for 30 minutes. The meeting will be held at Tim Cook's office. I have sent the invitation to Tim Cook at tim@apple.com.
-Iput: /switch root
+Iput: /switch main
 
 # Test Code Interpreter
 You: /jupyter
