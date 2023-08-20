@@ -265,16 +265,10 @@ class Main:
             
     def process_function_call(self, function_call):
         function_message = None
-        function_name = function_call.get("name")
-        arguments = function_call.get("arguments") 
-        if arguments and isinstance(arguments, str):
-            try:
-                arguments = json.loads(arguments)      
-                function_call["arguments"] = arguments
-            except Exception as e:
-                print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
+        function_name = function_call.name()
+        arguments = function_call.arguments()
                 
-        print(colored(json.dumps(function_call, indent=2), "blue"))
+        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
         '''
         if isinstance(arguments, str):
             params = arguments
