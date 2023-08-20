@@ -40,12 +40,12 @@ llms = {
 }
 
 
-def search_llm_model(model_name):
-    model_list = list(map(lambda x: x.get("model_name"), llms.values()))
-    index = model_list.index(model_name) if model_name in model_list else -1
+def search_llm_model(llm_model_name):
+    llm_model_list = list(map(lambda x: x.get("model_name"), llms.values()))
+    index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
 
     if index > -1: 
-        model = list(llms.values())[index]
-        return model
+        llm_model = list(llms.values())[index]
+        return llm_model
     else:
         return llms.get("gpt3")

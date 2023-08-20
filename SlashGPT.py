@@ -175,10 +175,6 @@ class Main:
         elif commands[0] == "llm":
             if len(commands) > 1 and llms.get(commands[1]):
                 llm_model = llms[commands[1]]
-                if llm_model.get("api_key"):
-                    if not self.config.has_value_for_key(llm_model["api_key"]):
-                        print(colored("You need to set " + llm_model["api_key"] + " to use this model","red"))
-                        return
                 self.context.set_llm_model(llm_model)
             else:
                 print("/llm: " + ",".join(llms.keys()))

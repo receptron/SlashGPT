@@ -86,6 +86,12 @@ class ChatSession:
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def set_llm_model(self, llm_model):
+        if llm_model.get("api_key"):
+            if not self.config.has_value_for_key(llm_model["api_key"]):
+                print(colored("You need to set " + llm_model["api_key"] + " to use this model. ","red"))
+                print(f"Model = {self.llm_model.get('model_name')}")
+                return
+
         self.llm_model = llm_model
         self.max_token = self.llm_model.get("max_token") or 4096
         print(f"Model = {self.llm_model.get('model_name')}")
@@ -309,19 +315,6 @@ def get_llm_model(config: ChatConfig, manifest = {}):
     llm_model = search_llm_model(llm_model_name)
     
     return llm_model
-    if model == "gpt-3.5-turbo-16k-0613":
-        return (model, max_token * 4)
-    elif model == "palm":
-        if config.GOOGLE_PALM_KEY is not None:
-            return (model, max_token)
-        print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
-    elif model[:6] == "llama2":
-        if config.REPLICATE_API_TOKEN is not None:
-            return (model, max_token)
-        print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
-    return ("gpt-3.5-turbo-0613", max_token)
-
-    
 
 
 def apply_agent(prompt, agents, config):    
