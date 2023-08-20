@@ -15,6 +15,8 @@ import replicate
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
+from lib.function_call import FunctionCall
+from lib.function_action import FunctionAction
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -88,9 +90,14 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
+
     def get_module(self, function_name):
         return self.module and self.module.get(function_name) or None
 
+    def get_action(self, function_name):
+        action = self.actions.get(function_name)
+        return FunctionAction(action)
+        
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
@@ -180,13 +187,13 @@ class ChatSession:
                 elif codes is not None:
                     codes.append(line)
             if codes:
-                return ({
+                return (FunctionCall({
                     "name": "run_python_code",
                     "arguments": {
                         "code": codes,
                         "query": self.messages[-1]["content"]
                     }
-                }, None) 
+                }), None) 
             
             print(colored("Debug Message: no code in this reply", "yellow"))
         return (None, res)
@@ -283,7 +290,7 @@ class ChatSession:
             answer = response['choices'][0]['message']
             res = answer['content']
             role = answer['role']
-            function_call = answer.get('function_call')
+            function_call = FunctionCall.factory(answer.get('function_call'))
         return (role, res, function_call)
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import platform
 import re
 if platform.system() == "Darwin":
@@ -7,12 +6,8 @@ if platform.system() == "Darwin":
 import json
 from enum import Enum
 from termcolor import colored
-import requests
 from gtts import gTTS
 from playsound import playsound
-import urllib.parse
-from gql import gql, Client
-from gql.transport.requests import RequestsHTTPTransport
 
 from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
@@ -135,75 +130,72 @@ class Main:
     """
     def process_slash(self, question: str):
         (key, commands) = self.parse_question(question)
-        if question[0] == "/": # TODO remove
-            if commands[0] == "help":
-                if (len(commands) == 1):
-                    print(self.config.LONG_HELP)
-                    list = "\n".join(self.config.help_list())
-                    print(f"Agents:\n{list}")
-                if (len(commands) == 2):
-                    manifest_data = self.config.get_manifest_data(commands[1])
-                    if (manifest_data):
-                       print(json.dumps(manifest_data, indent=2))
-            elif key == "bye":
-                self.runtime.stop()
-                self.exit = True;
-            elif key == "verbose":
-                self.config.verbose = self.config.verbose == False
-                print(f"Verbose Mode: {self.config.verbose}")
-            elif commands[0] == "audio":
-                if len(commands) == 1:
-                    if self.config.audio:
-                        self.config.audio = None
-                    else:
-                        self.config.audio = "en"
-                elif commands[1] == "off":
+        if commands[0] == "help":
+            if (len(commands) == 1):
+                print(self.config.LONG_HELP)
+                list = "\n".join(self.config.help_list())
+                print(f"Agents:\n{list}")
+            if (len(commands) == 2):
+                manifest_data = self.config.get_manifest_data(commands[1])
+                if (manifest_data):
+                   print(json.dumps(manifest_data, indent=2))
+        elif key == "bye":
+            self.runtime.stop()
+            self.exit = True;
+        elif key == "verbose":
+            self.config.verbose = self.config.verbose == False
+            print(f"Verbose Mode: {self.config.verbose}")
+        elif commands[0] == "audio":
+            if len(commands) == 1:
+                if self.config.audio:
                     self.config.audio = None
                 else:
-                    self.config.audio = commands[1]
-                print(f"Audio mode: {self.config.audio}")
-            elif key == "prompt":
-                if len(self.context.messages) >= 1:
-                    print(self.context.messages[0].get("content"))
-                if self.config.verbose and self.context.functions:
-                    print(self.context.functions)
-            elif key == "history":
-                print(json.dumps(self.context.messages, indent=2))
-            elif key == "functions":
-                if self.context.functions:
-                    print(json.dumps(self.context.functions, indent=2))
-            elif commands[0] == "llm":
-                if len(commands) > 1 and llms.get(commands[1]):
-                    llm = llms[commands[1]]
-                    if llm.get("api_key"):
-                        if not self.config.has_value_for_key(llm["api_key"]):
-                            print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
-                            return
-                    if llm.get("max_token"):
-                        self.context.set_model(llm.get("model_name"), llm.get("max_token"))
-                    else:
-                        self.context.set_model(llm.get("model_name"))
-                else:
-                    print("/llm: " + ",".join(llms.keys()))
-            elif key == "new":
-                self.switch_context(self.context.manifest_key, intro = False)
-            elif commands[0] == "switch":
-                if len(commands) > 1 and manifests.get(commands[1]):
-                    m = manifests[commands[1]]
-                    self.config.load_manifests("./" + m["manifests_dir"])
-                    self.switch_context(m["default_manifest_key"])
-                else:
-                    print("/switch {manifest}: " +  ",".join(manifests.keys()))
-            elif self.config.has_manifest(key):
-                    self.switch_context(key)
+                    self.config.audio = "en"
+            elif commands[1] == "off":
+                self.config.audio = None
             else:
-                print(colored(f"Invalid slash command: {key}", "red"))
+                self.config.audio = commands[1]
+            print(f"Audio mode: {self.config.audio}")
+        elif key == "prompt":
+            if len(self.context.messages) >= 1:
+                print(self.context.messages[0].get("content"))
+            if self.config.verbose and self.context.functions:
+                print(self.context.functions)
+        elif key == "history":
+            print(json.dumps(self.context.messages, indent=2))
+        elif key == "functions":
+            if self.context.functions:
+                print(json.dumps(self.context.functions, indent=2))
+        elif commands[0] == "llm":
+            if len(commands) > 1 and llms.get(commands[1]):
+                llm = llms[commands[1]]
+                if llm.get("api_key"):
+                    if not self.config.has_value_for_key(llm["api_key"]):
+                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                        return
+                if llm.get("max_token"):
+                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
+                else:
+                    self.context.set_model(llm.get("model_name"))
+            else:
+                print("/llm: " + ",".join(llms.keys()))
+        elif key == "new":
+            self.switch_context(self.context.manifest_key, intro = False)
+        elif commands[0] == "switch":
+            if len(commands) > 1 and manifests.get(commands[1]):
+                m = manifests[commands[1]]
+                self.config.load_manifests("./" + m["manifests_dir"])
+                self.switch_context(m["default_manifest_key"])
+            else:
+                print("/switch {manifest}: " +  ",".join(manifests.keys()))
+        elif self.config.has_manifest(key):
+                self.switch_context(key)
+        else:
+            print(colored(f"Invalid slash command: {key}", "red"))
 
 
-    def process_llm(self, role, question, function_name, form = ""):
+    def process_llm(self, role, question, function_name = None):
         skip_input = False
-        if form:
-            question = form.format(question = question)
         try:
             self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
@@ -233,46 +225,45 @@ class Main:
     the main loop
     """    
     def start(self):
-        skip_input = False
         while not self.exit:
-            form = None
-            if skip_input:
-                print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
-                role = "function" if function_name else "user"
-                (question, function_name, skip_input) = self.process_llm(role, question, function_name)
-            else:
-                # Otherwise, retrieve the input from the user.
-                question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
-                function_name = None
-                if question[:1] == "`":
-                    print(colored("skipping form", "blue"))
-                    question = question[1:]
-                else:
-                    form = self.context.get_manifest_attr("form")
+            self.talk_with_input()
+            
+    def talk_without_input(self, function_name, question):
+        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+        role = "function" if function_name else "user"
+        (question, function_name, skip_input) = self.process_llm(role, question, function_name)
+        if (skip_input):
+            self.talk_without_input(function_name, question)
 
-                mode = self.detect_input_style(question)
-                if mode == InputStyle.HELP:
-                    self.display_oneline_help()
-                elif mode == InputStyle.SLASH:
-                    self.process_slash(question)
-                else:
-                    if mode == InputStyle.SAMPLE:
-                        question = self.process_sample(question)
-                    if question:
-                        (question, function_name, skip_input) = self.process_llm("user", question, function_name, form)
-                    
+    def talk_with_input(self):
+        form = None
+        question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+        if question[:1] == "`":
+            print(colored("skipping form", "blue"))
+            question = question[1:]
+        else:
+            form = self.context.get_manifest_attr("form")
+
+        mode = self.detect_input_style(question)
+        if mode == InputStyle.HELP:
+            self.display_oneline_help()
+        elif mode == InputStyle.SLASH:
+            self.process_slash(question)
+        else:
+            if mode == InputStyle.SAMPLE:
+                question = self.process_sample(question)
+            if question and form:
+                question = form.format(question = question)
+            (question, function_name, skip_input) = self.process_llm("user", question)
+            if (skip_input):
+                self.talk_without_input(function_name, question)
+            
     def process_function_call(self, function_call):
         function_message = None
-        function_name = function_call.get("name")
-        arguments = function_call.get("arguments") 
-        if arguments and isinstance(arguments, str):
-            try:
-                arguments = json.loads(arguments)      
-                function_call["arguments"] = arguments
-            except Exception as e:
-                print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
+        function_name = function_call.name()
+        arguments = function_call.arguments()
                 
-        print(colored(json.dumps(function_call, indent=2), "blue"))
+        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
         '''
         if isinstance(arguments, str):
             params = arguments
@@ -281,35 +272,13 @@ class Main:
         print(colored(f"Function: {function_name}({params})", "blue"))
         '''
         if function_name:
-            action = self.context.actions.get(function_name)
+            action = self.context.get_action(function_name)
             if action:
-                url = action.get("url")
-                template = action.get("template")
-                message_template = action.get("message")
-                metafile = action.get("metafile")
-                appkey = action.get("appkey")
-                if metafile:
-                    metafile = metafile.format(**arguments)
-                    self.switch_context(metafile, intro = False)
-                    function_name = None # Withough name, this message will be treated as user prompt.
-
-                if appkey:
-                    appkey_value = os.getenv(appkey, "")
-                    if appkey_value:
-                        arguments["appkey"] = appkey_value
-                    else:
-                        print(colored(f"Missing {appkey} in .env file.", "red"))
-                if url:
-                    if action.get("graphQL"):
-                        function_message = self.graphQLRequest(url, arguments)
-                    else:
-                        function_message = self.http_request(url, action.get("method"), action.get("headers",{}), arguments)
-                elif template:
-                    function_message = self.read_dataURL_template(template, action.get("mime_type"), message_template, arguments)
-                elif message_template:
-                    function_message = message_template.format(**arguments)
-                else: 
-                    function_message = "Success"
+                if action.is_switch_context():
+                    self.switch_context(action.get_manifest_key(arguments),  intro = False)
+                    function_name = None # Without name, this message will be treated as user prompt.
+                    
+                function_message = action.call_api(arguments, self.config.verbose)
             else:
                 if self.context.get_manifest_attr("notebook"):
                     if function_name == "python" and isinstance(arguments, str):
@@ -347,44 +316,6 @@ class Main:
         return result
 
 
-    def graphQLRequest(self, url, arguments):
-        transport = RequestsHTTPTransport(url=url, use_json=True)
-        client = Client(transport=transport)
-        query = arguments.get("query")
-        graphQuery = gql(f"query {query}")
-        try:
-            response = client.execute(graphQuery)
-            return json.dumps(response)
-        except Exception as e:
-            return str(e)
-
-    def http_request(self, url, method, headers, arguments):
-        headers = {key:value.format(**arguments) for key,value in headers.items()}
-        if method == "POST":
-            headers['Content-Type'] = 'application/json';
-            if self.config.verbose:
-                print(colored(f"Posting to {url} {headers}", "yellow"))
-            response = requests.post(url, headers=headers, json=arguments)
-        else:
-            url = url.format(**{key:urllib.parse.quote(value) for key, value in arguments.items()})
-            if self.config.verbose:
-                print(colored(f"Fetching from {url}", "yellow"))
-            response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            return response.text
-        else:
-            print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
-
-    def read_dataURL_template(self, template, mime_type, message_template, arguments):
-        _mime_type = mime_type or ""
-        message_template = message_template or f"{url}"
-        with open(f"{template}", 'r') as f:
-            template = f.read()
-            if self.config.verbose:
-                print(template)
-            data = template.format(**arguments)
-            dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
-            return message_template.format(url = dataURL)
         
 if __name__ == '__main__':
     config = ChatConfig("./manifests/manifests")
