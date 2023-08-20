@@ -46,7 +46,6 @@ class ChatSession:
         llm_model = get_llm_model(config, self.manifest)
         self.set_llm_model(llm_model)
         
-        
         agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
@@ -93,8 +92,6 @@ class ChatSession:
                 return
 
         self.llm_model = llm_model
-        # TODO: remove max_token after pinecone branch merge
-        self.max_token = self.llm_model.get("max_token") or 4096
         print(f"Model = {self.llm_model.get('model_name')}")
 
     def get_manifest_attr(self, key):
@@ -121,7 +118,8 @@ class ChatSession:
         else:
             self.messages.append({"role":role, "content":message })
         if self.vector_db and role == "user":
-            articles = self.vector_db.fetch_related_articles(self.max_token - 500)
+            max_token = self.llm_model.get("max_token") or 4096
+            articles = self.vector_db.fetch_related_articles(max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 
