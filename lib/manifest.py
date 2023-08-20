@@ -31,11 +31,14 @@ class Manifest:
     def model(self):
         return self.get("model") or "gpt-3.5-turbo-0613";
 
-    def function(self):
-        functions_file = self.get("functions")
-        if functions_file:
-            with open(functions_file, 'r') as f:
-                return json.load(f)
+    def functions(self):
+        value = self.get("functions")
+        if value:
+            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
+                return value
+            if isinstance(value, str):
+                with open(value, 'r') as f:
+                    return json.load(f)
         return None
             
     """

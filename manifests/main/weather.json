@@ -4,7 +4,22 @@
   "bot": "Weather",
   "source": "snakajima, https://openweathermap.org",
   "temperature": "0.0",
-  "functions": "./resources/weather.json",
+  "functions": [
+    {
+      "name": "get_current_weather",
+      "description": "Get the current weather",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The city, e.g. San Francisco"
+          }
+        },
+        "required": ["location"]
+      }
+    }
+  ],
   "actions": {
     "get_current_weather": {
       "url": "https://api.openweathermap.org/data/2.5/weather?q={location}&appid={appkey}",
