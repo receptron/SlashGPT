@@ -30,7 +30,7 @@ def play_text(text, lang):
     playsound("./output/audio.mp3")
 
 manifests = {
-    "root": {
+    "main": {
         "manifests_dir": "manifests/main",
         "default_manifest_key": "dispatcher",
     },
