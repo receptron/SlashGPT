@@ -225,22 +225,22 @@ This is the standard test squence.
 # Test REST API
 Input: /sample currency
 Expected Output: 1 USD is equivalent to 146.31 JPY.
-Input: /switch root
+Input: /switch main
 
 # Test REST API with appkey header (WEBPILOT_UID in .env is required)
 Input: /sample webpilot
 Expected Output: Title: France riorts ...\nSummary: The fourth night ...
-Input: /switch root
+Input: /switch main
 
 # Test GraphQL
 You: /sample spacex
 Expected Output: The CEO of SpaceX is Elon Musk.
-Input: /switch root
+Input: /switch main
 
 # Test DataURL
 You: /sample cal
 Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM UTC for 30 minutes. The meeting will be held at Tim Cook's office. I have sent the invitation to Tim Cook at tim@apple.com.
-Iput: /switch root
+Iput: /switch main
 
 # Test Code Interpreter
 You: /jupyter

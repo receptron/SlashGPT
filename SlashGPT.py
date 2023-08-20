@@ -30,8 +30,8 @@ def play_text(text, lang):
     playsound("./output/audio.mp3")
 
 manifests = {
-    "root": {
-        "manifests_dir": "manifests/manifests",
+    "main": {
+        "manifests_dir": "manifests/main",
         "default_manifest_key": "dispatcher",
     },
     "rpg1": {
@@ -43,7 +43,7 @@ manifests = {
         "default_manifest_key": "monkey",
     },
     "roles1": {
-        "manifests_dir": "manifests/prompts",
+        "manifests_dir": "manifests/roles1",
         "default_manifest_key": None,
     },
     "roles2": {
@@ -316,7 +316,7 @@ class Main:
 
         
 if __name__ == '__main__':
-    config = ChatConfig("./manifests/manifests")
+    config = ChatConfig("./manifests/main")
     print(config.ONELINE_HELP)
     main = Main(config, 'dispatcher')
     main.start()
