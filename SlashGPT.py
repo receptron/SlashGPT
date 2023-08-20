@@ -195,7 +195,6 @@ class Main:
 
 
     def process_llm(self, role, question, function_name = None):
-        skip_input = False
         try:
             self.context.append_message(role, question, function_name)
             # Ask LLM to generate a response.
@@ -213,13 +212,17 @@ class Main:
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
                 if question:
-                    skip_input = True
+                    if self.context.get_manifest_attr("skip_function_result"):
+                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+                        self.context.append_message("function", question, function_name)
+                    else:
+                        self.talk_without_input(function_name, question)
+
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
             self.switch_context(self.context.manifest_key)
             if self.config.verbose:
                 raise
-        return (question, function_name, skip_input)
 
     """
     the main loop
@@ -231,9 +234,7 @@ class Main:
     def talk_without_input(self, function_name, question):
         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
         role = "function" if function_name else "user"
-        (question, function_name, skip_input) = self.process_llm(role, question, function_name)
-        if (skip_input):
-            self.talk_without_input(function_name, question)
+        self.process_llm(role, question, function_name)
 
     def talk_with_input(self):
         form = None
@@ -254,9 +255,7 @@ class Main:
                 question = self.process_sample(question)
             if question and form:
                 question = form.format(question = question)
-            (question, function_name, skip_input) = self.process_llm("user", question)
-            if (skip_input):
-                self.talk_without_input(function_name, question)
+            self.process_llm("user", question)
             
     def process_function_call(self, function_call):
         function_message = None
@@ -299,10 +298,6 @@ class Main:
                         # Embed code for the context
                         self.context.append_message("assistant", message)
                     function_message = self.python_result(result)
-                    if self.context.get_manifest_attr("skip_function_result"):
-                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
-                        self.context.append_message("function", function_message, function_name)
-                        function_message = None
                 else:
                     print(colored(f"No function {function_name} in the module", "red"))
         return (function_message, function_name)
