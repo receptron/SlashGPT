@@ -115,6 +115,8 @@ class Main:
                 if sample:
                     print(sample)
                     return sample
+            else:
+                print(colored(f"Error: No manifest named '{sub_key}'", "red"))
         elif key[:6] == "sample":
             sample = self.context.get_manifest_attr(key)
             if sample:
@@ -255,7 +257,8 @@ class Main:
                 question = self.process_sample(question)
             if question and form:
                 question = form.format(question = question)
-            self.process_llm("user", question)
+            if question:
+                self.process_llm("user", question)
             
     def process_function_call(self, function_call):
         function_message = None
