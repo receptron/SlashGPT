@@ -88,6 +88,9 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
+    def get_module(self, function_name):
+        return self.module and self.module.get(function_name) or None
+
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)

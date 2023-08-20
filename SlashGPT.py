@@ -320,7 +320,7 @@ class Main:
                         }
                     function = getattr(self.runtime, function_name)
                 else:
-                    function = self.context.module and self.context.module.get(function_name) or None
+                    function = self.context.get_module(function_name) # python code
                 if function:
                     if isinstance(arguments, str):
                         (result, message) = function(arguments)
@@ -329,13 +329,7 @@ class Main:
                     if message:
                         # Embed code for the context
                         self.context.append_message("assistant", message)
-                    if isinstance(result, dict):
-                        result = json.dumps(result)
-                    result_form = self.context.get_manifest_attr("result_form")
-                    if result_form:
-                        function_message = result_form.format(result = result)
-                    else:
-                        function_message = result
+                    function_message = self.python_result(result)
                     if self.context.get_manifest_attr("skip_function_result"):
                         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{function_message}")
                         self.context.append_message("function", function_message, function_name)
@@ -343,6 +337,14 @@ class Main:
                 else:
                     print(colored(f"No function {function_name} in the module", "red"))
         return (function_message, function_name)
+
+    def python_result(self, result):
+        if isinstance(result, dict):
+            result = json.dumps(result)
+        result_form = self.context.get_manifest_attr("result_form")
+        if result_form:
+            return result_form.format(result = result)
+        return result
 
 
     def graphQLRequest(self, url, arguments):
