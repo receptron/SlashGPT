@@ -231,7 +231,7 @@ class Main:
             
     def talk_with_input(self):
         form = None
-        question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m")
+        question = input(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m").strip()
         if question[:1] == "`":
             print(colored("skipping form", "blue"))
             question = question[1:]
