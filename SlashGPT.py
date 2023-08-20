@@ -116,7 +116,11 @@ class Main:
                     print(sample)
                     return sample
             else:
-                print(colored(f"Error: No manifest named '{sub_key}'", "red"))
+                agents = self.context.get_manifest_attr("agents")
+                if agents:
+                    print("/sample {agent}: " +  ", ".join(agents))
+                else:
+                    print(colored(f"Error: No manifest named '{sub_key}'", "red"))
         elif key[:6] == "sample":
             sample = self.context.get_manifest_attr(key)
             if sample:
@@ -189,7 +193,7 @@ class Main:
                 self.config.load_manifests("./" + m["manifests_dir"])
                 self.switch_context(m["default_manifest_key"])
             else:
-                print("/switch {manifest}: " +  ",".join(manifests.keys()))
+                print("/switch {manifest}: " +  ", ".join(manifests.keys()))
         elif self.config.has_manifest(key):
                 self.switch_context(key)
         else:
