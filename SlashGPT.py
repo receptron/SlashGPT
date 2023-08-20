@@ -172,7 +172,7 @@ class Main:
         elif key == "functions":
             if self.context.functions:
                 print(json.dumps(self.context.functions, indent=2))
-        elif commands[0] == "llm":
+        elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and llms.get(commands[1]):
                 llm = llms[commands[1]]
                 if llm.get("api_key"):
