@@ -179,10 +179,7 @@ class Main:
                     if not self.config.has_value_for_key(llm["api_key"]):
                         print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
                         return
-                if llm.get("max_token"):
-                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
-                else:
-                    self.context.set_model(llm.get("model_name"))
+                self.context.set_model(llm)
             else:
                 print("/llm: " + ",".join(llms.keys()))
         elif key == "new":
