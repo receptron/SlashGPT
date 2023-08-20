@@ -277,9 +277,11 @@ class Main:
                     self.switch_context(action.get_manifest_key(arguments),  intro = False)
                     function_name = None # Without name, this message will be treated as user prompt.
                     
+                # call external api or some
                 function_message = action.call_api(arguments, self.config.verbose)
             else:
                 if self.context.get_manifest_attr("notebook"):
+                    # Python code from llm
                     if function_name == "python" and isinstance(arguments, str):
                         print(colored("python function was called", "yellow"))
                         arguments = {
@@ -288,6 +290,7 @@ class Main:
                         }
                     function = getattr(self.runtime, function_name)
                 else:
+                    # Python code from resource file
                     function = self.context.get_module(function_name) # python code
                 if function:
                     if isinstance(arguments, str):
