@@ -58,7 +58,10 @@ class ChatSession:
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
-            self.vector_db = DBPinecone.factory(table_name, self.config)
+            try:
+                self.vector_db = DBPinecone.factory(table_name, self.config)
+            except Exception as e:
+                print(colored(f"Pinecone Error: {e}", "yellow"))
 
         # Load agent specific python modules (for external function calls) if necessary
         self.module = self.manifest.read_module()
