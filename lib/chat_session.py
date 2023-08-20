@@ -96,7 +96,7 @@ class ChatSession:
 
     def get_action(self, function_name):
         action = self.actions.get(function_name)
-        return FunctionAction(action)
+        return FunctionAction.factory(action)
         
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
