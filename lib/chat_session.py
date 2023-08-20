@@ -97,7 +97,10 @@ class ChatSession:
     def get_action(self, function_name):
         action = self.actions.get(function_name)
         return FunctionAction.factory(action)
-        
+
+    def skip_function_result(self):
+        return self.get_manifest_attr("skip_function_result")
+    
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
         encoding = tiktoken.encoding_for_model(self.model)
