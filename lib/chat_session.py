@@ -67,7 +67,7 @@ class ChatSession:
         self.module = self.manifest.read_module()
         
         # Load functions file if it is specified
-        self.functions = self.manifest.function()
+        self.functions = self.manifest.functions()
         if self.functions:
             if agents:
                 # WARNING: It assumes that categorize(category, ...) function
