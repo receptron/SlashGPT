@@ -260,7 +260,6 @@ class Main:
                 self.context.append_message("user", question)
                 self.process_llm()
             
->>>>>>> 61b48db0fdb59045cd32bdba683597a210214672
     def process_function_call(self, function_call):
         function_message = None
         function_name = function_call.name()
