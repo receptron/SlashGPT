@@ -90,6 +90,10 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
+
+    def get_module(self, function_name):
+        return self.module and self.module.get(function_name) or None
+
     def get_action(self, function_name):
         action = self.actions.get(function_name)
         return FunctionAction.factory(action)
