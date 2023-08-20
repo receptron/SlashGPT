@@ -54,11 +54,11 @@ class ChatSession:
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
-        self.index = None
+        self.vector_db = None
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
-            self.index = DBPinecone.factory(table_name, self.config)
+            self.vector_db = DBPinecone.factory(table_name, self.config)
 
         # Load agent specific python modules (for external function calls) if necessary
         self.module = self.manifest.read_module()
@@ -108,8 +108,8 @@ class ChatSession:
             self.messages.append({"role":role, "content":message, "name":name })
         else:
             self.messages.append({"role":role, "content":message })
-        if self.index and role == "user":
-            articles = self.index._fetch_related_articles(self.max_token - 500)
+        if self.vector_db and role == "user":
+            articles = self.vector_db.fetch_related_articles(self.max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 

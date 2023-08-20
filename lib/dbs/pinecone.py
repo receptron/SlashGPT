@@ -16,7 +16,7 @@ class DBPinecone:
         self.index = pinecone.Index(table_name)
             
     # Fetch artciles related to user messages    
-    def _fetch_related_articles(self, messages, model, token_budget: int) -> str:
+    def fetch_related_articles(self, messages, model, token_budget: int) -> str:
         """Return related articles with the question using the embedding vector search."""
         query = ""
         for message in messages:
@@ -32,29 +32,29 @@ class DBPinecone:
 
         articles = ""
         count = 0
-        base_token = self._messages_tokens(messages, model)
+        base_token = self.__messages_tokens(messages, model)
         if self.config.verbose:
             print(f"messages token:{base_token}")
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
-            if self._num_tokens(articles + article_with_section + query, model) + base_token > token_budget:
+            if self.__num_tokens(articles + article_with_section + query, model) + base_token > token_budget:
                 break
             else:
                 count += 1
                 articles += article_with_section
                 if self.config.verbose:
-                    print(len(article), self._num_tokens(article, model))
+                    print(len(article), self.__num_tokens(article, model))
         if self.config.verbose:
-            print(f"Articles:{count}, Tokens:{self._num_tokens(articles + query, model)}")
+            print(f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}")
         return articles
 
     # Returns the number of tokens in a string
-    def _num_tokens(self, text: str, model) -> int:
+    def __num_tokens(self, text: str, model) -> int:
         encoding = tiktoken.encoding_for_model(model)
         return len(encoding.encode(text))
 
     # Returns the total number of tokens in messages    
-    def _messages_tokens(self, messages, model) -> int:
-        return sum([self._num_tokens(message["content"], model) for message in messages])
+    def __messages_tokens(self, messages, model) -> int:
+        return sum([self.__num_tokens(message["content"], model) for message in messages])
 
