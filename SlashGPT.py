@@ -12,7 +12,7 @@ from playsound import playsound
 from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
-from lib.common import llms
+from lib.llms.models import llms
 
 class InputStyle(Enum):
   HELP = 1
@@ -174,12 +174,12 @@ class Main:
                 print(json.dumps(self.context.functions, indent=2))
         elif commands[0] == "llm":
             if len(commands) > 1 and llms.get(commands[1]):
-                llm = llms[commands[1]]
-                if llm.get("api_key"):
-                    if not self.config.has_value_for_key(llm["api_key"]):
-                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
+                llm_model = llms[commands[1]]
+                if llm_model.get("api_key"):
+                    if not self.config.has_value_for_key(llm_model["api_key"]):
+                        print(colored("You need to set " + llm_model["api_key"] + " to use this model","red"))
                         return
-                self.context.set_model(llm)
+                self.context.set_llm_model(llm_model)
             else:
                 print("/llm: " + ",".join(llms.keys()))
         elif key == "new":

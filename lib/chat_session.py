@@ -1,5 +1,5 @@
 from lib.chat_config import ChatConfig
-from lib.common import llms, search_llm_model
+from lib.llms.models import llms, search_llm_model
 
 from datetime import datetime
 import re
@@ -44,8 +44,8 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         # (self.model, self.max_token) = get_model_and_max_token(config, self.manifest)
-        model = get_model_and_max_token(config, self.manifest)
-        self.set_model(model)
+        llm_model = get_llm_model(config, self.manifest)
+        self.set_llm_model(llm_model)
         
         
         agents = self.manifest.get("agents")
@@ -85,10 +85,10 @@ class ChatSession:
         manifest_data = self.config.get_manifest_data(self.manifest_key)
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
-    def set_model(self, model):
-        self.model = model
-        self.max_token = self.model.get("max_token") or 4096
-        print(f"Model = {self.model.get('model_name')}")
+    def set_llm_model(self, llm_model):
+        self.llm_model = llm_model
+        self.max_token = self.llm_model.get("max_token") or 4096
+        print(f"Model = {self.llm_model.get('model_name')}")
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
@@ -106,7 +106,7 @@ class ChatSession:
     
     # Returns the number of tokens in a string
     def _num_tokens(self, text: str) -> int:
-        encoding = tiktoken.encoding_for_model(self.model["model_name"])
+        encoding = tiktoken.encoding_for_model(self.llm_model["model_name"])
         return len(encoding.encode(text))
 
     # Returns the total number of tokens in messages    
@@ -217,7 +217,7 @@ class ChatSession:
         function_call = None
         role = "assistant"
 
-        if self.model["model_name"] == "palm":
+        if self.llm_model["model_name"] == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
                 'temperature': self.temperature,
@@ -252,7 +252,7 @@ class ChatSession:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
-        elif self.model["model_name"][:6] == "llama2" or self.model["model_name"] == "vicuna":
+        elif self.llm_model["model_name"][:6] == "llama2" or self.llm_model["model_name"] == "vicuna":
             prompts = []
             for message in self.messages:
                 role = message["role"]
@@ -266,8 +266,8 @@ class ChatSession:
             prompts.append("assistant:")
 
             replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-            if llms.get(self.model["model_name"]):
-                llm = llms.get(self.model["model_name"])
+            if llms.get(self.llm_model["model_name"]):
+                llm = llms.get(self.llm_model["model_name"])
                 if llm.get("replicate_model"):
                     replicate_model = llm.get("replicate_model")
                 
@@ -281,13 +281,13 @@ class ChatSession:
         else:
             if self.functions:
                 response = openai.ChatCompletion.create(
-                    model=self.model["model_name"],
+                    model=self.llm_model["model_name"],
                     messages=self.messages,
                     functions=self.functions,
                     temperature=self.temperature)
             else:
                 response = openai.ChatCompletion.create(
-                    model=self.model["model_name"],
+                    model=self.llm_model["model_name"],
                     messages=self.messages,
                     temperature=self.temperature)
             if self.config.verbose:
@@ -303,12 +303,12 @@ class ChatSession:
 """
 Get module name from manifest and set max_token.
 """
-def get_model_and_max_token(config: ChatConfig, manifest = {}): 
+def get_llm_model(config: ChatConfig, manifest = {}): 
     max_token = 4096
-    model_name = manifest.model()
-    model = search_llm_model(model_name)
+    llm_model_name = manifest.model()
+    llm_model = search_llm_model(llm_model_name)
     
-    return model
+    return llm_model
     if model == "gpt-3.5-turbo-16k-0613":
         return (model, max_token * 4)
     elif model == "palm":
