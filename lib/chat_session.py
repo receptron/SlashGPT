@@ -1,22 +1,21 @@
-from lib.chat_config import ChatConfig
-from lib.common import llms
-
 from datetime import datetime
 import re
 import json
 import openai
 import random
-import pinecone
-import tiktoken  # for counting tokens
 import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
 import replicate
 
+from lib.chat_config import ChatConfig
+from lib.common import llms
+
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
 from lib.function_call import FunctionCall
 from lib.function_action import FunctionAction
+from lib.dbs.pinecone import DBPinecone
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -55,13 +54,11 @@ class ChatSession:
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
-        self.index = None
+        self.vector_db = None
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
-            if table_name and self.config.PINECONE_API_KEY and self.config.PINECONE_ENVIRONMENT:
-                assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-                self.index = pinecone.Index(table_name)
+            self.vector_db = DBPinecone.factory(table_name, self.config)
 
         # Load agent specific python modules (for external function calls) if necessary
         self.module = self.manifest.read_module()
@@ -101,51 +98,6 @@ class ChatSession:
     def skip_function_result(self):
         return self.get_manifest_attr("skip_function_result")
     
-    # Returns the number of tokens in a string
-    def _num_tokens(self, text: str) -> int:
-        encoding = tiktoken.encoding_for_model(self.model)
-        return len(encoding.encode(text))
-
-    # Returns the total number of tokens in messages    
-    def _messages_tokens(self) -> int:
-        return sum([self._num_tokens(message["content"]) for message in self.messages])
-
-    # Fetch artciles related to user messages    
-    def _fetch_related_articles(
-        self,
-        token_budget: int
-    ) -> str:
-        """Return related articles with the question using the embedding vector search."""
-        query = ""
-        for message in self.messages:
-            if message["role"] == "user":
-                query = message["content"] + "\n" + query
-        query_embedding_response = openai.Embedding.create(
-            model=self.config.EMBEDDING_MODEL,
-            input=query,
-        )
-        query_embedding = query_embedding_response["data"][0]["embedding"]
-
-        results = self.index.query(query_embedding, top_k=12, include_metadata=True)
-
-        articles = ""
-        count = 0
-        base = self._messages_tokens()
-        if self.config.verbose:
-            print(f"messages token:{base}")
-        for match in results["matches"]:
-            string = match["metadata"]["text"]
-            next_article = f'\n\nSection:\n"""\n{string}\n"""'
-            if self._num_tokens(articles + next_article + query) + base > token_budget:
-                break
-            else:
-                count += 1
-                articles += next_article
-                if self.config.verbose:
-                    print(len(string), self._num_tokens(string))
-        if self.config.verbose:
-            print(f"Articles:{count}, Tokens:{self._num_tokens(articles + query)}")
-        return articles
 
     """
     Append a message to the chat session, specifying the role ("user", "system" or "function").
@@ -156,8 +108,8 @@ class ChatSession:
             self.messages.append({"role":role, "content":message, "name":name })
         else:
             self.messages.append({"role":role, "content":message })
-        if self.index and role == "user":
-            articles = self._fetch_related_articles(self.max_token - 500)
+        if self.vector_db and role == "user":
+            articles = self.vector_db.fetch_related_articles(self.max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 
@@ -314,9 +266,6 @@ def get_model_and_max_token(config: ChatConfig, manifest = {}):
             return (model, max_token)
         print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
     return ("gpt-3.5-turbo-0613", max_token)
-
-    
-
 
 def apply_agent(prompt, agents, config):    
     descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]
