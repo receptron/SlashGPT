@@ -44,10 +44,10 @@ class FunctionAction:
             else:
                 return self.http_request(url, self.__get("method"), self.__function_action_data.get("headers",{}), arguments, verbose)
         template = self.__get("template")
+        message_template = self.__get("message")
         if template:
             return self.read_dataURL_template(template, self.__get("mime_type"), message_template, arguments, verbose)
 
-        message_template = self.__get("message")
         if message_template:
             return message_template.format(**arguments)
         return "Success"
