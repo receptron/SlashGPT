@@ -115,6 +115,12 @@ class Main:
                 if sample:
                     print(sample)
                     return sample
+            else:
+                agents = self.context.get_manifest_attr("agents")
+                if agents:
+                    print("/sample {agent}: " +  ", ".join(agents))
+                else:
+                    print(colored(f"Error: No manifest named '{sub_key}'", "red"))
         elif key[:6] == "sample":
             sample = self.context.get_manifest_attr(key)
             if sample:
@@ -187,7 +193,7 @@ class Main:
                 self.config.load_manifests("./" + m["manifests_dir"])
                 self.switch_context(m["default_manifest_key"])
             else:
-                print("/switch {manifest}: " +  ",".join(manifests.keys()))
+                print("/switch {manifest}: " +  ", ".join(manifests.keys()))
         elif self.config.has_manifest(key):
                 self.switch_context(key)
         else:
@@ -249,9 +255,12 @@ class Main:
                 question = self.process_sample(question)
             if question and form:
                 question = form.format(question = question)
-            self.context.append_message("user", question)
-            self.process_llm()
 
+            if question:
+                self.context.append_message("user", question)
+                self.process_llm()
+            
+>>>>>>> 61b48db0fdb59045cd32bdba683597a210214672
     def process_function_call(self, function_call):
         function_message = None
         function_name = function_call.name()
