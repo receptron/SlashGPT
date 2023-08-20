@@ -4,15 +4,15 @@ import random
 import json
 
 class Manifest:
-    def __init__(self, manifest = {}, manifest_key = None):
+    def __init__(self, manifest = {}, manifest_name = None):
         self.__manifest = manifest
-        self.__manifest_key = manifest_key
+        self.__manifest_name = manifest_name
         
     def get(self, key):
         return self.__manifest.get(key)
 
     def username(self):
-        return self.get("you") or f"You({self.__manifest_key})"
+        return self.get("you") or f"You({self.__manifest_name})"
 
     def botname(self):
         return self.get("bot") or "GPT"
