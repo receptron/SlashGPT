@@ -212,8 +212,8 @@ class Main:
             if function_call:
                 (question, function_name) = self.process_function_call(function_call)
                 if question:
+                    print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                     if self.context.get_manifest_attr("skip_function_result"):
-                        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
                         self.context.append_message("function", question, function_name)
                     else:
                         self.talk_without_input(function_name, question)
@@ -232,7 +232,6 @@ class Main:
             self.talk_with_input()
             
     def talk_without_input(self, function_name, question):
-        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
         role = "function" if function_name else "user"
         self.process_llm(role, question, function_name)
 
