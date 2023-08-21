@@ -46,14 +46,7 @@ class ChatSession:
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
-        self.vector_db = None
-        embeddings = self.manifest.get("embeddings")
-        if embeddings:
-            table_name = embeddings.get("name")
-            try:
-                self.vector_db = DBPinecone.factory(table_name, self.config)
-            except Exception as e:
-                print(colored(f"Pinecone Error: {e}", "yellow"))
+        self.vector_db = self.get_vector_db()
 
         # Load agent specific python modules (for external function calls) if necessary
         self.module = self.manifest.read_module()
@@ -87,6 +80,16 @@ class ChatSession:
 
     def skip_function_result(self):
         return self.get_manifest_attr("skip_function_result")
+    
+    def get_vector_db(self):
+        # Todo: support other vector dbs.
+        embeddings = self.manifest.get("embeddings")
+        if embeddings:
+            table_name = embeddings.get("name")
+            try:
+                return DBPinecone.factory(table_name, self.config)
+            except Exception as e:
+                print(colored(f"Pinecone Error: {e}", "yellow"))
     
     """
     Append a message to the chat session, specifying the role ("user", "system" or "function").
