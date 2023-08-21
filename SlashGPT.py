@@ -186,17 +186,19 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
+            if self.context.should_call_switch_context():
+                self.switch_context(self.context.switch_context_manifest_key(),  intro = False)
+                    
             if self.context.should_call_function_call():
-                (question, function_name) = self.process_function_call(self.context.function_call)
-                if question:
-                    role = "function" if function_name or self.context.skip_function_result() else "user"
+                
+                (function_message, function_name, role) = self.context.process_function_call(self.config.verbose, self.runtime)
+                if function_message:
                     if role == "function":
-                        print(f"\033[95m\033[1m{role}({function_name}): \033[95m\033[0m{question}")
+                        print(f"\033[95m\033[1m{role}({function_name}): \033[95m\033[0m{function_message}")
                     else:
-                        print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{question}")
-                    self.context.append_message(role, question, function_name)
-                    if not self.context.skip_function_result():
-                        self.process_llm()
+                        print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{function_message}")
+            if self.context.next_llm_call:
+                self.process_llm()
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}","red"))
@@ -235,62 +237,6 @@ class Main:
                 self.context.append_message("user", question)
                 self.process_llm()
             
-    def process_function_call(self, function_call):
-        function_message = None
-        function_name = function_call.name()
-        arguments = function_call.arguments()
-                
-        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
-        '''
-        if isinstance(arguments, str):
-            params = arguments
-        else:
-            params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
-        print(colored(f"Function: {function_name}({params})", "blue"))
-        '''
-
-        funcion_action = self.context.get_action(function_name)
-        if funcion_action:
-            if funcion_action.is_switch_context():
-                self.switch_context(funcion_action.get_manifest_key(arguments),  intro = False)
-                function_name = None # Without name, this message will be treated as user prompt.
-
-            # call external api or some
-            function_message = funcion_action.call_api(arguments, self.config.verbose)
-        else:
-            if self.context.get_manifest_attr("notebook"):
-                # Python code from llm
-                if function_name == "python" and isinstance(arguments, str):
-                    print(colored("python function was called", "yellow"))
-                    arguments = {
-                        "code": arguments,
-                        "query": self.context.messages[-1]["content"]
-                    }
-                function = getattr(self.runtime, function_name)
-            else:
-                # Python code from resource file
-                function = self.context.get_module(function_name) # python code
-            if function:
-                if isinstance(arguments, str):
-                    (result, message) = function(arguments)
-                else:
-                    (result, message) = function(**arguments)
-                if message:
-                    # Embed code for the context
-                    self.context.append_message("assistant", message)
-                function_message = self.python_result(result)
-            else:
-                print(colored(f"No function {function_name} in the module", "red"))
-        return (function_message, function_name)
-
-    def python_result(self, result):
-        if isinstance(result, dict):
-            result = json.dumps(result)
-        result_form = self.context.get_manifest_attr("result_form")
-        if result_form:
-            return result_form.format(result = result)
-        return result
-
 
         
 if __name__ == '__main__':

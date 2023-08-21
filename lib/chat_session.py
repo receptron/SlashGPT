@@ -9,7 +9,6 @@ from lib.llms.models import llm_models, get_llm_model_from_manifest
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
-from lib.function_action import FunctionAction
 from lib.dbs.pinecone import DBPinecone
 
 """
@@ -77,10 +76,6 @@ class ChatSession:
     def get_module(self, function_name):
         return self.module and self.module.get(function_name) or None
 
-    def get_action(self, function_name):
-        action = self.actions.get(function_name)
-        return FunctionAction.factory(action)
-
     def skip_function_result(self):
         return self.get_manifest_attr("skip_function_result")
     
@@ -146,7 +141,10 @@ class ChatSession:
 
     # for next call
     def set_function_call(self, function_call):
+        if (function_call):
+            function_call.set_action(self.actions)
         self.function_call = function_call
+            
         self.next_llm_call = False
 
     def set_next_llm_call(self, value):
@@ -158,3 +156,69 @@ class ChatSession:
 
     def should_call_llm(self):
         return self.next_llm_call
+
+    def should_call_switch_context(self):
+        return self.function_call and self.function_call.function_action and self.function_call.function_action.is_switch_context()
+
+    def switch_context_manifest_key(self):
+        arguments = self.function_call.arguments()
+        return self.function_call.function_action.get_manifest_key(arguments)
+    
+    def process_function_call(self, verbose, runtime):
+        function_call = self.function_call
+        function_message = None
+        function_name = self.function_call.name()
+        arguments = function_call.arguments()
+                
+        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
+
+        if function_call.function_action:
+            if function_call.function_action.is_switch_context():
+                function_name = None # Without name, this message will be treated as user prompt.
+
+            # call external api or some
+            function_message = function_call.function_action.call_api(arguments, verbose)
+        else:
+            if self.get_manifest_attr("notebook"):
+                # Python code from llm
+                if function_name == "python" and isinstance(arguments, str):
+                    print(colored("python function was called", "yellow"))
+                    arguments = {
+                        "code": arguments,
+                        "query": self.messages[-1]["content"]
+                    }
+                function = getattr(runtime, function_name)
+            else:
+                # Python code from resource file
+                function = self.get_module(function_name) # python code
+            if function:
+                if isinstance(arguments, str):
+                    (result, message) = function(arguments)
+                else:
+                    (result, message) = function(**arguments)
+                if message:
+                    # Embed code for the context
+                    self.append_message("assistant", message)
+                function_message = self.python_result(result)
+            else:
+                print(colored(f"No function {function_name} in the module", "red"))
+
+        role = None
+        if function_message:
+            role = "function" if function_name or self.skip_function_result() else "user"
+            self.append_message(role, function_message, function_name)
+
+        self.set_next_llm_call((not self.skip_function_result()) and function_message != None)
+
+        return (function_message, function_name, role)
+    
+    def python_result(self, result):
+        if isinstance(result, dict):
+            result = json.dumps(result)
+        result_form = self.get_manifest_attr("result_form")
+        if result_form:
+            return result_form.format(result = result)
+        return result
+
+
+    

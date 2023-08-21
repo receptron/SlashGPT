@@ -1,6 +1,8 @@
 from termcolor import colored
 import json
 
+from lib.function_action import FunctionAction
+
 class FunctionCall:
     @classmethod
     def factory(cls, function_call_data):
@@ -34,4 +36,8 @@ class FunctionCall:
                 print(colored(f"Function {function_name}: Failed to load arguments as json","yellow"))
         return arguments
     
+    def set_action(self, actions):
+        action = actions.get(self.name())
+        self.function_action = FunctionAction.factory(action)
 
+    
