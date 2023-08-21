@@ -56,6 +56,9 @@ class ChatSession:
         if self.functions and self.config.verbose:
             print(self.functions)
 
+        self.function_call = None
+        self.next_llm_call = False
+
     def set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
@@ -130,3 +133,28 @@ class ChatSession:
         # role = "assistant"
         return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
 
+    def call_llm(self):
+        (role, res, function_call) = self.generate_response();
+
+        self.set_function_call(function_call)
+        if role and res:
+            self.append_message(role, res)
+            self.save_log()
+
+        return (role, res);
+
+
+    # for next call
+    def set_function_call(self, function_call):
+        self.function_call = function_call
+        self.next_llm_call = False
+
+    def set_next_llm_call(self, value):
+        self.function_call = None
+        self.next_llm_call = value
+
+    def should_call_function_call(self):
+        return self.function_call != None and self.function_call.should_call()
+
+    def should_call_llm(self):
+        return self.next_llm_call

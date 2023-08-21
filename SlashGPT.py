@@ -177,19 +177,17 @@ class Main:
     def process_llm(self):
         try:
             # Ask LLM to generate a response.
-            (responseRole, res, function_call) = self.context.generate_response()
-
-            if responseRole and res:
+            # (responseRole, res, function_call) = self.context.generate_response()
+            (role, res) = self.context.call_llm()
+            
+            if role and res:
                 print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
-
+                
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-                self.context.append_message(responseRole, res)
-                self.context.save_log()
-
-            if function_call and function_call.should_call():
-                (question, function_name) = self.process_function_call(function_call)
+            if self.context.should_call_function_call():
+                (question, function_name) = self.process_function_call(self.context.function_call)
                 if question:
                     role = "function" if function_name or self.context.skip_function_result() else "user"
                     if role == "function":
@@ -251,14 +249,14 @@ class Main:
         print(colored(f"Function: {function_name}({params})", "blue"))
         '''
 
-        action = self.context.get_action(function_name)
-        if action:
-            if action.is_switch_context():
-                self.switch_context(action.get_manifest_key(arguments),  intro = False)
+        funcion_action = self.context.get_action(function_name)
+        if funcion_action:
+            if funcion_action.is_switch_context():
+                self.switch_context(funcion_action.get_manifest_key(arguments),  intro = False)
                 function_name = None # Without name, this message will be treated as user prompt.
 
             # call external api or some
-            function_message = action.call_api(arguments, self.config.verbose)
+            function_message = funcion_action.call_api(arguments, self.config.verbose)
         else:
             if self.context.get_manifest_attr("notebook"):
                 # Python code from llm
