@@ -126,7 +126,5 @@ class ChatSession:
         # res = None
         # function_call = None
         # role = "assistant"
-
-        # case of "engine_name" == "openai-gpt" or "replace"
         return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
 
