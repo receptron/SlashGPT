@@ -1,19 +1,14 @@
 from datetime import datetime
 import re
 import json
-import openai
 import random
-import google.generativeai as palm
-import google.generativeai.types as safety_types
 from termcolor import colored
-import replicate
 
 from lib.chat_config import ChatConfig
 from lib.llms.models import llm_models, get_llm_model_from_manifest
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
-from lib.function_call import FunctionCall
 from lib.function_action import FunctionAction
 from lib.dbs.pinecone import DBPinecone
 
@@ -123,34 +118,6 @@ class ChatSession:
             print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {intro}")
 
     """
-    Extract the Python code from the string if the agent is a code interpreter.
-    Returns it in the "function call" format. 
-    """
-    def _extract_function_call(self, res:str):
-        if self.manifest.get("notebook"):
-            lines = res.splitlines()
-            codes = None
-            for line in lines:
-                if line[:3] == "```":
-                    if codes is None:
-                        codes = []
-                    else:
-                        break
-                elif codes is not None:
-                    codes.append(line)
-            if codes:
-                return (FunctionCall({
-                    "name": "run_python_code",
-                    "arguments": {
-                        "code": codes,
-                        "query": self.messages[-1]["content"]
-                    }
-                }), None) 
-            
-            print(colored("Debug Message: no code in this reply", "yellow"))
-        return (None, res)
-
-    """
     Let the LLM generate a responce based on the messasges in this session.
     Return values:
         role: "assistent"
@@ -158,87 +125,8 @@ class ChatSession:
         function_call: json representing the function call (optional)
     """
     def generate_response(self):
-        role = None
-        res = None
-        function_call = None
-        role = "assistant"
-
-        if self.llm_model.get("engine") == "palm":
-            defaults = {
-                'model': 'models/chat-bison-001',
-                'temperature': self.temperature,
-                'candidate_count': 1,
-                'top_k': 40,
-                'top_p': 0.95,
-            }
-            system = ""
-            examples = []
-            messages = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if content:
-                    if role == "system":
-                        system = message["content"]
-                    elif len(messages)>0 or role != "assistant":
-                        messages.append(message["content"])
-
-            response = palm.chat(
-                **defaults,
-                context=system,
-                examples=examples,
-                messages=messages
-            )
-            res = response.last
-            if res:
-                if self.config.verbose:
-                    print(colored(res, "magenta"))
-                (function_call, res) = self._extract_function_call(res)
-            else:
-                # Error: Typically some restrictions
-                print(colored(response.filters, "red"))
-
-        elif self.llm_model.get("engine") == "replicate":
-            prompts = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if content:
-                    prompts.append(f"{role}:{message['content']}")
-            if self.functions:
-                last = prompts.pop()
-                prompts.append(f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.")
-                prompts.append(last)
-            prompts.append("assistant:")
-
-            replicate_model = self.llm_model.replicate_model()
-                
-            output = replicate.run(
-                replicate_model,
-                input={"prompt": '\n'.join(prompts)},
-                temperature = self.temperature
-            )
-            (function_call, res) = self._extract_function_call(''.join(output))
-
-        else:
-            # case of "engine" == "openai-gpt"
-            if self.functions:
-                response = openai.ChatCompletion.create(
-                    model=self.llm_model.name(),
-                    messages=self.messages,
-                    functions=self.functions,
-                    temperature=self.temperature)
-            else:
-                response = openai.ChatCompletion.create(
-                    model=self.llm_model.name(),
-                    messages=self.messages,
-                    temperature=self.temperature)
-            if self.config.verbose:
-                print(colored(f"model={response['model']}", "yellow"))
-                print(colored(f"usage={response['usage']}", "yellow"))
-            answer = response['choices'][0]['message']
-            res = answer['content']
-            role = answer['role']
-            function_call = FunctionCall.factory(answer.get('function_call'))
-        return (role, res, function_call)
+        # res = None
+        # function_call = None
+        # role = "assistant"
+        return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
 
