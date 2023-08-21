@@ -31,6 +31,7 @@ class ChatSession:
         self.actions = self.manifest.actions()
         self.temperature = self.manifest.temperature()
         
+        self.intro_message = None
         self.messages = []
         # init log dir
         create_log_dir(manifest_key)
@@ -111,9 +112,8 @@ class ChatSession:
 
     def set_intro(self):
         if self.intro:
-            intro = self.intro[random.randrange(0, len(self.intro))]
-            self.append_message("assistant", intro)
-            print(f"\033[92m\033[1m{self.botName}\033[95m\033[0m: {intro}")
+            self.intro_message = self.intro[random.randrange(0, len(self.intro))]
+            self.append_message("assistant", self.intro_message)
 
     """
     Let the LLM generate a responce based on the messasges in this session.

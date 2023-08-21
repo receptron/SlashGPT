@@ -64,6 +64,8 @@ class Main:
 
             if intro:
                 self.context.set_intro()
+            if self.context.intro_message:
+                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {self.context.intro_message}")
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
