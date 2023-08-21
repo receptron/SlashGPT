@@ -9,7 +9,6 @@ from lib.llms.models import llm_models, get_llm_model_from_manifest
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
-from lib.function_call import FunctionCall
 from lib.function_action import FunctionAction
 from lib.dbs.pinecone import DBPinecone
 
