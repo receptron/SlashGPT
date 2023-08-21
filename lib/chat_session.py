@@ -9,7 +9,7 @@ from termcolor import colored
 import replicate
 
 from lib.chat_config import ChatConfig
-from lib.llms.models import llms, get_llm_model
+from lib.llms.models import llm_models, get_llm_model_from_manifest
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
@@ -42,8 +42,7 @@ class ChatSession:
         create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
-        # (self.model, self.max_token) = get_model_and_max_token(config, self.manifest)
-        llm_model = get_llm_model(config, self.manifest)
+        llm_model = get_llm_model_from_manifest(self.manifest)
         self.set_llm_model(llm_model)
         
         agents = self.manifest.get("agents")
@@ -86,8 +85,8 @@ class ChatSession:
 
     def set_llm_model(self, llm_model):
         if llm_model.get("api_key"):
-            if not self.config.has_value_for_key(llm_model["api_key"]):
-                print(colored("You need to set " + llm_model["api_key"] + " to use this model. ","red"))
+            if not self.config.has_value_for_key(llm_model.get("api_key")):
+                print(colored("You need to set " + llm_model.get("api_key") + " to use this model. ","red"))
                 print(f"Model = {self.llm_model.get('model_name')}")
                 return
 
@@ -118,7 +117,7 @@ class ChatSession:
         else:
             self.messages.append({"role":role, "content":message })
         if self.vector_db and role == "user":
-            max_token = self.llm_model.get("max_token") or 4096
+            max_token = self.llm_model.max_token()
             articles = self.vector_db.fetch_related_articles(max_token - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
@@ -176,7 +175,7 @@ class ChatSession:
         function_call = None
         role = "assistant"
 
-        if self.llm_model["model_name"] == "palm":
+        if self.llm_model.get("engine") == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
                 'temperature': self.temperature,
@@ -211,7 +210,7 @@ class ChatSession:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
-        elif self.llm_model["model_name"][:6] == "llama2" or self.llm_model["model_name"] == "vicuna":
+        elif self.llm_model.get("engine") == "replicate":
             prompts = []
             for message in self.messages:
                 role = message["role"]
@@ -225,8 +224,8 @@ class ChatSession:
             prompts.append("assistant:")
 
             replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-            if llms.get(self.llm_model["model_name"]):
-                llm = llms.get(self.llm_model["model_name"])
+            if llm_models.get(self.llm_model.get("model_name")):
+                llm = llm_models.get(self.llm_model.get("model_name"))
                 if llm.get("replicate_model"):
                     replicate_model = llm.get("replicate_model")
                 
@@ -240,13 +239,13 @@ class ChatSession:
         else:
             if self.functions:
                 response = openai.ChatCompletion.create(
-                    model=self.llm_model["model_name"],
+                    model=self.llm_model.get("model_name"),
                     messages=self.messages,
                     functions=self.functions,
                     temperature=self.temperature)
             else:
                 response = openai.ChatCompletion.create(
-                    model=self.llm_model["model_name"],
+                    model=self.llm_model.get("model_name"),
                     messages=self.messages,
                     temperature=self.temperature)
             if self.config.verbose:

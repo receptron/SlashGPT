@@ -1,6 +1,6 @@
-from lib.chat_config import ChatConfig
+import lib.llms.llm_model from LlmModel
 
-llms = {
+llm_models = {
     "gpt3": {
         "engine": "openai-gpt",
         "model_name": "gpt-3.5-turbo-0613",
@@ -41,20 +41,25 @@ llms = {
     },
 }
 
-
 def search_llm_model(llm_model_name):
-    llm_model_list = list(map(lambda x: x.get("model_name"), llms.values()))
+    llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
     index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
 
     if index > -1: 
-        llm_model = list(llms.values())[index]
+        llm_model = list(llm_models.values())[index]
         return llm_model
     else:
-        return llms.get("gpt3")
+        return llm_models.get("gpt3")
 
-
-def get_llm_model(config: ChatConfig, manifest): 
+def get_llm_model_from_manifest(manifest): 
     llm_model_name = manifest.model()
     llm_model = search_llm_model(llm_model_name)
     
-    return llm_model
+    return LlmModel(llm_model)
+
+def get_llm_model_from_key(key): 
+    llm_model = llm_models.get(key)
+    if llm_model:
+        return LlmModel(llm_model)
+    return LlmModel(llm_models.get("gpt3"))
+
