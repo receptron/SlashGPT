@@ -1,4 +1,4 @@
-import lib.llms.llm_model from LlmModel
+from lib.llms.llm_model import LlmModel
 
 llm_models = {
     "gpt3": {

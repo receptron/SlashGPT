@@ -84,13 +84,11 @@ class ChatSession:
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def set_llm_model(self, llm_model):
-        if llm_model.get("api_key"):
-            if not self.config.has_value_for_key(llm_model.get("api_key")):
-                print(colored("You need to set " + llm_model.get("api_key") + " to use this model. ","red"))
-                print(f"Model = {self.llm_model.get('model_name')}")
-                return
+        if llm_model.check_api_key(self.config):
+            self.llm_model = llm_model
+        else:
+            print(colored("You need to set " + llm_model.get("api_key") + " to use this model. ","red"))
 
-        self.llm_model = llm_model
         print(f"Model = {self.llm_model.get('model_name')}")
 
     def get_manifest_attr(self, key):
