@@ -34,5 +34,5 @@ class LlmModel:
         self.engine = LLMEngineFactory.factory(self.engine_name())
     
     def generate_response(self, messages, manifest, verbose):
-        return self.engine.chat_completion(messages, manifest, self, verbose, )
+        return self.engine.chat_completion(messages, manifest, self, verbose)
 
