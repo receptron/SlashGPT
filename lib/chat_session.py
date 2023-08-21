@@ -188,7 +188,7 @@ class ChatSession:
                 function = self.get_module(function_name) # python code
             if function:
                 if isinstance(arguments, str):
-                    (result, message) = function(arguments if isinstance(arguments, str) else **arguments)
+                    (result, message) = function(arguments)
                 else:
                     (result, message) = function(**arguments)
                 if message:
