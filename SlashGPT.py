@@ -65,7 +65,7 @@ class Main:
             if intro:
                 self.context.set_intro()
             if self.context.intro_message:
-                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {self.context.intro_message}")
+                self.print_bot(self.context.intro_message)
         else:            
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
@@ -183,7 +183,7 @@ class Main:
             (role, res) = self.context.call_llm()
             
             if role and res:
-                print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {res}")
+                self.print_bot(res)
                 
                 if self.config.audio:
                     play_text(res, self.config.audio)
@@ -196,8 +196,9 @@ class Main:
                 (function_message, function_name, role) = self.context.process_function_call(self.config.verbose, self.runtime)
                 if function_message:
                     if role == "function":
-                        print(f"\033[95m\033[1m{role}({function_name}): \033[95m\033[0m{function_message}")
+                        self.print_function(function_name, function_message)
                     else:
+                        self.print_user(function_message)
                         print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{function_message}")
             if self.context.next_llm_call:
                 self.process_llm()
@@ -239,7 +240,14 @@ class Main:
                 self.context.append_message("user", question)
                 self.process_llm()
             
+    def print_bot(self, message):
+        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {message}")
+        
+    def print_user(self, message):
+        print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{message}")
 
+    def print_function(self, function_name, message):
+        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
         
 if __name__ == '__main__':
     config = ChatConfig("./manifests/main")
