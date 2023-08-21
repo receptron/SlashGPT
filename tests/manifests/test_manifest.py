@@ -33,9 +33,33 @@ manifest_data = {
 }
 manifest = Manifest(manifest_data, "ai-agent")
     
-def test_botname():
-    assert manifest.botname() == "Home"
-    
 def test_username():
     assert manifest.username() == "You(ai-agent)"
 
+def test_botname():
+    assert manifest.botname() == "Home"
+
+#def test_actions():
+#    assert manifest.actions() == ""
+
+def test_title():
+    assert manifest.title() == "Home Automation"
+
+def test_temperature():
+    assert manifest.temperature() == 0.0
+
+def test_model():
+    assert manifest.model() == "gpt-3.5-turbo-16k-0613"
+
+#def test_functions():
+#    assert manifest.functions() == json.load
+
+#def test_read_module():
+#    assert manifest.read_module() == ""
+
+def test_prompt_data():
+    assert manifest.prompt_data() == "\n".join([
+        "Don't make any assumptions about what property values to plug into functions.",
+        "Ask for clarification if a user request is ambiguous."
+    ])
+    
