@@ -260,5 +260,5 @@ pip install pytest
 ## Run test
 
 ```
-pytest -m tests 
+python -m pytest
 ```

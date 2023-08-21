@@ -28,7 +28,7 @@ def manifest():
             "Ask for clarification if a user request is ambiguous."
         ]
     }
-    return Manifest(manifest_data, "empty-manifest")
+    return Manifest(manifest_data, "ai-agent")
 
 def test_username(manifest):
     assert manifest.username() == "You(ai-agent)"
