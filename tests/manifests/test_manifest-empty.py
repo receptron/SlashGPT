@@ -1,16 +1,16 @@
-import unittest
+import pytest
 import sys
-import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.manifest import Manifest
 
-manifest_data = {}
-manifest = Manifest(manifest_data, "empty-manifest")
+@pytest.fixture
+def manifest():
+    manifest_data = {}
+    return Manifest(manifest_data, "empty-manifest")
     
-def test_botname():
+def test_botname(manifest):
     assert manifest.botname() == "GPT"
 
-def test_username():
+def test_username(manifest):
     assert manifest.username() == "You(empty-manifest)"
 
