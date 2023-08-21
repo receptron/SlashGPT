@@ -194,7 +194,7 @@ class ChatSession:
                 if message:
                     # Embed code for the context
                     self.append_message("assistant", message)
-                function_message = self.python_result(result)
+                function_message = self.format_python_result(result)
             else:
                 print(colored(f"No function {function_name} in the module", "red"))
 
@@ -207,7 +207,7 @@ class ChatSession:
 
         return (function_message, function_name, role)
     
-    def python_result(self, result):
+    def format_python_result(self, result):
         if isinstance(result, dict):
             result = json.dumps(result)
         result_form = self.get_manifest_attr("result_form")
