@@ -4,27 +4,7 @@
   "source": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
-  "functions": [
-    {
-      "name": "categorize",
-      "description": "Categorize the question",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "question": {
-            "type": "string",
-            "description": "Question from the user"
-          },
-          "category": {
-            "type": "string",
-            "description": "Category of the question.",
-            "enum": ["cal", "home2"]
-          }
-        },
-        "required": ["question", "category"]
-      }
-    }
-  ],
+  "functions": "./resources/dispatcher.json",
   "actions": {
     "categorize": { "message":"{question}", "metafile":"{category}" }
   },
