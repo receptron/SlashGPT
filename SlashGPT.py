@@ -172,7 +172,7 @@ class Main:
         elif key == "functions":
             if self.context.functions:
                 print(json.dumps(self.context.functions, indent=2))
-        elif commands[0] == "llm":
+        elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and llm_models.get(commands[1]):
                 llm_model = get_llm_model_from_key(commands[1])
                 self.context.set_llm_model(llm_model)
