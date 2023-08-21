@@ -40,4 +40,14 @@ class FunctionCall:
         action = actions.get(self.name())
         self.function_action = FunctionAction.factory(action)
 
-    
+
+    def arguments_for_notebook(self, messages): 
+        arguments = self.arguments()
+        if self.name() == "python" and isinstance(arguments, str):
+            print(colored("python function was called", "yellow"))
+            return {
+                "code": arguments,
+                "query": self.messages[-1]["content"]
+            }
+        return arguments
+            

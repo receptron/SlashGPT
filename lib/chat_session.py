@@ -181,19 +181,14 @@ class ChatSession:
         else:
             if self.get_manifest_attr("notebook"):
                 # Python code from llm
-                if function_name == "python" and isinstance(arguments, str):
-                    print(colored("python function was called", "yellow"))
-                    arguments = {
-                        "code": arguments,
-                        "query": self.messages[-1]["content"]
-                    }
+                arguments = function_call.arguments_for_notebook()
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
                 function = self.get_module(function_name) # python code
             if function:
                 if isinstance(arguments, str):
-                    (result, message) = function(arguments)
+                    (result, message) = function(arguments if isinstance(arguments, str) else **arguments)
                 else:
                     (result, message) = function(**arguments)
                 if message:
