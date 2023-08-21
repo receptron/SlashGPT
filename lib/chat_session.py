@@ -1,7 +1,6 @@
 from datetime import datetime
 import re
 import json
-import openai
 import random
 import google.generativeai as palm
 import google.generativeai.types as safety_types
@@ -160,7 +159,7 @@ class ChatSession:
         function_call = None
         role = "assistant"
 
-        if self.llm_model.get("engine") == "palm":
+        if self.llm_model.get("engine_name") == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
                 'temperature': self.temperature,
@@ -195,7 +194,7 @@ class ChatSession:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
-        elif self.llm_model.get("engine") == "replicate":
+        elif self.llm_model.get("engine_name") == "replicate":
             prompts = []
             for message in self.messages:
                 role = message["role"]
@@ -218,24 +217,7 @@ class ChatSession:
             (function_call, res) = self._extract_function_call(''.join(output))
 
         else:
-            # case of "engine" == "openai-gpt"
-            if self.functions:
-                response = openai.ChatCompletion.create(
-                    model=self.llm_model.name(),
-                    messages=self.messages,
-                    functions=self.functions,
-                    temperature=self.temperature)
-            else:
-                response = openai.ChatCompletion.create(
-                    model=self.llm_model.name(),
-                    messages=self.messages,
-                    temperature=self.temperature)
-            if self.config.verbose:
-                print(colored(f"model={response['model']}", "yellow"))
-                print(colored(f"usage={response['usage']}", "yellow"))
-            answer = response['choices'][0]['message']
-            res = answer['content']
-            role = answer['role']
-            function_call = FunctionCall.factory(answer.get('function_call'))
+            # case of "engine_name" == "openai-gpt"
+            return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
         return (role, res, function_call)
 
