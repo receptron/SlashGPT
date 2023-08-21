@@ -1,4 +1,4 @@
-import replicate
+import google.generativeai as palm
 from termcolor import colored
 from lib.llms.engine.base import LLMEngineBase
 from lib.function_call import FunctionCall
@@ -21,27 +21,27 @@ class LLMEnginePaLM(LLMEngineBase):
         }
         system = ""
         examples = []
-        messages = []
+        new_messages = []
         for message in messages:
             role = message["role"]
             content = message["content"]
             if content:
                 if role == "system":
                     system = message["content"]
-                elif len(messages)>0 or role != "assistant":
-                    messages.append(message["content"])
+                elif len(new_messages)>0 or role != "assistant":
+                    new_messages.append(message["content"])
 
         response = palm.chat(
             **defaults,
             context=system,
             examples=examples,
-            messages=messages
+            messages=new_messages
         )
         res = response.last
         if res:
             if verbose:
                 print(colored(res, "magenta"))
-            (function_call, res) = self._extract_function_call(res)
+            (function_call, res) = self._extract_function_call(messages, manifest, res)
         else:
             # Error: Typically some restrictions
             print(colored(response.filters, "red"))

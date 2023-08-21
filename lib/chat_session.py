@@ -2,8 +2,6 @@ from datetime import datetime
 import re
 import json
 import random
-import google.generativeai as palm
-import google.generativeai.types as safety_types
 from termcolor import colored
 
 from lib.chat_config import ChatConfig
