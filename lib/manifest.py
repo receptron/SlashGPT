@@ -32,6 +32,18 @@ class Manifest:
         return self.get("model") or "gpt-3.5-turbo-0613";
 
     def functions(self):
+        value = self.__functions()
+        agents = self.get("agents")
+        
+        if value and agents:
+            # WARNING: It assumes that categorize(category, ...) function
+            for function in value:
+                if function.get("name") == "categorize":
+                    function["parameters"]["properties"]["category"]["enum"] = agents
+        return value
+
+        
+    def __functions(self):
         value = self.get("functions")
         if value:
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):

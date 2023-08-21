@@ -68,15 +68,8 @@ class ChatSession:
         
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
-        if self.functions:
-            if agents:
-                # WARNING: It assumes that categorize(category, ...) function
-                for function in self.functions:
-                    if function.get("name") == "categorize":
-                        function["parameters"]["properties"]["category"]["enum"] = agents
-
-            if self.config.verbose:
-                print(self.functions)
+        if self.functions and self.config.verbose:
+            print(self.functions)
 
     def set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
