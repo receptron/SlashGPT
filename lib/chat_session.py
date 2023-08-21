@@ -89,7 +89,7 @@ class ChatSession:
         else:
             print(colored("You need to set " + llm_model.get("api_key") + " to use this model. ","red"))
 
-        print(f"Model = {self.llm_model.get('model_name')}")
+        print(f"Model = {self.llm_model.name()}")
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
@@ -233,13 +233,13 @@ class ChatSession:
             # case of "engine" == "openai-gpt"
             if self.functions:
                 response = openai.ChatCompletion.create(
-                    model=self.llm_model.get("model_name"),
+                    model=self.llm_model.name(),
                     messages=self.messages,
                     functions=self.functions,
                     temperature=self.temperature)
             else:
                 response = openai.ChatCompletion.create(
-                    model=self.llm_model.get("model_name"),
+                    model=self.llm_model.name(),
                     messages=self.messages,
                     temperature=self.temperature)
             if self.config.verbose:

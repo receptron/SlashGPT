@@ -7,6 +7,9 @@ class LlmModel:
     def get(self, key):
         return self.llm_model_data.get(key)
 
+    def name(self):
+        return self.get('model_name')
+    
     def max_token(self):
         return self.get("max_token") or 4096
 
