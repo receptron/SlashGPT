@@ -11,7 +11,7 @@ class DBPinecone:
             assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
             return DBPinecone(table_name, config)
     
-    def __init__(self, config: ChatConfig):
+    def __init__(self, table_name, config: ChatConfig):
         self.config = config
         self.index = pinecone.Index(table_name)
             
