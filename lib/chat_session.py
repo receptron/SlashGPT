@@ -5,7 +5,6 @@ import random
 import google.generativeai as palm
 import google.generativeai.types as safety_types
 from termcolor import colored
-import replicate
 
 from lib.chat_config import ChatConfig
 from lib.llms.models import llm_models, get_llm_model_from_manifest
@@ -154,7 +153,6 @@ class ChatSession:
         function_call: json representing the function call (optional)
     """
     def generate_response(self):
-        role = None
         res = None
         function_call = None
         role = "assistant"
@@ -194,30 +192,8 @@ class ChatSession:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
-        elif self.llm_model.get("engine_name") == "replicate":
-            prompts = []
-            for message in self.messages:
-                role = message["role"]
-                content = message["content"]
-                if content:
-                    prompts.append(f"{role}:{message['content']}")
-            if self.functions:
-                last = prompts.pop()
-                prompts.append(f"system: Here is the definition of functions available to you to call.\n{self.functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.")
-                prompts.append(last)
-            prompts.append("assistant:")
-
-            replicate_model = self.llm_model.replicate_model()
-                
-            output = replicate.run(
-                replicate_model,
-                input={"prompt": '\n'.join(prompts)},
-                temperature = self.temperature
-            )
-            (function_call, res) = self._extract_function_call(''.join(output))
-
         else:
-            # case of "engine_name" == "openai-gpt"
+            # case of "engine_name" == "openai-gpt" or "replace"
             return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
         return (role, res, function_call)
 

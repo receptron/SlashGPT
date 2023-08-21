@@ -7,7 +7,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self):
         return
 
-    def openai_chat_completion(self, messages, manifest, llm_model, verbose):
+    def chat_completion(self, messages, manifest, llm_model, verbose):
         temperature = manifest.temperature()
         functions = manifest.functions()
         model_name = llm_model.name()
