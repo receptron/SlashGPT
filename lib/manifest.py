@@ -32,6 +32,18 @@ class Manifest:
         return self.get("model") or "gpt-3.5-turbo-0613";
 
     def functions(self):
+        value = self.__functions()
+        agents = self.get("agents")
+        
+        if value and agents:
+            # WARNING: It assumes that categorize(category, ...) function
+            for function in value:
+                if function.get("name") == "categorize":
+                    function["parameters"]["properties"]["category"]["enum"] = agents
+        return value
+
+        
+    def __functions(self):
         value = self.get("functions")
         if value:
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
@@ -87,6 +99,7 @@ class Manifest:
         
     def __replace_random(self, prompt, data):
         j = 0
+        # TODO: fix array bounds bug
         while(re.search("\\{random\\}", prompt)):
             prompt = re.sub("\\{random\\}", data[j], prompt, 1)
             j += 1
@@ -98,8 +111,9 @@ class Manifest:
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
     
-    def prompt_data(self):
+    def prompt_data(self, manifests = {}):
         prompt = self.__read_prompt()
+        agents = self.get("agents")
         if prompt:
             data = self.__get_random_manifest_data()
             if data:
@@ -107,5 +121,11 @@ class Manifest:
             resource = self.get("resource")
             if resource:
                 prompt = self.__replace_from_resource_file(prompt, resource)
+            if agents:
+                prompt = self.__apply_agent(prompt, agents, manifests)
             return prompt
+
+    def __apply_agent(self, prompt, agents, manifests = {}):
+        descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
+        return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
             

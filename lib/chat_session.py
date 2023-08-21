@@ -45,13 +45,9 @@ class ChatSession:
         llm_model = get_llm_model_from_manifest(self.manifest)
         self.set_llm_model(llm_model)
         
-        agents = self.manifest.get("agents")
-
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data()
+        self.prompt = self.manifest.prompt_data(config.manifests)
         if self.prompt:
-            if agents:
-                self.prompt = apply_agent(self.prompt, agents, self.config)
             self.messages = [{"role":"system", "content":self.prompt}]
 
         # Prepare embedded database index
@@ -69,15 +65,8 @@ class ChatSession:
         
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
-        if self.functions:
-            if agents:
-                # WARNING: It assumes that categorize(category, ...) function
-                for function in self.functions:
-                    if function.get("name") == "categorize":
-                        function["parameters"]["properties"]["category"]["enum"] = agents
-
-            if self.config.verbose:
-                print(self.functions)
+        if self.functions and self.config.verbose:
+            print(self.functions)
 
     def set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
@@ -93,7 +82,6 @@ class ChatSession:
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
-
 
     def get_module(self, function_name):
         return self.module and self.module.get(function_name) or None
@@ -250,10 +238,4 @@ class ChatSession:
             role = answer['role']
             function_call = FunctionCall.factory(answer.get('function_call'))
         return (role, res, function_call)
-
-
-
-def apply_agent(prompt, agents, config):    
-    descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]
-    return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 
