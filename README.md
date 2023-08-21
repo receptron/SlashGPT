@@ -247,3 +247,18 @@ You: /jupyter
 You: /sample_stock
 Expected Output: <Marketcap history of Apple and Tesla>
 ```
+
+
+# Unittest
+
+## Initialization
+
+```
+pip install pytest
+```
+
+## Run test
+
+```
+python -m pytest
+```
