@@ -115,8 +115,7 @@ class ChatSession:
         else:
             self.messages.append({"role":role, "content":message })
         if self.vector_db and role == "user":
-            max_token = self.llm_model.max_token()
-            articles = self.vector_db.fetch_related_articles(max_token - 500)
+            articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 
@@ -221,11 +220,7 @@ class ChatSession:
                 prompts.append(last)
             prompts.append("assistant:")
 
-            replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-            if llm_models.get(self.llm_model.get("model_name")):
-                llm = llm_models.get(self.llm_model.get("model_name"))
-                if llm.get("replicate_model"):
-                    replicate_model = llm.get("replicate_model")
+            replicate_model = self.llm_model.replicate_model()
                 
             output = replicate.run(
                 replicate_model,
@@ -235,6 +230,7 @@ class ChatSession:
             (function_call, res) = self._extract_function_call(''.join(output))
 
         else:
+            # case of "engine" == "openai-gpt"
             if self.functions:
                 response = openai.ChatCompletion.create(
                     model=self.llm_model.get("model_name"),

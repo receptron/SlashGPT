@@ -74,7 +74,7 @@ class Main:
         if self.config.exist_manifest(manifest_key):
             self.context = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
-                print(colored(f"Activating: {self.context.title} (model={self.context.llm_model}, temperature={self.context.temperature}, max_token={self.context.llm_model.max_token})", "blue"))
+                print(colored(f"Activating: {self.context.title} (model={self.context.llm_model.get('model_name')}, temperature={self.context.temperature}, max_token={self.context.llm_model.max_token()})", "blue"))
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
             if self.context.get_manifest_attr("notebook"):

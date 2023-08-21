@@ -15,3 +15,10 @@ class LlmModel:
             return config.has_value_for_key(self.get("api_key"));
         return True
         
+    def replicate_model(self):
+        if self.get("replicate_model"):
+            return self.get("replicate_model")
+
+        # TODO default replicate model
+        return "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
+        
