@@ -78,7 +78,7 @@ class Main:
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
             if self.context.get_manifest_attr("notebook"):
-                (result, _) = self.runtime.create_notebook(self.context.model)
+                (result, _) = self.runtime.create_notebook(self.context.llm_model.name() )
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
             if intro:
