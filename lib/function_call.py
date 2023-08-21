@@ -20,6 +20,9 @@ class FunctionCall:
     
     def name(self):
         return self.__get("name")
+
+    def should_call(self):
+        return "name" in self.__function_call_data;
     
     def arguments(self):
         function_name = self.__get("name")
