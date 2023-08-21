@@ -9,7 +9,7 @@ from termcolor import colored
 import replicate
 
 from lib.chat_config import ChatConfig
-from lib.common import llms
+from lib.llms.models import llm_models, get_llm_model_from_manifest
 
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
@@ -42,8 +42,9 @@ class ChatSession:
         create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
-        (self.model, self.max_token) = get_model_and_max_token(config, self.manifest)
-
+        llm_model = get_llm_model_from_manifest(self.manifest)
+        self.set_llm_model(llm_model)
+        
         agents = self.manifest.get("agents")
 
         # Load the prompt, fill variables and append it as the system message
@@ -75,10 +76,13 @@ class ChatSession:
         manifest_data = self.config.get_manifest_data(self.manifest_key)
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
-    def set_model(self, model, max_token = 4096):
-        self.model = model
-        self.max_token = max_token
-        print(f"Model = {self.model}")
+    def set_llm_model(self, llm_model):
+        if llm_model.check_api_key(self.config):
+            self.llm_model = llm_model
+        else:
+            print(colored("You need to set " + llm_model.get("api_key") + " to use this model. ","red"))
+
+        print(f"Model = {self.llm_model.name()}")
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
@@ -94,7 +98,6 @@ class ChatSession:
     def skip_function_result(self):
         return self.get_manifest_attr("skip_function_result")
     
-
     """
     Append a message to the chat session, specifying the role ("user", "system" or "function").
     In case of a function message, the name specifies the function name.
@@ -105,7 +108,7 @@ class ChatSession:
         else:
             self.messages.append({"role":role, "content":message })
         if self.vector_db and role == "user":
-            articles = self.vector_db.fetch_related_articles(self.max_token - 500)
+            articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
             assert self.messages[0]["role"] == "system", "Missing system message"
             self.messages[0] = {
                 "role":"system", 
@@ -162,7 +165,7 @@ class ChatSession:
         function_call = None
         role = "assistant"
 
-        if self.model == "palm":
+        if self.llm_model.get("engine") == "palm":
             defaults = {
                 'model': 'models/chat-bison-001',
                 'temperature': self.temperature,
@@ -197,7 +200,7 @@ class ChatSession:
                 # Error: Typically some restrictions
                 print(colored(response.filters, "red"))
 
-        elif self.model[:6] == "llama2" or self.model == "vicuna":
+        elif self.llm_model.get("engine") == "replicate":
             prompts = []
             for message in self.messages:
                 role = message["role"]
@@ -210,11 +213,7 @@ class ChatSession:
                 prompts.append(last)
             prompts.append("assistant:")
 
-            replicate_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-            if llms.get(self.model):
-                llm = llms.get(self.model)
-                if llm.get("replicate_model"):
-                    replicate_model = llm.get("replicate_model")
+            replicate_model = self.llm_model.replicate_model()
                 
             output = replicate.run(
                 replicate_model,
@@ -224,15 +223,16 @@ class ChatSession:
             (function_call, res) = self._extract_function_call(''.join(output))
 
         else:
+            # case of "engine" == "openai-gpt"
             if self.functions:
                 response = openai.ChatCompletion.create(
-                    model=self.model,
+                    model=self.llm_model.name(),
                     messages=self.messages,
                     functions=self.functions,
                     temperature=self.temperature)
             else:
                 response = openai.ChatCompletion.create(
-                    model=self.model,
+                    model=self.llm_model.name(),
                     messages=self.messages,
                     temperature=self.temperature)
             if self.config.verbose:
@@ -245,23 +245,6 @@ class ChatSession:
         return (role, res, function_call)
 
 
-"""
-Get module name from manifest and set max_token.
-"""
-def get_model_and_max_token(config: ChatConfig, manifest = {}): 
-    max_token = 4096
-    model = manifest.model()
-    if model == "gpt-3.5-turbo-16k-0613":
-        return (model, max_token * 4)
-    elif model == "palm":
-        if config.GOOGLE_PALM_KEY is not None:
-            return (model, max_token)
-        print(colored("Please set GOOGLE_PALM_KEY in .env file","red"))
-    elif model[:6] == "llama2":
-        if config.REPLICATE_API_TOKEN is not None:
-            return (model, max_token)
-        print(colored("Please set REPLICATE_API_TOKEN in .env file","red"))
-    return ("gpt-3.5-turbo-0613", max_token)
 
 def apply_agent(prompt, agents, config):    
     descriptions = [f"{agent}: {config.manifests[agent].get('description')}" for agent in agents]

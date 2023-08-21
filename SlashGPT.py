@@ -12,7 +12,7 @@ from playsound import playsound
 from lib.jupyter_runtime import PythonRuntime
 from lib.chat_session import ChatSession
 from lib.chat_config import ChatConfig
-from lib.common import llms
+from lib.llms.models import llm_models, get_llm_model_from_key
 
 class InputStyle(Enum):
   HELP = 1
@@ -74,11 +74,11 @@ class Main:
         if self.config.exist_manifest(manifest_key):
             self.context = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
-                print(colored(f"Activating: {self.context.title} (model={self.context.model}, temperature={self.context.temperature}, max_token={self.context.max_token})", "blue"))
+                print(colored(f"Activating: {self.context.title} (model={self.context.llm_model.name()}, temperature={self.context.temperature}, max_token={self.context.llm_model.max_token()})", "blue"))
             else:
                 print(colored(f"Activating: {self.context.title}", "blue"))
             if self.context.get_manifest_attr("notebook"):
-                (result, _) = self.runtime.create_notebook(self.context.model)
+                (result, _) = self.runtime.create_notebook(self.context.llm_model.name() )
                 print(colored(f"Created a notebook: {result.get('notebook_name')}", "blue"))
 
             if intro:
@@ -173,18 +173,11 @@ class Main:
             if self.context.functions:
                 print(json.dumps(self.context.functions, indent=2))
         elif commands[0] == "llm":
-            if len(commands) > 1 and llms.get(commands[1]):
-                llm = llms[commands[1]]
-                if llm.get("api_key"):
-                    if not self.config.has_value_for_key(llm["api_key"]):
-                        print(colored("You need to set " + llm["api_key"] + " to use this model","red"))
-                        return
-                if llm.get("max_token"):
-                    self.context.set_model(llm.get("model_name"), llm.get("max_token"))
-                else:
-                    self.context.set_model(llm.get("model_name"))
+            if len(commands) > 1 and llm_models.get(commands[1]):
+                llm_model = get_llm_model_from_key(commands[1])
+                self.context.set_llm_model(llm_model)
             else:
-                print("/llm: " + ",".join(llms.keys()))
+                print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
             self.switch_context(self.context.manifest_key, intro = False)
         elif commands[0] == "switch":
