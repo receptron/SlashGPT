@@ -1,5 +1,6 @@
 from lib.llms.engine.openai_gpt import LLMEngineOpenAIGPT
 from lib.llms.engine.replicate import LLMEngineReplicate
+from lib.llms.engine.palm import LLMEnginePaLM
 
 class LLMEngineFactory:
     __cache__ = {}
@@ -10,5 +11,5 @@ class LLMEngineFactory:
         if engine_name == "replicate":
             return LLMEngineReplicate()
         if engine_name == "palm":
-            return
+            return LLMEnginePaLM()
         
