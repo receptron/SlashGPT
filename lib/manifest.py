@@ -99,6 +99,7 @@ class Manifest:
         
     def __replace_random(self, prompt, data):
         j = 0
+        # TODO: fix array bounds bug
         while(re.search("\\{random\\}", prompt)):
             prompt = re.sub("\\{random\\}", data[j], prompt, 1)
             j += 1
@@ -110,8 +111,9 @@ class Manifest:
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
     
-    def prompt_data(self):
+    def prompt_data(self, manifests = {}):
         prompt = self.__read_prompt()
+        agents = self.get("agents")
         if prompt:
             data = self.__get_random_manifest_data()
             if data:
@@ -119,5 +121,11 @@ class Manifest:
             resource = self.get("resource")
             if resource:
                 prompt = self.__replace_from_resource_file(prompt, resource)
+            if agents:
+                prompt = self.__apply_agent(prompt, agents, manifests)
             return prompt
+
+    def __apply_agent(self, prompt, agents, manifests = {}):
+        descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
+        return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
             
