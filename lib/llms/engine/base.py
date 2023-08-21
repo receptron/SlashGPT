@@ -24,13 +24,13 @@ class LLMEngineBase(metaclass=ABCMeta):
                 elif codes is not None:
                     codes.append(line)
             if codes:
-                return (FunctionCall({
+                return FunctionCall({
                     "name": "run_python_code",
                     "arguments": {
                         "code": codes,
                         "query": messages[-1]["content"]
                     }
-                }), None) 
+                }) 
             
             print(colored("Debug Message: no code in this reply", "yellow"))
-        return (None, res)
+        return None

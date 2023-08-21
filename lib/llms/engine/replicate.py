@@ -30,6 +30,9 @@ class LLMEngineReplicate(LLMEngineBase):
             input={"prompt": '\n'.join(prompts)},
             temperature = temperature
         )
-        (function_call, res) = self._extract_function_call(messages, manifest, ''.join(output))
-        return (role, res, function_call)
-
+        res = ''.join(output)
+        function_call = self._extract_function_call(messages, manifest, res)
+        if function_call:
+            return (role, None, function_call)
+        else:
+            return (role, res, None)
