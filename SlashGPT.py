@@ -29,28 +29,9 @@ def play_text(text, lang):
     audio_obj.save("./output/audio.mp3")
     playsound("./output/audio.mp3")
 
-manifests = {
-    "main": {
-        "manifests_dir": "manifests/main",
-        "default_manifest_key": "dispatcher",
-    },
-    "rpg1": {
-        "manifests_dir": "manifests/rpg1",
-        "default_manifest_key": "bartender",
-    },
-    "zoo": {
-        "manifests_dir": "manifests/zoo",
-        "default_manifest_key": "monkey",
-    },
-    "roles1": {
-        "manifests_dir": "manifests/roles1",
-        "default_manifest_key": None,
-    },
-    "roles2": {
-        "manifests_dir": "manifests/roles2",
-        "default_manifest_key": None,
-    },
-};
+    
+with open("./manifests/manifests.json", 'r') as f:
+    manifests = json.load(f)
 
 """
 Main is a singleton, which process the input from the user and manage chat sessions.

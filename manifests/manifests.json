@@ -1,0 +1,22 @@
+{
+  "main": {
+    "manifests_dir": "manifests/main",
+    "default_manifest_key": "dispatcher"
+  },
+  "rpg1": {
+    "manifests_dir": "manifests/rpg1",
+    "default_manifest_key": "bartender"
+  },
+  "zoo": {
+    "manifests_dir": "manifests/zoo",
+    "default_manifest_key": "monkey"
+  },
+  "roles1": {
+    "manifests_dir": "manifests/roles1",
+    "default_manifest_key": null
+  },
+  "roles2": {
+    "manifests_dir": "manifests/roles2",
+    "default_manifest_key": null
+  }
+}
