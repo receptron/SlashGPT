@@ -10,6 +10,8 @@ from lib.llms.models import llm_models, get_llm_model_from_manifest
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
 from lib.dbs.pinecone import DBPinecone
+from lib.chat_history import ChatHistory
+from lib.chat_memory_history import ChatMemoryHistory
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -32,7 +34,8 @@ class ChatSession:
         self.temperature = self.manifest.temperature()
         
         self.intro_message = None
-        self.messages = []
+        memory_history = ChatMemoryHistory()
+        self.history = ChatHistory(memory_history)
         # init log dir
         create_log_dir(manifest_key)
 
@@ -43,7 +46,7 @@ class ChatSession:
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests)
         if self.prompt:
-            self.messages = [{"role":"system", "content":self.prompt}]
+            self.history.append({"role":"system", "content":self.prompt})
 
         # Prepare embedded database index
         self.vector_db = self.get_vector_db()
@@ -90,19 +93,19 @@ class ChatSession:
     """
     def append_message(self, role: str, message: str, name = None):
         if name:
-            self.messages.append({"role":role, "content":message, "name":name })
+            self.history.append({"role":role, "content":message, "name":name })
         else:
-            self.messages.append({"role":role, "content":message })
+            self.history.append({"role":role, "content":message })
         if self.vector_db and role == "user":
             articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
-            assert self.messages[0]["role"] == "system", "Missing system message"
-            self.messages[0] = {
+            assert self.history.get_data(0, "role") == "system", "Missing system message"
+            self.history.set(0, {
                 "role":"system", 
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
-            }
+            })
 
     def save_log(self):
-        save_log(self.manifest_key, self.messages, self.time)
+        save_log(self.manifest_key, self.history.messages(), self.time)
 
     def set_intro(self):
         if self.intro:
@@ -120,7 +123,7 @@ class ChatSession:
         # res = None
         # function_call = None
         # role = "assistant"
-        return self.llm_model.generate_response(self.messages, self.manifest, self.config.verbose)
+        return self.llm_model.generate_response(self.history.messages(), self.manifest, self.config.verbose)
 
     def call_llm(self):
         (role, res, function_call) = self.generate_response();
@@ -175,7 +178,7 @@ class ChatSession:
         else:
             if self.manifest.get("notebook"):
                 # Python code from llm
-                arguments = function_call.arguments_for_notebook(self.messages)
+                arguments = function_call.arguments_for_notebook(self.history.messages())
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
@@ -205,7 +208,7 @@ class ChatSession:
     def format_python_result(self, result):
         if isinstance(result, dict):
             result = json.dumps(result)
-        result_form = self.manifest_.get("result_form")
+        result_form = self.manifest.get("result_form")
         if result_form:
             return result_form.format(result = result)
         return result
