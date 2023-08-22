@@ -11,6 +11,7 @@ from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
 from lib.dbs.pinecone import DBPinecone
 from lib.chat_history import ChatHistory
+from lib.chat_memory_history import ChatMemoryHistory
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -33,7 +34,8 @@ class ChatSession:
         self.temperature = self.manifest.temperature()
         
         self.intro_message = None
-        self.history = ChatHistory()
+        memory_history = ChatMemoryHistory()
+        self.history = ChatHistory(memory_history)
         # init log dir
         create_log_dir(manifest_key)
 

@@ -2,12 +2,14 @@ import pytest
 import sys
 
 from lib.chat_history import ChatHistory
+from lib.chat_memory_history import ChatMemoryHistory
 
 @pytest.fixture
 
 def history():
     
-    history = ChatHistory()
+    memory_history = ChatMemoryHistory()
+    history = ChatHistory(memory_history)
     history.append({"name":"1", "data":"1"})
     history.append({"name":"2", "data":"2"})
     history.append({"name":"3", "data":"3"})
