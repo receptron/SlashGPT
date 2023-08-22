@@ -208,7 +208,7 @@ class ChatSession:
     def format_python_result(self, result):
         if isinstance(result, dict):
             result = json.dumps(result)
-        result_form = self.manifest_.get("result_form")
+        result_form = self.manifest.get("result_form")
         if result_form:
             return result_form.format(result = result)
         return result
