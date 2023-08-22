@@ -189,8 +189,11 @@ class Main:
                     play_text(res, self.config.audio)
 
             if self.context.should_call_switch_context():
+                old_message = self.context.messages[len(self.context.messages) - 1]
                 self.switch_context(self.context.switch_context_manifest_key(),  intro = False)
-                    
+                self.context.messages.append(old_message)
+                self.process_llm()
+                return
             if self.context.should_call_function_call():
                 
                 (function_message, function_name, role) = self.context.process_function_call(self.config.verbose, self.runtime)
