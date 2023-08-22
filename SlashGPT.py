@@ -164,6 +164,7 @@ class Main:
         elif key == "new":
             self.switch_context(self.context.manifest_key, intro = False)
         elif key == "autotest":
+            self.config.verbose = True
             self.test("currency", "/sample")
             self.test("spacex", "/sample")
             self.test("cal", "/sample")
