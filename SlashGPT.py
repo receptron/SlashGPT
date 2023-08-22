@@ -131,7 +131,7 @@ class Main:
         elif key == "bye":
             self.runtime.stop()
             self.exit = True;
-        elif key == "verbose":
+        elif key == "verbose" or key == "v": 
             self.config.verbose = self.config.verbose == False
             print(f"Verbose Mode: {self.config.verbose}")
         elif commands[0] == "audio":
