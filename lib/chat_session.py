@@ -203,7 +203,7 @@ class ChatSession:
             role = "function" if function_name or self.skip_function_result() else "user"
             self.append_message(role, function_message, function_name)
 
-        self.set_next_llm_call((not self.skip_function_result()) and function_message != None)
+        self.set_next_llm_call((not self.skip_function_result()) and function_message)
 
         return (function_message, function_name, role)
     
