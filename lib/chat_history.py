@@ -1,29 +1,29 @@
 class ChatHistory:
     def __init__(self):
-        self.messages = []
+        self.__messages = []
 
     def append(self, data):
-        self.messages.append(data)
+        self.__messages.append(data)
 
 
     def get(self, index):
-        return self.messages[index]
+        return self.__messages[index]
 
     def get_data(self, index, name):
-        m = self.messages[index]
+        m = self.__messages[index]
         if m:
             return m.get(name)
 
     def set(self, index, data):
-        if self.messages[index]:
-            self.messages[index] = data
+        if self.__messages[index]:
+            self.__messages[index] = data
 
     def len(self):
-        return len(self.messages)
+        return len(self.__messages)
 
     def last(self):
         if self.len() > 0:
-            return self.messages[self.len() - 1]
+            return self.__messages[self.len() - 1]
 
-    def all_data(self):
-        return self.messages
+    def messages(self):
+        return self.__messages

@@ -32,6 +32,12 @@ def test_len(history):
 def test_last(history):
     assert history.last() == {"name":"5", "data":"5"}
 
-def test_all_data(history):
-    assert history.all_data() == history.messages
+def test_messages(history):
+    assert history.messages() == [
+        {"name":"1", "data":"1"},
+        {"name":"2", "data":"2"},
+        {"name":"3", "data":"3"},
+        {"name":"4", "data":"4"},
+        {"name":"5", "data":"5"},
+    ]
 

@@ -103,7 +103,7 @@ class ChatSession:
             })
 
     def save_log(self):
-        save_log(self.manifest_key, self.history.all_data(), self.time)
+        save_log(self.manifest_key, self.history.messages(), self.time)
 
     def set_intro(self):
         if self.intro:
@@ -121,7 +121,7 @@ class ChatSession:
         # res = None
         # function_call = None
         # role = "assistant"
-        return self.llm_model.generate_response(self.history.all_data(), self.manifest, self.config.verbose)
+        return self.llm_model.generate_response(self.history.messages(), self.manifest, self.config.verbose)
 
     def call_llm(self):
         (role, res, function_call) = self.generate_response();
@@ -176,7 +176,7 @@ class ChatSession:
         else:
             if self.manifest.get("notebook"):
                 # Python code from llm
-                arguments = function_call.arguments_for_notebook(self.history.all_data())
+                arguments = function_call.arguments_for_notebook(self.history.messages())
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
