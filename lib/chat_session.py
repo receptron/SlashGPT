@@ -33,7 +33,7 @@ class ChatSession:
         self.temperature = self.manifest.temperature()
         
         self.intro_message = None
-        self.messages = ChatHistory()
+        self.history = ChatHistory()
         # init log dir
         create_log_dir(manifest_key)
 
@@ -44,7 +44,7 @@ class ChatSession:
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests)
         if self.prompt:
-            self.messages.append({"role":"system", "content":self.prompt})
+            self.history.append({"role":"system", "content":self.prompt})
 
         # Prepare embedded database index
         self.vector_db = self.get_vector_db()
@@ -91,19 +91,19 @@ class ChatSession:
     """
     def append_message(self, role: str, message: str, name = None):
         if name:
-            self.messages.append({"role":role, "content":message, "name":name })
+            self.history.append({"role":role, "content":message, "name":name })
         else:
-            self.messages.append({"role":role, "content":message })
+            self.history.append({"role":role, "content":message })
         if self.vector_db and role == "user":
             articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
-            assert self.messages.get_data(0, "role") == "system", "Missing system message"
-            self.messages.set(0, {
+            assert self.history.get_data(0, "role") == "system", "Missing system message"
+            self.history.set(0, {
                 "role":"system", 
                 "content":re.sub("\\{articles\\}", articles, self.prompt, 1)
             })
 
     def save_log(self):
-        save_log(self.manifest_key, self.messages.all_data(), self.time)
+        save_log(self.manifest_key, self.history.all_data(), self.time)
 
     def set_intro(self):
         if self.intro:
@@ -121,7 +121,7 @@ class ChatSession:
         # res = None
         # function_call = None
         # role = "assistant"
-        return self.llm_model.generate_response(self.messages.all_data(), self.manifest, self.config.verbose)
+        return self.llm_model.generate_response(self.history.all_data(), self.manifest, self.config.verbose)
 
     def call_llm(self):
         (role, res, function_call) = self.generate_response();
@@ -176,7 +176,7 @@ class ChatSession:
         else:
             if self.manifest.get("notebook"):
                 # Python code from llm
-                arguments = function_call.arguments_for_notebook(self.messages.all_data())
+                arguments = function_call.arguments_for_notebook(self.history.all_data())
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
