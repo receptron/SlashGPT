@@ -22,8 +22,8 @@ class ChatHistory:
         return len(self.messages)
 
     def last(self):
-        if len() > 0:
-            return self.messages[len() - 1]
+        if self.len() > 0:
+            return self.messages[self.len() - 1]
 
     def all_data(self):
         return self.messages
