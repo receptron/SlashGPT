@@ -97,7 +97,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
 - *functions* (string, optional): location of the function definitions 
-- *module* (string, optional): location of the pytoh script to be loaded for function calls
+- *module* (string, optional): location of the Python script to be loaded for function calls
 - *actions* (object, optional): Template-based function processor (see details below)
 
 Name of that file becomes the slash command. (the slash command of "foo.json" is "/foo")
