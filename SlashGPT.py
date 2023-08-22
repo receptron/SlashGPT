@@ -146,12 +146,12 @@ class Main:
                 self.config.audio = commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
-            if len(self.context.messages) >= 1:
-                print(self.context.messages[0].get("content"))
+            if self.context.messages.len() >= 1:
+                print(self.context.messages.get_data(0, "content"))
             if self.config.verbose and self.context.functions:
                 print(self.context.functions)
         elif key == "history":
-            print(json.dumps(self.context.messages, indent=2))
+            print(json.dumps(self.context.messages.all_data(), indent=2))
         elif key == "functions":
             if self.context.functions:
                 print(json.dumps(self.context.functions, indent=2))
@@ -189,7 +189,7 @@ class Main:
                     play_text(res, self.config.audio)
 
             if self.context.should_call_switch_context():
-                old_message = self.context.messages[len(self.context.messages) - 1]
+                old_message = self.context.messages.last()
                 self.switch_context(self.context.switch_context_manifest_key(),  intro = False)
                 self.context.messages.append(old_message)
                 self.process_llm()
