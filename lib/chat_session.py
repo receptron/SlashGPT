@@ -48,9 +48,6 @@ class ChatSession:
         # Prepare embedded database index
         self.vector_db = self.get_vector_db()
 
-        # Load agent specific python modules (for external function calls) if necessary
-        self.module = self.manifest.read_module()
-        
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
         if self.functions and self.config.verbose:
@@ -73,9 +70,6 @@ class ChatSession:
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
-
-    def get_module(self, function_name):
-        return self.module and self.module.get(function_name) or None
 
     def skip_function_result(self):
         return self.get_manifest_attr("skip_function_result")
@@ -179,18 +173,19 @@ class ChatSession:
             # call external api or some
             function_message = function_call.function_action.call_api(arguments, verbose)
         else:
-            if self.get_manifest_attr("notebook"):
+            if self.manifest.get("notebook"):
                 # Python code from llm
                 arguments = function_call.arguments_for_notebook(self.messages)
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
-                function = self.get_module(function_name) # python code
+                function = self.manifest.get_module(function_name) # python code
             if function:
                 if isinstance(arguments, str):
                     (result, message) = function(arguments)
                 else:
                     (result, message) = function(**arguments)
+                    
                 if message:
                     # Embed code for the context
                     self.append_message("assistant", message)
@@ -210,7 +205,7 @@ class ChatSession:
     def format_python_result(self, result):
         if isinstance(result, dict):
             result = json.dumps(result)
-        result_form = self.get_manifest_attr("result_form")
+        result_form = self.manifest_.get("result_form")
         if result_form:
             return result_form.format(result = result)
         return result

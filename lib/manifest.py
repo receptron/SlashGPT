@@ -7,6 +7,7 @@ class Manifest:
     def __init__(self, manifest = {}, manifest_name = None):
         self.__manifest = manifest
         self.__manifest_name = manifest_name
+        self.module = self.__read_module()
         
     def get(self, key):
         return self.__manifest.get(key)
@@ -57,7 +58,7 @@ class Manifest:
     Read Module
     Read Python file if module is in manifest.
     """
-    def read_module(self):
+    def __read_module(self):
         module = self.get("module")
         if module:
             with open(f"{module}", 'r') as f:
@@ -72,6 +73,8 @@ class Manifest:
 
         return None
 
+    def get_module(self, function_name):
+        return self.module and self.module.get(function_name) or None
     
     def __read_prompt(self):
         prompt = self.get("prompt")
