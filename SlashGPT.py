@@ -188,11 +188,14 @@ class Main:
                 self.context.append_message(responseRole, res)
                 self.context.save_log()
 
-            if function_call:
+            if function_call and function_call.should_call():
                 (question, function_name) = self.process_function_call(function_call)
                 if question:
                     role = "function" if function_name or self.context.skip_function_result() else "user"
-                    print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{question}")
+                    if role == "function":
+                        print(f"\033[95m\033[1m{role}({function_name}): \033[95m\033[0m{question}")
+                    else:
+                        print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{question}")
                     self.context.append_message(role, question, function_name)
                     if not self.context.skip_function_result():
                         self.process_llm()
@@ -247,39 +250,39 @@ class Main:
             params = ','.join(f"{key}={function_call["arguments"][key]}" for key in function_call.arguments.keys())
         print(colored(f"Function: {function_name}({params})", "blue"))
         '''
-        if function_name:
-            action = self.context.get_action(function_name)
-            if action:
-                if action.is_switch_context():
-                    self.switch_context(action.get_manifest_key(arguments),  intro = False)
-                    function_name = None # Without name, this message will be treated as user prompt.
-                    
-                # call external api or some
-                function_message = action.call_api(arguments, self.config.verbose)
+
+        action = self.context.get_action(function_name)
+        if action:
+            if action.is_switch_context():
+                self.switch_context(action.get_manifest_key(arguments),  intro = False)
+                function_name = None # Without name, this message will be treated as user prompt.
+
+            # call external api or some
+            function_message = action.call_api(arguments, self.config.verbose)
+        else:
+            if self.context.get_manifest_attr("notebook"):
+                # Python code from llm
+                if function_name == "python" and isinstance(arguments, str):
+                    print(colored("python function was called", "yellow"))
+                    arguments = {
+                        "code": arguments,
+                        "query": self.context.messages[-1]["content"]
+                    }
+                function = getattr(self.runtime, function_name)
             else:
-                if self.context.get_manifest_attr("notebook"):
-                    # Python code from llm
-                    if function_name == "python" and isinstance(arguments, str):
-                        print(colored("python function was called", "yellow"))
-                        arguments = {
-                            "code": arguments,
-                            "query": self.context.messages[-1]["content"]
-                        }
-                    function = getattr(self.runtime, function_name)
+                # Python code from resource file
+                function = self.context.get_module(function_name) # python code
+            if function:
+                if isinstance(arguments, str):
+                    (result, message) = function(arguments)
                 else:
-                    # Python code from resource file
-                    function = self.context.get_module(function_name) # python code
-                if function:
-                    if isinstance(arguments, str):
-                        (result, message) = function(arguments)
-                    else:
-                        (result, message) = function(**arguments)
-                    if message:
-                        # Embed code for the context
-                        self.context.append_message("assistant", message)
-                    function_message = self.python_result(result)
-                else:
-                    print(colored(f"No function {function_name} in the module", "red"))
+                    (result, message) = function(**arguments)
+                if message:
+                    # Embed code for the context
+                    self.context.append_message("assistant", message)
+                function_message = self.python_result(result)
+            else:
+                print(colored(f"No function {function_name} in the module", "red"))
         return (function_message, function_name)
 
     def python_result(self, result):
