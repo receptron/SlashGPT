@@ -167,7 +167,7 @@ class ChatSession:
     def process_function_call(self, verbose, runtime):
         function_call = self.function_call
         function_message = None
-        function_name = self.function_call.name()
+        function_name = function_call.name()
         arguments = function_call.arguments()
                 
         print(colored(json.dumps(function_call.data(), indent=2), "blue"))
@@ -181,7 +181,7 @@ class ChatSession:
         else:
             if self.get_manifest_attr("notebook"):
                 # Python code from llm
-                arguments = function_call.arguments_for_notebook()
+                arguments = function_call.arguments_for_notebook(self.messages)
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file

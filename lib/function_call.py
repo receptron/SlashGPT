@@ -47,7 +47,7 @@ class FunctionCall:
             print(colored("python function was called", "yellow"))
             return {
                 "code": arguments,
-                "query": self.messages[-1]["content"]
+                "query": messages[-1]["content"]
             }
         return arguments
             
