@@ -163,6 +163,12 @@ class Main:
                 print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
             self.switch_context(self.context.manifest_key, intro = False)
+        elif key == "autotest":
+            self.config.verbose = True
+            self.test("currency", "/sample")
+            self.test("spacex", "/sample")
+            self.test("cal", "/sample")
+            self.test("jupyter", "/sample_stock")
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]
@@ -175,6 +181,11 @@ class Main:
         else:
             print(colored(f"Invalid slash command: {key}", "red"))
 
+    def test(self, key, sample):
+        self.switch_context(key)
+        question = self.process_sample(sample)
+        self.context.append_message("user", question)
+        self.process_llm()
 
     def process_llm(self):
         try:
