@@ -1,7 +1,7 @@
 import pytest
 
-from lib.chat_history import ChatHistory
-from lib.chat_memory_history import ChatMemoryHistory
+from lib.history.base import ChatHistory
+from lib.history.memory_storage import ChatMemoryHistory
 
 
 @pytest.fixture
