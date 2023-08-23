@@ -8,7 +8,7 @@ from lib.function_action import FunctionAction
 class FunctionCall:
     @classmethod
     def factory(cls, function_call_data):
-        if function_call_data == None:
+        if function_call_data is None:
             return None
         return FunctionCall(function_call_data)
 
@@ -33,7 +33,7 @@ class FunctionCall:
         if arguments and isinstance(arguments, str):
             try:
                 return json.loads(arguments)
-            except Exception as e:
+            except Exception:
                 print(
                     colored(
                         f"Function {function_name}: Failed to load arguments as json",

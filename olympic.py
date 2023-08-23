@@ -7,7 +7,6 @@ import pandas as pd  # for storing text and embeddings data
 import pinecone
 import tiktoken  # for counting tokens
 from dotenv import load_dotenv
-from scipy import spatial  # for calculating vector similarities for search
 
 # Configuration
 load_dotenv()  # Load default environment variables (.env)

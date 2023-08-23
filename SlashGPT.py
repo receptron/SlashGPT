@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-import platform
-import re
-
-if platform.system() == "Darwin":
-    import readline  # So that input can handle Kanji & delete
-
 import json
+import re
 from enum import Enum
 
 from gtts import gTTS
@@ -91,7 +86,7 @@ class Main:
 
     def parse_question(self, question: str):
         key = question[1:].strip()
-        commands = re.split("\s+", key)
+        commands = re.split(r"\s+", key)
         return (key, commands)
 
     def detect_input_style(self, question: str):
@@ -153,7 +148,7 @@ class Main:
             self.runtime.stop()
             self.exit = True
         elif key == "verbose" or key == "v":
-            self.config.verbose = self.config.verbose == False
+            self.config.verbose = self.config.verbose is False
             print(f"Verbose Mode: {self.config.verbose}")
         elif commands[0] == "audio":
             if len(commands) == 1:

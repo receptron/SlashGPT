@@ -1,7 +1,5 @@
 import replicate
-from termcolor import colored
 
-from lib.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
 
 

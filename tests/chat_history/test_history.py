@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 
 from lib.chat_history import ChatHistory

@@ -1,7 +1,6 @@
 import google.generativeai as palm
 from termcolor import colored
 
-from lib.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
 
 
@@ -11,8 +10,6 @@ class LLMEnginePaLM(LLMEngineBase):
 
     def chat_completion(self, messages, manifest, llm_model, verbose):
         temperature = manifest.temperature()
-        functions = manifest.functions()
-        model_name = llm_model.name()
 
         defaults = {
             "model": "models/chat-bison-001",

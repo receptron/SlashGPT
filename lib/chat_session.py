@@ -9,7 +9,7 @@ from lib.chat_config import ChatConfig
 from lib.chat_history import ChatHistory
 from lib.chat_memory_history import ChatMemoryHistory
 from lib.dbs.pinecone import DBPinecone
-from lib.llms.models import get_llm_model_from_manifest, llm_models
+from lib.llms.models import get_llm_model_from_manifest
 from lib.log import create_log_dir, save_log
 from lib.manifest import Manifest
 
@@ -170,7 +170,7 @@ class ChatSession:
         self.next_llm_call = value
 
     def should_call_function_call(self):
-        return self.function_call != None and self.function_call.should_call()
+        return self.function_call is not None and self.function_call.should_call()
 
     def should_call_llm(self):
         return self.next_llm_call

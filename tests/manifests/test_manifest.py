@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 
 from lib.manifest import Manifest

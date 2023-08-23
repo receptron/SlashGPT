@@ -11,7 +11,7 @@ from termcolor import colored
 class FunctionAction:
     @classmethod
     def factory(cls, function_action_data):
-        if function_action_data == None:
+        if function_action_data is None:
             return None
         return FunctionAction(function_action_data)
 

@@ -63,7 +63,7 @@ class ChatConfig:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
     """
-    Load a set of manifests. 
+    Load a set of manifests.
     It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
     """
 
@@ -71,7 +71,7 @@ class ChatConfig:
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
-            if re.search("\.json$", file):
+            if re.search(r"\.json$", file):
                 with open(
                     f"{path}/{file}", "r", encoding="utf-8"
                 ) as f:  # encoding add for Win
@@ -94,9 +94,9 @@ class ChatConfig:
 
     def has_value_for_key(self, key):
         if key == "REPLICATE_API_TOKEN":
-            return self.REPLICATE_API_TOKEN != None
+            return self.REPLICATE_API_TOKEN is not None
         if key == "GOOGLE_PALM_KEY":
-            return self.GOOGLE_PALM_KEY != None
+            return self.GOOGLE_PALM_KEY is not None
         return False
 
     def has_manifest(self, key):

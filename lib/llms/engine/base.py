@@ -12,7 +12,7 @@ class LLMEngineBase(metaclass=ABCMeta):
 
     """
     Extract the Python code from the string if the agent is a code interpreter.
-    Returns it in the "function call" format. 
+    Returns it in the "function call" format.
     """
 
     def _extract_function_call(self, messages, manifest, res: str):
