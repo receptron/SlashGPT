@@ -77,7 +77,7 @@ class FunctionAction:
         if method == "POST":
             headers["Content-Type"] = "application/json"
             if verbose:
-                print(colored(f"Posting to {url} {headers}", "yellow"))
+                print(colored(f"Posting to {url} {headers}", "cyan"))
             response = requests.post(url, headers=headers, json=arguments)
         else:
             print(arguments.items())
@@ -85,7 +85,7 @@ class FunctionAction:
                 **{key: urllib.parse.quote(value) for key, value in arguments.items()}
             )
             if verbose:
-                print(colored(f"Fetching from {url}", "yellow"))
+                print(colored(f"Fetching from {url}", "cyan"))
             response = requests.get(url, headers=headers)
         if response.status_code == 200:
             return response.text
@@ -102,7 +102,7 @@ class FunctionAction:
         with open(f"{template}", "r") as f:
             template = f.read()
             if verbose:
-                print(template)
+                print(colored(template, "cyan"))
             data = template.format(**arguments)
             dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
             return message_template.format(url=dataURL)

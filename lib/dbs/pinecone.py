@@ -1,6 +1,7 @@
 import openai
 import pinecone
 import tiktoken  # for counting tokens
+from termcolor import colored
 
 from lib.chat_config import ChatConfig
 
@@ -37,7 +38,7 @@ class DBPinecone:
         count = 0
         base_token = self.__messages_tokens(messages, model)
         if self.config.verbose:
-            print(f"messages token:{base_token}")
+            print(colored(f"messages token:{base_token}", "cyan"))
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
@@ -54,7 +55,10 @@ class DBPinecone:
                     print(len(article), self.__num_tokens(article, model))
         if self.config.verbose:
             print(
-                f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}"
+                colored(
+                    f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}",
+                    "cyan",
+                )
             )
         return articles
 

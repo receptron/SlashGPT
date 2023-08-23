@@ -25,8 +25,8 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
                 model=model_name, messages=messages, temperature=temperature
             )
         if verbose:
-            print(colored(f"model={response['model']}", "yellow"))
-            print(colored(f"usage={response['usage']}", "yellow"))
+            print(colored(f"model={response['model']}", "cyan"))
+            print(colored(f"usage={response['usage']}", "cyan"))
         answer = response["choices"][0]["message"]
         res = answer["content"]
         role = answer["role"]
