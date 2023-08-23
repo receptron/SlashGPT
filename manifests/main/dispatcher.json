@@ -6,7 +6,7 @@
   "temperature": "0.0",
   "functions": "./resources/dispatcher.json",
   "actions": {
-    "categorize": { "message":"{question}", "metafile":"{category}" }
+    "categorize": { "message":"{question}", "manifest":"{category}" }
   },
   "intro": [
     "I am a dispatcher agent. I will find the right agent for your question, and let it answer." 

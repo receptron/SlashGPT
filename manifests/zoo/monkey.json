@@ -6,7 +6,7 @@
   "temperature": "0.0",
   "functions": "./resources/dispatcher.json",
   "actions": {
-    "categorize": { "message":"{question}", "metafile":"{category}" }
+    "categorize": { "message":"{question}", "manifest":"{category}" }
   },
   "intro": [
     "霊長類に関しては何でも聞いてください" 

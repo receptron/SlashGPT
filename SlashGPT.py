@@ -264,7 +264,7 @@ class Main:
 
             if question:
                 self.context.append_user_question(
-                    "user", self.context.manifest.format_question(question)
+                    self.context.manifest.format_question(question)
                 )
                 self.process_llm()
 
