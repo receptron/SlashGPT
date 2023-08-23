@@ -149,7 +149,7 @@ class Main:
             self.runtime.stop()
             self.exit = True
         elif key == "verbose" or key == "v":
-            self.config.verbose = self.config.verbose is False
+            self.config.verbose = not self.config.verbose
             print(colored(f"Verbose Mode: {self.config.verbose}", "cyan"))
         elif commands[0] == "audio":
             if len(commands) == 1:
