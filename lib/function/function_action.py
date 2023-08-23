@@ -34,7 +34,7 @@ class FunctionAction:
         appkey = self.__get("appkey")
 
         if appkey:
-            appkey_value = os.getenv(appkey, "")
+            appkey_value = os.getenv("SLASH_GPT_ENV_" + appkey, "")
             if appkey_value:
                 arguments["appkey"] = appkey_value
             else:
