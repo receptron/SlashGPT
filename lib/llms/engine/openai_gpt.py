@@ -1,7 +1,9 @@
 import openai
 from termcolor import colored
-from lib.llms.engine.base import LLMEngineBase
+
 from lib.function_call import FunctionCall
+from lib.llms.engine.base import LLMEngineBase
+
 
 class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self):
@@ -16,18 +18,17 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
                 model=model_name,
                 messages=messages,
                 functions=functions,
-                temperature=temperature)
+                temperature=temperature,
+            )
         else:
             response = openai.ChatCompletion.create(
-                model=model_name,
-                messages=messages,
-                temperature=temperature)
+                model=model_name, messages=messages, temperature=temperature
+            )
         if verbose:
             print(colored(f"model={response['model']}", "yellow"))
             print(colored(f"usage={response['usage']}", "yellow"))
-        answer = response['choices'][0]['message']
-        res = answer['content']
-        role = answer['role']
-        function_call = FunctionCall.factory(answer.get('function_call'))
+        answer = response["choices"][0]["message"]
+        res = answer["content"]
+        role = answer["role"]
+        function_call = FunctionCall.factory(answer.get("function_call"))
         return (role, res, function_call)
-

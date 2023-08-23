@@ -262,3 +262,17 @@ pip install pytest
 ```
 python -m pytest
 ```
+
+# Code formatter and linter
+
+## Lint
+
+```
+make lint
+```
+
+## Format
+
+```
+make format
+```
