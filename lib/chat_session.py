@@ -183,68 +183,14 @@ class ChatSession:
         arguments = self.function_call.arguments()
         return self.function_call.function_action.get_manifest_key(arguments)
 
-    def process_function_call(self, runtime, verbose = False):
-        (function_message, function_name, role, should_next_call_llm) = self.__process_function_call(self.manifest, self.history, runtime, verbose)
+    def process_function_call(self, runtime, verbose=False):
+        (
+            function_message,
+            function_name,
+            role,
+            should_next_call_llm,
+        ) = self.function_call.process_function_call(
+            self.manifest, self.history, runtime, verbose
+        )
         self.set_next_llm_call(should_next_call_llm)
         return (function_message, function_name, role)
-    
-    def __process_function_call(self, manifest, history, runtime, verbose = False):
-        function_call = self.function_call
-        function_message = None
-        function_name = function_call.name()
-        arguments = function_call.arguments()
-
-        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
-
-        if function_call.function_action:
-            if function_call.function_action.is_switch_context():
-                function_name = (
-                    None  # Without name, this message will be treated as user prompt.
-                )
-
-            # call external api or some
-            function_message = function_call.function_action.call_api(
-                arguments, verbose
-            )
-        else:
-            if manifest.get("notebook"):
-                # Python code from llm
-                arguments = function_call.arguments_for_notebook(
-                    history.messages()
-                )
-                function = getattr(runtime, function_name)
-            else:
-                # Python code from resource file
-                function = manifest.get_module(function_name)  # python code
-            if function:
-                if isinstance(arguments, str):
-                    (result, message) = function(arguments)
-                else:
-                    (result, message) = function(**arguments)
-
-                if message:
-                    # Embed code for the context
-                    history.append_message("assistant", message)
-                function_message = self.format_python_result(result)
-            else:
-                print(colored(f"No function {function_name} in the module", "red"))
-
-        role = None
-        if function_message:
-            role = (
-                "function"
-                if function_name or manifest.skip_function_result()
-                else "user"
-            )
-            history.append_message(role, function_message, function_name)
-
-        should_next_call_llm = (not manifest.skip_function_result()) and function_message
-        return (function_message, function_name, role, should_next_call_llm)
-
-    def format_python_result(self, result):
-        if isinstance(result, dict):
-            result = json.dumps(result)
-        result_form = self.manifest.get("result_form")
-        if result_form:
-            return result_form.format(result=result)
-        return result
