@@ -1,7 +1,7 @@
 import openai
 from termcolor import colored
 
-from lib.function_call import FunctionCall
+from lib.function.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
 
 

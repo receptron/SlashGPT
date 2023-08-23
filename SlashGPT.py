@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import re
-from enum import Enum
 
 from gtts import gTTS
 from playsound import playsound
@@ -9,16 +8,10 @@ from termcolor import colored
 
 from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
-from lib.jupyter_runtime import PythonRuntime
+from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
-
-
-class InputStyle(Enum):
-    HELP = 1
-    TALK = 2
-    SLASH = 3
-    SAMPLE = 4
-
+from lib.utils.help import LONG_HELP, ONELINE_HELP
+from lib.utils.utils import InputStyle
 
 """
 utility functions for Main class
@@ -101,7 +94,7 @@ class Main:
             return InputStyle.TALK
 
     def display_oneline_help(self):
-        print(self.config.ONELINE_HELP)
+        print(ONELINE_HELP)
 
     def process_sample(self, question: str):
         (key, commands) = self.parse_question(question)
@@ -137,7 +130,7 @@ class Main:
         (key, commands) = self.parse_question(question)
         if commands[0] == "help":
             if len(commands) == 1:
-                print(self.config.LONG_HELP)
+                print(LONG_HELP)
                 list = "\n".join(self.config.help_list())
                 print(f"Agents:\n{list}")
             if len(commands) == 2:
@@ -148,7 +141,7 @@ class Main:
             self.runtime.stop()
             self.exit = True
         elif key == "verbose" or key == "v":
-            self.config.verbose = self.config.verbose is False
+            self.config.verbose = not self.config.verbose
             print(colored(f"Verbose Mode: {self.config.verbose}", "cyan"))
         elif commands[0] == "audio":
             if len(commands) == 1:
@@ -286,6 +279,6 @@ class Main:
 
 if __name__ == "__main__":
     config = ChatConfig("./manifests/main")
-    print(config.ONELINE_HELP)
+    print(ONELINE_HELP)
     main = Main(config, "dispatcher")
     main.start()
