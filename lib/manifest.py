@@ -150,3 +150,6 @@ class Manifest:
             if form:
                 return form.format(question=question)
         return question
+
+    def skip_function_result(self):
+        return self.get("skip_function_result")

@@ -195,7 +195,7 @@ class Main:
     def test(self, key, sample):
         self.switch_context(key)
         question = self.process_sample(sample)
-        self.context.append_message("user", question)
+        self.context.append_user_question(question)
         self.process_llm()
 
     def process_llm(self):
@@ -211,6 +211,7 @@ class Main:
                     play_text(res, self.config.audio)
 
             if self.context.should_call_switch_context():
+                # TODO: get_last_user's question and use append_user_question
                 old_message = self.context.history.last()
                 self.switch_context(
                     self.context.switch_context_manifest_key(), intro=False
@@ -224,7 +225,7 @@ class Main:
                     function_name,
                     role,
                 ) = self.context.process_function_call(
-                    self.config.verbose, self.runtime
+                    self.runtime, self.config.verbose
                 )
                 if function_message:
                     if role == "function":
