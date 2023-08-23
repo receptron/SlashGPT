@@ -80,7 +80,8 @@ class FunctionAction:
                 print(colored(f"Posting to {url} {headers}", "cyan"))
             response = requests.post(url, headers=headers, json=arguments)
         else:
-            print(arguments.items())
+            if verbose:
+                print(colored(arguments.items(), "cyan"))
             url = url.format(
                 **{key: urllib.parse.quote(value) for key, value in arguments.items()}
             )
