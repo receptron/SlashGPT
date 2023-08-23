@@ -6,12 +6,12 @@ from datetime import datetime
 from termcolor import colored
 
 from lib.chat_config import ChatConfig
+from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
 from lib.history.memory_storage import ChatMemoryHistory
-from lib.dbs.pinecone import DBPinecone
 from lib.llms.models import get_llm_model_from_manifest
-from lib.utils.log import create_log_dir, save_log
 from lib.manifest import Manifest
+from lib.utils.log import create_log_dir, save_log
 
 """
 ChatSession represents a chat session with a particular AI agent.

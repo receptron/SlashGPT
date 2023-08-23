@@ -11,6 +11,7 @@ from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
+from lib.utils.help import LONG_HELP, ONELINE_HELP
 
 
 class InputStyle(Enum):
@@ -101,7 +102,7 @@ class Main:
             return InputStyle.TALK
 
     def display_oneline_help(self):
-        print(self.config.ONELINE_HELP)
+        print(ONELINE_HELP)
 
     def process_sample(self, question: str):
         (key, commands) = self.parse_question(question)
@@ -137,7 +138,7 @@ class Main:
         (key, commands) = self.parse_question(question)
         if commands[0] == "help":
             if len(commands) == 1:
-                print(self.config.LONG_HELP)
+                print(LONG_HELP)
                 list = "\n".join(self.config.help_list())
                 print(f"Agents:\n{list}")
             if len(commands) == 2:
@@ -286,6 +287,6 @@ class Main:
 
 if __name__ == "__main__":
     config = ChatConfig("./manifests/main")
-    print(config.ONELINE_HELP)
+    print(ONELINE_HELP)
     main = Main(config, "dispatcher")
     main.start()
