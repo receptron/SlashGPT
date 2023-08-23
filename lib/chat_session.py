@@ -1,4 +1,3 @@
-import json
 import random
 import re
 from datetime import datetime
@@ -85,9 +84,6 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
-    def skip_function_result(self):
-        return self.get_manifest_attr("skip_function_result")
-
     def get_vector_db(self):
         # Todo: support other vector dbs.
         embeddings = self.manifest.get("embeddings")
@@ -104,14 +100,11 @@ class ChatSession:
     """
 
     def append_message(self, role: str, message: str, name=None):
-        if name:
-            self.history.append({"role": role, "content": message, "name": name})
-        else:
-            self.history.append({"role": role, "content": message})
+        self.history.append_message(role, message, name)
 
-    def append_user_question(self, role: str, message: str, name=None):
-        self.append_message(role, message, name)
-        if self.vector_db and role == "user":
+    def append_user_question(self, message: str):
+        self.append_message("user", message)
+        if self.vector_db:
             articles = self.vector_db.fetch_related_articles(
                 self.llm_model.max_token() - 500
             )
@@ -189,62 +182,14 @@ class ChatSession:
         arguments = self.function_call.arguments()
         return self.function_call.function_action.get_manifest_key(arguments)
 
-    def process_function_call(self, verbose, runtime):
-        function_call = self.function_call
-        function_message = None
-        function_name = function_call.name()
-        arguments = function_call.arguments()
-
-        print(colored(json.dumps(function_call.data(), indent=2), "blue"))
-
-        if function_call.function_action:
-            if function_call.function_action.is_switch_context():
-                function_name = (
-                    None  # Without name, this message will be treated as user prompt.
-                )
-
-            # call external api or some
-            function_message = function_call.function_action.call_api(
-                arguments, verbose
-            )
-        else:
-            if self.manifest.get("notebook"):
-                # Python code from llm
-                arguments = function_call.arguments_for_notebook(
-                    self.history.messages()
-                )
-                function = getattr(runtime, function_name)
-            else:
-                # Python code from resource file
-                function = self.manifest.get_module(function_name)  # python code
-            if function:
-                if isinstance(arguments, str):
-                    (result, message) = function(arguments)
-                else:
-                    (result, message) = function(**arguments)
-
-                if message:
-                    # Embed code for the context
-                    self.append_message("assistant", message)
-                function_message = self.format_python_result(result)
-            else:
-                print(colored(f"No function {function_name} in the module", "red"))
-
-        role = None
-        if function_message:
-            role = (
-                "function" if function_name or self.skip_function_result() else "user"
-            )
-            self.append_message(role, function_message, function_name)
-
-        self.set_next_llm_call((not self.skip_function_result()) and function_message)
-
+    def process_function_call(self, runtime, verbose=False):
+        (
+            function_message,
+            function_name,
+            role,
+            should_next_call_llm,
+        ) = self.function_call.process_function_call(
+            self.manifest, self.history, runtime, verbose
+        )
+        self.set_next_llm_call(should_next_call_llm)
         return (function_message, function_name, role)
-
-    def format_python_result(self, result):
-        if isinstance(result, dict):
-            result = json.dumps(result)
-        result_form = self.manifest.get("result_form")
-        if result_form:
-            return result_form.format(result=result)
-        return result
