@@ -181,7 +181,8 @@ class Main:
             self.switch_context(self.context.manifest_key, intro=False)
         elif key == "autotest":
             self.config.verbose = True
-            self.test("currency", "/sample")
+            self.test("dispatcher", "/sample currency")
+            self.test("dispatcher", "/sample weather")
             self.test("spacex", "/sample")
             self.test("cal", "/sample")
             self.test("jupyter", "/sample_stock")
