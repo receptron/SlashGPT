@@ -108,6 +108,9 @@ class ChatSession:
             self.history.append({"role": role, "content": message, "name": name})
         else:
             self.history.append({"role": role, "content": message})
+
+    def append_user_question(self, role: str, message: str, name=None):
+        self.append_message(role, message, name)
         if self.vector_db and role == "user":
             articles = self.vector_db.fetch_related_articles(
                 self.llm_model.max_token() - 500

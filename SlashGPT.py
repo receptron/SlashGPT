@@ -268,7 +268,7 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                self.context.append_message(
+                self.context.append_user_question(
                     "user", self.context.manifest.format_question(question)
                 )
                 self.process_llm()
