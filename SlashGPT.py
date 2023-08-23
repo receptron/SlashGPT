@@ -267,7 +267,6 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                print(self.context.manifest.format_question(question))
                 self.context.append_message(
                     "user", self.context.manifest.format_question(question)
                 )
