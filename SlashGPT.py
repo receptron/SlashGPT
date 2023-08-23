@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import re
-from enum import Enum
 
 from gtts import gTTS
 from playsound import playsound
@@ -12,14 +11,7 @@ from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
-
-
-class InputStyle(Enum):
-    HELP = 1
-    TALK = 2
-    SLASH = 3
-    SAMPLE = 4
-
+from lib.utils.utils import InputStyle
 
 """
 utility functions for Main class
