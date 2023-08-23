@@ -149,7 +149,7 @@ class Main:
             self.exit = True
         elif key == "verbose" or key == "v":
             self.config.verbose = self.config.verbose is False
-            print(f"Verbose Mode: {self.config.verbose}")
+            print(colored(f"Verbose Mode: {self.config.verbose}", "cyan"))
         elif commands[0] == "audio":
             if len(commands) == 1:
                 if self.config.audio:
@@ -165,7 +165,7 @@ class Main:
             if self.context.history.len() >= 1:
                 print(self.context.history.get_data(0, "content"))
             if self.config.verbose and self.context.functions:
-                print(self.context.functions)
+                print(colored(self.context.functions, "cyan"))
         elif key == "history":
             print(json.dumps(self.context.history.messages(), indent=2))
         elif key == "functions":
@@ -186,6 +186,7 @@ class Main:
             self.test("spacex", "/sample")
             self.test("cal", "/sample")
             self.test("jupyter", "/sample_stock")
+            self.config.verbose = False
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]

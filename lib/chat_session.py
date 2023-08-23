@@ -56,7 +56,7 @@ class ChatSession:
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
         if self.functions and self.config.verbose:
-            print(self.functions)
+            print(colored(self.functions, "cyan"))
 
         self.function_call = None
         self.next_llm_call = False
@@ -79,8 +79,8 @@ class ChatSession:
                     "red",
                 )
             )
-
-        print(f"Model = {self.llm_model.name()}")
+        if self.config.verbose:
+            print(colored(f"Model = {self.llm_model.name()}", "cyan"))
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)

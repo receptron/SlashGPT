@@ -36,7 +36,7 @@ class LLMEnginePaLM(LLMEngineBase):
         res = response.last
         if res:
             if verbose:
-                print(colored(res, "magenta"))
+                print(colored(res, "cyan"))
             function_call = self._extract_function_call(messages, manifest, res)
         else:
             # Error: Typically some restrictions
