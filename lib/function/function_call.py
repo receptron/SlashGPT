@@ -2,7 +2,7 @@ import json
 
 from termcolor import colored
 
-from lib.function_action import FunctionAction
+from lib.function.function_action import FunctionAction
 
 
 class FunctionCall:

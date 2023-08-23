@@ -9,7 +9,7 @@ from termcolor import colored
 
 from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
-from lib.jupyter_runtime import PythonRuntime
+from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 
 
