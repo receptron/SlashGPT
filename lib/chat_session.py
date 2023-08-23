@@ -85,9 +85,6 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
-    def skip_function_result(self):
-        return self.get_manifest_attr("skip_function_result")
-
     def get_vector_db(self):
         # Todo: support other vector dbs.
         embeddings = self.manifest.get("embeddings")
@@ -104,14 +101,11 @@ class ChatSession:
     """
 
     def append_message(self, role: str, message: str, name=None):
-        if name:
-            self.history.append({"role": role, "content": message, "name": name})
-        else:
-            self.history.append({"role": role, "content": message})
+        self.history.append_message(role, message, name)
 
-    def append_user_question(self, role: str, message: str, name=None):
-        self.append_message(role, message, name)
-        if self.vector_db and role == "user":
+    def append_user_question(self, message: str):
+        self.append_message("user", message)
+        if self.vector_db:
             articles = self.vector_db.fetch_related_articles(
                 self.llm_model.max_token() - 500
             )
@@ -189,7 +183,12 @@ class ChatSession:
         arguments = self.function_call.arguments()
         return self.function_call.function_action.get_manifest_key(arguments)
 
-    def process_function_call(self, verbose, runtime):
+    def process_function_call(self, runtime, verbose = False):
+        (function_message, function_name, role, should_next_call_llm) = self.__process_function_call(self.manifest, self.history, runtime, verbose)
+        self.set_next_llm_call(should_next_call_llm)
+        return (function_message, function_name, role)
+    
+    def __process_function_call(self, manifest, history, runtime, verbose = False):
         function_call = self.function_call
         function_message = None
         function_name = function_call.name()
@@ -208,15 +207,15 @@ class ChatSession:
                 arguments, verbose
             )
         else:
-            if self.manifest.get("notebook"):
+            if manifest.get("notebook"):
                 # Python code from llm
                 arguments = function_call.arguments_for_notebook(
-                    self.history.messages()
+                    history.messages()
                 )
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
-                function = self.manifest.get_module(function_name)  # python code
+                function = manifest.get_module(function_name)  # python code
             if function:
                 if isinstance(arguments, str):
                     (result, message) = function(arguments)
@@ -225,7 +224,7 @@ class ChatSession:
 
                 if message:
                     # Embed code for the context
-                    self.append_message("assistant", message)
+                    history.append_message("assistant", message)
                 function_message = self.format_python_result(result)
             else:
                 print(colored(f"No function {function_name} in the module", "red"))
@@ -233,13 +232,14 @@ class ChatSession:
         role = None
         if function_message:
             role = (
-                "function" if function_name or self.skip_function_result() else "user"
+                "function"
+                if function_name or manifest.skip_function_result()
+                else "user"
             )
-            self.append_message(role, function_message, function_name)
+            history.append_message(role, function_message, function_name)
 
-        self.set_next_llm_call((not self.skip_function_result()) and function_message)
-
-        return (function_message, function_name, role)
+        should_next_call_llm = (not manifest.skip_function_result()) and function_message
+        return (function_message, function_name, role, should_next_call_llm)
 
     def format_python_result(self, result):
         if isinstance(result, dict):

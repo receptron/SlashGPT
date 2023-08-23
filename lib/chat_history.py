@@ -22,3 +22,9 @@ class ChatHistory:
 
     def messages(self):
         return self.repository.messages()
+
+    def append_message(self, role: str, message: str, name=None):
+        if name:
+            self.append({"role": role, "content": message, "name": name})
+        else:
+            self.append({"role": role, "content": message})
