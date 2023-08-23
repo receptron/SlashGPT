@@ -7,6 +7,8 @@ from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 from termcolor import colored
 
+from lib.utils.utils import CALL_TYPE
+
 
 class FunctionAction:
     @classmethod
@@ -38,28 +40,53 @@ class FunctionAction:
             else:
                 print(colored(f"Missing {appkey} in .env file.", "red"))
 
-        url = self.__get("url")
-        if url:
-            if self.__get("graphQL"):
-                return self.graphQLRequest(url, arguments)
-            else:
-                return self.http_request(
-                    url,
-                    self.__get("method"),
-                    self.__function_action_data.get("headers", {}),
-                    arguments,
-                    verbose,
-                )
-        template = self.__get("template")
-        message_template = self.__get("message")
-        if template:
+        type = self.call_type()
+        if type == CALL_TYPE.REST:
+            return self.http_request(
+                self.__get("url"),
+                self.__get("method"),
+                self.__function_action_data.get("headers", {}),
+                arguments,
+                verbose,
+            )
+        if type == CALL_TYPE.GRAPHQL:
+            return self.graphQLRequest(self.__get("url"), arguments)
+
+        if type == CALL_TYPE.DATE_URL:
             return self.read_dataURL_template(
-                template, self.__get("mime_type"), message_template, arguments, verbose
+                self.__get("template"),
+                self.__get("mime_type"),
+                self.__get("message"),
+                arguments,
+                verbose,
             )
 
-        if message_template:
-            return message_template.format(**arguments)
+        if type == CALL_TYPE.FORMAT:
+            return self.__get("message").format(**arguments)
         return "Success"
+
+    def call_type(self):
+        type = self.__get("type")
+        if type:
+            if type == "rest":
+                return CALL_TYPE.REST
+            if type == "graphQL":
+                return CALL_TYPE.GRAPHQL
+            if type == "data_url":
+                return CALL_TYPE.DATE_URL
+            if type == "format":
+                return CALL_TYPE.FORMAT
+
+        # for backward compatibility.
+        # TODO: remove later
+        if "url" in self.__function_action_data:
+            if "graphQL" in self.__function_action_data:
+                return CALL_TYPE.GRAPHQL
+            return CALL_TYPE.REST
+        if "template" in self.__function_action_data:
+            return CALL_TYPE.DATE_URL
+        if "message" in self.__function_action_data:
+            return CALL_TYPE.FORMAT
 
     def graphQLRequest(self, url, arguments):
         transport = RequestsHTTPTransport(url=url, use_json=True)
