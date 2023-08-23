@@ -11,5 +11,5 @@ class InputStyle(Enum):
 class CALL_TYPE(Enum):
     REST = 1
     GRAPHQL = 2
-    DATE_URL = 3
-    FORMAT = 4
+    DATA_URL = 3
+    MESSAGE_TEMPLATE = 4

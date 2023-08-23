@@ -52,7 +52,7 @@ class FunctionAction:
         if type == CALL_TYPE.GRAPHQL:
             return self.graphQLRequest(self.__get("url"), arguments)
 
-        if type == CALL_TYPE.DATE_URL:
+        if type == CALL_TYPE.DATA_URL:
             return self.read_dataURL_template(
                 self.__get("template"),
                 self.__get("mime_type"),
@@ -61,7 +61,7 @@ class FunctionAction:
                 verbose,
             )
 
-        if type == CALL_TYPE.FORMAT:
+        if type == CALL_TYPE.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
         return "Success"
 
@@ -73,9 +73,9 @@ class FunctionAction:
             if type == "graphQL":
                 return CALL_TYPE.GRAPHQL
             if type == "data_url":
-                return CALL_TYPE.DATE_URL
-            if type == "format":
-                return CALL_TYPE.FORMAT
+                return CALL_TYPE.DATA_URL
+            if type == "message_template":
+                return CALL_TYPE.MESSAGE_TEMPLATE
 
         # for backward compatibility.
         # TODO: remove later
@@ -84,9 +84,9 @@ class FunctionAction:
                 return CALL_TYPE.GRAPHQL
             return CALL_TYPE.REST
         if "template" in self.__function_action_data:
-            return CALL_TYPE.DATE_URL
+            return CALL_TYPE.DATA_URL
         if "message" in self.__function_action_data:
-            return CALL_TYPE.FORMAT
+            return CALL_TYPE.MESSAGE_TEMPLATE
 
     def graphQLRequest(self, url, arguments):
         transport = RequestsHTTPTransport(url=url, use_json=True)
