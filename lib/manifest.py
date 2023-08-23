@@ -3,6 +3,8 @@ import random
 import re
 from datetime import datetime
 
+from termcolor import colored
+
 
 class Manifest:
     def __init__(self, manifest={}, manifest_name=None):
@@ -138,3 +140,13 @@ class Manifest:
             f"{agent}: {manifests[agent].get('description')}" for agent in agents
         ]
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
+
+    def format_question(self, question):
+        if question[:1] == "`":
+            print(colored("skipping form", "blue"))
+            return question[1:]
+        else:
+            form = self.get("form")
+            if form:
+                return form.format(question=question)
+        return question

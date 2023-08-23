@@ -254,16 +254,9 @@ class Main:
             self.talk_with_input()
 
     def talk_with_input(self):
-        form = None
         question = input(
             f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m"
         ).strip()
-        if question[:1] == "`":
-            print(colored("skipping form", "blue"))
-            question = question[1:]
-        else:
-            form = self.context.get_manifest_attr("form")
-
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
             self.display_oneline_help()
@@ -272,11 +265,11 @@ class Main:
         else:
             if mode == InputStyle.SAMPLE:
                 question = self.process_sample(question)
-            if question and form:
-                question = form.format(question=question)
 
             if question:
-                self.context.append_message("user", question)
+                self.context.append_message(
+                    "user", self.context.manifest.format_question(question)
+                )
                 self.process_llm()
 
     def print_bot(self, message):
