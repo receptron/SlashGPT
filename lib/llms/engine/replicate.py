@@ -1,7 +1,9 @@
 import replicate
 from termcolor import colored
-from lib.llms.engine.base import LLMEngineBase
+
 from lib.function_call import FunctionCall
+from lib.llms.engine.base import LLMEngineBase
+
 
 class LLMEngineReplicate(LLMEngineBase):
     def __init__(self):
@@ -19,18 +21,20 @@ class LLMEngineReplicate(LLMEngineBase):
                 prompts.append(f"{role}:{message['content']}")
         if functions:
             last = prompts.pop()
-            prompts.append(f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument.")
+            prompts.append(
+                f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument."
+            )
             prompts.append(last)
         prompts.append("assistant:")
-            
+
         replicate_model = llm_model.replicate_model()
-                
+
         output = replicate.run(
             replicate_model,
-            input={"prompt": '\n'.join(prompts)},
-            temperature = temperature
+            input={"prompt": "\n".join(prompts)},
+            temperature=temperature,
         )
-        res = ''.join(output)
+        res = "".join(output)
         function_call = self._extract_function_call(messages, manifest, res)
         if function_call:
             return (role, None, function_call)
