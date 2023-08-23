@@ -79,8 +79,8 @@ class ChatSession:
                     "red",
                 )
             )
-
-        print(f"Model = {self.llm_model.name()}")
+        if self.config.verbose:
+            print(colored(f"Model = {self.llm_model.name()}", "cyan"))
 
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
