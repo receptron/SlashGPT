@@ -22,11 +22,11 @@ class FunctionAction:
         return self.__function_action_data.get(key)
 
     def is_switch_context(self):
-        return "metafile" in self.__function_action_data
+        return "manifest" in self.__function_action_data
 
     def get_manifest_key(self, arguments):
-        metafile = self.__get("metafile")
-        return metafile.format(**arguments)
+        manifest = self.__get("manifest")
+        return manifest.format(**arguments)
 
     def call_api(self, arguments, verbose):
         appkey = self.__get("appkey")
