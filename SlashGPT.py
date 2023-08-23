@@ -236,9 +236,6 @@ class Main:
                         self.print_function(function_name, function_message)
                     else:
                         self.print_user(function_message)
-                        print(
-                            f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{function_message}"
-                        )
             if self.context.next_llm_call:
                 self.process_llm()
 
