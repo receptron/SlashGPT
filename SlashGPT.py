@@ -254,7 +254,6 @@ class Main:
             self.talk_with_input()
 
     def talk_with_input(self):
-        form = None
         question = input(
             f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m"
         ).strip()
@@ -268,18 +267,11 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                self.context.append_message("user", self.format_question(question))
+                print(self.context.manifest.format_question(question))
+                self.context.append_message(
+                    "user", self.context.manifest.format_question(question)
+                )
                 self.process_llm()
-
-    def format_question(self, question):
-        if question[:1] == "`":
-            print(colored("skipping form", "blue"))
-            return question[1:]
-        else:
-            form = self.context.get_manifest_attr("form")
-            if form:
-                return form.format(question=question)
-        return question
 
     def print_bot(self, message):
         print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {message}")
