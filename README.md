@@ -26,12 +26,12 @@ Here are the design goals:
     - PINECONE_API_KEY, PINECONE_ENVIRONMENT: required to use embedding vector db.
     - GOOGLE_PALM_KEY: required to switch to "palm" model with /llm command.
     - REPLICATE_API_TOKEN: required to switch to "llama2" model with /llm command.
-    - WOLFRAM_API_KEY: required to use "walfram" agent.
-    - OPENWEATHER_API_KEY: required to use "weather" agent.
-    - NOTEABLE_API_KEY: required to use "noteable" agent.
-    - ALCHEMY_API_KEY: required to use "web3" agent.
-    - WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
     - CODEBOX_API_KEY: set this to "local" to use CodeBox's LocalBox instead of IPython
+    - SLASH_GPT_ENV_WOLFRAM_API_KEY: required to use "walfram" agent.
+    - SLASH_GPT_ENV_OPENWEATHER_API_KEY: required to use "weather" agent.
+    - SLASH_GPT_ENV_NOTEABLE_API_KEY: required to use "noteable" agent.
+    - SLASH_GPT_ENV_WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
+    - ALCHEMY_API_KEY: required to use "web3" agent.
 
 ## Execution
 
