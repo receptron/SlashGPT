@@ -219,9 +219,7 @@ class Main:
                 (action_data, emit_method) = self.context.get_emit_data()
                 if emit_method == "switch_session":
                     self.switch_context(action_data.get("manifest"), intro=False)
-                    self.context.history.append(
-                        {"role": "user", "content": action_data.get("message")}
-                    )
+                    self.context.append_user_question(action_data.get("message"))
                     self.process_llm()
                     return
 
