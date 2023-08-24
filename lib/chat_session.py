@@ -151,7 +151,7 @@ class ChatSession:
             self.append_message(role, res)
             self.save_log()
 
-        return (role, res)
+        return res
 
     # for next call
     def set_function_call(self, function_call):
