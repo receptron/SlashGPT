@@ -165,9 +165,6 @@ class ChatSession:
         self.function_call = None
         self.next_llm_call = value
 
-    def should_call_function_call(self):
-        return self.function_call is not None and self.function_call.should_call()
-
     def should_call_llm(self):
         return self.next_llm_call
 

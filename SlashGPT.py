@@ -229,7 +229,7 @@ class Main:
                     self.process_llm()
                     return
 
-            if self.context.should_call_function_call():
+            if function_call is not None and function_call.should_call():
                 (
                     function_message,
                     function_name,
