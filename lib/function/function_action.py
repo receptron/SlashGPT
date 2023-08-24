@@ -30,22 +30,29 @@ class FunctionAction:
         manifest = self.__get("manifest")
         return manifest.format(**arguments)
 
-    def call_api(self, arguments, verbose):
+    def get_appkey_value(self):
         appkey = self.__get("appkey")
 
+        # TODO: check domain
         if appkey:
             appkey_value = os.getenv("SLASH_GPT_ENV_" + appkey, "")
-            if appkey_value:
-                arguments["appkey"] = appkey_value
-            else:
+            if not appkey_value:
                 print(colored(f"Missing {appkey} in .env file.", "red"))
+            return appkey_value
+
+    def call_api(self, arguments, verbose):
 
         type = self.call_type()
         if type == CALL_TYPE.REST:
+            appkey_value = self.get_appkey_value() or ""
+            if appkey_value:
+                arguments["appkey"] = appkey_value
+
             return self.http_request(
                 self.__get("url"),
                 self.__get("method"),
                 self.__function_action_data.get("headers", {}),
+                appkey_value,
                 arguments,
                 verbose,
             )
@@ -99,8 +106,8 @@ class FunctionAction:
         except Exception as e:
             return str(e)
 
-    def http_request(self, url, method, headers, arguments, verbose):
-        headers = {key: value.format(**arguments) for key, value in headers.items()}
+    def http_request(self, url, method, headers, appkey_value, arguments, verbose):
+        headers = {key: value.format(**arguments).format("appkey", appkey_value) for key, value in headers.items()}
         if method == "POST":
             headers["Content-Type"] = "application/json"
             if verbose:
