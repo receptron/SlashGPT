@@ -45,8 +45,6 @@ class FunctionAction:
         type = self.call_type()
         if type == CALL_TYPE.REST:
             appkey_value = self.get_appkey_value() or ""
-            if appkey_value:
-                arguments["appkey"] = appkey_value
 
             return self.http_request(
                 self.__get("url"),
