@@ -208,9 +208,9 @@ class Main:
         try:
             # Ask LLM to generate a response.
             # (responseRole, res, function_call) = self.context.generate_response()
-            (role, res, function_call) = self.context.call_llm()
+            (res, function_call) = self.context.call_llm()
 
-            if role and res:
+            if res:
                 self.print_bot(res)
 
                 if self.config.audio:

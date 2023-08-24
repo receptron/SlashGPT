@@ -152,4 +152,4 @@ class ChatSession:
             self.append_message(role, res)
             self.save_log()
 
-        return (role, res, function_call)
+        return (res, function_call)
