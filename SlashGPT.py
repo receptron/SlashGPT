@@ -44,31 +44,31 @@ class Main:
 
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
-        self.switch_context(manifest_key)
+        self.switch_session(manifest_key)
 
     """
-    switchContext terminate the current chat session and start a new.
+    switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def switch_context(self, manifest_key: str, intro: bool = True):
+    def switch_session(self, manifest_key: str, intro: bool = True):
         if manifest_key is None:
-            self.context = ChatSession(self.config)
+            self.session = ChatSession(self.config)
             return
         if self.config.exist_manifest(manifest_key):
-            self.context = ChatSession(self.config, manifest_key=manifest_key)
+            self.session = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
                 print(
                     colored(
-                        f"Activating: {self.context.title} (model={self.context.llm_model.name()}, temperature={self.context.temperature}, max_token={self.context.llm_model.max_token()})",
+                        f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})",
                         "blue",
                     )
                 )
             else:
-                print(colored(f"Activating: {self.context.title}", "blue"))
-            if self.context.get_manifest_attr("notebook"):
+                print(colored(f"Activating: {self.session.title}", "blue"))
+            if self.session.get_manifest_attr("notebook"):
                 (result, _) = self.runtime.create_notebook(
-                    self.context.llm_model.name()
+                    self.session.llm_model.name()
                 )
                 print(
                     colored(
@@ -77,9 +77,9 @@ class Main:
                 )
 
             if intro:
-                self.context.set_intro()
-            if self.context.intro_message:
-                self.print_bot(self.context.intro_message)
+                self.session.set_intro()
+            if self.session.intro_message:
+                self.print_bot(self.session.intro_message)
         else:
             print(colored(f"Invalid slash command: {manifest_key}", "red"))
 
@@ -113,13 +113,13 @@ class Main:
                     print(sample)
                     return sample
             else:
-                agents = self.context.get_manifest_attr("agents")
+                agents = self.session.get_manifest_attr("agents")
                 if agents:
                     print("/sample {agent}: " + ", ".join(agents))
                 else:
                     print(colored(f"Error: No manifest named '{sub_key}'", "red"))
         elif key[:6] == "sample":
-            sample = self.context.get_manifest_attr(key)
+            sample = self.session.get_manifest_attr(key)
             if sample:
                 print(sample)
                 return sample
@@ -161,23 +161,23 @@ class Main:
                 self.config.audio = commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
-            if self.context.history.len() >= 1:
-                print(self.context.history.get_data(0, "content"))
-            if self.config.verbose and self.context.functions:
-                print(colored(self.context.functions, "cyan"))
+            if self.session.history.len() >= 1:
+                print(self.session.history.get_data(0, "content"))
+            if self.config.verbose and self.session.functions:
+                print(colored(self.session.functions, "cyan"))
         elif key == "history":
-            print(json.dumps(self.context.history.messages(), indent=2))
+            print(json.dumps(self.session.history.messages(), indent=2))
         elif key == "functions":
-            if self.context.functions:
-                print(json.dumps(self.context.functions, indent=2))
+            if self.session.functions:
+                print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and llm_models.get(commands[1]):
                 llm_model = get_llm_model_from_key(commands[1])
-                self.context.set_llm_model(llm_model)
+                self.session.set_llm_model(llm_model)
             else:
                 print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
-            self.switch_context(self.context.manifest_key, intro=False)
+            self.switch_session(self.session.manifest_key, intro=False)
         elif key == "autotest":
             self.config.verbose = True
             self.test("dispatcher", "/sample currency")
@@ -190,25 +190,25 @@ class Main:
             if len(commands) > 1 and manifests.get(commands[1]):
                 m = manifests[commands[1]]
                 self.config.load_manifests("./" + m["manifests_dir"])
-                self.switch_context(m["default_manifest_key"])
+                self.switch_session(m["default_manifest_key"])
             else:
                 print("/switch {manifest}: " + ", ".join(manifests.keys()))
         elif self.config.has_manifest(key):
-            self.switch_context(key)
+            self.switch_session(key)
         else:
             print(colored(f"Invalid slash command: {key}", "red"))
 
     def test(self, key, sample):
-        self.switch_context(key)
+        self.switch_session(key)
         question = self.process_sample(sample)
-        self.context.append_user_question(question)
+        self.session.append_user_question(question)
         self.process_llm()
 
     def process_llm(self):
         try:
             # Ask LLM to generate a response.
-            # (responseRole, res, function_call) = self.context.generate_response()
-            (res, function_call) = self.context.call_llm()
+            # (responseRole, res, function_call) = self.session.generate_response()
+            (res, function_call) = self.session.call_llm()
 
             if res:
                 self.print_bot(res)
@@ -221,8 +221,8 @@ class Main:
                 if action_method:
                     # All emit methods must be processed here
                     if action_method == "switch_session":
-                        self.switch_context(action_data.get("manifest"), intro=False)
-                        self.context.append_user_question(action_data.get("message"))
+                        self.switch_session(action_data.get("manifest"), intro=False)
+                        self.session.append_user_question(action_data.get("message"))
                         self.process_llm()
                 else:
                     (
@@ -230,8 +230,8 @@ class Main:
                         function_name,
                         should_call_llm,
                     ) = function_call.process_function_call(
-                        self.context.manifest,
-                        self.context.history,
+                        self.session.manifest,
+                        self.session.history,
                         self.runtime,
                         self.config.verbose,
                     )
@@ -243,7 +243,7 @@ class Main:
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}", "red"))
-            self.switch_context(self.context.manifest_key)
+            self.switch_session(self.session.manifest_key)
             if self.config.verbose:
                 raise
 
@@ -257,7 +257,7 @@ class Main:
 
     def talk_with_input(self):
         question = input(
-            f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m"
+            f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m"
         ).strip()
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
@@ -269,16 +269,16 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                self.context.append_user_question(
-                    self.context.manifest.format_question(question)
+                self.session.append_user_question(
+                    self.session.manifest.format_question(question)
                 )
                 self.process_llm()
 
     def print_bot(self, message):
-        print(f"\033[92m\033[1m{self.context.botName}\033[95m\033[0m: {message}")
+        print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
 
     def print_user(self, message):
-        print(f"\033[95m\033[1m{self.context.userName}: \033[95m\033[0m{message}")
+        print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{message}")
 
     def print_function(self, function_name, message):
         print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
