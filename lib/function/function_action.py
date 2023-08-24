@@ -23,12 +23,14 @@ class FunctionAction:
     def __get(self, key):
         return self.__function_action_data.get(key)
 
-    def is_switch_context(self):
-        return "manifest" in self.__function_action_data
+    def has_emit(self):
+        return self.__get("type") == "emit"
 
-    def get_manifest_key(self, arguments):
-        manifest = self.__get("manifest")
-        return manifest.format(**arguments)
+    def emit_method(self):
+        return self.__get("emit_method")
+
+    def emit_data(self):
+        return self.__get("emit_data")
 
     def call_api(self, arguments, verbose):
         appkey = self.__get("appkey")

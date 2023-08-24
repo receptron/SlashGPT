@@ -6,7 +6,14 @@
   "temperature": "0.0",
   "functions": "./resources/dispatcher.json",
   "actions": {
-    "categorize": { "message":"{question}", "manifest":"{category}" }
+    "categorize": {
+      "type": "emit",
+      "message":"{question}",
+      "emit_method": "switch_session",
+      "emit_data": {
+        "manifest":"{category}"
+      }
+    }
   },
   "intro": [
     "霊長類に関しては何でも聞いてください" 

@@ -210,15 +210,20 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-            if self.context.should_call_switch_context():
+            if self.context.has_emit():
                 # TODO: get_last_user's question and use append_user_question
-                old_message = self.context.history.last()
-                self.switch_context(
-                    self.context.switch_context_manifest_key(), intro=False
-                )
-                self.context.history.append(old_message)
-                self.process_llm()
-                return
+                (arguments, action) = self.context.get_emit_data()
+
+                if action.emit_method() == "switch_session":
+                    old_message = self.context.history.last()
+                    next_manifest = (
+                        action.emit_data().get("manifest").format(**arguments)
+                    )
+                    self.switch_context(next_manifest, intro=False)
+                    self.context.history.append(old_message)
+                    self.process_llm()
+                    return
+
             if self.context.should_call_function_call():
                 (
                     function_message,
