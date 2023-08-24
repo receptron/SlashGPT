@@ -234,16 +234,18 @@ class Main:
                     function_message,
                     function_name,
                     role,
-                ) = self.context.process_function_call(
-                    self.runtime, self.config.verbose
+                    should_next_call_llm,
+                ) = function_call.process_function_call(
+                    self.context.manifest, self.context.history, self.runtime, self.config.verbose
                 )
                 if function_message:
                     if role == "function":
                         self.print_function(function_name, function_message)
                     else:
                         self.print_user(function_message)
-            if self.context.next_llm_call:
-                self.process_llm()
+
+                if should_next_call_llm:
+                    self.process_llm()
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}", "red"))
