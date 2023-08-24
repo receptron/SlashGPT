@@ -218,17 +218,14 @@ class Main:
 
             if function_call:
                 action = function_call.function_action
-                if (
-                    action
-                    and action.has_emit()
-                    and action.emit_method() == "switch_session"
-                ):
-                    data = action.emit_data(function_call.arguments())
-                    self.switch_context(data.get("manifest"), intro=False)
-                    self.context.history.append(
-                        {"role": "user", "content": data.get("message")}
-                    )
-                    self.process_llm()
+                if action and action.has_emit():
+                    if action.emit_method() == "switch_session":
+                        data = action.emit_data(function_call.arguments())
+                        self.switch_context(data.get("manifest"), intro=False)
+                        self.context.history.append(
+                            {"role": "user", "content": data.get("message")}
+                        )
+                        self.process_llm()
                 else:
                     (
                         function_message,
