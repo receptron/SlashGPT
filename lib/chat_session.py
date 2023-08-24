@@ -179,8 +179,7 @@ class ChatSession:
         )
 
     def get_emit_data(self):
-        arguments = self.function_call.arguments()
-        return (arguments, self.function_call.function_action)
+        return self.function_call.get_emit_data()
 
     def process_function_call(self, runtime, verbose=False):
         (

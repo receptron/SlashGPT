@@ -46,6 +46,9 @@ class FunctionCall:
         action = actions.get(self.name())
         self.function_action = FunctionAction.factory(action)
 
+    def get_emit_data(self):
+        return (self.function_action.emit_data(self.arguments()), self.function_action.emit_method())
+
     def arguments_for_notebook(self, messages):
         arguments = self.arguments()
         if self.name() == "python" and isinstance(arguments, str):
