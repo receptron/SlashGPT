@@ -217,14 +217,13 @@ class Main:
                     play_text(res, self.config.audio)
 
             if function_call:
-                action = function_call.function_action
-                if action and action.has_emit():
+                (action_data, action_method) = function_call.emit_data()
+                if action_method:
                     # All emit methods must be processed here
-                    if action.emit_method() == "switch_session":
-                        data = action.emit_data(function_call.arguments())
-                        self.switch_context(data.get("manifest"), intro=False)
+                    if action_method == "switch_session":
+                        self.switch_context(action_data.get("manifest"), intro=False)
                         self.context.history.append(
-                            {"role": "user", "content": data.get("message")}
+                            {"role": "user", "content": action_data.get("message")}
                         )
                         self.process_llm()
                 else:
