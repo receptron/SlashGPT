@@ -151,7 +151,7 @@ class ChatSession:
             self.append_message(role, res)
             self.save_log()
 
-        return (role, res)
+        return (role, res, function_call)
 
     # for next call
     def set_function_call(self, function_call):
@@ -170,13 +170,6 @@ class ChatSession:
 
     def should_call_llm(self):
         return self.next_llm_call
-
-    def has_emit(self):
-        return (
-            self.function_call
-            and self.function_call.function_action
-            and self.function_call.function_action.has_emit()
-        )
 
     def get_emit_data(self):
         arguments = self.function_call.arguments()

@@ -208,7 +208,7 @@ class Main:
         try:
             # Ask LLM to generate a response.
             # (responseRole, res, function_call) = self.context.generate_response()
-            (role, res) = self.context.call_llm()
+            (role, res, function_call) = self.context.call_llm()
 
             if role and res:
                 self.print_bot(res)
@@ -216,7 +216,7 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-            if self.context.has_emit():
+            if function_call and function_call.function_action and function_call.function_action.has_emit():
                 # TODO: get_last_user's question and use append_user_question
                 (arguments, action) = self.context.get_emit_data()
 
