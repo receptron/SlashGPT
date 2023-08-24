@@ -47,7 +47,7 @@ class ChatSession:
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests)
         if self.prompt:
-            self.history.append({"role": "system", "content": self.prompt})
+            self.append_message("system", self.prompt)
 
         # Prepare embedded database index
         self.vector_db = self.get_vector_db()
