@@ -171,16 +171,16 @@ class ChatSession:
     def should_call_llm(self):
         return self.next_llm_call
 
-    def should_call_switch_context(self):
+    def has_emit(self):
         return (
             self.function_call
             and self.function_call.function_action
-            and self.function_call.function_action.is_switch_context()
+            and self.function_call.function_action.has_emit()
         )
 
-    def switch_context_manifest_key(self):
+    def get_emit_data(self):
         arguments = self.function_call.arguments()
-        return self.function_call.function_action.get_manifest_key(arguments)
+        return (arguments, self.function_call.function_action)
 
     def process_function_call(self, runtime, verbose=False):
         (

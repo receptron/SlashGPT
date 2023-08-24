@@ -61,7 +61,8 @@ class FunctionCall:
         print(colored(json.dumps(self.data(), indent=2), "blue"))
 
         if self.function_action:
-            if self.function_action.is_switch_context():
+            # TODO: Check emit process
+            if self.function_action.has_emit():
                 function_name = (
                     None  # Without name, this message will be treated as user prompt.
                 )

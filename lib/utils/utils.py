@@ -13,3 +13,4 @@ class CALL_TYPE(Enum):
     GRAPHQL = 2
     DATA_URL = 3
     MESSAGE_TEMPLATE = 4
+    EMIT = 5
