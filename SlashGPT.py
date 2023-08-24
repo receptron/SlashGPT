@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import platform
 import re
 
 from gtts import gTTS
@@ -12,6 +13,11 @@ from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
 from lib.utils.utils import InputStyle
+
+if platform.system() == "Darwin":
+    # So that input can handle Kanji & delete
+    import readline  # noqa: F401
+
 
 """
 utility functions for Main class

@@ -204,7 +204,7 @@ components:
             $ref: '#/components/schemas/hotelAmenity'
           required: false
           description: |
-            Specify one or many amenities that the accommodation should offer: 
+            Specify one or many amenities that the accommodation should offer:
             - spa: Spa
             - pool: Pool
             - pet_friendly: Pet-friendly
@@ -298,7 +298,7 @@ components:
           type: array
           items:
             type: string
-          description: Optional list of cities that are requested to be included in the results, if prices are available. 
+          description: Optional list of cities that are requested to be included in the results, if prices are available.
           required: false
         departDate:
           type: string
