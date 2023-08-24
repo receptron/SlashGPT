@@ -208,24 +208,21 @@ class Main:
         try:
             # Ask LLM to generate a response.
             # (responseRole, res, function_call) = self.context.generate_response()
-            (role, res, function_call) = self.context.call_llm()
+            (res, function_call) = self.context.call_llm()
 
-            if role and res:
+            if res:
                 self.print_bot(res)
 
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
             if function_call:
-                action = function_call.function_action
-                if action and action.has_emit():
+                (action_data, action_method) = function_call.emit_data()
+                if action_method:
                     # All emit methods must be processed here
-                    if action.emit_method() == "switch_session":
-                        data = action.emit_data(function_call.arguments())
-                        self.switch_context(data.get("manifest"), intro=False)
-                        self.context.history.append(
-                            {"role": "user", "content": data.get("message")}
-                        )
+                    if action_method == "switch_session":
+                        self.switch_context(action_data.get("manifest"), intro=False)
+                        self.context.append_user_question(action_data.get("message"))
                         self.process_llm()
                 else:
                     (

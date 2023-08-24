@@ -150,7 +150,6 @@ class FunctionAction:
         self, template, mime_type, message_template, arguments, verbose
     ):
         _mime_type = mime_type or ""
-        message_template = message_template or self.__get("url")
         with open(f"{template}", "r") as f:
             template = f.read()
             if verbose:
