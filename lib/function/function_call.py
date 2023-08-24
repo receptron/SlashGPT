@@ -45,9 +45,12 @@ class FunctionCall:
 
     def emit_data(self):
         if self.function_action and self.function_action.has_emit():
-            return (self.function_action.emit_data(self.arguments()), self.function_action.emit_method())
+            return (
+                self.function_action.emit_data(self.arguments()),
+                self.function_action.emit_method(),
+            )
         return (None, None)
-        
+
     def arguments_for_notebook(self, messages):
         arguments = self.arguments()
         if self.name() == "python" and isinstance(arguments, str):
