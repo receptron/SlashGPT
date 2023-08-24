@@ -219,6 +219,7 @@ class Main:
             if function_call:
                 action = function_call.function_action
                 if action and action.has_emit():
+                    # All emit methods must be processed here
                     if action.emit_method() == "switch_session":
                         data = action.emit_data(function_call.arguments())
                         self.switch_context(data.get("manifest"), intro=False)
