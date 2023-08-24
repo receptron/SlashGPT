@@ -222,9 +222,7 @@ class Main:
                     # All emit methods must be processed here
                     if action_method == "switch_session":
                         self.switch_context(action_data.get("manifest"), intro=False)
-                        self.context.history.append(
-                            {"role": "user", "content": action_data.get("message")}
-                        )
+                        self.context.append_user_question(action_data.get("message"))
                         self.process_llm()
                 else:
                     (
