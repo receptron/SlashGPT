@@ -208,7 +208,7 @@ class Main:
         try:
             # Ask LLM to generate a response.
             # (responseRole, res, function_call) = self.context.generate_response()
-            (role, res) = self.context.call_llm()
+            (role, res, function_call) = self.context.call_llm()
 
             if role and res:
                 self.print_bot(res)
@@ -216,34 +216,33 @@ class Main:
                 if self.config.audio:
                     play_text(res, self.config.audio)
 
-            if self.context.has_emit():
-                # TODO: get_last_user's question and use append_user_question
-                (arguments, action) = self.context.get_emit_data()
-
-                if action.emit_method() == "switch_session":
-                    data = action.emit_data(arguments)
-                    self.switch_context(data.get("manifest"), intro=False)
-                    self.context.history.append(
-                        {"role": "user", "content": data.get("message")}
+            if function_call:
+                action = function_call.function_action
+                if action and action.has_emit():
+                    # All emit methods must be processed here
+                    if action.emit_method() == "switch_session":
+                        data = action.emit_data(function_call.arguments())
+                        self.switch_context(data.get("manifest"), intro=False)
+                        self.context.history.append(
+                            {"role": "user", "content": data.get("message")}
+                        )
+                        self.process_llm()
+                else:
+                    (
+                        function_message,
+                        function_name,
+                        should_call_llm,
+                    ) = function_call.process_function_call(
+                        self.context.manifest,
+                        self.context.history,
+                        self.runtime,
+                        self.config.verbose,
                     )
-                    self.process_llm()
-                    return
-
-            if self.context.should_call_function_call():
-                (
-                    function_message,
-                    function_name,
-                    role,
-                ) = self.context.process_function_call(
-                    self.runtime, self.config.verbose
-                )
-                if function_message:
-                    if role == "function":
+                    if function_message:
                         self.print_function(function_name, function_message)
-                    else:
-                        self.print_user(function_message)
-            if self.context.next_llm_call:
-                self.process_llm()
+
+                    if should_call_llm:
+                        self.process_llm()
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}", "red"))

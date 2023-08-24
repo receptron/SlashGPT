@@ -146,50 +146,10 @@ class ChatSession:
     def call_llm(self):
         (role, res, function_call) = self.generate_response()
 
-        self.set_function_call(function_call)
+        if function_call:
+            function_call.set_action(self.actions)
         if role and res:
             self.append_message(role, res)
             self.save_log()
 
-        return (role, res)
-
-    # for next call
-    def set_function_call(self, function_call):
-        if function_call:
-            function_call.set_action(self.actions)
-        self.function_call = function_call
-
-        self.next_llm_call = False
-
-    def set_next_llm_call(self, value):
-        self.function_call = None
-        self.next_llm_call = value
-
-    def should_call_function_call(self):
-        return self.function_call is not None and self.function_call.should_call()
-
-    def should_call_llm(self):
-        return self.next_llm_call
-
-    def has_emit(self):
-        return (
-            self.function_call
-            and self.function_call.function_action
-            and self.function_call.function_action.has_emit()
-        )
-
-    def get_emit_data(self):
-        arguments = self.function_call.arguments()
-        return (arguments, self.function_call.function_action)
-
-    def process_function_call(self, runtime, verbose=False):
-        (
-            function_message,
-            function_name,
-            role,
-            should_next_call_llm,
-        ) = self.function_call.process_function_call(
-            self.manifest, self.history, runtime, verbose
-        )
-        self.set_next_llm_call(should_next_call_llm)
-        return (function_message, function_name, role)
+        return (role, res, function_call)
