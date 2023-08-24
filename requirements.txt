@@ -21,3 +21,4 @@ black[jupyter]
 isort
 flake8
 pytest
+yamllint
