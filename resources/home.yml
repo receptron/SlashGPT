@@ -1,5 +1,6 @@
 openapi: 3.0.0
-info:  version: '1'
+info:
+  version: '1'
   title: Home Automation API
   description: Allow users to control various equipments
 servers:

@@ -20,3 +20,4 @@ requests-toolbelt
 black[jupyter]
 isort
 flake8
+yamllint

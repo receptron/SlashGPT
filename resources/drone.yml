@@ -1,5 +1,6 @@
 openapi: 3.0.0
-info:  version: '1'
+info:
+  version: '1'
   title: Drone Pilot API
   description: Allow users to fly a drone
 servers:
