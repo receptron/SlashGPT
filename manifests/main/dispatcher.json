@@ -8,9 +8,9 @@
   "actions": {
     "categorize": {
       "type": "emit",
-      "message":"{question}",
       "emit_method": "switch_session",
       "emit_data": {
+        "message":"{question}",
         "manifest": "{category}"
       }
     }
