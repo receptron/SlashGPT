@@ -217,35 +217,33 @@ class Main:
                     play_text(res, self.config.audio)
 
             if function_call:
-                if function_call.function_action and function_call.function_action.has_emit():
-                    arguments = function_call.arguments()
-                    action = function_call.function_action
-
-                    if action.emit_method() == "switch_session":
-                        data = action.emit_data(arguments)
-                        self.switch_context(data.get("manifest"), intro=False)
-                        self.context.history.append(
-                            {"role": "user", "content": data.get("message")}
-                        )
-                        self.process_llm()
-                        return
-
-                if function_call.should_call():
+                action = function_call.function_action
+                if (
+                    action
+                    and action.has_emit()
+                    and action.emit_method() == "switch_session"
+                ):
+                    data = action.emit_data(function_call.arguments())
+                    self.switch_context(data.get("manifest"), intro=False)
+                    self.context.history.append(
+                        {"role": "user", "content": data.get("message")}
+                    )
+                    self.process_llm()
+                else:
                     (
                         function_message,
                         function_name,
-                        role,
-                        should_next_call_llm,
+                        should_call_llm,
                     ) = function_call.process_function_call(
-                        self.context.manifest, self.context.history, self.runtime, self.config.verbose
+                        self.context.manifest,
+                        self.context.history,
+                        self.runtime,
+                        self.config.verbose,
                     )
                     if function_message:
-                        if role == "function":
-                            self.print_function(function_name, function_message)
-                        else:
-                            self.print_user(function_message)
+                        self.print_function(function_name, function_message)
 
-                    if should_next_call_llm:
+                    if should_call_llm:
                         self.process_llm()
 
         except Exception as e:

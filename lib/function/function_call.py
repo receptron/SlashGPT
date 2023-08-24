@@ -24,9 +24,6 @@ class FunctionCall:
     def name(self):
         return self.__get("name")
 
-    def should_call(self):
-        return "name" in self.__function_call_data
-
     def arguments(self):
         function_name = self.__get("name")
         arguments = self.__get("arguments")
@@ -54,19 +51,16 @@ class FunctionCall:
         return arguments
 
     def process_function_call(self, manifest, history, runtime, verbose=False):
-        function_message = None
         function_name = self.name()
+        if function_name is None:
+            return (None, None, False)
+
+        function_message = None
         arguments = self.arguments()
 
         print(colored(json.dumps(self.data(), indent=2), "blue"))
 
         if self.function_action:
-            # TODO: Check emit process
-            if self.function_action.has_emit():
-                function_name = (
-                    None  # Without name, this message will be treated as user prompt.
-                )
-
             # call external api or some
             function_message = self.function_action.call_api(arguments, verbose)
         else:
@@ -90,19 +84,11 @@ class FunctionCall:
             else:
                 print(colored(f"No function {function_name} in the module", "red"))
 
-        role = None
         if function_message:
-            role = (
-                "function"
-                if function_name or manifest.skip_function_result()
-                else "user"
-            )
-            history.append_message(role, function_message, function_name)
+            history.append_message("function", function_message, function_name)
 
-        should_next_call_llm = (
-            not manifest.skip_function_result()
-        ) and function_message
-        return (function_message, function_name, role, should_next_call_llm)
+        should_call_llm = (not manifest.skip_function_result()) and function_message
+        return (function_message, function_name, should_call_llm)
 
     def format_python_result(self, manifest, result):
         if isinstance(result, dict):
