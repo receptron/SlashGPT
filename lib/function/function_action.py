@@ -105,7 +105,8 @@ class FunctionAction:
             return str(e)
 
     def http_request(self, url, method, headers, appkey_value, arguments, verbose):
-        headers = {key: value.format(**arguments).format("appkey", appkey_value) for key, value in headers.items()}
+        appkey = {"appkey": appkey_value}
+        headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
         if method == "POST":
             headers["Content-Type"] = "application/json"
             if verbose:
@@ -115,7 +116,8 @@ class FunctionAction:
             if verbose:
                 print(colored(arguments.items(), "cyan"))
             url = url.format(
-                **{key: urllib.parse.quote(value) for key, value in arguments.items()}
+                **{key: urllib.parse.quote(value) for key, value in arguments.items()},
+                **appkey
             )
             if verbose:
                 print(colored(f"Fetching from {url}", "cyan"))
