@@ -19,6 +19,6 @@ format:
 
 .PHONY: before_commit
 before_commit:
-  make test
-  make format
-  make lint
+	make test
+	make format
+	make lint
