@@ -1,3 +1,7 @@
+.PHONY: test
+test:
+	python -m pytest
+
 .PHONY: lint
 lint:
 	black . --check
