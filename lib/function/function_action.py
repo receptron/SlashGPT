@@ -1,6 +1,7 @@
 import json
 import os
 import urllib.parse
+from urllib.parse import urlparse
 
 import requests
 from gql import Client, gql
@@ -32,16 +33,27 @@ class FunctionAction:
 
     def get_appkey_value(self):
         appkey = self.__get("appkey")
+        url = self.__get("url")
 
-        # TODO: check domain
         if appkey:
             appkey_value = os.getenv("SLASH_GPT_ENV_" + appkey, "")
+
+            # check domain
+            param = appkey_value.split(",")
+            if len(param) == 2:
+                parsed_url = urlparse(url)
+                if param[0] != parsed_url.netloc:
+                    print(
+                        colored(f"Invalid appkey domain {appkey} in .env file.", "red")
+                    )
+                    return
+                appkey_value = param[1]
+
             if not appkey_value:
                 print(colored(f"Missing {appkey} in .env file.", "red"))
             return appkey_value
 
     def call_api(self, arguments, verbose):
-
         type = self.call_type()
         if type == CALL_TYPE.REST:
             appkey_value = self.get_appkey_value() or ""
@@ -106,7 +118,9 @@ class FunctionAction:
 
     def http_request(self, url, method, headers, appkey_value, arguments, verbose):
         appkey = {"appkey": appkey_value}
-        headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
+        headers = {
+            key: value.format(**arguments, **appkey) for key, value in headers.items()
+        }
         if method == "POST":
             headers["Content-Type"] = "application/json"
             if verbose:
@@ -117,7 +131,7 @@ class FunctionAction:
                 print(colored(arguments.items(), "cyan"))
             url = url.format(
                 **{key: urllib.parse.quote(value) for key, value in arguments.items()},
-                **appkey
+                **appkey,
             )
             if verbose:
                 print(colored(f"Fetching from {url}", "cyan"))
