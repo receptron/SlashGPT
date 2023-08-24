@@ -223,7 +223,9 @@ class Main:
                 if action.emit_method() == "switch_session":
                     data = action.emit_data(arguments)
                     self.switch_context(data.get("manifest"), intro=False)
-                    self.context.history.append({"role": "user", "content": data.get("message")})
+                    self.context.history.append(
+                        {"role": "user", "content": data.get("message")}
+                    )
                     self.process_llm()
                     return
 

@@ -32,7 +32,7 @@ class FunctionAction:
 
     def emit_data(self, arguments):
         data = self.__get("emit_data")
-        return {x:data.get(x).format(**arguments) for x in data}
+        return {x: data.get(x).format(**arguments) for x in data}
 
     def get_appkey_value(self):
         appkey = self.__get("appkey")
