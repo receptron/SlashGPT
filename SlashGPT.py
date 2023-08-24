@@ -217,8 +217,8 @@ class Main:
                     play_text(res, self.config.audio)
 
             if function_call and function_call.function_action and function_call.function_action.has_emit():
-                # TODO: get_last_user's question and use append_user_question
-                (arguments, action) = self.context.get_emit_data()
+                arguments = function_call.arguments()
+                action = function_call.function_action
 
                 if action.emit_method() == "switch_session":
                     data = action.emit_data(arguments)

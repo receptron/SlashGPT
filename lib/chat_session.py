@@ -171,10 +171,6 @@ class ChatSession:
     def should_call_llm(self):
         return self.next_llm_call
 
-    def get_emit_data(self):
-        arguments = self.function_call.arguments()
-        return (arguments, self.function_call.function_action)
-
     def process_function_call(self, runtime, verbose=False):
         (
             function_message,
