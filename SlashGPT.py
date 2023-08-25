@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import platform
 import re
 
@@ -178,24 +179,33 @@ class Main:
                 print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
             self.switch_session(self.session.manifest_key, intro=False)
-        elif key == "autotest":
+        elif commands[0] == "autotest":
+            file_name = commands[1] if len(commands) > 1 else "default"
+            file_path = f"./test/{file_name}.json"
+            if not os.path.exists(file_path):
+                print(colored(f"No test script named {file_name}", "yellow"))
+                return
             self.config.verbose = True
-            with open("./test/default.json", "r") as f:
+            with open(file_path, "r") as f:
                 scripts = json.load(f)
-                for script in scripts:
-                    self.test(**script)
+                self.switch_manifests(scripts.get("manifests") or "main")
+                for message in scripts.get("messages"):
+                    self.test(**message)
             self.config.verbose = False
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
-                m = manifests[commands[1]]
-                self.config.load_manifests("./" + m["manifests_dir"])
-                self.switch_session(m["default_manifest_key"])
+                self.switch_manifests(commands[1])
             else:
                 print("/switch {manifest}: " + ", ".join(manifests.keys()))
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
             print(colored(f"Invalid slash command: {key}", "red"))
+
+    def switch_manifests(self, key):
+        m = manifests[key]
+        self.config.load_manifests("./" + m["manifests_dir"])
+        self.switch_session(m["default_manifest_key"])
 
     def test(self, agent, message):
         self.switch_session(agent)

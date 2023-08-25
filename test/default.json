@@ -1,16 +1,19 @@
-[{
-  "agent": "dispatcher",
-  "message": "/sample currency"
-},{
-  "agent": "dispatcher",
-  "message": "/sample weather"
-},{
-  "agent": "spacex",
-  "message": "/sample"
-},{
-  "agent": "cal",
-  "message": "/sample"
-},{
-  "agent": "jupyter",
-  "message": "/sample_stock"
-}]
+{
+  "messages":[
+    {
+    "agent": "dispatcher",
+    "message": "/sample currency"
+  },{
+    "agent": "dispatcher",
+    "message": "/sample weather"
+  },{
+    "agent": "spacex",
+    "message": "/sample"
+  },{
+    "agent": "cal",
+    "message": "/sample"
+  },{
+    "agent": "jupyter",
+    "message": "/sample_stock"
+  }]
+}
