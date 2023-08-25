@@ -57,7 +57,7 @@ class FunctionAction:
             return appkey_value
 
     def call_api(self, arguments, verbose):
-        type = self.call_type()
+        type = self.__call_type()
         if type == CALL_TYPE.REST:
             appkey_value = self.get_appkey_value() or ""
 
@@ -85,7 +85,7 @@ class FunctionAction:
             return self.__get("message").format(**arguments)
         return "Success"
 
-    def call_type(self):
+    def __call_type(self):
         type = self.__get("type")
         if type:
             if type == "rest":

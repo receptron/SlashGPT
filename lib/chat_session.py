@@ -24,7 +24,7 @@ class ChatSession:
         self.config = config
         self.manifest_key = manifest_key
 
-        self.set_manifest()
+        self.__set_manifest()
 
         self.time = datetime.now()
         self.userName = self.manifest.username()
@@ -42,7 +42,7 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         llm_model = get_llm_model_from_manifest(self.manifest)
-        self.set_llm_model(llm_model)
+        self.__set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests)
@@ -50,7 +50,7 @@ class ChatSession:
             self.append_message("system", self.prompt)
 
         # Prepare embedded database index
-        self.vector_db = self.get_vector_db()
+        self.vector_db = self.__get_vector_db()
 
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
@@ -60,13 +60,13 @@ class ChatSession:
         self.function_call = None
         self.next_llm_call = False
 
-    def set_manifest(self):
+    def __set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
         self.manifest = Manifest(
             manifest_data if manifest_data else {}, self.manifest_key
         )
 
-    def set_llm_model(self, llm_model):
+    def __set_llm_model(self, llm_model):
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:
@@ -84,7 +84,7 @@ class ChatSession:
     def get_manifest_attr(self, key):
         return self.manifest.get(key)
 
-    def get_vector_db(self):
+    def __get_vector_db(self):
         # Todo: support other vector dbs.
         embeddings = self.manifest.get("embeddings")
         if embeddings:
@@ -119,9 +119,6 @@ class ChatSession:
                 },
             )
 
-    def save_log(self):
-        save_log(self.manifest_key, self.history.messages(), self.time)
-
     def set_intro(self):
         if self.intro:
             self.intro_message = self.intro[random.randrange(0, len(self.intro))]
@@ -134,22 +131,15 @@ class ChatSession:
         res: message
         function_call: json representing the function call (optional)
     """
-
-    def generate_response(self):
-        # res = None
-        # function_call = None
-        # role = "assistant"
-        return self.llm_model.generate_response(
+    def call_llm(self):
+        (role, res, function_call) = self.llm_model.generate_response(
             self.history.messages(), self.manifest, self.config.verbose
         )
-
-    def call_llm(self):
-        (role, res, function_call) = self.generate_response()
 
         if function_call:
             function_call.set_action(self.actions)
         if role and res:
             self.append_message(role, res)
-            self.save_log()
+            save_log(self.manifest_key, self.history.messages(), self.time)
 
         return (res, function_call)

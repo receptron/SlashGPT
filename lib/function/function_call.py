@@ -21,10 +21,10 @@ class FunctionCall:
     def data(self):
         return self.__function_call_data
 
-    def name(self):
+    def __name(self):
         return self.__get("name")
 
-    def arguments(self):
+    def __arguments(self):
         function_name = self.__get("name")
         arguments = self.__get("arguments")
         if arguments and isinstance(arguments, str):
@@ -40,31 +40,31 @@ class FunctionCall:
         return arguments
 
     def set_action(self, actions):
-        action = actions.get(self.name())
+        action = actions.get(self.__name())
         self.function_action = FunctionAction.factory(action)
 
     def emit_data(self):
         if self.function_action and self.function_action.has_emit():
             return (
-                self.function_action.emit_data(self.arguments()),
+                self.function_action.emit_data(self.__arguments()),
                 self.function_action.emit_method(),
             )
         return (None, None)
 
-    def arguments_for_notebook(self, messages):
-        arguments = self.arguments()
-        if self.name() == "python" and isinstance(arguments, str):
+    def __arguments_for_notebook(self, messages):
+        arguments = self.__arguments()
+        if self.__name() == "python" and isinstance(arguments, str):
             print(colored("python function was called", "yellow"))
             return {"code": arguments, "query": messages[-1]["content"]}
         return arguments
 
     def process_function_call(self, manifest, history, runtime, verbose=False):
-        function_name = self.name()
+        function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
         function_message = None
-        arguments = self.arguments()
+        arguments = self.__arguments()
 
         print(colored(json.dumps(self.data(), indent=2), "blue"))
 
@@ -74,7 +74,7 @@ class FunctionCall:
         else:
             if manifest.get("notebook"):
                 # Python code from llm
-                arguments = self.arguments_for_notebook(history.messages())
+                arguments = self.__arguments_for_notebook(history.messages())
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
@@ -88,7 +88,7 @@ class FunctionCall:
                 if message:
                     # Embed code for the context
                     history.append_message("assistant", message)
-                function_message = self.format_python_result(manifest, result)
+                function_message = self.__format_python_result(manifest, result)
             else:
                 print(colored(f"No function {function_name} in the module", "red"))
 
@@ -98,7 +98,7 @@ class FunctionCall:
         should_call_llm = (not manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
 
-    def format_python_result(self, manifest, result):
+    def __format_python_result(self, manifest, result):
         if isinstance(result, dict):
             result = json.dumps(result)
         result_form = manifest.get("result_form")

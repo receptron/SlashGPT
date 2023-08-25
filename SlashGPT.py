@@ -207,7 +207,6 @@ class Main:
     def process_llm(self):
         try:
             # Ask LLM to generate a response.
-            # (responseRole, res, function_call) = self.session.generate_response()
             (res, function_call) = self.session.call_llm()
 
             if res:
@@ -273,6 +272,8 @@ class Main:
                     self.session.manifest.format_question(question)
                 )
                 self.process_llm()
+
+
 
     def print_bot(self, message):
         print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
