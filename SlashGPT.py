@@ -207,7 +207,6 @@ class Main:
     def process_llm(self):
         try:
             # Ask LLM to generate a response.
-            # (responseRole, res, function_call) = self.session.generate_response()
             (res, function_call) = self.session.call_llm()
 
             if res:
@@ -230,7 +229,6 @@ class Main:
                         function_name,
                         should_call_llm,
                     ) = function_call.process_function_call(
-                        self.session.manifest,
                         self.session.history,
                         self.runtime,
                         self.config.verbose,

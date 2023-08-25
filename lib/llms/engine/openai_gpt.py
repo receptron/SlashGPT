@@ -30,5 +30,5 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         answer = response["choices"][0]["message"]
         res = answer["content"]
         role = answer["role"]
-        function_call = FunctionCall.factory(answer.get("function_call"))
+        function_call = FunctionCall.factory(answer.get("function_call"), manifest)
         return (role, res, function_call)
