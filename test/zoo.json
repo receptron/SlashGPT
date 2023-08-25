@@ -1,0 +1,20 @@
+{
+  "manifests": "zoo",
+  "messages":[
+    {
+    "agent": "monkey",
+    "message": "/sample chimp"
+  },{
+    "agent": "monkey",
+    "message": "/sample gorilla"
+  },{
+    "agent": "monkey",
+    "message": "/sample pongo"
+  },{
+    "agent": "monkey",
+    "message": "/sample papio"
+  },{
+    "agent": "monkey",
+    "message": "/sample saru"
+  }]
+}
