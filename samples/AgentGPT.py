@@ -2,7 +2,6 @@
 # python -m samples.AgentGPT
 import json
 import platform
-import re
 
 from termcolor import colored
 
