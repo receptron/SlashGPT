@@ -56,9 +56,6 @@ class ChatSession:
         if self.functions and self.config.verbose:
             print(colored(self.functions, "cyan"))
 
-        self.function_call = None
-        self.next_llm_call = False
-
     def __set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
         self.manifest = Manifest(
@@ -79,9 +76,6 @@ class ChatSession:
             )
         if self.config.verbose:
             print(colored(f"Model = {self.llm_model.name()}", "cyan"))
-
-    def get_manifest_attr(self, key):
-        return self.manifest.get(key)
 
     def __get_vector_db(self):
         # Todo: support other vector dbs.
