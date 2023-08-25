@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import json
+import os
 import platform
 import re
-import os
 
 from gtts import gTTS
 from playsound import playsound
