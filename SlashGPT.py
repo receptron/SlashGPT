@@ -229,7 +229,6 @@ class Main:
                         function_name,
                         should_call_llm,
                     ) = function_call.process_function_call(
-                        self.session.manifest,
                         self.session.history,
                         self.runtime,
                         self.config.verbose,

@@ -31,7 +31,6 @@ class ChatSession:
         self.botName = self.manifest.botname()
         self.title = self.manifest.title()
         self.intro = self.manifest.get("intro")
-        self.actions = self.manifest.actions()
         self.temperature = self.manifest.temperature()
 
         self.intro_message = None
@@ -136,8 +135,6 @@ class ChatSession:
             self.history.messages(), self.manifest, self.config.verbose
         )
 
-        if function_call:
-            function_call.set_action(self.actions)
         if role and res:
             self.append_message(role, res)
             save_log(self.manifest_key, self.history.messages(), self.time)
