@@ -2,6 +2,7 @@
 import json
 import platform
 import re
+import os
 
 from gtts import gTTS
 from playsound import playsound
@@ -179,9 +180,13 @@ class Main:
         elif key == "new":
             self.switch_session(self.session.manifest_key, intro=False)
         elif commands[0] == "autotest":
-            filename = commands[1] if len(commands) > 1 else "default"
+            file_name = commands[1] if len(commands) > 1 else "default"
+            file_path = f"./test/{file_name}.json"
+            if not os.path.exists(file_path):
+                print(colored(f"No test script named {file_name}", "yellow"))
+                return
             self.config.verbose = True
-            with open(f"./test/{filename}.json", "r") as f:
+            with open(file_path, "r") as f:
                 scripts = json.load(f)
                 self.switch_manifests(scripts.get("manifests") or "main")
                 for message in scripts.get("messages"):
