@@ -4,8 +4,9 @@ from urllib.parse import urlparse
 
 from termcolor import colored
 
-from lib.utils.utils import CALL_TYPE
 from lib.function.network import graphQLRequest, http_request
+from lib.utils.utils import CALL_TYPE
+
 
 class FunctionAction:
     @classmethod
@@ -82,7 +83,6 @@ class FunctionAction:
         if "message" in self.__function_action_data:
             return CALL_TYPE.MESSAGE_TEMPLATE
 
-
     def read_dataURL_template(
         self, template, mime_type, message_template, arguments, verbose
     ):
@@ -94,7 +94,7 @@ class FunctionAction:
             data = template.format(**arguments)
             dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
             return message_template.format(url=dataURL)
-        
+
     def __get_appkey_value(self):
         appkey = self.__get("appkey")
         url = self.__get("url")
@@ -116,4 +116,3 @@ class FunctionAction:
             if not appkey_value:
                 print(colored(f"Missing {appkey} in .env file.", "red"))
             return appkey_value
-

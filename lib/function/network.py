@@ -1,11 +1,11 @@
 import json
-
 import urllib.parse
+
 import requests
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
-
 from termcolor import colored
+
 
 def graphQLRequest(url, arguments):
     transport = RequestsHTTPTransport(url=url, use_json=True)
@@ -17,6 +17,7 @@ def graphQLRequest(url, arguments):
         return json.dumps(response)
     except Exception as e:
         return str(e)
+
 
 def http_request(url, method, headers, appkey_value, arguments, verbose):
     appkey = {"appkey": appkey_value}
@@ -41,6 +42,4 @@ def http_request(url, method, headers, appkey_value, arguments, verbose):
     if response.status_code == 200:
         return response.text
     else:
-        print(
-            colored(f"Got {response.status_code}:{response.text} from {url}", "red")
-        )
+        print(colored(f"Got {response.status_code}:{response.text} from {url}", "red"))
