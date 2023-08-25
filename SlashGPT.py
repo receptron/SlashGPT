@@ -66,7 +66,7 @@ class Main:
                 )
             else:
                 print(colored(f"Activating: {self.session.title}", "blue"))
-            if self.session.get_manifest_attr("notebook"):
+            if self.session.manifest.get("notebook"):
                 (result, _) = self.runtime.create_notebook(
                     self.session.llm_model.name()
                 )
@@ -113,13 +113,13 @@ class Main:
                     print(sample)
                     return sample
             else:
-                agents = self.session.get_manifest_attr("agents")
+                agents = self.session.manifest.get("agents")
                 if agents:
                     print("/sample {agent}: " + ", ".join(agents))
                 else:
                     print(colored(f"Error: No manifest named '{sub_key}'", "red"))
         elif key[:6] == "sample":
-            sample = self.session.get_manifest_attr(key)
+            sample = self.session.manifest.get(key)
             if sample:
                 print(sample)
                 return sample
