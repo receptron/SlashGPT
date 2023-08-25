@@ -180,11 +180,10 @@ class Main:
             self.switch_session(self.session.manifest_key, intro=False)
         elif key == "autotest":
             self.config.verbose = True
-            self.test("dispatcher", "/sample currency")
-            self.test("dispatcher", "/sample weather")
-            self.test("spacex", "/sample")
-            self.test("cal", "/sample")
-            self.test("jupyter", "/sample_stock")
+            with open("./test/default.json", "r") as f:
+                scripts = json.load(f)
+                for script in scripts:
+                    self.test(**script)
             self.config.verbose = False
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
@@ -198,9 +197,9 @@ class Main:
         else:
             print(colored(f"Invalid slash command: {key}", "red"))
 
-    def test(self, key, sample):
-        self.switch_session(key)
-        question = self.process_sample(sample)
+    def test(self, agent, message):
+        self.switch_session(agent)
+        question = self.process_sample(message)
         self.session.append_user_question(question)
         self.process_llm()
 
