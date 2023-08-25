@@ -182,8 +182,8 @@ class Main:
             self.config.verbose = True
             with open("./test/default.json", "r") as f:
                 scripts = json.load(f)
-                for script in scripts:
-                    self.test(**script)
+                for message in scripts.get("messages"):
+                    self.test(**message)
             self.config.verbose = False
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
