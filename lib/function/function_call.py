@@ -50,11 +50,11 @@ class FunctionCall:
             )
         return (None, None)
 
-    def __arguments_for_notebook(self, messages):
+    def __arguments_for_notebook(self, last_messages):
         arguments = self.__arguments()
         if self.__name() == "python" and isinstance(arguments, str):
             print(colored("python function was called", "yellow"))
-            return {"code": arguments, "query": messages[-1]["content"]}
+            return {"code": arguments, "query": last_messages["content"]}
         return arguments
 
     def process_function_call(self, history, runtime, verbose=False):
@@ -73,7 +73,7 @@ class FunctionCall:
         else:
             if self.__manifest.get("notebook"):
                 # Python code from llm
-                arguments = self.__arguments_for_notebook(history.messages())
+                arguments = self.__arguments_for_notebook(history.last())
                 function = getattr(runtime, function_name)
             else:
                 # Python code from resource file
