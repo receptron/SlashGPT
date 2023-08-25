@@ -17,7 +17,7 @@ class FunctionCall:
         self.__manifest = manifest
         actions = self.__manifest.actions()
         self.function_action = FunctionAction.factory(actions.get(self.__name()))
-        
+
     def __get(self, key):
         return self.__function_call_data.get(key)
 
@@ -94,7 +94,9 @@ class FunctionCall:
         if function_message:
             history.append_message("function", function_message, function_name)
 
-        should_call_llm = (not self.__manifest.skip_function_result()) and function_message
+        should_call_llm = (
+            not self.__manifest.skip_function_result()
+        ) and function_message
         return (function_message, function_name, should_call_llm)
 
     def __format_python_result(self, result):

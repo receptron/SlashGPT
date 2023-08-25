@@ -33,7 +33,7 @@ class LLMEngineBase(metaclass=ABCMeta):
                         "name": "run_python_code",
                         "arguments": {"code": codes, "query": messages[-1]["content"]},
                     },
-                    manifest
+                    manifest,
                 )
 
             print(colored("Debug Message: no code in this reply", "yellow"))

@@ -272,8 +272,6 @@ class Main:
                 )
                 self.process_llm()
 
-
-
     def print_bot(self, message):
         print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
 

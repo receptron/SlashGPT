@@ -130,6 +130,7 @@ class ChatSession:
         res: message
         function_call: json representing the function call (optional)
     """
+
     def call_llm(self):
         (role, res, function_call) = self.llm_model.generate_response(
             self.history.messages(), self.manifest, self.config.verbose
