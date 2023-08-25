@@ -17,6 +17,7 @@ if platform.system() == "Darwin":
 with open("./manifests/manifests.json", "r") as f:
     manifests = json.load(f)
 
+
 class Main:
     def __init__(self, config: ChatConfig):
         self.config = config
@@ -42,13 +43,12 @@ class Main:
                 )
                 if function_message:
                     self.print_function(function_name, function_message)
-                    
+
                 if should_call_llm:
                     self.process_llm(session)
 
         except Exception as e:
             print(colored(f"Exception: Restarting the chat :{e}", "red"))
-
 
     """
     the main loop
@@ -79,4 +79,4 @@ class Main:
 if __name__ == "__main__":
     config = ChatConfig("./manifests/agents")
     main = Main(config)
-    main.start("地球温暖化の対策と経済について")
+    main.start("自由と国家について")
