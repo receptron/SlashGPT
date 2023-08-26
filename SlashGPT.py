@@ -7,7 +7,6 @@ import re
 
 from gtts import gTTS
 from playsound import playsound
-from termcolor import colored
 
 from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
