@@ -3,6 +3,7 @@
   "source": "snakajima",
   "sample": "Please list the names of Japanese athletes won the gold medal at the 2022 Winter Olympics along with event names they won the medal.",
   "embeddings": {
+    "db_type": "pinecone",
     "name": "olympic-2022"
   },
   "temperature": "0.0",
