@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
-from lib.utils.log import create_log_dir, save_log
+from lib.history.storage.log import create_log_dir, save_log
 from lib.utils.print import print_warning
 
 
@@ -13,14 +13,15 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         self.__messages = []
         self.uid = uid
         self.manifest_key = manifest_key
+        self.base_dir = "output"
 
         self.time = datetime.now()
         # init log dir
-        create_log_dir(manifest_key)
+        create_log_dir(self.base_dir, manifest_key)
 
     def append(self, data):
         self.__messages.append(data)
-        save_log(self.manifest_key, self.messages(), self.time)
+        save_log(self.base_dir, self.manifest_key, self.messages(), self.time)
 
     def get(self, index):
         return self.__messages[index]
@@ -48,7 +49,7 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         self.__messages = data
 
     def session_list(self):
-        history_path = f"./output/{self.manifest_key}"
+        history_path = f"./{self.base_dir}/{self.manifest_key}"
         files = glob.glob(f"{history_path}/*")
         return list(map(lambda x: {"name": x[1], "id": x[0]}, enumerate(files)))
 
