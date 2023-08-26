@@ -146,14 +146,9 @@ class Main:
             print(colored(f"Verbose Mode: {self.config.verbose}", COLOR_DEBUG))
         elif commands[0] == "audio":
             if len(commands) == 1:
-                if self.config.audio:
-                    self.config.audio = None
-                else:
-                    self.config.audio = "en"
+                self.config.audio = None if self.config.audio else "en"
             elif commands[1] == "off":
-                self.config.audio = None
-            else:
-                self.config.audio = commands[1]
+                self.config.audio = None if commands[1] == "off" else commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
             if self.session.history.len() >= 1:
@@ -203,9 +198,7 @@ class Main:
 
     def test(self, agent, message):
         self.switch_session(agent)
-        question = self.process_sample(message)
-        self.session.append_user_question(question)
-        self.process_llm()
+        self.query_llm(self.process_sample(message))
 
     def process_llm(self):
         try:
@@ -224,8 +217,7 @@ class Main:
                     # All emit methods must be processed here
                     if action_method == "switch_session":
                         self.switch_session(action_data.get("manifest"), intro=False)
-                        self.session.append_user_question(action_data.get("message"))
-                        self.process_llm()
+                        self.query_llm(action_data.get("message"))
                 else:
                     (
                         function_message,
@@ -268,8 +260,11 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                self.session.append_user_question(self.session.manifest.format_question(question))
-                self.process_llm()
+                self.query_llm(self.session.manifest.format_question(question))
+
+    def query_llm(self, question):
+        self.session.append_user_question(question)
+        self.process_llm()
 
     def print_bot(self, message):
         print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
