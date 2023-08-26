@@ -83,7 +83,8 @@ class ChatSession:
         if embeddings:
             table_name = embeddings.get("name")
             try:
-                return DBPinecone.factory(table_name, self.config)
+                if embeddings["db_type"] == "pinecone":
+                    return DBPinecone.factory(table_name, self.config)
             except Exception as e:
                 print(colored(f"Pinecone Error: {e}", "yellow"))
 
