@@ -8,9 +8,15 @@ class InputStyle(Enum):
     SAMPLE = 4
 
 
-class CALL_TYPE(Enum):
+class CallType(Enum):
     REST = 1
     GRAPHQL = 2
     DATA_URL = 3
     MESSAGE_TEMPLATE = 4
     EMIT = 5
+
+
+COLOR_DEBUG = "cyan"
+COLOR_INFO = "blue"
+COLOR_WARNING = "yellow"
+COLOR_ERROR = "red"

@@ -2,6 +2,7 @@ import google.generativeai as palm
 from termcolor import colored
 
 from lib.llms.engine.base import LLMEngineBase
+from lib.utils.utils import COLOR_ERROR
 
 
 class LLMEnginePaLM(LLMEngineBase):
@@ -40,7 +41,7 @@ class LLMEnginePaLM(LLMEngineBase):
             function_call = self._extract_function_call(messages, manifest, res)
         else:
             # Error: Typically some restrictions
-            print(colored(response.filters, "red"))
+            print(colored(response.filters, COLOR_ERROR))
         if function_call:
             return (role, None, function_call)
         else:

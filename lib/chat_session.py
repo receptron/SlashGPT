@@ -11,6 +11,7 @@ from lib.history.memory_storage import ChatMemoryHistory
 from lib.llms.models import get_llm_model_from_manifest
 from lib.manifest import Manifest
 from lib.utils.log import create_log_dir, save_log
+from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -54,7 +55,7 @@ class ChatSession:
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
         if self.functions and self.config.verbose:
-            print(colored(self.functions, "cyan"))
+            print(colored(self.functions, COLOR_DEBUG))
 
     def __set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
@@ -71,11 +72,11 @@ class ChatSession:
                     "You need to set "
                     + llm_model.get("api_key")
                     + " to use this model. ",
-                    "red",
+                    COLOR_ERROR,
                 )
             )
         if self.config.verbose:
-            print(colored(f"Model = {self.llm_model.name()}", "cyan"))
+            print(colored(f"Model = {self.llm_model.name()}", COLOR_DEBUG))
 
     def __get_vector_db(self):
         # Todo: support other vector dbs.
@@ -86,7 +87,7 @@ class ChatSession:
                 if embeddings["db_type"] == "pinecone":
                     return DBPinecone.factory(table_name, self.config)
             except Exception as e:
-                print(colored(f"Pinecone Error: {e}", "yellow"))
+                print(colored(f"Pinecone Error: {e}", COLOR_WARNING))
 
     """
     Append a message to the chat session, specifying the role ("user", "system" or "function").

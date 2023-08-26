@@ -3,6 +3,7 @@ import json
 from termcolor import colored
 
 from lib.function.function_action import FunctionAction
+from lib.utils.utils import COLOR_ERROR, COLOR_INFO, COLOR_WARNING
 
 
 class FunctionCall:
@@ -37,7 +38,7 @@ class FunctionCall:
                 print(
                     colored(
                         f"Function {function_name}: Failed to load arguments as json",
-                        "yellow",
+                        COLOR_WARNING,
                     )
                 )
         return arguments
@@ -53,7 +54,7 @@ class FunctionCall:
     def __arguments_for_notebook(self, last_messages):
         arguments = self.__arguments()
         if self.__name() == "python" and isinstance(arguments, str):
-            print(colored("python function was called", "yellow"))
+            print(colored("python function was called", COLOR_WARNING))
             return {"code": arguments, "query": last_messages["content"]}
         return arguments
 
@@ -65,7 +66,7 @@ class FunctionCall:
         function_message = None
         arguments = self.__arguments()
 
-        print(colored(json.dumps(self.data(), indent=2), "blue"))
+        print(colored(json.dumps(self.data(), indent=2), COLOR_INFO))
 
         if self.function_action:
             # call external api or some
@@ -89,7 +90,9 @@ class FunctionCall:
                     history.append_message("assistant", message)
                 function_message = self.__format_python_result(result)
             else:
-                print(colored(f"No function {function_name} in the module", "red"))
+                print(
+                    colored(f"No function {function_name} in the module", COLOR_ERROR)
+                )
 
         if function_message:
             history.append_message("function", function_message, function_name)

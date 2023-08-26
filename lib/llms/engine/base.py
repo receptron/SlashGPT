@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from termcolor import colored
 
 from lib.function.function_call import FunctionCall
+from lib.utils.utils import COLOR_WARNING
 
 
 class LLMEngineBase(metaclass=ABCMeta):
@@ -36,5 +37,5 @@ class LLMEngineBase(metaclass=ABCMeta):
                     manifest,
                 )
 
-            print(colored("Debug Message: no code in this reply", "yellow"))
+            print(colored("Debug Message: no code in this reply", COLOR_WARNING))
         return None

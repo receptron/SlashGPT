@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from termcolor import colored
 
+from lib.utils.utils import COLOR_ERROR
+
 load_dotenv()  # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
 if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
@@ -149,7 +151,7 @@ class PythonRuntime:
                         "text": stderr.getvalue(),
                     }
                 )
-                print(colored(stderr.getvalue(), "red"))
+                print(colored(stderr.getvalue(), COLOR_ERROR))
 
             # Handle execution result
             if exec_result.result is not None:
