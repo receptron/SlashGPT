@@ -1,9 +1,10 @@
-from lib.history.abstract_storage import ChatAbstractHistory
+from lib.history.storage.abstract import ChatHisoryAbstractStorage
 
 
-class ChatMemoryHistory(ChatAbstractHistory):
-    def __init__(self):
+class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
+    def __init__(self, uid: str):
         self.__messages = []
+        self.uid = uid
 
     def append(self, data):
         self.__messages.append(data)

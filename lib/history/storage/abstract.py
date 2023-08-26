@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 
-class ChatAbstractHistory(metaclass=ABCMeta):
+class ChatHisoryAbstractStorage(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self):
+    def __init__(self, uid: str):
         pass
 
     @abstractmethod
