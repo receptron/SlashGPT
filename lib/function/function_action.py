@@ -83,9 +83,7 @@ class FunctionAction:
         if "message" in self.__function_action_data:
             return CallType.MESSAGE_TEMPLATE
 
-    def read_dataURL_template(
-        self, template, mime_type, message_template, arguments, verbose
-    ):
+    def read_dataURL_template(self, template, mime_type, message_template, arguments, verbose):
         _mime_type = mime_type or ""
         with open(f"{template}", "r") as f:
             template = f.read()
@@ -107,11 +105,7 @@ class FunctionAction:
             if len(param) == 2:
                 parsed_url = urlparse(url)
                 if param[0] != parsed_url.netloc:
-                    print(
-                        colored(
-                            f"Invalid appkey domain {appkey} in .env file.", COLOR_ERROR
-                        )
-                    )
+                    print(colored(f"Invalid appkey domain {appkey} in .env file.", COLOR_ERROR))
                     return
                 appkey_value = param[1]
 

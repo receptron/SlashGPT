@@ -17,9 +17,7 @@ class ChatConfig:
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        assert (
-            self.OPENAI_API_KEY
-        ), "OPENAI_API_KEY environment variable is missing from .env"
+        assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
         self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -34,9 +32,7 @@ class ChatConfig:
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
         if self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT:
-            pinecone.init(
-                api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT
-            )
+            pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
@@ -50,9 +46,7 @@ class ChatConfig:
         files = os.listdir(path)
         for file in files:
             if re.search(r"\.json$", file):
-                with open(
-                    f"{path}/{file}", "r", encoding="utf-8"
-                ) as f:  # encoding add for Win
+                with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
 
     def get_manifest_data(self, key):
@@ -65,10 +59,7 @@ class ChatConfig:
         return sorted(self.manifests.keys())
 
     def help_list(self):
-        return (
-            f"/{(key+'         ')[:12]} {self.get_manifest_data(key).get('title')}"
-            for key in self.get_manifests_keys()
-        )
+        return (f"/{(key+'         ')[:12]} {self.get_manifest_data(key).get('title')}" for key in self.get_manifests_keys())
 
     def has_value_for_key(self, key):
         if key == "REPLICATE_API_TOKEN":

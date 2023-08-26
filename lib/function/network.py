@@ -23,9 +23,7 @@ def graphQLRequest(url, arguments):
 
 def http_request(url, method, headers, appkey_value, arguments, verbose):
     appkey = {"appkey": appkey_value}
-    headers = {
-        key: value.format(**arguments, **appkey) for key, value in headers.items()
-    }
+    headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
     if method == "POST":
         headers["Content-Type"] = "application/json"
         if verbose:
@@ -44,8 +42,4 @@ def http_request(url, method, headers, appkey_value, arguments, verbose):
     if response.status_code == 200:
         return response.text
     else:
-        print(
-            colored(
-                f"Got {response.status_code}:{response.text} from {url}", COLOR_ERROR
-            )
-        )
+        print(colored(f"Got {response.status_code}:{response.text} from {url}", COLOR_ERROR))

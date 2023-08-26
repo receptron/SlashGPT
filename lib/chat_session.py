@@ -59,9 +59,7 @@ class ChatSession:
 
     def __set_manifest(self):
         manifest_data = self.config.get_manifest_data(self.manifest_key)
-        self.manifest = Manifest(
-            manifest_data if manifest_data else {}, self.manifest_key
-        )
+        self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def __set_llm_model(self, llm_model):
         if llm_model.check_api_key(self.config):
@@ -69,9 +67,7 @@ class ChatSession:
         else:
             print(
                 colored(
-                    "You need to set "
-                    + llm_model.get("api_key")
-                    + " to use this model. ",
+                    "You need to set " + llm_model.get("api_key") + " to use this model. ",
                     COLOR_ERROR,
                 )
             )
@@ -100,12 +96,8 @@ class ChatSession:
     def append_user_question(self, message: str):
         self.append_message("user", message)
         if self.vector_db:
-            articles = self.vector_db.fetch_related_articles(
-                self.llm_model.max_token() - 500
-            )
-            assert (
-                self.history.get_data(0, "role") == "system"
-            ), "Missing system message"
+            articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
+            assert self.history.get_data(0, "role") == "system", "Missing system message"
             self.history.set(
                 0,
                 {
@@ -128,9 +120,7 @@ class ChatSession:
     """
 
     def call_llm(self):
-        (role, res, function_call) = self.llm_model.generate_response(
-            self.history.messages(), self.manifest, self.config.verbose
-        )
+        (role, res, function_call) = self.llm_model.generate_response(self.history.messages(), self.manifest, self.config.verbose)
 
         if role and res:
             self.append_message(role, res)

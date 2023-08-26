@@ -44,9 +44,7 @@ llm_models = {
 
 def search_llm_model(llm_model_name):
     llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
-    index = (
-        llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
-    )
+    index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
 
     if index > -1:
         llm_model = list(llm_models.values())[index]

@@ -51,11 +51,7 @@ class Manifest:
     def __functions(self):
         value = self.get("functions")
         if value:
-            if (
-                isinstance(value, list)
-                and len(value) > 0
-                and isinstance(value[0], dict)
-            ):
+            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
                 return value
             if isinstance(value, str):
                 with open(value, "r") as f:
@@ -138,9 +134,7 @@ class Manifest:
             return prompt
 
     def __apply_agent(self, prompt, agents, manifests={}):
-        descriptions = [
-            f"{agent}: {manifests[agent].get('description')}" for agent in agents
-        ]
+        descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 
     def format_question(self, question):

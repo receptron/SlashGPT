@@ -41,9 +41,7 @@ class PythonRuntime:
             self.file_path = os.path.join(self.folder_path, f"{notebook_name}.ipynb")
 
         self.notebook = {
-            "cells": [
-                {"cell_type": "markdown", "metadata": {}, "source": [f"# {module}"]}
-            ],
+            "cells": [{"cell_type": "markdown", "metadata": {}, "source": [f"# {module}"]}],
             "metadata": {},
             "nbformat": 4,
             "nbformat_minor": 5,
@@ -100,9 +98,7 @@ class PythonRuntime:
                 )
                 result = str(output)
             elif output.type == "error":
-                cell["outputs"].append(
-                    {"output_type": "stream", "name": "stderr", "text": str(output)}
-                )
+                cell["outputs"].append({"output_type": "stream", "name": "stderr", "text": str(output)})
                 result = str(output)
             elif output.type == "image/png":
                 cell["outputs"].append(
@@ -128,9 +124,7 @@ class PythonRuntime:
             stderr = io.StringIO()
 
             with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                exec_result = self.ipython.run_cell(
-                    "".join(code) if isinstance(code, list) else code
-                )
+                exec_result = self.ipython.run_cell("".join(code) if isinstance(code, list) else code)
 
             # Handle stdout
             if stdout.getvalue():
