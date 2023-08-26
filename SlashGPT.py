@@ -32,7 +32,7 @@ def play_text(text, lang):
 
 
 with open("./manifests/manifests.json", "r") as f:
-    manifests = json.load(f)
+    manifests_manager = json.load(f)
 
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
@@ -98,7 +98,7 @@ class Main:
         (key, commands) = self.parse_question(question)
         if commands[0] == "sample" and len(commands) > 1:
             sub_key = commands[1]
-            sub_manifest_data = self.config.get_manifest_data(sub_key)
+            sub_manifest_data = self.config.manifests.get(sub_key)
             if sub_manifest_data:
                 sample = sub_manifest_data.get("sample")
                 if sample:
@@ -132,7 +132,7 @@ class Main:
                 list = "\n".join(self.config.help_list())
                 print(f"Agents:\n{list}")
             if len(commands) == 2:
-                manifest_data = self.config.get_manifest_data(commands[1])
+                manifest_data = self.config.manifests.get(commands[1])
                 if manifest_data:
                     print(json.dumps(manifest_data, indent=2))
         elif key == "bye":
@@ -171,10 +171,10 @@ class Main:
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
-            if len(commands) > 1 and manifests.get(commands[1]):
+            if len(commands) > 1 and manifests_manager.get(commands[1]):
                 self.switch_manifests(commands[1])
             else:
-                print("/switch {manifest}: " + ", ".join(manifests.keys()))
+                print("/switch {manifest}: " + ", ".join(manifests_manager.keys()))
         elif commands[0] == "import":
             self.import_data(commands)
         elif self.config.has_manifest(key):
@@ -218,7 +218,7 @@ class Main:
         print("/import {num} show: show history")
 
     def switch_manifests(self, key):
-        m = manifests[key]
+        m = manifests_manager[key]
         self.config.load_manifests("./" + m["manifests_dir"])
         self.switch_session(m["default_manifest_key"])
 
@@ -303,7 +303,8 @@ class Main:
 
 
 if __name__ == "__main__":
-    config = ChatConfig("./manifests/main")
+    dir = manifests_manager["main"]["manifests_dir"]
+    config = ChatConfig("./" + dir)
     print(ONELINE_HELP)
     main = Main(config, "dispatcher")
     main.start()
