@@ -167,18 +167,7 @@ class Main:
         elif key == "new":
             self.switch_session(self.session.manifest_key, intro=False)
         elif commands[0] == "autotest":
-            file_name = commands[1] if len(commands) > 1 else "default"
-            file_path = f"./test/{file_name}.json"
-            if not os.path.exists(file_path):
-                print_warning(f"No test script named {file_name}")
-                return
-            self.config.verbose = True
-            with open(file_path, "r") as f:
-                scripts = json.load(f)
-                self.switch_manifests(scripts.get("manifests") or "main")
-                for message in scripts.get("messages"):
-                    self.test(**message)
-            self.config.verbose = False
+            self.auto_test(commands)
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
                 self.switch_manifests(commands[1])
@@ -190,6 +179,20 @@ class Main:
             self.switch_session(key)
         else:
             print_error(f"Invalid slash command: {key}")
+
+    def auto_test(self, commands):
+        file_name = commands[1] if len(commands) > 1 else "default"
+        file_path = f"./test/{file_name}.json"
+        if not os.path.exists(file_path):
+            print_warning(f"No test script named {file_name}")
+            return
+        self.config.verbose = True
+        with open(file_path, "r") as f:
+            scripts = json.load(f)
+            self.switch_manifests(scripts.get("manifests") or "main")
+            for message in scripts.get("messages"):
+                self.test(**message)
+        self.config.verbose = False
 
     def import_data(self, commands):
         path = f"./output/{self.session.manifest_key}"
