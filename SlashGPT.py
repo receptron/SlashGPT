@@ -135,7 +135,7 @@ class Main:
                 list = "\n".join(self.config.help_list())
                 print(f"Agents:\n{list}")
             if len(commands) == 2:
-                manifest_data = self.config.get_manifest_data(commands[1])
+                manifest_data = self.config.manifests.get(commands[1])
                 if manifest_data:
                     print(json.dumps(manifest_data, indent=2))
         elif key == "bye":

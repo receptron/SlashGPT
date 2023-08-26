@@ -58,7 +58,7 @@ class ChatSession:
             print(colored(self.functions, COLOR_DEBUG))
 
     def __set_manifest(self):
-        manifest_data = self.config.get_manifest_data(self.manifest_key)
+        manifest_data = self.config.manifests.get(self.manifest_key)
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def __set_llm_model(self, llm_model):
