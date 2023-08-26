@@ -22,9 +22,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
                 temperature=temperature,
             )
         else:
-            response = openai.ChatCompletion.create(
-                model=model_name, messages=messages, temperature=temperature
-            )
+            response = openai.ChatCompletion.create(model=model_name, messages=messages, temperature=temperature)
         if verbose:
             print(colored(f"model={response['model']}", COLOR_DEBUG))
             print(colored(f"usage={response['usage']}", COLOR_DEBUG))

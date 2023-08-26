@@ -90,16 +90,12 @@ class FunctionCall:
                     history.append_message("assistant", message)
                 function_message = self.__format_python_result(result)
             else:
-                print(
-                    colored(f"No function {function_name} in the module", COLOR_ERROR)
-                )
+                print(colored(f"No function {function_name} in the module", COLOR_ERROR))
 
         if function_message:
             history.append_message("function", function_message, function_name)
 
-        should_call_llm = (
-            not self.__manifest.skip_function_result()
-        ) and function_message
+        should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
 
     def __format_python_result(self, result):

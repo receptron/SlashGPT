@@ -16,19 +16,11 @@ def manifest():
         "functions": "./resources/home.json",
         "actions": {
             "fill_bath": {"message": "Success. I started filling the bath tab."},
-            "set_temperature": {
-                "message": "Success. I set the teperature to {temperature} for {location}"
-            },
-            "start_sprinkler": {
-                "message": "Success. I started the sprinkler for {location}"
-            },
+            "set_temperature": {"message": "Success. I set the teperature to {temperature} for {location}"},
+            "start_sprinkler": {"message": "Success. I started the sprinkler for {location}"},
             "take_picture": {"message": "Success. I took a picture of {location}"},
-            "play_music": {
-                "message": "Success. I started playing {music} in {location}"
-            },
-            "control_light": {
-                "message": "Success. The light switch of {location} is now {switch}."
-            },
+            "play_music": {"message": "Success. I started playing {music} in {location}"},
+            "control_light": {"message": "Success. The light switch of {location} is now {switch}."},
         },
         "sample": "Turn on the light of the living room, take a picture, and turn it off",
         "prompt": [

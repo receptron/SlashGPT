@@ -13,8 +13,7 @@ from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
-from lib.utils.utils import (COLOR_DEBUG, COLOR_ERROR, COLOR_INFO,
-                             COLOR_WARNING, InputStyle)
+from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_INFO, COLOR_WARNING, InputStyle
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -69,14 +68,8 @@ class Main:
             else:
                 print(colored(f"Activating: {self.session.title}", COLOR_INFO))
             if self.session.manifest.get("notebook"):
-                (result, _) = self.runtime.create_notebook(
-                    self.session.llm_model.name()
-                )
-                print(
-                    colored(
-                        f"Created a notebook: {result.get('notebook_name')}", COLOR_INFO
-                    )
-                )
+                (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
+                print(colored(f"Created a notebook: {result.get('notebook_name')}", COLOR_INFO))
 
             if intro:
                 self.session.set_intro()
@@ -264,9 +257,7 @@ class Main:
             self.talk_with_input()
 
     def talk_with_input(self):
-        question = input(
-            f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m"
-        ).strip()
+        question = input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip()
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
             self.display_oneline_help()
@@ -277,9 +268,7 @@ class Main:
                 question = self.process_sample(question)
 
             if question:
-                self.session.append_user_question(
-                    self.session.manifest.format_question(question)
-                )
+                self.session.append_user_question(self.session.manifest.format_question(question))
                 self.process_llm()
 
     def print_bot(self, message):
