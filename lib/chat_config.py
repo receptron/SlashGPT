@@ -52,11 +52,11 @@ class ChatConfig:
     def exist_manifest(self, key):
         return key in self.manifests
 
-    def get_manifests_keys(self):
+    def __get_manifests_keys(self):
         return sorted(self.manifests.keys())
 
     def help_list(self):
-        return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.get_manifests_keys())
+        return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
 
     def has_value_for_key(self, key):
         if key == "REPLICATE_API_TOKEN":
