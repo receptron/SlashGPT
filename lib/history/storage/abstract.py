@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 class ChatHisoryAbstractStorage(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, uid: str):
+    def __init__(self, uid: str, manifest_key: str):
         pass
 
     @abstractmethod

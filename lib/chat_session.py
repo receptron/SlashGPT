@@ -37,7 +37,7 @@ class ChatSession:
 
         self.intro_message = None
         self.uid = str(uuid.uuid4())
-        memory_history = ChatHistoryMemoryStorage(self.uid)
+        memory_history = ChatHistoryMemoryStorage(self.uid, manifest_key)
         self.history = ChatHistory(memory_history)
         # init log dir
         create_log_dir(manifest_key)

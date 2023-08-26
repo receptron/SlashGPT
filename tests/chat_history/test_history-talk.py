@@ -11,7 +11,7 @@ def history():
     with open("./tests/data/saru.json", "r") as f:
         data = json.load(f)
 
-    memory_history = ChatHistoryMemoryStorage("123")
+    memory_history = ChatHistoryMemoryStorage("123", "key")
     memory_history.restore(data)
     history = ChatHistory(memory_history)
     return history

@@ -6,7 +6,7 @@ from lib.history.storage.memory import ChatHistoryMemoryStorage
 
 @pytest.fixture
 def history():
-    memory_history = ChatHistoryMemoryStorage("123")
+    memory_history = ChatHistoryMemoryStorage("123", "key")
     history = ChatHistory(memory_history)
     history.append({"name": "1", "data": "1"})
     history.append({"name": "2", "data": "2"})
