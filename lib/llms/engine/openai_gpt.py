@@ -3,6 +3,7 @@ from termcolor import colored
 
 from lib.function.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
+from lib.utils.utils import COLOR_DEBUG
 
 
 class LLMEngineOpenAIGPT(LLMEngineBase):
@@ -25,8 +26,8 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
                 model=model_name, messages=messages, temperature=temperature
             )
         if verbose:
-            print(colored(f"model={response['model']}", "cyan"))
-            print(colored(f"usage={response['usage']}", "cyan"))
+            print(colored(f"model={response['model']}", COLOR_DEBUG))
+            print(colored(f"usage={response['usage']}", COLOR_DEBUG))
         answer = response["choices"][0]["message"]
         res = answer["content"]
         role = answer["role"]

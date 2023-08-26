@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from termcolor import colored
 
 from lib.function.network import graphQLRequest, http_request
-from lib.utils.utils import CALL_TYPE
+from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, CallType
 
 
 class FunctionAction:
@@ -33,7 +33,7 @@ class FunctionAction:
 
     def call_api(self, arguments, verbose):
         type = self.__call_type()
-        if type == CALL_TYPE.REST:
+        if type == CallType.REST:
             appkey_value = self.__get_appkey_value() or ""
 
             return http_request(
@@ -44,10 +44,10 @@ class FunctionAction:
                 arguments,
                 verbose,
             )
-        if type == CALL_TYPE.GRAPHQL:
+        if type == CallType.GRAPHQL:
             return graphQLRequest(self.__get("url"), arguments)
 
-        if type == CALL_TYPE.DATA_URL:
+        if type == CallType.DATA_URL:
             return self.read_dataURL_template(
                 self.__get("template"),
                 self.__get("mime_type"),
@@ -56,7 +56,7 @@ class FunctionAction:
                 verbose,
             )
 
-        if type == CALL_TYPE.MESSAGE_TEMPLATE:
+        if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
         return "Success"
 
@@ -64,24 +64,24 @@ class FunctionAction:
         type = self.__get("type")
         if type:
             if type == "rest":
-                return CALL_TYPE.REST
+                return CallType.REST
             if type == "graphQL":
-                return CALL_TYPE.GRAPHQL
+                return CallType.GRAPHQL
             if type == "data_url":
-                return CALL_TYPE.DATA_URL
+                return CallType.DATA_URL
             if type == "message_template":
-                return CALL_TYPE.MESSAGE_TEMPLATE
+                return CallType.MESSAGE_TEMPLATE
 
         # for backward compatibility.
         # TODO: remove later
         if "url" in self.__function_action_data:
             if "graphQL" in self.__function_action_data:
-                return CALL_TYPE.GRAPHQL
-            return CALL_TYPE.REST
+                return CallType.GRAPHQL
+            return CallType.REST
         if "template" in self.__function_action_data:
-            return CALL_TYPE.DATA_URL
+            return CallType.DATA_URL
         if "message" in self.__function_action_data:
-            return CALL_TYPE.MESSAGE_TEMPLATE
+            return CallType.MESSAGE_TEMPLATE
 
     def read_dataURL_template(
         self, template, mime_type, message_template, arguments, verbose
@@ -90,7 +90,7 @@ class FunctionAction:
         with open(f"{template}", "r") as f:
             template = f.read()
             if verbose:
-                print(colored(template, "cyan"))
+                print(colored(template, COLOR_DEBUG))
             data = template.format(**arguments)
             dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
             return message_template.format(url=dataURL)
@@ -108,11 +108,13 @@ class FunctionAction:
                 parsed_url = urlparse(url)
                 if param[0] != parsed_url.netloc:
                     print(
-                        colored(f"Invalid appkey domain {appkey} in .env file.", "red")
+                        colored(
+                            f"Invalid appkey domain {appkey} in .env file.", COLOR_ERROR
+                        )
                     )
                     return
                 appkey_value = param[1]
 
             if not appkey_value:
-                print(colored(f"Missing {appkey} in .env file.", "red"))
+                print(colored(f"Missing {appkey} in .env file.", COLOR_ERROR))
             return appkey_value

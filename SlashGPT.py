@@ -13,7 +13,8 @@ from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
-from lib.utils.utils import InputStyle
+from lib.utils.utils import (COLOR_DEBUG, COLOR_ERROR, COLOR_INFO,
+                             COLOR_WARNING, InputStyle)
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -62,18 +63,18 @@ class Main:
                 print(
                     colored(
                         f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})",
-                        "blue",
+                        COLOR_INFO,
                     )
                 )
             else:
-                print(colored(f"Activating: {self.session.title}", "blue"))
+                print(colored(f"Activating: {self.session.title}", COLOR_INFO))
             if self.session.manifest.get("notebook"):
                 (result, _) = self.runtime.create_notebook(
                     self.session.llm_model.name()
                 )
                 print(
                     colored(
-                        f"Created a notebook: {result.get('notebook_name')}", "blue"
+                        f"Created a notebook: {result.get('notebook_name')}", COLOR_INFO
                     )
                 )
 
@@ -82,7 +83,7 @@ class Main:
             if self.session.intro_message:
                 self.print_bot(self.session.intro_message)
         else:
-            print(colored(f"Invalid slash command: {manifest_key}", "red"))
+            print(colored(f"Invalid slash command: {manifest_key}", COLOR_ERROR))
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -118,13 +119,13 @@ class Main:
                 if agents:
                     print("/sample {agent}: " + ", ".join(agents))
                 else:
-                    print(colored(f"Error: No manifest named '{sub_key}'", "red"))
+                    print(colored(f"Error: No manifest named '{sub_key}'", COLOR_ERROR))
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
             if sample:
                 print(sample)
                 return sample
-            print(colored(f"Error: No {key} in the manifest file", "red"))
+            print(colored(f"Error: No {key} in the manifest file", COLOR_ERROR))
         return None
 
     """
@@ -149,7 +150,7 @@ class Main:
             self.exit = True
         elif key == "verbose" or key == "v":
             self.config.verbose = not self.config.verbose
-            print(colored(f"Verbose Mode: {self.config.verbose}", "cyan"))
+            print(colored(f"Verbose Mode: {self.config.verbose}", COLOR_DEBUG))
         elif commands[0] == "audio":
             if len(commands) == 1:
                 if self.config.audio:
@@ -165,7 +166,7 @@ class Main:
             if self.session.history.len() >= 1:
                 print(self.session.history.get_data(0, "content"))
             if self.config.verbose and self.session.functions:
-                print(colored(self.session.functions, "cyan"))
+                print(colored(self.session.functions, COLOR_DEBUG))
         elif key == "history":
             print(json.dumps(self.session.history.messages(), indent=2))
         elif key == "functions":
@@ -183,7 +184,7 @@ class Main:
             file_name = commands[1] if len(commands) > 1 else "default"
             file_path = f"./test/{file_name}.json"
             if not os.path.exists(file_path):
-                print(colored(f"No test script named {file_name}", "yellow"))
+                print(colored(f"No test script named {file_name}", COLOR_WARNING))
                 return
             self.config.verbose = True
             with open(file_path, "r") as f:
@@ -200,7 +201,7 @@ class Main:
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
-            print(colored(f"Invalid slash command: {key}", "red"))
+            print(colored(f"Invalid slash command: {key}", COLOR_ERROR))
 
     def switch_manifests(self, key):
         m = manifests[key]
@@ -249,7 +250,7 @@ class Main:
                         self.process_llm()
 
         except Exception as e:
-            print(colored(f"Exception: Restarting the chat :{e}", "red"))
+            print(colored(f"Exception: Restarting the chat :{e}", COLOR_ERROR))
             self.switch_session(self.session.manifest_key)
             if self.config.verbose:
                 raise

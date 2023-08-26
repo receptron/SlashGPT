@@ -5,6 +5,8 @@ from datetime import datetime
 
 from termcolor import colored
 
+from lib.utils.utils import COLOR_INFO
+
 
 class Manifest:
     def __init__(self, manifest={}, manifest_name=None):
@@ -143,7 +145,7 @@ class Manifest:
 
     def format_question(self, question):
         if question[:1] == "`":
-            print(colored("skipping form", "blue"))
+            print(colored("skipping form", COLOR_INFO))
             return question[1:]
         else:
             form = self.get("form")

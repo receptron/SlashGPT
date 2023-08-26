@@ -4,6 +4,7 @@ import tiktoken  # for counting tokens
 from termcolor import colored
 
 from lib.chat_config import ChatConfig
+from lib.utils.utils import COLOR_DEBUG
 
 
 class DBPinecone:
@@ -38,7 +39,7 @@ class DBPinecone:
         count = 0
         base_token = self.__messages_tokens(messages, model)
         if self.config.verbose:
-            print(colored(f"messages token:{base_token}", "cyan"))
+            print(colored(f"messages token:{base_token}", COLOR_DEBUG))
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
@@ -57,7 +58,7 @@ class DBPinecone:
             print(
                 colored(
                     f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}",
-                    "cyan",
+                    COLOR_DEBUG,
                 )
             )
         return articles
