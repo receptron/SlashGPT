@@ -18,4 +18,4 @@ LONG_HELP = """
 /verbose:   Toggle verbose switch
 """
 
-ONELINE_HELP = "System Slashes: /bye, /new, /prompt, /sample, /help, ..."
+ONELINE_HELP = "System Slashes: /switch, /bye, /new, /prompt, /sample, /help, ..."
