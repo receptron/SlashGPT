@@ -11,7 +11,7 @@ class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
         self.__new_session_id()
         # insert into log_manager (uid, session_id, manifest_key, created_at)
         # VALUES self.uid, self.session_id, manifest_key, timestamp.ms)
-        
+
     def __new_session_id(self):
         self.session_id = str(uuid.uuid4())
 

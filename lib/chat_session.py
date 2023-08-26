@@ -1,7 +1,6 @@
 import random
 import re
 import uuid
-from datetime import datetime
 
 from termcolor import colored
 
@@ -11,7 +10,6 @@ from lib.history.base import ChatHistory
 from lib.history.storage.memory import ChatHistoryMemoryStorage
 from lib.llms.models import get_llm_model_from_manifest
 from lib.manifest import Manifest
-from lib.utils.log import create_log_dir, save_log
 from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
 """
@@ -28,7 +26,6 @@ class ChatSession:
 
         self.__set_manifest()
 
-        self.time = datetime.now()
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()
         self.title = self.manifest.title()
@@ -39,8 +36,6 @@ class ChatSession:
         self.uid = str(uuid.uuid4())
         memory_history = ChatHistoryMemoryStorage(self.uid, manifest_key)
         self.history = ChatHistory(memory_history)
-        # init log dir
-        create_log_dir(manifest_key)
 
         # Load the model name and make it sure that we have required keys
         llm_model = get_llm_model_from_manifest(self.manifest)
@@ -126,6 +121,5 @@ class ChatSession:
 
         if role and res:
             self.append_message(role, res)
-            save_log(self.manifest_key, self.history.messages(), self.time)
 
         return (res, function_call)

@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
+from lib.utils.log import create_log_dir, save_log
 
 
 class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
@@ -7,8 +10,13 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         self.uid = uid
         self.manifest_key = manifest_key
 
+        self.time = datetime.now()
+        # init log dir
+        create_log_dir(manifest_key)
+
     def append(self, data):
         self.__messages.append(data)
+        save_log(self.manifest_key, self.messages(), self.time)
 
     def get(self, index):
         return self.__messages[index]
