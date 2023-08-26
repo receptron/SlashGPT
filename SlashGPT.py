@@ -152,8 +152,11 @@ class Main:
                 print(self.session.history.get_data(0, "content"))
             if self.config.verbose and self.session.functions:
                 print_debug(self.session.functions)
-        elif key == "history":
-            print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
+        elif commands[0] == "history":
+            if len(commands) == 1:
+                print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
+            elif len(commands) > 1 and commands[1] == "pop":
+                self.session.history.pop()
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))

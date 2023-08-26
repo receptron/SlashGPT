@@ -49,6 +49,12 @@ class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
         if self.len() > 0:
             return self.__messages[self.len() - 1]
 
+    def pop(self):
+        # delete from log where uid = self.uid and session_id = self.session_id
+        # order by create_at DESC limit 1
+        if self.len() > 0:
+            return self.__messages.pop()
+
     def messages(self):
         # select * from log where uid = self.uid and session_id = self.session_id
         return self.__messages

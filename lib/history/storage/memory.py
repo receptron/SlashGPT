@@ -42,6 +42,10 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         if self.len() > 0:
             return self.__messages[self.len() - 1]
 
+    def pop(self):
+        if self.len() > 0:
+            return self.__messages.pop()
+
     def messages(self):
         return self.__messages
 

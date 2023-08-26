@@ -31,6 +31,10 @@ class ChatHisoryAbstractStorage(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def pop(self):
+        pass
+
+    @abstractmethod
     def messages(self):
         pass
 

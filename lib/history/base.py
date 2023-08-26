@@ -20,6 +20,9 @@ class ChatHistory:
     def last(self):
         return self.repository.last()
 
+    def pop(self):
+        return self.repository.pop()
+
     def messages(self):
         return self.repository.messages()
 
