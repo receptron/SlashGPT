@@ -26,3 +26,6 @@ class ChatMemoryHistory:
 
     def messages(self):
         return self.__messages
+
+    def restore(self, data):
+        self.__messages = data
