@@ -20,6 +20,9 @@ class ChatHistory:
     def last(self):
         return self.repository.last()
 
+    def pop(self):
+        return self.repository.pop()
+
     def messages(self):
         return self.repository.messages()
 
@@ -28,6 +31,15 @@ class ChatHistory:
             self.append({"role": role, "content": message, "name": name})
         else:
             self.append({"role": role, "content": message})
+
+    def restore(self, data):
+        return self.repository.restore(data)
+
+    def session_list(self):
+        return self.repository.session_list()
+
+    def get_session_data(self, id):
+        return self.repository.get_session_data(id)
 
     def md(self, names={}):
         def to_md(data):

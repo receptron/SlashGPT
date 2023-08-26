@@ -6,14 +6,14 @@ import re
 
 from gtts import gTTS
 from playsound import playsound
-from termcolor import colored
 
 from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
-from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_INFO, COLOR_WARNING, InputStyle
+from lib.utils.print import print_debug, print_error, print_info, print_warning
+from lib.utils.utils import InputStyle
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -59,24 +59,21 @@ class Main:
         if self.config.exist_manifest(manifest_key):
             self.session = ChatSession(self.config, manifest_key=manifest_key)
             if self.config.verbose:
-                print(
-                    colored(
-                        f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})",
-                        COLOR_INFO,
-                    )
+                print_info(
+                    f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
                 )
             else:
-                print(colored(f"Activating: {self.session.title}", COLOR_INFO))
+                print_info(f"Activating: {self.session.title}")
             if self.session.manifest.get("notebook"):
                 (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
-                print(colored(f"Created a notebook: {result.get('notebook_name')}", COLOR_INFO))
+                print_info(f"Created a notebook: {result.get('notebook_name')}")
 
             if intro:
                 self.session.set_intro()
             if self.session.intro_message:
                 self.print_bot(self.session.intro_message)
         else:
-            print(colored(f"Invalid slash command: {manifest_key}", COLOR_ERROR))
+            print_error(f"Invalid slash command: {manifest_key}")
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -112,13 +109,13 @@ class Main:
                 if agents:
                     print("/sample {agent}: " + ", ".join(agents))
                 else:
-                    print(colored(f"Error: No manifest named '{sub_key}'", COLOR_ERROR))
+                    print_error(f"Error: No manifest named '{sub_key}'")
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
             if sample:
                 print(sample)
                 return sample
-            print(colored(f"Error: No {key} in the manifest file", COLOR_ERROR))
+            print_error(f"Error: No {key} in the manifest file")
         return None
 
     """
@@ -143,7 +140,7 @@ class Main:
             self.exit = True
         elif key == "verbose" or key == "v":
             self.config.verbose = not self.config.verbose
-            print(colored(f"Verbose Mode: {self.config.verbose}", COLOR_DEBUG))
+            print_debug(f"Verbose Mode: {self.config.verbose}")
         elif commands[0] == "audio":
             if len(commands) == 1:
                 self.config.audio = None if self.config.audio else "en"
@@ -154,9 +151,12 @@ class Main:
             if self.session.history.len() >= 1:
                 print(self.session.history.get_data(0, "content"))
             if self.config.verbose and self.session.functions:
-                print(colored(self.session.functions, COLOR_DEBUG))
-        elif key == "history":
-            print(json.dumps(self.session.history.messages(), indent=2))
+                print_debug(self.session.functions)
+        elif commands[0] == "history":
+            if len(commands) == 1:
+                print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
+            elif len(commands) > 1 and commands[1] == "pop":
+                self.session.history.pop()
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
@@ -169,27 +169,53 @@ class Main:
         elif key == "new":
             self.switch_session(self.session.manifest_key, intro=False)
         elif commands[0] == "autotest":
-            file_name = commands[1] if len(commands) > 1 else "default"
-            file_path = f"./test/{file_name}.json"
-            if not os.path.exists(file_path):
-                print(colored(f"No test script named {file_name}", COLOR_WARNING))
-                return
-            self.config.verbose = True
-            with open(file_path, "r") as f:
-                scripts = json.load(f)
-                self.switch_manifests(scripts.get("manifests") or "main")
-                for message in scripts.get("messages"):
-                    self.test(**message)
-            self.config.verbose = False
+            self.auto_test(commands)
         elif commands[0] == "switch":
             if len(commands) > 1 and manifests.get(commands[1]):
                 self.switch_manifests(commands[1])
             else:
                 print("/switch {manifest}: " + ", ".join(manifests.keys()))
+        elif commands[0] == "import":
+            self.import_data(commands)
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
-            print(colored(f"Invalid slash command: {key}", COLOR_ERROR))
+            print_error(f"Invalid slash command: {key}")
+
+    def auto_test(self, commands):
+        file_name = commands[1] if len(commands) > 1 else "default"
+        file_path = f"./test/{file_name}.json"
+        if not os.path.exists(file_path):
+            print_warning(f"No test script named {file_name}")
+            return
+        self.config.verbose = True
+        with open(file_path, "r") as f:
+            scripts = json.load(f)
+            self.switch_manifests(scripts.get("manifests") or "main")
+            for message in scripts.get("messages"):
+                self.test(**message)
+        self.config.verbose = False
+
+    def import_data(self, commands):
+        if len(commands) == 1:
+            files = self.session.history.session_list()
+            for file in files:
+                print(str(file["id"]) + ": " + file["name"])
+            return
+        else:
+            log = self.session.history.get_session_data(commands[1])
+            if log:
+                if len(commands) == 2:
+                    self.session.history.restore(log)
+                    print("imported")
+                    return
+                if len(commands) == 3 and commands[2] == "show":
+                    print(json.dumps(log, indent=2))
+                    return
+
+        print("/import: list all histories")
+        print("/import {num}: import history")
+        print("/import {num} show: show history")
 
     def switch_manifests(self, key):
         m = manifests[key]
@@ -235,7 +261,7 @@ class Main:
                         self.process_llm()
 
         except Exception as e:
-            print(colored(f"Exception: Restarting the chat :{e}", COLOR_ERROR))
+            print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.manifest_key)
             if self.config.verbose:
                 raise
