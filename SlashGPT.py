@@ -186,13 +186,13 @@ class Main:
             else:
                 print("/switch {manifest}: " + ", ".join(manifests.keys()))
         elif commands[0] == "import":
-            self.importData(commands)
+            self.import_data(commands)
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
             print_error(f"Invalid slash command: {key}")
 
-    def importData(self, commands):
+    def import_data(self, commands):
         path = f"./output/{self.session.manifest_key}"
         files = glob.glob(f"{path}/*")
         if len(commands) == 1:
