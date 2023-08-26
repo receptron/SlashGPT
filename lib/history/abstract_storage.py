@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+
 class ChatAbstractHistory(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self):
@@ -36,5 +37,3 @@ class ChatAbstractHistory(metaclass=ABCMeta):
     @abstractmethod
     def restore(self, data):
         pass
-
-    

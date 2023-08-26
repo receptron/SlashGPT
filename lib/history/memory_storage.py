@@ -1,5 +1,6 @@
 from lib.history.abstract_storage import ChatAbstractHistory
 
+
 class ChatMemoryHistory(ChatAbstractHistory):
     def __init__(self):
         self.__messages = []
