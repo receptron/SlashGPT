@@ -32,6 +32,12 @@ class ChatHistory:
     def restore(self, data):
         return self.repository.restore(data)
 
+    def session_list(self):
+        return self.repository.session_list()
+
+    def get_session_data(self, id):
+        return self.repository.get_session_data(id)
+
     def md(self, names={}):
         def to_md(data):
             name = names.get(data["role"]) or data["role"]

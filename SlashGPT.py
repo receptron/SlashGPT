@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import glob
 import json
 import os
 import platform
@@ -195,21 +194,25 @@ class Main:
         self.config.verbose = False
 
     def import_data(self, commands):
-        path = f"./output/{self.session.manifest_key}"
-        files = glob.glob(f"{path}/*")
         if len(commands) == 1:
-            for x in range(len(files)):
-                print(str(x) + ": " + files[x])
-        elif commands[1].isdecimal() and len(files) > int(commands[1]):
-            file_name = files[int(commands[1])]
-            if not os.path.exists(file_name):
-                print_warning(f"No log named {file_name}")
-                return
-            with open(file_name, "r", encoding="utf-8") as f:
-                log = json.load(f)
-                self.session.history.restore(log)
+            files = self.session.history.session_list()
+            for file in files:
+                print(str(file["id"]) + ": " + file["name"])
+            return
         else:
-            print("/import {num} or /import")
+            log = self.session.history.get_session_data(commands[1])
+            if log:
+                if len(commands) == 2:
+                    self.session.history.restore(log)
+                    print("imported")
+                    return
+                if len(commands) == 3 and commands[2] == "show":
+                    print(json.dumps(log, indent=2))
+                    return
+
+        print("/import: list all histories")
+        print("/import {num}: import history")
+        print("/import {num} show: show history")
 
     def switch_manifests(self, key):
         m = manifests[key]
