@@ -57,3 +57,12 @@ class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
         self.__new_session_id()
         for d in data:
             self.append(d)
+
+    def session_list(self):
+        # select * from log_manager where uid = self.uid
+        # return [{id, name: timestamp}]
+        return []
+
+    def get_session_data(self, id: str):
+        # select * from log where uid = self.uid and session_id = id
+        return {}

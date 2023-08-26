@@ -37,3 +37,11 @@ class ChatHisoryAbstractStorage(metaclass=ABCMeta):
     @abstractmethod
     def restore(self, data):
         pass
+
+    @abstractmethod
+    def session_list(self):
+        pass
+
+    @abstractmethod
+    def get_session_data(self, id: str):
+        pass
