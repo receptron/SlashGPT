@@ -28,3 +28,14 @@ class ChatHistory:
             self.append({"role": role, "content": message, "name": name})
         else:
             self.append({"role": role, "content": message})
+
+    def md(self, names={}):
+        def to_md(data):
+            name = names.get(data["role"]) or data["role"]
+            if name == "---":
+                return ""
+            return ("\n").join(
+                ["## " + name, "", data["content"].replace("\n", ""), ""]
+            )
+
+        return ("\n").join(list(map(to_md, self.messages())))
