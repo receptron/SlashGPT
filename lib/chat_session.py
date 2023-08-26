@@ -9,7 +9,6 @@ from lib.chat_config import ChatConfig
 from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
 from lib.history.storage.memory import ChatHistoryMemoryStorage
-# from lib.history.storage.pseudo_sql import ChatHistoryPseudoSQLStorage
 from lib.llms.models import get_llm_model_from_manifest
 from lib.manifest import Manifest
 from lib.utils.log import create_log_dir, save_log
@@ -39,7 +38,6 @@ class ChatSession:
         self.intro_message = None
         self.uid = str(uuid.uuid4())
         memory_history = ChatHistoryMemoryStorage(self.uid)
-        # memory_history = ChatHistoryPseudoSQLStorage(self.uid)
         self.history = ChatHistory(memory_history)
         # init log dir
         create_log_dir(manifest_key)
