@@ -29,6 +29,9 @@ class ChatHistory:
         else:
             self.append({"role": role, "content": message})
 
+    def restore(self, data):
+        return self.repository.restore(data)
+
     def md(self, names={}):
         def to_md(data):
             name = names.get(data["role"]) or data["role"]

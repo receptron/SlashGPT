@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import glob
 import json
 import os
 import platform
@@ -13,8 +14,8 @@ from lib.chat_session import ChatSession
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
+from lib.utils.print import print_debug, print_error, print_info, print_warning
 from lib.utils.utils import InputStyle
-from lib.utils.print import print_debug, print_info, print_error, print_warning
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -154,7 +155,7 @@ class Main:
             if self.config.verbose and self.session.functions:
                 print_debug(self.session.functions)
         elif key == "history":
-            print(json.dumps(self.session.history.messages(), indent=2))
+            print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
@@ -184,10 +185,29 @@ class Main:
                 self.switch_manifests(commands[1])
             else:
                 print("/switch {manifest}: " + ", ".join(manifests.keys()))
+        elif commands[0] == "import":
+            self.importData(commands)
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
             print_error(f"Invalid slash command: {key}")
+
+    def importData(self, commands):
+        path = f"./output/{self.session.manifest_key}"
+        files = glob.glob(f"{path}/*")
+        if len(commands) == 1:
+            for x in range(len(files)):
+                print(str(x) + ": " + files[x])
+        elif commands[1].isdecimal() and len(files) > int(commands[1]):
+            file_name = files[int(commands[1])]
+            if not os.path.exists(file_name):
+                print_warning(f"No log named {file_name}")
+                return
+            with open(file_name, "r", encoding="utf-8") as f:
+                log = json.load(f)
+                self.session.history.restore(log)
+        else:
+            print("/import {num} or /import")
 
     def switch_manifests(self, key):
         m = manifests[key]
