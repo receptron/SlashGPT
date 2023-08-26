@@ -16,9 +16,7 @@ openai.api_key = OPENAI_API_KEY
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
 assert PINECONE_API_KEY, "PINECONE_API_KEY environment variable is missing from .env"
 PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
-assert (
-    PINECONE_ENVIRONMENT
-), "PINECONE_ENVIRONMENT environment variable is missing from .env"
+assert PINECONE_ENVIRONMENT, "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
 # models
 EMBEDDING_MODEL = "text-embedding-ada-002"
@@ -34,9 +32,7 @@ metric = "cosine"
 pod_type = "p1"
 if table_name not in pinecone.list_indexes():
     print("Creating pinecone index")
-    pinecone.create_index(
-        table_name, dimension=dimension, metric=metric, pod_type=pod_type
-    )
+    pinecone.create_index(table_name, dimension=dimension, metric=metric, pod_type=pod_type)
 
 # Connect to the index
 index = pinecone.Index(table_name)
@@ -54,9 +50,7 @@ def load_vectors():
     # print(df)
 
     print("writing vectors")
-    vectors = [
-        (f"id_{i}", row["embedding"], {"text": row["text"]}) for i, row in df.iterrows()
-    ]
+    vectors = [(f"id_{i}", row["embedding"], {"text": row["text"]}) for i, row in df.iterrows()]
     # print(vectors)
     for vector in vectors:
         index.upsert([vector])
@@ -120,9 +114,7 @@ def ask(
         },
         {"role": "user", "content": message},
     ]
-    response = openai.ChatCompletion.create(
-        model=model, messages=messages, temperature=0
-    )
+    response = openai.ChatCompletion.create(model=model, messages=messages, temperature=0)
     response_message = response["choices"][0]["message"]["content"]
     return response_message
 

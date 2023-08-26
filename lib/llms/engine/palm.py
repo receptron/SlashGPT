@@ -31,9 +31,7 @@ class LLMEnginePaLM(LLMEngineBase):
                 elif len(new_messages) > 0 or role != "assistant":
                     new_messages.append(message["content"])
 
-        response = palm.chat(
-            **defaults, context=system, examples=examples, messages=new_messages
-        )
+        response = palm.chat(**defaults, context=system, examples=examples, messages=new_messages)
         res = response.last
         if res:
             if verbose:

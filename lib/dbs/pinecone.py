@@ -11,9 +11,7 @@ class DBPinecone:
     @classmethod
     def factory(cls, table_name, config: ChatConfig):
         if table_name and config.PINECONE_API_KEY and config.PINECONE_ENVIRONMENT:
-            assert (
-                table_name in pinecone.list_indexes()
-            ), f"No Pinecone table named {table_name}"
+            assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
             return DBPinecone(table_name, config)
 
     def __init__(self, table_name, config: ChatConfig):
@@ -43,11 +41,7 @@ class DBPinecone:
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
-            if (
-                self.__num_tokens(articles + article_with_section + query, model)
-                + base_token
-                > token_budget
-            ):
+            if self.__num_tokens(articles + article_with_section + query, model) + base_token > token_budget:
                 break
             else:
                 count += 1
@@ -70,6 +64,4 @@ class DBPinecone:
 
     # Returns the total number of tokens in messages
     def __messages_tokens(self, messages, model) -> int:
-        return sum(
-            [self.__num_tokens(message["content"], model) for message in messages]
-        )
+        return sum([self.__num_tokens(message["content"], model) for message in messages])
