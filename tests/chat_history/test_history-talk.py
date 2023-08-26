@@ -3,7 +3,7 @@ import json
 import pytest
 
 from lib.history.base import ChatHistory
-from lib.history.memory_storage import ChatMemoryHistory
+from lib.history.storage.memory import ChatHistoryMemoryStorage
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def history():
     with open("./tests/data/saru.json", "r") as f:
         data = json.load(f)
 
-    memory_history = ChatMemoryHistory()
+    memory_history = ChatHistoryMemoryStorage("123", "key")
     memory_history.restore(data)
     history = ChatHistory(memory_history)
     return history
