@@ -19,19 +19,19 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         # init log dir
         create_log_dir(self.base_dir, manifest_key)
 
-    def append(self, data):
+    def append(self, data: dict):
         self.__messages.append(data)
         save_log(self.base_dir, self.manifest_key, self.messages(), self.time)
 
     def get(self, index: int):
         return self.__messages[index]
 
-    def get_data(self, index, name):
+    def get_data(self, index: int, name: str):
         m = self.__messages[index]
         if m:
             return m.get(name)
 
-    def set(self, index, data):
+    def set(self, index: int, data: dict):
         if self.__messages[index]:
             self.__messages[index] = data
 
