@@ -27,9 +27,6 @@ class ChatConfig(ChatConfigBase):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
 
-    def exist_manifest(self, key):
-        return key in self.manifests
-
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())
 

@@ -20,7 +20,8 @@ with open("./manifests/main/names.json", "r") as f:
 class Main:
     def __init__(self, config: ChatConfigBase, manifest_key: str):
         self.config = config
-        self.session = ChatSession(self.config, manifest_key=manifest_key)
+        manifest = config.get_manifest()
+        self.session = ChatSession(self.config, manifest, manifest_key=manifest_key)
         print(colored(f"Activating: {self.session.title}", "blue"))
 
         self.session.set_intro()
