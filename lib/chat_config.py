@@ -14,8 +14,7 @@ ChatConfig is a singleton, which holds global states, including various secret k
 class ChatConfig(ChatConfigBase):
     def __init__(self, pathManifests):
         super().__init__()
-        self.load_manifests(pathManifests) # for main
-
+        self.load_manifests(pathManifests)  # for main
 
     """
     Load a set of manifests.

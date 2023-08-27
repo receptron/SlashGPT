@@ -31,7 +31,7 @@ class ChatConfigBase:
 
         # for base
         self.manifest = None
-        
+
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
         if self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT:
