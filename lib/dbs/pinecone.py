@@ -8,12 +8,12 @@ from lib.utils.print import print_debug
 
 class DBPinecone:
     @classmethod
-    def factory(cls, table_name, config: ChatConfig):
+    def factory(cls, table_name: str, config: ChatConfig):
         if table_name and config.PINECONE_API_KEY and config.PINECONE_ENVIRONMENT:
             assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
             return DBPinecone(table_name, config)
 
-    def __init__(self, table_name, config: ChatConfig):
+    def __init__(self, table_name: str, config: ChatConfig):
         self.config = config
         self.index = pinecone.Index(table_name)
 
