@@ -20,8 +20,11 @@ with open("./manifests/manifests.json", "r") as f:
 class Main:
     def __init__(self, config: ChatConfig):
         self.config = config
-        self.sessionA = ChatSession(self.config, manifest_key="chomsky")
-        self.sessionB = ChatSession(self.config, manifest_key="tawara")
+        manifestA = self.config.manifests.get("chomsky")
+        manifestB = self.config.manifests.get("tawara")
+
+        self.sessionA = ChatSession(self.config, manifestA, manifest_key="chomsky")
+        self.sessionB = ChatSession(self.config, manifestB, manifest_key="tawara")
 
     def process_llm(self, session):
         try:

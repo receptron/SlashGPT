@@ -12,7 +12,8 @@ ChatConfig is a singleton, which holds global states, including various secret k
 class ChatConfig(ChatConfigBase):
     def __init__(self, pathManifests):
         super().__init__()
-        self.load_manifests(pathManifests)  # for main
+        self.audio = None
+        self.load_manifests(pathManifests)
 
     """
     Load a set of manifests.
@@ -26,9 +27,6 @@ class ChatConfig(ChatConfigBase):
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
-
-    def exist_manifest(self, key):
-        return key in self.manifests
 
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())

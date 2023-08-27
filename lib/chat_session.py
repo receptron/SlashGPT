@@ -20,11 +20,12 @@ The manifest specifies behaviors of the agent.
 
 
 class ChatSession:
-    def __init__(self, config: ChatConfig, manifest_key: str = "GPT"):
+    def __init__(self, config: ChatConfig, manifest={}, manifest_key: str = "GPT"):
         self.config = config
         self.manifest_key = manifest_key
 
-        self.__set_manifest()
+        self.manifest = Manifest(manifest if manifest else {}, manifest_key)
+
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()
         self.title = self.manifest.title()
@@ -52,13 +53,6 @@ class ChatSession:
         self.functions = self.manifest.functions()
         if self.functions and self.config.verbose:
             print(colored(self.functions, COLOR_DEBUG))
-
-    def __set_manifest(self):
-        if self.config.manifests and self.config.manifests.get(self.manifest_key):
-            manifest_data = self.config.manifests.get(self.manifest_key)
-        else:
-            manifest_data = self.config.get_manifest()
-        self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def __set_llm_model(self, llm_model):
         if llm_model.check_api_key(self.config):

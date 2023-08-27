@@ -54,10 +54,12 @@ class Main:
 
     def switch_session(self, manifest_key: str, intro: bool = True):
         if manifest_key is None:
-            self.session = ChatSession(self.config)
+            self.session = ChatSession(self.config, {})
             return
-        if self.config.exist_manifest(manifest_key):
-            self.session = ChatSession(self.config, manifest_key=manifest_key)
+
+        if self.config.has_manifest(manifest_key):
+            manifest = self.config.manifests.get(manifest_key)
+            self.session = ChatSession(self.config, manifest, manifest_key=manifest_key)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
