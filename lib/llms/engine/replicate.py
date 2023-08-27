@@ -1,13 +1,15 @@
 import replicate
 
 from lib.llms.engine.base import LLMEngineBase
+from lib.llms.llm_model import LlmModel
+from lib.manifest import Manifest
 
 
 class LLMEngineReplicate(LLMEngineBase):
     def __init__(self):
         return
 
-    def chat_completion(self, messages, manifest, llm_model, verbose):
+    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model: LlmModel, verbose: bool):
         role = "assistant"
         functions = manifest.functions()
         temperature = manifest.temperature()
