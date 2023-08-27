@@ -25,7 +25,6 @@ class ChatSession:
         self.manifest_key = manifest_key
 
         self.__set_manifest()
-
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()
         self.title = self.manifest.title()
@@ -55,7 +54,10 @@ class ChatSession:
             print(colored(self.functions, COLOR_DEBUG))
 
     def __set_manifest(self):
-        manifest_data = self.config.manifests.get(self.manifest_key)
+        if self.config.manifests and self.config.manifests.get(self.manifest_key):
+            manifest_data = self.config.manifests.get(self.manifest_key)
+        else:
+            manifest_data = self.config.get_manifest()
         self.manifest = Manifest(manifest_data if manifest_data else {}, self.manifest_key)
 
     def __set_llm_model(self, llm_model):

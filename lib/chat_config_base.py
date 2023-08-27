@@ -27,7 +27,10 @@ class ChatConfigBase:
         self.audio = None
 
         # just set for main.
-        self.manifests = {}
+        self.manifests = None
+
+        # for base
+        self.manifest = None
         
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
@@ -44,3 +47,8 @@ class ChatConfigBase:
             return self.GOOGLE_PALM_KEY is not None
         return False
 
+    def set_manifest(self, manifest):
+        self.manifest = manifest
+
+    def get_manifest(self):
+        return self.manifest
