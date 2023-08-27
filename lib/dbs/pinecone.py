@@ -1,10 +1,9 @@
 import openai
 import pinecone
 import tiktoken  # for counting tokens
-from termcolor import colored
 
 from lib.chat_config import ChatConfig
-from lib.utils.utils import COLOR_DEBUG
+from lib.utils.print import print_debug
 
 
 class DBPinecone:
@@ -37,7 +36,7 @@ class DBPinecone:
         count = 0
         base_token = self.__messages_tokens(messages, model)
         if self.config.verbose:
-            print(colored(f"messages token:{base_token}", COLOR_DEBUG))
+            print_debug(f"messages token:{base_token}")
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
@@ -49,12 +48,7 @@ class DBPinecone:
                 if self.config.verbose:
                     print(len(article), self.__num_tokens(article, model))
         if self.config.verbose:
-            print(
-                colored(
-                    f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}",
-                    COLOR_DEBUG,
-                )
-            )
+            print_debug(f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model)}")
         return articles
 
     # Returns the number of tokens in a string

@@ -23,7 +23,7 @@ class ChatConfigBase:
         self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
 
         self.verbose = False
-        self.manifest = None
+        # self.manifest = None
 
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
@@ -33,15 +33,9 @@ class ChatConfigBase:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
     # for llm
-    def has_value_for_key(self, key):
+    def has_value_for_key(self, key: str):
         if key == "REPLICATE_API_TOKEN":
             return self.REPLICATE_API_TOKEN is not None
         if key == "GOOGLE_PALM_KEY":
             return self.GOOGLE_PALM_KEY is not None
         return False
-
-    def set_manifest(self, manifest):
-        self.manifest = manifest
-
-    def get_manifest(self):
-        return self.manifest

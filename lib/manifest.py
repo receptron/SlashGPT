@@ -3,18 +3,16 @@ import random
 import re
 from datetime import datetime
 
-from termcolor import colored
-
-from lib.utils.utils import COLOR_INFO
+from lib.utils.print import print_info
 
 
 class Manifest:
-    def __init__(self, manifest={}, manifest_name=None):
+    def __init__(self, manifest: dict = {}, manifest_name=None):
         self.__manifest = manifest
         self.__manifest_name = manifest_name
         self.module = self.__read_module()
 
-    def get(self, key):
+    def get(self, key: str):
         return self.__manifest.get(key)
 
     def username(self):
@@ -78,7 +76,7 @@ class Manifest:
 
         return None
 
-    def get_module(self, function_name):
+    def get_module(self, function_name: str):
         return self.module and self.module.get(function_name) or None
 
     def __read_prompt(self):
@@ -119,7 +117,7 @@ class Manifest:
             contents = f.read()
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
-    def prompt_data(self, manifests={}):
+    def prompt_data(self, manifests: dict = {}):
         prompt = self.__read_prompt()
         agents = self.get("agents")
         if prompt:
@@ -133,13 +131,13 @@ class Manifest:
                 prompt = self.__apply_agent(prompt, agents, manifests)
             return prompt
 
-    def __apply_agent(self, prompt, agents, manifests={}):
+    def __apply_agent(self, prompt: str, agents: [str], manifests: dict = {}):
         descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 
-    def format_question(self, question):
+    def format_question(self, question: str):
         if question[:1] == "`":
-            print(colored("skipping form", COLOR_INFO))
+            print_info("skipping form")
             return question[1:]
         else:
             form = self.get("form")

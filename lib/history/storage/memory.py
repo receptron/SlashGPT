@@ -23,7 +23,7 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         self.__messages.append(data)
         save_log(self.base_dir, self.manifest_key, self.messages(), self.time)
 
-    def get(self, index):
+    def get(self, index: int):
         return self.__messages[index]
 
     def get_data(self, index, name):

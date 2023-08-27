@@ -54,7 +54,7 @@ class ChatSession:
         if self.functions and self.config.verbose:
             print(colored(self.functions, COLOR_DEBUG))
 
-    def __set_llm_model(self, llm_model):
+    def __set_llm_model(self, llm_model: dict):
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:
