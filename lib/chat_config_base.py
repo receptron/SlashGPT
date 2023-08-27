@@ -22,14 +22,7 @@ class ChatConfigBase:
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
         self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
 
-        # Initialize other settings and load all manifests
         self.verbose = False
-        self.audio = None
-
-        # just set for main.
-        self.manifests = None
-
-        # for base
         self.manifest = None
 
         # Initialize OpenAI and optinoally Pinecone and Palm
