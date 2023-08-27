@@ -2,8 +2,6 @@ import json
 import os
 import re
 
-import google.generativeai as palm
-
 from lib.chat_config_base import ChatConfigBase
 
 """
