@@ -6,6 +6,7 @@ from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 from termcolor import colored
 
+from lib.utils.print import print_debug, print_error
 from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR
 
 
@@ -27,7 +28,7 @@ def http_request(url, method, headers, appkey_value, arguments, verbose):
     if method == "POST":
         headers["Content-Type"] = "application/json"
         if verbose:
-            print(colored(f"Posting to {url} {headers}", COLOR_DEBUG))
+            print_debug(f"Posting to {url} {headers}")
         response = requests.post(url, headers=headers, json=arguments)
     else:
         if verbose:
