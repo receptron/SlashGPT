@@ -7,7 +7,6 @@ from gql.transport.requests import RequestsHTTPTransport
 from termcolor import colored
 
 from lib.utils.print import print_debug, print_error
-from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR
 
 
 def graphQLRequest(url, arguments):
@@ -32,15 +31,15 @@ def http_request(url, method, headers, appkey_value, arguments, verbose):
         response = requests.post(url, headers=headers, json=arguments)
     else:
         if verbose:
-            print(colored(arguments.items(), COLOR_DEBUG))
+            print_debug(arguments.items())
         url = url.format(
             **{key: urllib.parse.quote(value) for key, value in arguments.items()},
             **appkey,
         )
         if verbose:
-            print(colored(f"Fetching from {url}", COLOR_DEBUG))
+            print_debug(f"Fetching from {url}")
         response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.text
     else:
-        print(colored(f"Got {response.status_code}:{response.text} from {url}", COLOR_ERROR))
+        print_error(f"Got {response.status_code}:{response.text} from {url}", COLOR_ERROR)
