@@ -222,9 +222,13 @@ class Main:
         self.config.load_manifests("./" + m["manifests_dir"])
         self.switch_session(m["default_manifest_key"])
 
-    def test(self, agent, message):
+    def test(self, agent, message=None, messages=None):
         self.switch_session(agent)
-        self.query_llm(self.process_sample(message))
+        if message:
+            self.query_llm(self.process_sample(message))
+        if messages:
+            for m in messages:
+                self.query_llm(self.process_sample(m))
 
     def process_llm(self):
         try:

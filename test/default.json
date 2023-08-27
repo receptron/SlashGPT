@@ -2,13 +2,13 @@
   "messages":[
     {
     "agent": "dispatcher",
-    "message": "/sample currency"
+    "messages": ["/sample currency"]
   },{
     "agent": "dispatcher",
     "message": "/sample weather"
   },{
     "agent": "spacex",
-    "message": "/sample"
+    "messages": ["/sample"]
   },{
     "agent": "cal",
     "message": "/sample"
