@@ -89,7 +89,7 @@ class ChatSession:
     def append_user_question(self, message: str):
         self.append_message("user", message)
         if self.vector_db:
-            articles = self.vector_db.fetch_related_articles(self.llm_model.max_token() - 500)
+            articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
             assert self.history.get_data(0, "role") == "system", "Missing system message"
             self.history.set(
                 0,
