@@ -1,14 +1,14 @@
 import json
 
-from termcolor import colored
-
 from lib.function.function_action import FunctionAction
-from lib.utils.utils import COLOR_ERROR, COLOR_INFO, COLOR_WARNING
-
+from lib.manifest import Manifest
+from lib.utils.print import print_error, print_info, print_warning
+from lib.history.base import ChatHistory
+from lib.function.jupyter_runtime import PythonRuntime
 
 class FunctionCall:
     @classmethod
-    def factory(cls, function_call_data, manifest):
+    def factory(cls, function_call_data: dict, manifest: Manifest):
         if function_call_data is None:
             return None
         return FunctionCall(function_call_data, manifest)
@@ -19,7 +19,7 @@ class FunctionCall:
         actions = self.__manifest.actions()
         self.function_action = FunctionAction.factory(actions.get(self.__name()))
 
-    def __get(self, key):
+    def __get(self, key: str):
         return self.__function_call_data.get(key)
 
     def data(self):
@@ -35,12 +35,7 @@ class FunctionCall:
             try:
                 return json.loads(arguments)
             except Exception:
-                print(
-                    colored(
-                        f"Function {function_name}: Failed to load arguments as json",
-                        COLOR_WARNING,
-                    )
-                )
+                print_warning(f"Function {function_name}: Failed to load arguments as json")
         return arguments
 
     def emit_data(self):
@@ -51,14 +46,14 @@ class FunctionCall:
             )
         return (None, None)
 
-    def __arguments_for_notebook(self, last_messages):
+    def __arguments_for_notebook(self, last_messages: dict):
         arguments = self.__arguments()
         if self.__name() == "python" and isinstance(arguments, str):
-            print(colored("python function was called", COLOR_WARNING))
+            print_warning("python function was called")
             return {"code": arguments, "query": last_messages["content"]}
         return arguments
 
-    def process_function_call(self, history, runtime, verbose=False):
+    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose=False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
@@ -66,7 +61,7 @@ class FunctionCall:
         function_message = None
         arguments = self.__arguments()
 
-        print(colored(json.dumps(self.data(), indent=2), COLOR_INFO))
+        print_info(json.dumps(self.data(), indent=2))
 
         if self.function_action:
             # call external api or some
@@ -90,7 +85,7 @@ class FunctionCall:
                     history.append_message("assistant", message)
                 function_message = self.__format_python_result(result)
             else:
-                print(colored(f"No function {function_name} in the module", COLOR_ERROR))
+                print_error(f"No function {function_name} in the module")
 
         if function_message:
             history.append_message("function", function_message, function_name)
@@ -98,7 +93,7 @@ class FunctionCall:
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
 
-    def __format_python_result(self, result):
+    def __format_python_result(self, result: dict or str):
         if isinstance(result, dict):
             result = json.dumps(result)
         result_form = self.__manifest.get("result_form")
