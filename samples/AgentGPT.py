@@ -23,8 +23,8 @@ class Main:
         manifestA = self.config.manifests.get("chomsky")
         manifestB = self.config.manifests.get("tawara")
 
-        self.sessionA = ChatSession(self.config, manifestA, manifest_key="chomsky")
-        self.sessionB = ChatSession(self.config, manifestB, manifest_key="tawara")
+        self.sessionA = ChatSession(self.config, manifest=manifestA, manifest_key="chomsky")
+        self.sessionB = ChatSession(self.config, manifest=manifestB, manifest_key="tawara")
 
     def process_llm(self, session):
         try:

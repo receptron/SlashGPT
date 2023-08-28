@@ -21,7 +21,7 @@ class Main:
     def __init__(self, config: ChatConfigBase, manifest_key: str):
         self.config = config
         manifest = config.get_manifest()
-        self.session = ChatSession(self.config, manifest, manifest_key=manifest_key)
+        self.session = ChatSession(self.config, manifest=manifest, manifest_key=manifest_key)
         print(colored(f"Activating: {self.session.title}", "blue"))
 
         self.session.set_intro()

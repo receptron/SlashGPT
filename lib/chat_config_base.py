@@ -32,6 +32,8 @@ class ChatConfigBase:
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
+        self.manifests = None
+
     # for llm
     def has_value_for_key(self, key: str):
         if key == "REPLICATE_API_TOKEN":
@@ -39,3 +41,9 @@ class ChatConfigBase:
         if key == "GOOGLE_PALM_KEY":
             return self.GOOGLE_PALM_KEY is not None
         return False
+
+    def set_manifest(self, manifest):
+        self.manifest = manifest
+
+    def get_manifest(self):
+        return self.manifest
