@@ -7,6 +7,7 @@ from termcolor import colored
 from lib.chat_config import ChatConfig
 from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
+from lib.history.storage.abstract import ChatHisoryAbstractStorage
 from lib.history.storage.memory import ChatHistoryMemoryStorage
 from lib.llms.models import get_llm_model_from_manifest
 from lib.manifest import Manifest
@@ -20,7 +21,15 @@ The manifest specifies behaviors of the agent.
 
 
 class ChatSession:
-    def __init__(self, config: ChatConfig, manifest={}, manifest_key: str = "GPT"):
+    def __init__(
+        self,
+        config: ChatConfig,
+        user_id: str = None,
+        history_engine: ChatHisoryAbstractStorage = ChatHistoryMemoryStorage,
+        manifest={},
+        manifest_key: str = "GPT",
+        intro: bool = True,
+    ):
         self.config = config
         self.manifest_key = manifest_key
 
@@ -33,8 +42,8 @@ class ChatSession:
         self.temperature = self.manifest.temperature()
 
         self.intro_message = None
-        self.uid = str(uuid.uuid4())
-        memory_history = ChatHistoryMemoryStorage(self.uid, manifest_key)
+        self.user_id = user_id if user_id else str(uuid.uuid4())
+        memory_history = history_engine(self.user_id, manifest_key)
         self.history = ChatHistory(memory_history)
 
         # Load the model name and make it sure that we have required keys
@@ -42,7 +51,7 @@ class ChatSession:
         self.__set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data(config.manifests)
+        self.prompt = self.manifest.prompt_data(config.manifests or {})
         if self.prompt:
             self.append_message("system", self.prompt)
 
@@ -55,6 +64,9 @@ class ChatSession:
             print(colored(self.functions, COLOR_DEBUG))
 
     def __set_llm_model(self, llm_model: dict):
+        if intro:
+            self.set_intro()
+
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:

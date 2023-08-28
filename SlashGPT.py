@@ -59,7 +59,7 @@ class Main:
 
         if self.config.has_manifest(manifest_key):
             manifest = self.config.manifests.get(manifest_key)
-            self.session = ChatSession(self.config, manifest, manifest_key=manifest_key)
+            self.session = ChatSession(self.config, manifest=manifest, manifest_key=manifest_key, intro=intro)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
@@ -70,8 +70,6 @@ class Main:
                 (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
                 print_info(f"Created a notebook: {result.get('notebook_name')}")
 
-            if intro:
-                self.session.set_intro()
             if self.session.intro_message:
                 self.print_bot(self.session.intro_message)
         else:
