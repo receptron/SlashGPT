@@ -1,14 +1,13 @@
 from abc import ABCMeta, abstractmethod
 
 from lib.function.function_call import FunctionCall
-from lib.llms.llm_model import LlmModel
 from lib.manifest import Manifest
 from lib.utils.print import print_warning
 
 
 class LLMEngineBase(metaclass=ABCMeta):
     @abstractmethod
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model: LlmModel, verbose: bool):
+    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
         pass
 
     """

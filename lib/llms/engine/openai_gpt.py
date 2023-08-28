@@ -2,7 +2,6 @@ import openai
 
 from lib.function.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
-from lib.llms.llm_model import LlmModel
 from lib.manifest import Manifest
 from lib.utils.print import print_debug
 
@@ -11,7 +10,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self):
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model: LlmModel, verbose: bool):
+    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
         temperature = manifest.temperature()
         functions = manifest.functions()
         model_name = llm_model.name()
