@@ -10,7 +10,7 @@ ChatConfig is a singleton, which holds global states, including various secret k
 
 
 class ChatConfig(ChatConfigBase):
-    def __init__(self, pathManifests):
+    def __init__(self, pathManifests: str):
         super().__init__()
         self.audio = None
         self.load_manifests(pathManifests)
@@ -20,7 +20,7 @@ class ChatConfig(ChatConfigBase):
     It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
     """
 
-    def load_manifests(self, path):
+    def load_manifests(self, path: str):
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
@@ -34,5 +34,5 @@ class ChatConfig(ChatConfigBase):
     def help_list(self):
         return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
 
-    def has_manifest(self, key):
+    def has_manifest(self, key: str):
         return key in self.manifests

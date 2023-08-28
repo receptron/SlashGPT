@@ -8,7 +8,7 @@ from gql.transport.requests import RequestsHTTPTransport
 from lib.utils.print import print_debug, print_error
 
 
-def graphQLRequest(url, arguments):
+def graphQLRequest(url: str, arguments: dict):
     transport = RequestsHTTPTransport(url=url, use_json=True)
     client = Client(transport=transport)
     query = arguments.get("query")
@@ -20,7 +20,7 @@ def graphQLRequest(url, arguments):
         return str(e)
 
 
-def http_request(url, method, headers, appkey_value, arguments, verbose):
+def http_request(url: str, method: str, headers: dict, appkey_value: str, arguments: dict, verbose: bool):
     appkey = {"appkey": appkey_value}
     headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
     if method == "POST":

@@ -7,7 +7,7 @@ class LLMEngineFactory:
     __cache__ = {}
 
     @classmethod
-    def factory(cls, engine_name):
+    def factory(cls, engine_name: str):
         if engine_name == "openai-gpt":
             return LLMEngineOpenAIGPT()
         if engine_name == "replicate":

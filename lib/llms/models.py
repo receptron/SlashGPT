@@ -1,4 +1,5 @@
 from lib.llms.llm_model import LlmModel
+from lib.manifest import Manifest
 
 llm_models = {
     "gpt3": {
@@ -42,7 +43,7 @@ llm_models = {
 }
 
 
-def search_llm_model(llm_model_name):
+def search_llm_model(llm_model_name: str):
     llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
     index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
 
@@ -53,14 +54,14 @@ def search_llm_model(llm_model_name):
         return llm_models.get("gpt3")
 
 
-def get_llm_model_from_manifest(manifest):
+def get_llm_model_from_manifest(manifest: Manifest):
     llm_model_name = manifest.model()
     llm_model = search_llm_model(llm_model_name)
 
     return LlmModel(llm_model)
 
 
-def get_llm_model_from_key(key):
+def get_llm_model_from_key(key: str):
     llm_model = llm_models.get(key)
     if llm_model:
         return LlmModel(llm_model)

@@ -1,22 +1,21 @@
 from abc import ABCMeta, abstractmethod
 
-from termcolor import colored
-
 from lib.function.function_call import FunctionCall
-from lib.utils.utils import COLOR_WARNING
+from lib.manifest import Manifest
+from lib.utils.print import print_warning
 
 
 class LLMEngineBase(metaclass=ABCMeta):
     @abstractmethod
-    def chat_completion(self, messages, manifest, llm_model, verbose):
-        return
+    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+        pass
 
     """
     Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format.
     """
 
-    def _extract_function_call(self, messages, manifest, res: str):
+    def _extract_function_call(self, messages: [dict], manifest: Manifest, res: str):
         if manifest.get("notebook"):
             lines = res.splitlines()
             codes = None
@@ -37,5 +36,5 @@ class LLMEngineBase(metaclass=ABCMeta):
                     manifest,
                 )
 
-            print(colored("Debug Message: no code in this reply", COLOR_WARNING))
+            print_warning("Debug Message: no code in this reply")
         return None

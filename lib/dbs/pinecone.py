@@ -1,20 +1,19 @@
 import openai
 import pinecone
 import tiktoken  # for counting tokens
-from termcolor import colored
 
 from lib.chat_config import ChatConfig
-from lib.utils.utils import COLOR_DEBUG
+from lib.utils.print import print_debug
 
 
 class DBPinecone:
     @classmethod
-    def factory(cls, table_name, config: ChatConfig):
+    def factory(cls, table_name: str, config: ChatConfig):
         if table_name and config.PINECONE_API_KEY and config.PINECONE_ENVIRONMENT:
             assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
             return DBPinecone(table_name, config)
 
-    def __init__(self, table_name, config: ChatConfig):
+    def __init__(self, table_name: str, config: ChatConfig):
         self.config = config
         self.index = pinecone.Index(table_name)
 
@@ -37,7 +36,7 @@ class DBPinecone:
         count = 0
         base_token = self.__messages_tokens(messages, model_name)
         if self.config.verbose:
-            print(colored(f"messages token:{base_token}", COLOR_DEBUG))
+            print_debug(f"messages token:{base_token}")
         for match in results["matches"]:
             article = match["metadata"]["text"]
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
@@ -49,12 +48,7 @@ class DBPinecone:
                 if self.config.verbose:
                     print(len(article), self.__num_tokens(article, model_name))
         if self.config.verbose:
-            print(
-                colored(
-                    f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model_name)}",
-                    COLOR_DEBUG,
-                )
-            )
+            print_debug(f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model_name)}")
         return articles
 
     # Returns the number of tokens in a string

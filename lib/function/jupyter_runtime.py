@@ -9,9 +9,8 @@ import IPython
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from termcolor import colored
 
-from lib.utils.utils import COLOR_ERROR
+from lib.utils.print import print_error
 
 load_dotenv()  # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")
@@ -20,7 +19,7 @@ if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
 
 
 class PythonRuntime:
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.ipython = None
         self.notebook = {}
         self.file_path = ""
@@ -145,7 +144,7 @@ class PythonRuntime:
                         "text": stderr.getvalue(),
                     }
                 )
-                print(colored(stderr.getvalue(), COLOR_ERROR))
+                print_error(stderr.getvalue())
 
             # Handle execution result
             if exec_result.result is not None:
@@ -172,7 +171,7 @@ class PythonRuntime:
         return (str(result), f"```Python\n{''.join(code)}\n```")
 
     # GPT sometimes call this function
-    def python(self, code, query: str):
+    def python(self, code: str or [str], query: str):
         if isinstance(code, str):
             code = [code]
         return self.run_python_code(code, query)

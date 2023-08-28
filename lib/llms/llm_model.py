@@ -1,13 +1,14 @@
 from lib.chat_config import ChatConfig
 from lib.llms.engine_factory import LLMEngineFactory
+from lib.manifest import Manifest
 
 
 class LlmModel:
-    def __init__(self, llm_model_data):
+    def __init__(self, llm_model_data: dict):
         self.llm_model_data = llm_model_data
         self.set_engine()
 
-    def get(self, key):
+    def get(self, key: str):
         return self.llm_model_data.get(key)
 
     def name(self):
@@ -34,5 +35,5 @@ class LlmModel:
     def set_engine(self):
         self.engine = LLMEngineFactory.factory(self.engine_name())
 
-    def generate_response(self, messages, manifest, verbose):
+    def generate_response(self, messages: [dict], manifest: Manifest, verbose: bool):
         return self.engine.chat_completion(messages, manifest, self, verbose)

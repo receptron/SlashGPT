@@ -1,16 +1,16 @@
 import openai
-from termcolor import colored
 
 from lib.function.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
-from lib.utils.utils import COLOR_DEBUG
+from lib.manifest import Manifest
+from lib.utils.print import print_debug
 
 
 class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self):
         return
 
-    def chat_completion(self, messages, manifest, llm_model, verbose):
+    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
         temperature = manifest.temperature()
         functions = manifest.functions()
         model_name = llm_model.name()
@@ -24,8 +24,8 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         else:
             response = openai.ChatCompletion.create(model=model_name, messages=messages, temperature=temperature)
         if verbose:
-            print(colored(f"model={response['model']}", COLOR_DEBUG))
-            print(colored(f"usage={response['usage']}", COLOR_DEBUG))
+            print_debug(f"model={response['model']}")
+            print_debug(f"usage={response['usage']}")
         answer = response["choices"][0]["message"]
         res = answer["content"]
         role = answer["role"]

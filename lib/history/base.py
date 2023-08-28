@@ -2,16 +2,16 @@ class ChatHistory:
     def __init__(self, repository):
         self.repository = repository
 
-    def append(self, data):
+    def append(self, data: dict):
         self.repository.append(data)
 
-    def get(self, index):
+    def get(self, index: int):
         return self.repository.get(index)
 
-    def get_data(self, index, name):
+    def get_data(self, index: int, name: str):
         return self.repository.get_data(index, name)
 
-    def set(self, index, data):
+    def set(self, index: int, data: dict):
         self.repository.set(index, data)
 
     def len(self):
@@ -32,7 +32,7 @@ class ChatHistory:
         else:
             self.append({"role": role, "content": message})
 
-    def restore(self, data):
+    def restore(self, data: [dict]):
         return self.repository.restore(data)
 
     def session_list(self):
@@ -41,7 +41,7 @@ class ChatHistory:
     def get_session_data(self, id):
         return self.repository.get_session_data(id)
 
-    def md(self, names={}):
+    def md(self, names: dict = {}):
         def to_md(data):
             name = names.get(data["role"]) or data["role"]
             if name == "---":
