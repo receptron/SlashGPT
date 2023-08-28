@@ -7,7 +7,6 @@ from lib.utils.print import print_error
 
 def get_prompt_data(messages: [dict]):
     system = ""
-    examples = []
     new_messages = []
     for message in messages:
         role = message["role"]
