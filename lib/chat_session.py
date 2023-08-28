@@ -48,7 +48,7 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         llm_model = get_llm_model_from_manifest(self.manifest)
-        self.__set_llm_model(llm_model)
+        self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests or {})
@@ -66,7 +66,7 @@ class ChatSession:
         if intro:
             self.set_intro()
 
-    def __set_llm_model(self, llm_model: dict):
+    def set_llm_model(self, llm_model: dict):
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:

@@ -225,10 +225,12 @@ class Main:
     def test(self, agent, message=None, messages=None):
         self.switch_session(agent)
         if message:
-            self.query_llm(self.process_sample(message))
+            print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{message}")
+            self.talk(message)
         if messages:
             for m in messages:
-                self.query_llm(self.process_sample(m))
+                print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{m}")
+                self.talk(m)
 
     def process_llm(self):
         try:
@@ -276,10 +278,12 @@ class Main:
 
     def start(self):
         while not self.exit:
-            self.talk_with_input()
+            self.input_and_talk()
 
-    def talk_with_input(self):
-        question = input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip()
+    def input_and_talk(self):
+        self.talk(input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip())
+
+    def talk(self, question):
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
             self.display_oneline_help()
