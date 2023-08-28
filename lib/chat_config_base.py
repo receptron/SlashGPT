@@ -24,6 +24,7 @@ class ChatConfigBase:
 
         self.verbose = False
         self.manifest = None
+        self.manifests = None
 
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
