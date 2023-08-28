@@ -15,7 +15,7 @@ class LLMEngineBase(metaclass=ABCMeta):
     Returns it in the "function call" format.
     """
 
-    def _extract_function_call(self, messages: [dict], manifest: Manifest, res: str):
+    def _extract_function_call(self, last_message: dict, manifest: Manifest, res: str):
         if manifest.get("notebook"):
             lines = res.splitlines()
             codes = None
@@ -31,7 +31,7 @@ class LLMEngineBase(metaclass=ABCMeta):
                 return FunctionCall(
                     {
                         "name": "run_python_code",
-                        "arguments": {"code": codes, "query": messages[-1]["content"]},
+                        "arguments": {"code": codes, "query": last_message["content"]},
                     },
                     manifest,
                 )

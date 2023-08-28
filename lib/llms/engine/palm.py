@@ -36,7 +36,7 @@ class LLMEnginePaLM(LLMEngineBase):
         if res:
             if verbose:
                 print_error(res)
-            function_call = self._extract_function_call(messages, manifest, res)
+            function_call = self._extract_function_call(messages[-1], manifest, res)
         else:
             # Error: Typically some restrictions
             print_error(response.filters)
