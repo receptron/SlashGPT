@@ -4,7 +4,6 @@ import urllib.parse
 import requests
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
-from termcolor import colored
 
 from lib.utils.print import print_debug, print_error
 
@@ -42,4 +41,4 @@ def http_request(url, method, headers, appkey_value, arguments, verbose):
     if response.status_code == 200:
         return response.text
     else:
-        print_error(f"Got {response.status_code}:{response.text} from {url}", COLOR_ERROR)
+        print_error(f"Got {response.status_code}:{response.text} from {url}")
