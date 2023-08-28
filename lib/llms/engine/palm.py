@@ -5,6 +5,20 @@ from lib.manifest import Manifest
 from lib.utils.print import print_error
 
 
+def get_prompt_data(messages: [dict]):
+    system = ""
+    new_messages = []
+    for message in messages:
+        role = message["role"]
+        content = message["content"]
+        if content:
+            if role == "system":
+                system = message["content"]
+            elif len(new_messages) > 0 or role != "assistant":
+                new_messages.append(message["content"])
+    return (system, new_messages)
+
+
 class LLMEnginePaLM(LLMEngineBase):
     def __init__(self):
         return
@@ -19,27 +33,19 @@ class LLMEnginePaLM(LLMEngineBase):
             "top_k": 40,
             "top_p": 0.95,
         }
-        system = ""
-        examples = []
-        new_messages = []
-        for message in messages:
-            role = message["role"]
-            content = message["content"]
-            if content:
-                if role == "system":
-                    system = message["content"]
-                elif len(new_messages) > 0 or role != "assistant":
-                    new_messages.append(message["content"])
+        (system, new_messages) = get_prompt_data(messages)
 
-        response = palm.chat(**defaults, context=system, examples=examples, messages=new_messages)
+        response = palm.chat(**defaults, context=system, examples=[], messages=new_messages)
         res = response.last
         if res:
             if verbose:
                 print_error(res)
-            function_call = self._extract_function_call(messages, manifest, res)
+            function_call = self._extract_function_call(messages[-1], manifest, res)
         else:
             # Error: Typically some restrictions
             print_error(response.filters)
+
+        role = "assistant"
         if function_call:
             return (role, None, function_call)
         else:
