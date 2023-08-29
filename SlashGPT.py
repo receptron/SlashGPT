@@ -40,26 +40,26 @@ Main is a singleton, which process the input from the user and manage chat sessi
 
 
 class Main:
-    def __init__(self, config: ChatConfig, manifest_key: str):
+    def __init__(self, config: ChatConfig, agent_name: str):
         self.config = config
 
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
-        self.switch_session(manifest_key)
+        self.switch_session(agent_name)
 
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def switch_session(self, manifest_key: str, intro: bool = True):
-        if manifest_key is None:
+    def switch_session(self, agent_name: str, intro: bool = True):
+        if agent_name is None:
             self.session = ChatSession(self.config, {})
             return
 
-        if self.config.has_manifest(manifest_key):
-            manifest = self.config.manifests.get(manifest_key)
-            self.session = ChatSession(self.config, manifest=manifest, manifest_key=manifest_key, intro=intro)
+        if self.config.has_manifest(agent_name):
+            manifest = self.config.manifests.get(agent_name)
+            self.session = ChatSession(self.config, manifest=manifest, agent_name=agent_name, intro=intro)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
@@ -73,7 +73,7 @@ class Main:
             if self.session.intro_message:
                 self.print_bot(self.session.intro_message)
         else:
-            print_error(f"Invalid slash command: {manifest_key}")
+            print_error(f"Invalid slash command: {agent_name}")
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -167,7 +167,7 @@ class Main:
             else:
                 print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
-            self.switch_session(self.session.manifest_key, intro=False)
+            self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
@@ -268,7 +268,7 @@ class Main:
 
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
-            self.switch_session(self.session.manifest_key)
+            self.switch_session(self.session.agent_name)
             if self.config.verbose:
                 raise
 

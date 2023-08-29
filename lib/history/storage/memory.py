@@ -9,19 +9,19 @@ from lib.utils.print import print_warning
 
 
 class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
-    def __init__(self, uid: str, manifest_key: str):
+    def __init__(self, uid: str, agent_name: str):
         self.__messages = []
         self.uid = uid
-        self.manifest_key = manifest_key
+        self.agent_name = agent_name
         self.base_dir = "output"
 
         self.time = datetime.now()
         # init log dir
-        create_log_dir(self.base_dir, manifest_key)
+        create_log_dir(self.base_dir, agent_name)
 
     def append(self, data: dict):
         self.__messages.append(data)
-        save_log(self.base_dir, self.manifest_key, self.messages(), self.time)
+        save_log(self.base_dir, self.agent_name, self.messages(), self.time)
 
     def get(self, index: int):
         return self.__messages[index]
@@ -53,7 +53,7 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         self.__messages = data
 
     def session_list(self):
-        history_path = f"./{self.base_dir}/{self.manifest_key}"
+        history_path = f"./{self.base_dir}/{self.agent_name}"
         files = glob.glob(f"{history_path}/*")
         return list(map(lambda x: {"name": x[1], "id": x[0]}, enumerate(files)))
 

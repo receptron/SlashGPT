@@ -7,16 +7,16 @@ from lib.utils.print import print_info
 
 
 class Manifest:
-    def __init__(self, manifest: dict = {}, manifest_name=None):
+    def __init__(self, manifest: dict = {}, agent_name=None):
         self.__manifest = manifest
-        self.__manifest_name = manifest_name
+        self.__agent_name = agent_name
         self.module = self.__read_module()
 
     def get(self, key: str):
         return self.__manifest.get(key)
 
     def username(self):
-        return self.get("you") or f"You({self.__manifest_name})"
+        return self.get("you") or f"You({self.__agent_name})"
 
     def botname(self):
         return self.get("bot") or "GPT"

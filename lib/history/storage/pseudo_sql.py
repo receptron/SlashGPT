@@ -4,13 +4,13 @@ from lib.history.storage.abstract import ChatHisoryAbstractStorage
 
 
 class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
-    def __init__(self, uid: str, manifest_key: str):
+    def __init__(self, uid: str, agent_name: str):
         self.__messages = []
         self.uid = uid
-        self.manifest_key = manifest_key
+        self.agent_name = agent_name
         self.__new_session_id()
-        # insert into log_manager (uid, session_id, manifest_key, created_at)
-        # VALUES self.uid, self.session_id, manifest_key, timestamp.ms)
+        # insert into log_manager (uid, session_id, agent_name, created_at)
+        # VALUES self.uid, self.session_id, agent_name, timestamp.ms)
 
     def __new_session_id(self):
         self.session_id = str(uuid.uuid4())

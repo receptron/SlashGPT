@@ -6,7 +6,7 @@ import pinecone
 from dotenv import load_dotenv
 
 """
-ChatConfig is a singleton, which holds global states, including various secret keys and the list of manifests.
+ChatConfigBase is a singleton, which holds global states, including various secret keys
 """
 
 
@@ -23,7 +23,6 @@ class ChatConfigBase:
         self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
 
         self.verbose = False
-        # self.manifest = None
 
         # Initialize OpenAI and optinoally Pinecone and Palm
         openai.api_key = self.OPENAI_API_KEY
@@ -31,8 +30,6 @@ class ChatConfigBase:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
-
-        self.manifests = None
 
     # for llm
     def has_value_for_key(self, key: str):
@@ -42,8 +39,3 @@ class ChatConfigBase:
             return self.GOOGLE_PALM_KEY is not None
         return False
 
-    def set_manifest(self, manifest):
-        self.manifest = manifest
-
-    def get_manifest(self):
-        return self.manifest

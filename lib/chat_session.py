@@ -27,13 +27,13 @@ class ChatSession:
         user_id: str = None,
         history_engine: ChatHisoryAbstractStorage = ChatHistoryMemoryStorage,
         manifest={},
-        manifest_key: str = "GPT",
+        agent_name: str = "GPT",
         intro: bool = True,
     ):
         self.config = config
-        self.manifest_key = manifest_key
+        self.agent_name = agent_name
 
-        self.manifest = Manifest(manifest if manifest else {}, manifest_key)
+        self.manifest = Manifest(manifest if manifest else {}, agent_name)
 
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()
@@ -43,7 +43,7 @@ class ChatSession:
 
         self.intro_message = None
         self.user_id = user_id if user_id else str(uuid.uuid4())
-        memory_history = history_engine(self.user_id, manifest_key)
+        memory_history = history_engine(self.user_id, agent_name)
         self.history = ChatHistory(memory_history)
 
         # Load the model name and make it sure that we have required keys
@@ -51,7 +51,7 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data(config.manifests or {})
+        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
         if self.prompt:
             self.append_message("system", self.prompt)
 
