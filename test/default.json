@@ -17,6 +17,9 @@
     "message": "/sample_stock"
   },{
     "agent": "dispatcher",
+    "message": "/switch roles1"
+  },{
+    "agent": "business",
     "messages": [
       "/new",
       "/help",

@@ -220,7 +220,7 @@ class SlashGPT:
     def switch_manifests(self, key):
         m = manifests_manager[key]
         self.config.load_manifests("./" + m["manifests_dir"])
-        self.switch_session(m["default_manifest_key"])
+        self.switch_session(m["default_agent_name"])
 
     def test(self, agent, message=None, messages=None):
         self.switch_session(agent)
