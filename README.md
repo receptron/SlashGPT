@@ -113,7 +113,7 @@ It supports three different methods.
 Use this method to develop the front-end of a system before the backend become ready. 
 
 - *message* (format string, required): chat messgae to be added 
-- *metafile* (format string, optional): metafile name to be loaded for chained action
+- *manifest* (format string, optional): manifest file name to be loaded for chained action
 
 Here is an example (home2).
 
