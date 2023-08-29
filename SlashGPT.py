@@ -39,7 +39,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 """
 
 
-class Main:
+class SlashGPT:
     def __init__(self, config: ChatSlashConfig, agent_name: str):
         self.config = config
 
@@ -314,5 +314,5 @@ if __name__ == "__main__":
     dir = manifests_manager["main"]["manifests_dir"]
     config = ChatSlashConfig("./" + dir)
     print(ONELINE_HELP)
-    main = Main(config, "dispatcher")
+    main = SlashGPT(config, "dispatcher")
     main.start()
