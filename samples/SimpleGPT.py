@@ -5,7 +5,7 @@ import platform
 
 from termcolor import colored
 
-from lib.chat_config_base import ChatConfigBase
+from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
 
 if platform.system() == "Darwin":
@@ -18,7 +18,7 @@ with open("./manifests/main/names.json", "r") as f:
 
 
 class Main:
-    def __init__(self, config: ChatConfigBase, agent_name: str):
+    def __init__(self, config: ChatConfig, agent_name: str):
         self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
         print(colored(f"Activating: {self.session.title}", "blue"))
 
@@ -67,6 +67,6 @@ class Main:
 
 
 if __name__ == "__main__":
-    config = ChatConfigBase()
+    config = ChatConfig()
     main = Main(config, "names")
     main.start()

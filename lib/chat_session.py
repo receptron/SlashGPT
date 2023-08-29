@@ -4,7 +4,7 @@ import uuid
 
 from termcolor import colored
 
-from lib.chat_config import ChatConfig
+from lib.chat_slash_config import ChatSlashConfig
 from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
@@ -23,7 +23,7 @@ The manifest specifies behaviors of the agent.
 class ChatSession:
     def __init__(
         self,
-        config: ChatConfig,
+        config: ChatSlashConfig,
         user_id: str = None,
         history_engine: ChatHisoryAbstractStorage = ChatHistoryMemoryStorage,
         manifest={},

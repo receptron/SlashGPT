@@ -7,8 +7,8 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
-from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
+from lib.chat_slash_config import ChatSlashConfig
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
@@ -40,7 +40,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 
 
 class Main:
-    def __init__(self, config: ChatConfig, agent_name: str):
+    def __init__(self, config: ChatSlashConfig, agent_name: str):
         self.config = config
 
         self.exit = False
@@ -312,7 +312,7 @@ class Main:
 
 if __name__ == "__main__":
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatConfig("./" + dir)
+    config = ChatSlashConfig("./" + dir)
     print(ONELINE_HELP)
     main = Main(config, "dispatcher")
     main.start()

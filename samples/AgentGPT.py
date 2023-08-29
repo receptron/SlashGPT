@@ -5,8 +5,8 @@ import platform
 
 from termcolor import colored
 
-from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
+from lib.chat_slash_config import ChatSlashConfig
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -18,13 +18,13 @@ with open("./manifests/manifests.json", "r") as f:
 
 
 class Main:
-    def __init__(self, config: ChatConfig):
+    def __init__(self, config: ChatSlashConfig):
         self.config = config
         manifestA = self.config.manifests.get("chomsky")
         manifestB = self.config.manifests.get("tawara")
 
-        self.sessionA = ChatSession(self.config, manifest=manifestA, manifest_key="chomsky")
-        self.sessionB = ChatSession(self.config, manifest=manifestB, manifest_key="tawara")
+        self.sessionA = ChatSession(self.config, manifest=manifestA, agent_name="chomsky")
+        self.sessionB = ChatSession(self.config, manifest=manifestB, agent_name="tawara")
 
     def process_llm(self, session):
         try:
@@ -79,6 +79,6 @@ class Main:
 
 
 if __name__ == "__main__":
-    config = ChatConfig("./manifests/agents")
+    config = ChatSlashConfig("./manifests/agents")
     main = Main(config)
     main.start("自由と国家について")
