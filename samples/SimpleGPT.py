@@ -30,7 +30,7 @@ manifest = {
 }
 
 
-class Main:
+class SimpleGPT:
     def __init__(self, config: ChatConfig, agent_name: str):
         self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
         print(colored(f"Activating: {self.session.title}", "blue"))
@@ -80,5 +80,5 @@ class Main:
 
 if __name__ == "__main__":
     config = ChatConfig()
-    main = Main(config, "names")
+    main = SimpleGPT(config, "names")
     main.start()
