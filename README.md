@@ -92,7 +92,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (string, optional): Temperature (the default is 0.7)
-- *data* (array of string, optional): {random} will put one of them randamly into the prompt
+- *list* (array of string, optional): {random} will put one of them randamly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt

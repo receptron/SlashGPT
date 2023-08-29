@@ -94,15 +94,15 @@ class Manifest:
     """
 
     def __get_random_manifest_data(self):
-        data = self.get("data")
-        if data:
+        list_data = self.get("list")
+        if list_data:
             # Shuffle
-            for i in range(len(data)):
-                j = random.randrange(0, len(data))
-                temp = data[i]
-                data[i] = data[j]
-                data[j] = temp
-            return data
+            for i in range(len(list_data)):
+                j = random.randrange(0, len(list_data))
+                temp = list_data[i]
+                list_data[i] = list_data[j]
+                list_data[j] = temp
+            return list_data
 
     def __replace_random(self, prompt, data):
         j = 0
