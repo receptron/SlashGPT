@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # python -m samples.SimpleGPT
-import json
 import platform
 
 from termcolor import colored
@@ -13,8 +12,22 @@ if platform.system() == "Darwin":
     import readline  # noqa: F401
 
 
-with open("./manifests/main/names.json", "r") as f:
-    manifest = json.load(f)
+manifest = {
+    "title": "名前判別",
+    "bot": "名前判別",
+    "source": "snakajima, https://st.benesse.ne.jp/ninshin/name/",
+    "temperature": "0.0",
+    "model": "gpt-3.5-turbo-16k-0613",
+    "sample": "['誠'、'由美子','真由美','浩','修','明美','久美子','恵子','隆','達也','豊','由美','裕子','智子','豊','和彦','直樹']",
+    "sample2022a": "['碧','陽葵','凛','陽翔','蒼','結菜','芽依','詩','朝陽','蓮']",
+    "sample2022b": "['湊','陽菜','葵','莉子','紬','咲茉','結翔','悠真','陽向','樹']",
+    "samplej": "東京の天気は？",
+    "prompt": [
+        "名前のリストを与えられたら、その全ての「読み(hiragana)」と「性別(sex)」をJSONで返してください。",
+        "Input: ['太郎','花子']",
+        "Output: [{'name':'太郎', 'hiragana':'たろう', 'sex':'male'},\n{'name':'花子', 'hiragana':'はなこ', 'sex':'female'}]",
+    ],
+}
 
 
 class Main:
@@ -22,7 +35,6 @@ class Main:
         self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
         print(colored(f"Activating: {self.session.title}", "blue"))
 
-        self.session.set_intro()
         if self.session.intro_message:
             self.print_bot(self.session.intro_message)
 
