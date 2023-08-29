@@ -7,8 +7,8 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
-from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
+from lib.chat_slash_config import ChatSlashConfig
 from lib.function.jupyter_runtime import PythonRuntime
 from lib.llms.models import get_llm_model_from_key, llm_models
 from lib.utils.help import LONG_HELP, ONELINE_HELP
@@ -39,27 +39,27 @@ Main is a singleton, which process the input from the user and manage chat sessi
 """
 
 
-class Main:
-    def __init__(self, config: ChatConfig, manifest_key: str):
+class SlashGPT:
+    def __init__(self, config: ChatSlashConfig, agent_name: str):
         self.config = config
 
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
-        self.switch_session(manifest_key)
+        self.switch_session(agent_name)
 
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def switch_session(self, manifest_key: str, intro: bool = True):
-        if manifest_key is None:
+    def switch_session(self, agent_name: str, intro: bool = True):
+        if agent_name is None:
             self.session = ChatSession(self.config, {})
             return
 
-        if self.config.has_manifest(manifest_key):
-            manifest = self.config.manifests.get(manifest_key)
-            self.session = ChatSession(self.config, manifest=manifest, manifest_key=manifest_key, intro=intro)
+        if self.config.has_manifest(agent_name):
+            manifest = self.config.manifests.get(agent_name)
+            self.session = ChatSession(self.config, manifest=manifest, agent_name=agent_name, intro=intro)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
@@ -73,7 +73,7 @@ class Main:
             if self.session.intro_message:
                 self.print_bot(self.session.intro_message)
         else:
-            print_error(f"Invalid slash command: {manifest_key}")
+            print_error(f"Invalid slash command: {agent_name}")
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -167,7 +167,7 @@ class Main:
             else:
                 print("/llm: " + ",".join(llm_models.keys()))
         elif key == "new":
-            self.switch_session(self.session.manifest_key, intro=False)
+            self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
@@ -220,15 +220,17 @@ class Main:
     def switch_manifests(self, key):
         m = manifests_manager[key]
         self.config.load_manifests("./" + m["manifests_dir"])
-        self.switch_session(m["default_manifest_key"])
+        self.switch_session(m["default_agent_name"])
 
     def test(self, agent, message=None, messages=None):
         self.switch_session(agent)
         if message:
-            self.query_llm(self.process_sample(message))
+            print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{message}")
+            self.talk(message)
         if messages:
             for m in messages:
-                self.query_llm(self.process_sample(m))
+                print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{m}")
+                self.talk(m)
 
     def process_llm(self):
         try:
@@ -266,7 +268,7 @@ class Main:
 
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
-            self.switch_session(self.session.manifest_key)
+            self.switch_session(self.session.agent_name)
             if self.config.verbose:
                 raise
 
@@ -276,10 +278,12 @@ class Main:
 
     def start(self):
         while not self.exit:
-            self.talk_with_input()
+            self.input_and_talk()
 
-    def talk_with_input(self):
-        question = input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip()
+    def input_and_talk(self):
+        self.talk(input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip())
+
+    def talk(self, question):
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
             self.display_oneline_help()
@@ -308,7 +312,7 @@ class Main:
 
 if __name__ == "__main__":
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatConfig("./" + dir)
+    config = ChatSlashConfig("./" + dir)
     print(ONELINE_HELP)
-    main = Main(config, "dispatcher")
+    main = SlashGPT(config, "dispatcher")
     main.start()

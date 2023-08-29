@@ -14,7 +14,7 @@
     "今日は、{random}、{random}、{random}という単語の勉強です。順番に、一つづつ例文を与えて、日本語に訳させ、あっていたら褒め、間違っていたら、もう一度チャンスを与え、それでも出来なかったら、丁寧に解説してください。",
     "一連の勉強の後には、今日の単語全てを使った英語の親父ギャグを披露してください。そしてその反応を聞いた後に、今日の単語を活用した、英語のクイズを出題してください。"
   ],
-  "data": ["accommodate", "acquire", "adapt", "adequate", "advocate", "affect", "aggregate", "alternative", 
+  "list": ["accommodate", "acquire", "adapt", "adequate", "advocate", "affect", "aggregate", "alternative", 
   "amend", "anticipate", "approximate", "assess", "assist", "attribute", "award", "benchmark", "bias", 
   "blend", "boost", "brief", "budget", "canonical", "capacity", "challenge", "circulate", "clarify", "coherent", 
   "collaborate", "commence", "commission", "compensate", "complement", "compliant", "conceive", "concur", "condense", 

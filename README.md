@@ -80,7 +80,7 @@ Sample queries.
 Create a new manifest file, {agent_name}.json in "manifests" folder with following properties:
 
 - *title* (string, **required**): Title for the user to see
-- *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
+- *about* (string, optional): About the manifest (URL, email, github id, or twitter id)
 - *promt* (array of strings, **required**): The system prompts which define the agent (required)
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
@@ -92,7 +92,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (string, optional): Temperature (the default is 0.7)
-- *data* (array of string, optional): {random} will put one of them randamly into the prompt
+- *list* (array of string, optional): {random} will put one of them randamly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
@@ -113,7 +113,7 @@ It supports three different methods.
 Use this method to develop the front-end of a system before the backend become ready. 
 
 - *message* (format string, required): chat messgae to be added 
-- *metafile* (format string, optional): metafile name to be loaded for chained action
+- *manifest* (format string, optional): manifest file name to be loaded for chained action
 
 Here is an example (home2).
 
