@@ -80,7 +80,7 @@ Sample queries.
 Create a new manifest file, {agent_name}.json in "manifests" folder with following properties:
 
 - *title* (string, **required**): Title for the user to see
-- *source* (string, optional): Source of the prompt (URL, email, github id, or twitter id)
+- *about* (string, optional): About the manifest (URL, email, github id, or twitter id)
 - *promt* (array of strings, **required**): The system prompts which define the agent (required)
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
