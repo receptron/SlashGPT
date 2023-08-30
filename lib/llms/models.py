@@ -42,7 +42,7 @@ llm_models = {
     },
     "gpt2": {
         "engine_name": "gpt2",
-        "model_name": "gpt2",
+        "model_name": "rinna/japanese-gpt2-xsmall",
         "max_token": 4096,
     },
 }

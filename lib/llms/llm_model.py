@@ -33,7 +33,7 @@ class LlmModel:
         return "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
 
     def set_engine(self):
-        self.engine = LLMEngineFactory.factory(self.engine_name())
+        self.engine = LLMEngineFactory.factory(self.engine_name(), self)
 
     def generate_response(self, messages: [dict], manifest: Manifest, verbose: bool):
         return self.engine.chat_completion(messages, manifest, self, verbose)
