@@ -40,6 +40,11 @@ llm_models = {
         "model_name": "palm",
         "api_key": "GOOGLE_PALM_KEY",
     },
+    "gpt2": {
+        "engine_name": "gpt2",
+        "model_name": "gpt2",
+        "max_token": 4096,
+    },
 }
 
 
