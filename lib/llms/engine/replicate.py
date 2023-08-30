@@ -25,12 +25,13 @@ def message_to_prompt(messages: [dict], manifest: Manifest):
 
 
 class LLMEngineReplicate(LLMEngineBase):
-    def __init__(self):
+    def __init__(self, llm_model):
+        self.llm_model = llm_model
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
-        replicate_model = llm_model.replicate_model()
+        replicate_model = self.llm_model.replicate_model()
         prompt = message_to_prompt(messages, manifest)
 
         output = replicate.run(

@@ -20,7 +20,7 @@ def get_prompt_data(messages: [dict]):
     # return text
 
 
-class LLMEngineGPT2(LLMEngineBase):
+class LLMEngineFromPretrained(LLMEngineBase):
     def __init__(self, llm_model):
         model_name = llm_model.name()
 
@@ -33,7 +33,7 @@ class LLMEngineGPT2(LLMEngineBase):
 
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
         prompt = get_prompt_data(messages)
         return_num = 1
 

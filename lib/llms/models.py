@@ -41,7 +41,7 @@ llm_models = {
         "api_key": "GOOGLE_PALM_KEY",
     },
     "gpt2": {
-        "engine_name": "gpt2",
+        "engine_name": "from_pretrained",
         "model_name": "rinna/japanese-gpt2-xsmall",
         "max_token": 4096,
     },

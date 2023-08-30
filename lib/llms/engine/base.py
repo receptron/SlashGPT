@@ -7,7 +7,11 @@ from lib.utils.print import print_warning
 
 class LLMEngineBase(metaclass=ABCMeta):
     @abstractmethod
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+    def __init__(self, llm_model):
+        pass
+    
+    @abstractmethod
+    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
         pass
 
     """
