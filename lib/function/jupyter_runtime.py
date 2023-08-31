@@ -3,6 +3,7 @@ import contextlib
 import io
 import json
 import os
+from typing import List, Optional, Union
 
 import codeboxapi as cb
 import IPython
@@ -20,10 +21,10 @@ if CODEBOX_API_KEY and CODEBOX_API_KEY != "local":
 
 class PythonRuntime:
     def __init__(self, path: str):
-        self.ipython = None
-        self.notebook = {}
+        self.ipython: Optional[IPython.InteractiveShell] = None
+        self.notebook: dict = {}
         self.file_path = ""
-        self.codebox = None
+        self.codebox: Optional[cb.CodeBox] = None
         self.folder_path = path
         if not os.path.isdir(self.folder_path):
             os.makedirs(self.folder_path)
@@ -65,29 +66,24 @@ class PythonRuntime:
 
     def run_python_code(self, code: list, query: str):
         if query:
-            cell = {
-                "cell_type": "markdown",
-                "metadata": {},
-                "source": [f"**User**: {query}"],
-            }
-            self.notebook["cells"].append(cell)
+            self.notebook["cells"].append(
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": [f"**User**: {query}"],
+                }
+            )
 
         for i in range(len(code)):
             if not code[i].endswith("\n"):
                 code[i] += "\n"
-        cell = {
-            "cell_type": "code",
-            "metadata": {},
-            "execution_count": 1,
-            "source": "".join(code),
-            "outputs": [],
-        }
+        outputs = []
 
         if self.codebox:
             output: cb.CodeBoxOutput = self.codebox.run("".join(code))
             print("***", output.type)
             if output.type == "text":
-                cell["outputs"].append(
+                outputs.append(
                     {
                         "output_type": "execute_result",
                         "data": {"text/plain": str(output)},
@@ -97,10 +93,10 @@ class PythonRuntime:
                 )
                 result = str(output)
             elif output.type == "error":
-                cell["outputs"].append({"output_type": "stream", "name": "stderr", "text": str(output)})
+                outputs.append({"output_type": "stream", "name": "stderr", "text": str(output)})
                 result = str(output)
             elif output.type == "image/png":
-                cell["outputs"].append(
+                outputs.append(
                     {
                         "data": {"image/png": output.content},
                         "output_type": "display_data",
@@ -123,11 +119,13 @@ class PythonRuntime:
             stderr = io.StringIO()
 
             with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                if not self.ipython:
+                    raise RuntimeError("self.ipython is not initialized")
                 exec_result = self.ipython.run_cell("".join(code) if isinstance(code, list) else code)
 
             # Handle stdout
             if stdout.getvalue():
-                cell["outputs"].append(
+                outputs.append(
                     {
                         "output_type": "stream",
                         "name": "stdout",
@@ -137,7 +135,7 @@ class PythonRuntime:
 
             # Handle stderr
             if stderr.getvalue():
-                cell["outputs"].append(
+                outputs.append(
                     {
                         "output_type": "stream",
                         "name": "stderr",
@@ -148,7 +146,7 @@ class PythonRuntime:
 
             # Handle execution result
             if exec_result.result is not None:
-                cell["outputs"].append(
+                outputs.append(
                     {
                         "output_type": "execute_result",
                         "execution_count": 1,
@@ -164,6 +162,13 @@ class PythonRuntime:
                     if result is None:
                         result = "Done"
 
+        cell = {
+            "cell_type": "code",
+            "metadata": {},
+            "execution_count": 1,
+            "source": "".join(code),
+            "outputs": outputs,
+        }
         self.notebook["cells"].append(cell)
         with open(self.file_path, "w") as file:
             json.dump(self.notebook, file, indent=2)
@@ -171,7 +176,7 @@ class PythonRuntime:
         return (str(result), f"```Python\n{''.join(code)}\n```")
 
     # GPT sometimes call this function
-    def python(self, code: str or [str], query: str):
+    def python(self, code: Union[str, List[str]], query: str):
         if isinstance(code, str):
             code = [code]
         return self.run_python_code(code, query)

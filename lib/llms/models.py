@@ -1,7 +1,9 @@
+from typing import Dict
+
 from lib.llms.llm_model import LlmModel
 from lib.manifest import Manifest
 
-llm_models = {
+llm_models: Dict[str, dict] = {
     "gpt3": {
         "engine_name": "openai-gpt",
         "model_name": "gpt-3.5-turbo-0613",
@@ -65,4 +67,4 @@ def get_llm_model_from_key(key: str):
     llm_model = llm_models.get(key)
     if llm_model:
         return LlmModel(llm_model)
-    return LlmModel(llm_models.get("gpt3"))
+    return LlmModel(llm_models.get("gpt3"))  # type: ignore[arg-type]

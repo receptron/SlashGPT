@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import List, Optional
 
 from lib.function.function_call import FunctionCall
 from lib.manifest import Manifest
@@ -7,7 +8,7 @@ from lib.utils.print import print_warning
 
 class LLMEngineBase(metaclass=ABCMeta):
     @abstractmethod
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+    def chat_completion(self, messages: List[dict], manifest: Manifest, llm_model, verbose: bool):
         pass
 
     """
@@ -18,7 +19,7 @@ class LLMEngineBase(metaclass=ABCMeta):
     def _extract_function_call(self, last_message: dict, manifest: Manifest, res: str):
         if manifest.get("notebook"):
             lines = res.splitlines()
-            codes = None
+            codes: Optional[list] = None
             for line in lines:
                 if line[:3] == "```":
                     if codes is None:

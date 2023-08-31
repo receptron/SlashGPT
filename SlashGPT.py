@@ -42,7 +42,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 class SlashGPT:
     def __init__(self, config: ChatSlashConfig, agent_name: str):
         self.config = config
-
+        self.session = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
         self.switch_session(agent_name)
@@ -54,7 +54,7 @@ class SlashGPT:
 
     def switch_session(self, agent_name: str, intro: bool = True):
         if agent_name is None:
-            self.session = ChatSession(self.config, {})
+            self.session = ChatSession(self.config)
             return
 
         if self.config.has_manifest(agent_name):

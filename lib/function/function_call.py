@@ -1,4 +1,5 @@
 import json
+from typing import Union
 
 from lib.function.function_action import FunctionAction
 from lib.function.jupyter_runtime import PythonRuntime
@@ -94,7 +95,7 @@ class FunctionCall:
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
 
-    def __format_python_result(self, result: dict or str):
+    def __format_python_result(self, result: Union[dict, str]):
         if isinstance(result, dict):
             result = json.dumps(result)
         result_form = self.__manifest.get("result_form")
