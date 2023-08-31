@@ -1,14 +1,10 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from lib.function.function_call import FunctionCall
 from lib.llms.engine.base import LLMEngineBase
 from lib.manifest import Manifest
-from lib.utils.print import print_debug
 
 # pip install transformers, sentencepiece, torch
-
-
 
 def get_prompt_data(messages: [dict]):
     text = []
@@ -52,8 +48,6 @@ class LLMEngineFromPretrained(LLMEngineBase):
                 num_return_sequences=return_num,
             )
         decoded = self.tokenizer.batch_decode(output, skip_special_tokens=True)
-        # for i in range(return_num):
-        # print(decoded[i])
 
         res = "\n".join(decoded)
         role = "assistant"

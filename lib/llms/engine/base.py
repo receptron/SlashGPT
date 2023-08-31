@@ -9,7 +9,7 @@ class LLMEngineBase(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, llm_model):
         pass
-    
+
     @abstractmethod
     def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
         pass

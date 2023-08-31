@@ -7,10 +7,11 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
+from config.llm_config import llm_engine_configs, llm_models
 from lib.chat_session import ChatSession
 from lib.chat_slash_config import ChatSlashConfig
 from lib.function.jupyter_runtime import PythonRuntime
-from lib.llms.models import get_llm_model_from_key, llm_models
+from lib.llms.model import get_llm_model_from_key
 from lib.utils.help import LONG_HELP, ONELINE_HELP
 from lib.utils.print import print_debug, print_error, print_info, print_warning
 from lib.utils.utils import InputStyle
@@ -162,7 +163,7 @@ class SlashGPT:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and llm_models.get(commands[1]):
-                llm_model = get_llm_model_from_key(commands[1])
+                llm_model = get_llm_model_from_key(commands[1], llm_models)
                 self.session.set_llm_model(llm_model)
             else:
                 print("/llm: " + ",".join(llm_models.keys()))
@@ -312,7 +313,7 @@ class SlashGPT:
 
 if __name__ == "__main__":
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatSlashConfig("./" + dir)
+    config = ChatSlashConfig(llm_models, llm_engine_configs, "./" + dir)
     print(ONELINE_HELP)
     main = SlashGPT(config, "dispatcher")
     main.start()
