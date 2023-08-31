@@ -20,10 +20,10 @@ def get_prompt_data(messages: [dict]):
 
 
 class LLMEnginePaLM(LLMEngineBase):
-    def __init__(self):
+    def __init__(self, llm_model):
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, llm_model, verbose: bool):
+    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
 
         defaults = {
