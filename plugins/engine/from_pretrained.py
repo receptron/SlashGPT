@@ -6,6 +6,7 @@ from lib.manifest import Manifest
 
 # pip install transformers, sentencepiece, torch
 
+
 def get_prompt_data(messages: [dict]):
     text = []
     for message in messages:

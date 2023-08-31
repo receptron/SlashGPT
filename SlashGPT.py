@@ -162,11 +162,11 @@ class SlashGPT:
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
-            if len(commands) > 1 and llm_models.get(commands[1]):
-                llm_model = get_llm_model_from_key(commands[1], llm_models)
+            if len(commands) > 1 and self.config.llm_models.get(commands[1]):
+                llm_model = get_llm_model_from_key(commands[1], self.config.llm_models)
                 self.session.set_llm_model(llm_model)
             else:
-                print("/llm: " + ",".join(llm_models.keys()))
+                print("/llm: " + ",".join(self.config.llm_models.keys()))
         elif key == "new":
             self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
@@ -313,7 +313,7 @@ class SlashGPT:
 
 if __name__ == "__main__":
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatSlashConfig(llm_models, llm_engine_configs, "./" + dir)
+    config = ChatSlashConfig("./" + dir, llm_models, llm_engine_configs)
     print(ONELINE_HELP)
     main = SlashGPT(config, "dispatcher")
     main.start()

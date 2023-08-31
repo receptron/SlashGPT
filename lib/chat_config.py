@@ -11,7 +11,7 @@ ChatConfig is a singleton, which holds global states, including various secret k
 
 
 class ChatConfig:
-    def __init__(self, llm_models: dict = None, llm_engine_configs:dict = None):
+    def __init__(self, llm_models: dict = None, llm_engine_configs: dict = None):
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -41,4 +41,3 @@ class ChatConfig:
         if key == "GOOGLE_PALM_KEY":
             return self.GOOGLE_PALM_KEY is not None
         return False
-        

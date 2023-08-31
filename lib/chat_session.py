@@ -9,8 +9,8 @@ from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
 from lib.history.storage.memory import ChatHistoryMemoryStorage
+from lib.llms.default_config import default_llm_engine_configs, default_llm_models
 from lib.llms.engine_factory import LLMEngineFactory
-from lib.llms.default_config import  default_llm_models, default_llm_engine_configs
 from lib.llms.model import get_llm_model_from_manifest
 from lib.manifest import Manifest
 from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
@@ -53,7 +53,7 @@ class ChatSession:
             self.config.llm_models = default_llm_models
         if not self.config.llm_engine_configs:
             self.config.llm_engine_configs = default_llm_engine_configs
-            
+
         # engine
         LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
 
