@@ -7,14 +7,23 @@ from lib.manifest import Manifest
 # pip install transformers, sentencepiece, torch
 
 
-def get_prompt_data(messages: [dict]):
-    text = []
+def get_prompt_data(messages: [dict], manifest: Manifest):
+    functions = manifest.functions()
+    prompts = []
     for message in messages:
+        role = message["role"]
         content = message["content"]
         if content:
-            text.append(content)
-    return "\n".join(text)
-    # return text
+            prompts.append(f"{role}:{content}")
+    if functions:
+        # insert before last
+        last = prompts.pop()
+        prompts.append(
+            f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument."
+        )
+        prompts.append(last)
+    prompts.append("assistant:")
+    return "\n".join(prompts)
 
 
 class LLMEngineFromPretrained(LLMEngineBase):
@@ -31,14 +40,14 @@ class LLMEngineFromPretrained(LLMEngineBase):
         return
 
     def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
-        prompt = get_prompt_data(messages)
+        prompt = get_prompt_data(messages, manifest)
         return_num = 1
 
         input_ids = self.tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=False).to(self.type)
         with torch.no_grad():
             output = self.model.generate(
                 input_ids,
-                max_length=400,
+                max_length=800,
                 min_length=100,
                 do_sample=True,
                 top_k=500,
