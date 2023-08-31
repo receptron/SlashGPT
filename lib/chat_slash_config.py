@@ -10,7 +10,7 @@ ChatSlashConfig is a singleton, which holds global states, including various sec
 
 
 class ChatSlashConfig(ChatConfig):
-    def __init__(self, llm_models, llm_engine_configs, pathManifests: str):
+    def __init__(self, pathManifests: str, llm_models: dict = None, llm_engine_configs: dict = None):
         super().__init__(llm_models, llm_engine_configs)
         self.audio = None
         self.load_manifests(pathManifests)
