@@ -1,7 +1,7 @@
 {
   "title": "Database",
   "bot": "DB",
-  "source": "snakajima",
+  "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",
   "functions": "./resources/db.json",

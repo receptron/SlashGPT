@@ -1,7 +1,7 @@
 {
   "title": "AI Agents",
   "description": "Collaborate with another AI Agent to perform the goal more efficient.",
-  "source": "https://gptstore.ai/plugins/webpilotai-com",
+  "about": "https://gptstore.ai/plugins/webpilotai-com",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.5",
   "functions": "./resources/aiagents.json",

@@ -1,6 +1,6 @@
 {
   "title": "SQL Generator",
-  "source": "snakajima",
+  "about": "snakajima",
   "prompt": [
       "You are a SQL generator.",
       "The user will type questions and you will reply with a SQL statement that retrives the answer from the database.",

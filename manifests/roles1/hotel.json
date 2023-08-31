@@ -1,6 +1,6 @@
 {
   "title": "ホテルの予約係",
-  "source": "snakajima",
+  "about": "snakajima",
   "temperature": "0.2",
   "prompt": [
       "あなたは、「海の前ホテル」の予約係です。",

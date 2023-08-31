@@ -1,6 +1,6 @@
 {
   "title": "Patent Attoney",
-  "source": "snakajima",
+  "about": "snakajima",
   "prompt" :[
     "You are a patent attoney, who is responsible in ",
     "(1) getting novel ideas from the client",

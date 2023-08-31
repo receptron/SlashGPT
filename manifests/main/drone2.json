@@ -2,7 +2,7 @@
   "title": "Drone Pilot",
   "description": "Flying drones",
   "bot": "Pilot",
-  "source": "snakajima",
+  "about": "snakajima",
   "modelx": "gpt-4-0613",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": "0.0",

@@ -1,6 +1,6 @@
 {
     "title": "smart contract and communication",
-    "source": "HisashiUehara",
+    "about": "HisashiUehara",
     "model": "gpt-3.5-turbo-16k-0613",
     "functions": "./resources/web3.json",
     "module": "./resources/web3.py",

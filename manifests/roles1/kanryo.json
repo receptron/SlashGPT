@@ -1,7 +1,7 @@
 {
   "title": "東大話法の官僚",
   "bot": "官僚",
-  "source": "snakajima",
+  "about": "snakajima",
   "language": ["ja"],
   "intro": [
     "こんにちは、私は霞ヶ関で官僚をしています。政治や経済に限らず、なんでも質問してください。"
