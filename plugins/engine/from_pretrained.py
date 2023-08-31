@@ -1,3 +1,5 @@
+from typing import List
+
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -7,7 +9,7 @@ from lib.manifest import Manifest
 # pip install transformers, sentencepiece, torch
 
 
-def get_prompt_data(messages: [dict], manifest: Manifest):
+def get_prompt_data(messages: List[dict], manifest: Manifest):
     functions = manifest.functions()
     prompts = []
     for message in messages:
@@ -39,7 +41,7 @@ class LLMEngineFromPretrained(LLMEngineBase):
 
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
+    def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         prompt = get_prompt_data(messages, manifest)
         return_num = 1
 

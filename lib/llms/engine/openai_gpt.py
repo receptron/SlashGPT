@@ -1,3 +1,5 @@
+from typing import List
+
 import openai
 
 from lib.function.function_call import FunctionCall
@@ -11,7 +13,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         self.llm_model = llm_model
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
+    def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
         functions = manifest.functions()
         model_name = self.llm_model.name()

@@ -5,8 +5,7 @@ from lib.utils.print import print_error
 
 
 class LLMEngineFactory:
-    __cache__ = {}
-    llm_engine_configs = {}
+    llm_engine_configs: dict = {}
 
     @classmethod
     def factory(cls, engine_name: str, llm_model):

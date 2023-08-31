@@ -43,7 +43,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 class SlashGPT:
     def __init__(self, config: ChatSlashConfig, agent_name: str):
         self.config = config
-
+        self.session = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
         self.switch_session(agent_name)
@@ -55,7 +55,7 @@ class SlashGPT:
 
     def switch_session(self, agent_name: str, intro: bool = True):
         if agent_name is None:
-            self.session = ChatSession(self.config, {})
+            self.session = ChatSession(self.config)
             return
 
         if self.config.has_manifest(agent_name):
@@ -162,10 +162,12 @@ class SlashGPT:
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
-            if len(commands) > 1 and self.config.llm_models.get(commands[1]):
+            if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
                 llm_model = get_llm_model_from_key(commands[1], self.config.llm_models)
                 self.session.set_llm_model(llm_model)
             else:
+                if self.config.llm_models is None:
+                    raise RuntimeError("self.comfig.llm_models must be set")
                 print("/llm: " + ",".join(self.config.llm_models.keys()))
         elif key == "new":
             self.switch_session(self.session.agent_name, intro=False)

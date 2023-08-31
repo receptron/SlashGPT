@@ -1,17 +1,17 @@
 import random
 import re
 import uuid
+from typing import Optional
 
 from termcolor import colored
 
-from lib.chat_slash_config import ChatSlashConfig
+from lib.chat_config import ChatConfig
 from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
-from lib.history.storage.abstract import ChatHisoryAbstractStorage
 from lib.history.storage.memory import ChatHistoryMemoryStorage
 from lib.llms.default_config import default_llm_engine_configs, default_llm_models
 from lib.llms.engine_factory import LLMEngineFactory
-from lib.llms.model import get_llm_model_from_manifest
+from lib.llms.model import LlmModel, get_llm_model_from_manifest
 from lib.manifest import Manifest
 from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
@@ -25,9 +25,9 @@ The manifest specifies behaviors of the agent.
 class ChatSession:
     def __init__(
         self,
-        config: ChatSlashConfig,
-        user_id: str = None,
-        history_engine: ChatHisoryAbstractStorage = ChatHistoryMemoryStorage,
+        config: ChatConfig,
+        user_id: Optional[str] = None,
+        history_engine=ChatHistoryMemoryStorage,
         manifest={},
         agent_name: str = "GPT",
         intro: bool = True,
@@ -55,7 +55,8 @@ class ChatSession:
             self.config.llm_engine_configs = default_llm_engine_configs
 
         # engine
-        LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
+        if self.config.llm_engine_configs:
+            LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
 
         # Load the model name and make it sure that we have required keys
         llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
@@ -77,7 +78,7 @@ class ChatSession:
         if intro:
             self.set_intro()
 
-    def set_llm_model(self, llm_model: dict):
+    def set_llm_model(self, llm_model: LlmModel):
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:
