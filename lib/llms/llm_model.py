@@ -1,3 +1,5 @@
+from typing import List
+
 from lib.chat_config import ChatConfig
 from lib.llms.engine_factory import LLMEngineFactory
 from lib.manifest import Manifest
@@ -35,5 +37,5 @@ class LlmModel:
     def set_engine(self):
         self.engine = LLMEngineFactory.factory(self.engine_name())
 
-    def generate_response(self, messages: [dict], manifest: Manifest, verbose: bool):
+    def generate_response(self, messages: List[dict], manifest: Manifest, verbose: bool):
         return self.engine.chat_completion(messages, manifest, self, verbose)

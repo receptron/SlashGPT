@@ -1,3 +1,6 @@
+from typing import List
+
+
 class ChatHistory:
     def __init__(self, repository):
         self.repository = repository
@@ -32,7 +35,7 @@ class ChatHistory:
         else:
             self.append({"role": role, "content": message})
 
-    def restore(self, data: [dict]):
+    def restore(self, data: List[dict]):
         return self.repository.restore(data)
 
     def session_list(self):

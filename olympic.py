@@ -9,6 +9,8 @@ import tiktoken  # for counting tokens
 from dotenv import load_dotenv
 
 # Configuration
+from pinecone import QueryResponse
+
 load_dotenv()  # Load default environment variables (.env)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
@@ -57,7 +59,7 @@ def load_vectors():
 
 
 # search function
-def strings_ranked_by_relatedness(query: str, top_n: int = 100) -> object:
+def strings_ranked_by_relatedness(query: str, top_n: int = 100) -> QueryResponse:
     """Returns a list of strings and relatednesses, sorted from most related to least."""
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,

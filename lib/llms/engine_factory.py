@@ -4,8 +4,6 @@ from lib.llms.engine.replicate import LLMEngineReplicate
 
 
 class LLMEngineFactory:
-    __cache__ = {}
-
     @classmethod
     def factory(cls, engine_name: str):
         if engine_name == "openai-gpt":
