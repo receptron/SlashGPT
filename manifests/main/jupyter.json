@@ -3,7 +3,7 @@
   "description": "Write and run Python code and generate a Jupyter notebook",
   "bot": "Jupyter",
   "about": "snakajima",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": "./resources/jupyter.json",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample0": "Calcurate 3**20.",

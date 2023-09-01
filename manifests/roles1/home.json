@@ -2,7 +2,7 @@
   "title": "Home Automation",
   "bot": "Home",
   "about": "snakajima",
-  "temperature": "0.0",
+  "temperature": 0,
   "resource": "./resources/home.yml",
   "sample": "Please set the room temperature to 28 celsius",
   "prompt": [

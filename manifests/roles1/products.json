@@ -3,7 +3,7 @@
   "bot": "DB",
   "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": "./resources/db.json",
   "resource": "./resources/products.sql",
   "module": "./resources/db.py",

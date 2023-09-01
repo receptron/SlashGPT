@@ -2,7 +2,7 @@
   "title": "DOT language expert",
   "bot": "Dot",
   "about": "snakajima",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": "./resources/dot.json",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "Draw a diagram with A and B",

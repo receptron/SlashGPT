@@ -7,7 +7,7 @@
     "どんな文章でも、ビジネスライクな文章に変換します。" 
   ],
   "sample": "お前の女癖には呆れた。もう顔も見たくない。",
-  "temperature": "0.2",
+  "temperature": 0.2,
   "translator": true,
   "wip": true,
   "prompt": [

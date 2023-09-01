@@ -3,7 +3,7 @@
   "description": "Gets Weather Info",
   "bot": "Weather",
   "about": "snakajima, https://openweathermap.org",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": [
     {
       "name": "get_current_weather",
