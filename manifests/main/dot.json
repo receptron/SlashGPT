@@ -1,7 +1,7 @@
 {
   "title": "DOT language expert",
   "bot": "Dot",
-  "source": "snakajima",
+  "about": "snakajima",
   "temperature": "0.0",
   "functions": "./resources/dot.json",
   "model": "gpt-3.5-turbo-16k-0613",

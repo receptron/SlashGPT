@@ -1,6 +1,6 @@
 {
   "title": "Movie Critic",
-  "source": "https://github.com/f/awesome-chatgpt-prompts",
+  "about": "https://github.com/f/awesome-chatgpt-prompts",
   "prompt": [
     "I want you to act as a movie critic.",
     "You will develop an engaging and creative movie review.",

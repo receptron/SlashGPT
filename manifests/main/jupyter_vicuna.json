@@ -1,7 +1,7 @@
 {
   "title": "Jupyter Notebook with Vicuna 16b",
   "bot": "Jupyter(Vicuna)",
-  "source": "snakajima",
+  "about": "snakajima",
   "temperature": "0.0",
   "model": "vicuna",
   "sample0": "calcurate 3**20.",

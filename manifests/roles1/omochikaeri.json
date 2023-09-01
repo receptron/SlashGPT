@@ -1,7 +1,7 @@
 {
   "title": "おもちかえり.com",
   "bot": "おもちかえり",
-  "source": "snakajima",
+  "about": "snakajima",
   "sample": "何ができるサービスですか？値段はいくらですか？",
   "model": "gpt-3.5-turbo-16k-0613",
   "resource": "./resources/omochikaeri.txt",

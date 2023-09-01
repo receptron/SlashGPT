@@ -2,7 +2,7 @@
   "title": "SpaceX Information",
   "description": "Anything about SpaceX",
   "bot": "spacex",
-  "source": "snakajima",
+  "about": "snakajima",
   "temperature": "0.0",
   "functions": "./resources/graphQL.json",
   "resource": "./resources/spacex.json",

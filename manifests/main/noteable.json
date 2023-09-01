@@ -1,6 +1,6 @@
 {
   "title": "WIP: Noteable",
-  "source": "https://gptstore.ai/plugins/chat-noteable-io",
+  "about": "https://gptstore.ai/plugins/chat-noteable-io",
   "description": "Create notebooks in Python, SQL, and Markdown to explore data, visualize, and share notebooks with everyone.",
   "temperature": "0.0",
   "model": "gpt-3.5-turbo-16k-0613",

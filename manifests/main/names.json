@@ -1,7 +1,7 @@
 {
   "title": "名前判別",
   "bot": "名前判別",
-  "source": "snakajima, https://st.benesse.ne.jp/ninshin/name/",
+  "about": "snakajima, https://st.benesse.ne.jp/ninshin/name/",
   "temperature": "0.0",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "['誠'、'由美子','真由美','浩','修','明美','久美子','恵子','隆','達也','豊','由美','裕子','智子','豊','和彦','直樹']",

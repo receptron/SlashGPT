@@ -1,6 +1,6 @@
 {
   "title": "AI Stock Ticker",
-  "source": "https://gptstore.ai/plugins/stock-advisor-com",
+  "about": "https://gptstore.ai/plugins/stock-advisor-com",
   "model": "gpt-4-0613",
   "temperature": "0.0",
   "resource": "./resources/aiticker.yml",
