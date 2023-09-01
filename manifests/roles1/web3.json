@@ -2,8 +2,8 @@
     "title": "smart contract and communication",
     "about": "HisashiUehara",
     "model": "gpt-3.5-turbo-16k-0613",
-    "functions": "./resources/web3.json",
-    "module": "./resources/web3.py",
+    "functions": "./resources/functions/web3.json",
+    "module": "./resources/module/web3.py",
     "intro": [
       "あら、お元気でっか？僕はEthereum言うねん、僕のとこにある情報は何でも教えたるで〜😁"
     ],
