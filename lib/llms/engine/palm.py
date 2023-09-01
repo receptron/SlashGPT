@@ -1,3 +1,5 @@
+from typing import List
+
 import google.generativeai as palm
 
 from lib.llms.engine.base import LLMEngineBase
@@ -5,9 +7,9 @@ from lib.manifest import Manifest
 from lib.utils.print import print_error
 
 
-def get_prompt_data(messages: [dict]):
+def get_prompt_data(messages: List[dict]):
     system = ""
-    new_messages = []
+    new_messages: List[dict] = []
     for message in messages:
         role = message["role"]
         content = message["content"]
@@ -23,7 +25,7 @@ class LLMEnginePaLM(LLMEngineBase):
     def __init__(self, llm_model):
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
+    def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
 
         defaults = {

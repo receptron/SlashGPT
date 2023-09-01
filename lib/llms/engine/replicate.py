@@ -1,10 +1,12 @@
+from typing import List
+
 import replicate
 
 from lib.llms.engine.base import LLMEngineBase
 from lib.manifest import Manifest
 
 
-def message_to_prompt(messages: [dict], manifest: Manifest):
+def message_to_prompt(messages: List[dict], manifest: Manifest):
     functions = manifest.functions()
     prompts = []
     for message in messages:
@@ -29,7 +31,7 @@ class LLMEngineReplicate(LLMEngineBase):
         self.llm_model = llm_model
         return
 
-    def chat_completion(self, messages: [dict], manifest: Manifest, verbose: bool):
+    def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
         replicate_model = self.llm_model.replicate_model()
         prompt = message_to_prompt(messages, manifest)

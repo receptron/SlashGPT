@@ -2,6 +2,7 @@ import json
 import random
 import re
 from datetime import datetime
+from typing import List
 
 from lib.utils.print import print_info
 
@@ -131,7 +132,7 @@ class Manifest:
                 prompt = self.__apply_agent(prompt, agents, manifests)
             return prompt
 
-    def __apply_agent(self, prompt: str, agents: [str], manifests: dict = {}):
+    def __apply_agent(self, prompt: str, agents: List[str], manifests: dict = {}):
         descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 

@@ -1,11 +1,12 @@
 import uuid
+from typing import List
 
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
 
 
 class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
-        self.__messages = []
+        self.__messages: List[dict] = []
         self.uid = uid
         self.agent_name = agent_name
         self.__new_session_id()

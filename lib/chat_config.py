@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 import google.generativeai as palm
 import openai
@@ -11,7 +12,7 @@ ChatConfig is a singleton, which holds global states, including various secret k
 
 
 class ChatConfig:
-    def __init__(self, llm_models: dict = None, llm_engine_configs: dict = None):
+    def __init__(self, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
