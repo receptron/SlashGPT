@@ -4,7 +4,7 @@
   "bot": "Jupyter",
   "about": "snakajima",
   "temperature": 0,
-  "functions": "./resources/jupyter.json",
+  "functions": "./resources/functions/jupyter.json",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample0": "Calcurate 3**20.",
   "sample_pri": "Show me the first 50 prime nubmers",

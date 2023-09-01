@@ -4,8 +4,8 @@
   "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0,
-  "functions": "./resources/cook.json",
-  "resource": "./resources/recipes.json",
+  "functions": "./resources/functions/cook.json",
+  "resource": "./resources/templates/recipes.json",
   "actions": {
     "chop_vegetable": { "message":"Success. {amount}g of chopped {vegetable} is ready" },
     "grind": { "message":"Success. {amount}g of ground {ingredient} is ready" },

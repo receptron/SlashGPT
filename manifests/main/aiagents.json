@@ -4,7 +4,7 @@
   "about": "https://gptstore.ai/plugins/webpilotai-com",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0.5,
-  "functions": "./resources/aiagents.json",
+  "functions": "./resources/functions/aiagents.json",
   "actions": {
     "aiagent": {
       "url": "https://ai-agents-plugin.vercel.app/aiagent?goal={goal}"

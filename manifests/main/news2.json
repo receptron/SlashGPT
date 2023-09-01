@@ -3,7 +3,7 @@
   "about": "snakajima",
   "temperature": 0,
   "model": "gpt-3.5-turbo-16k-0613",
-  "functions": "./resources/news2.json",
+  "functions": "./resources/functions/news2.json",
   "sample": "News about Tesla",
   "sample2": "News about Apple",
   "actions": {

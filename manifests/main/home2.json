@@ -6,7 +6,7 @@
   "model": "gpt-3.5-turbo-16k-0613",
   "modelx": "gpt-4-0613",
   "temperature": 0,
-  "functions": "./resources/home.json",
+  "functions": "./resources/functions/home.json",
   "actions": {
     "fill_bath": { "message":"Success. I started filling the bath tab." },
     "set_temperature": { "message":"Success. I set the teperature to {temperature} for {location}" },

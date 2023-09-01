@@ -9,7 +9,7 @@
       "appkey": "WOLFRAM_API_KEY"
     }
   },
-  "functions": "./resources/wolfram.json",
+  "functions": "./resources/functions/wolfram.json",
   "sample": "Please get the information about SpaceX",
   "prompt": [
     "Use Walfram to answer questions from the user"

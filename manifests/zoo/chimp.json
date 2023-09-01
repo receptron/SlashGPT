@@ -3,7 +3,7 @@
   "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0,
-  "resource": "./resources/zoo/chimp.txt",
+  "resource": "./resources/templates/zoo/chimp.txt",
   "sample": "チンパンジーの生態を教えて",
   "prompt": [
     "あなたは動物園のチンパンジーの説明係です。小学生にも分かるように説明してください。",

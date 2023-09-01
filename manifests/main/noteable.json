@@ -4,7 +4,7 @@
   "description": "Create notebooks in Python, SQL, and Markdown to explore data, visualize, and share notebooks with everyone.",
   "temperature": 0,
   "model": "gpt-3.5-turbo-16k-0613",
-  "functions": "./resources/noteable.json",
+  "functions": "./resources/functions/noteable.json",
   "sample": "What is 1+1?",
   "actions": {
     "create_project": {
