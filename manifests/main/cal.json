@@ -9,7 +9,7 @@
   "x-module": "./resources/calendar.py",
   "actions": {
     "make_event": {
-      "template": "./resources/calendar.ics",
+      "template": "./resources/action_templates/calendar.ics",
       "mime_type": "text/calendar",
       "message": "{{ 'result':'Success', 'invitation_link': '{url}' }}"
     },

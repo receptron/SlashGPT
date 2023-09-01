@@ -3,7 +3,7 @@
   "bot": "Home",
   "about": "snakajima",
   "temperature": 0,
-  "resource": "./resources/home.yml",
+  "resource": "./resources/templates/home.yml",
   "sample": "Please set the room temperature to 28 celsius",
   "prompt": [
     "You are a home automation system, and control various equipment by issuing a series of REST calls.",

@@ -4,8 +4,8 @@
   "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0.5,
-  "functions": "./resources/browser.json",
-  "module": "./resources/browser.py",
+  "functions": "./resources/functions/browser.json",
+  "module": "./resources/module/browser.py",
   "intro": [
     "I am a Internet Browser. Please specify the URL of the web page you are interested in." 
   ],
