@@ -3,7 +3,7 @@
   "bot": "Kayak",
   "about": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
   "modelx": "gpt-4-0613",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": "./resources/kayak.json",
   "sample": "Find a flight from Seattle to Kona on July 4th",
   "actions": {

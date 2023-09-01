@@ -2,7 +2,7 @@
   "title": "World News",
   "description": "Gets world news",
   "about": "https://gptstore.ai/plugins/-simbiss-net",
-  "temperature": "0.0",
+  "temperature": 0,
   "model": "gpt-3.5-turbo-16k-0613",
   "functions": [
     {

@@ -2,7 +2,7 @@
   "title": "Definitive Facts",
   "about": "https://gptstore.ai/plugins/public-advisor-definitive-io",
   "modelx": "gpt-4-0613",
-  "temperature": "0.0",
+  "temperature": 0,
   "resource": "./resources/definitive.json",
   "sample": "Please get recent news about Tesla",
   "prompt": [

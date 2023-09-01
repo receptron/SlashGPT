@@ -3,7 +3,7 @@
   "description": "Anything about SpaceX",
   "bot": "spacex",
   "about": "snakajima",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": "./resources/graphQL.json",
   "resource": "./resources/spacex.json",
   "actions": {

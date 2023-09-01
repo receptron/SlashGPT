@@ -4,7 +4,7 @@
   "about": "isamua",
   "bot": "田原総一朗",
   "model": "gpt-3.5-turbo-16k-0613",
-  "temperature": "0.0",
+  "temperature": 0,
   "actions": {
   },
   "sample": "What do you think about chat gpt.",
