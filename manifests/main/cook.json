@@ -7,13 +7,13 @@
   "functions": "./resources/functions/cook.json",
   "resource": "./resources/templates/recipes.json",
   "actions": {
-    "chop_vegetable": { "message":"Success. {amount}g of chopped {vegetable} is ready" },
-    "grind": { "message":"Success. {amount}g of ground {ingredient} is ready" },
-    "grate": { "message":"Success. {amount}g of grated {ingredient} is ready" },
-    "slice_meat": { "message":"Success. {amount}g of sliced {meat} is ready." },
-    "make_sauce": { "message":"Success. The sauce is ready." },
-    "stir_fly": { "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." },
-    "grill": { "message":"Success. Grilled food is ready to eat. Do not explain the recepe. Just tell to enjoy." }
+    "chop_vegetable": { "type": "message_template", "message":"Success. {amount}g of chopped {vegetable} is ready" },
+    "grind": { "type": "message_template", "message":"Success. {amount}g of ground {ingredient} is ready" },
+    "grate": { "type": "message_template", "message":"Success. {amount}g of grated {ingredient} is ready" },
+    "slice_meat": { "type": "message_template", "message":"Success. {amount}g of sliced {meat} is ready." },
+    "make_sauce": { "type": "message_template", "message":"Success. The sauce is ready." },
+    "stir_fly": { "type": "message_template", "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." },
+    "grill": { "type": "message_template", "message":"Success. Grilled food is ready to eat. Do not explain the recepe. Just tell to enjoy." }
   },
   "sample": "Cook pork vegetable stir fly for four.",
   "prompt": [

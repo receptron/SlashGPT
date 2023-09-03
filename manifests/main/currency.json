@@ -31,6 +31,7 @@
   "sample": "Please convert 1USD into JPY",
   "actions": {
     "convert": {
+      "type": "rest",
       "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
     }
   },

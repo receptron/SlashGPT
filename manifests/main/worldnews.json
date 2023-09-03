@@ -25,6 +25,7 @@
   "sample3": "Get the latest news about Tesla, present them with numbers.",
   "actions": {
     "news": {
+      "type": "rest",
       "url": "https://simbiss.net/news?search={search}"
     }
   },
