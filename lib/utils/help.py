@@ -8,6 +8,7 @@ LONG_HELP = """
 /prompt:    Display the current prompt
 /history:   Display the chat history
 /sample:    Make the sample request
+/reload:    Reload manifest set
 /llm gpt3:      Switch the model to gpt-3.5-turbo-0613
 /llm gpt31:     Switch the model to gpt-3.5-turbo-16k-0613
 /llm gpt4:      Switch the model to gpt-4-0613

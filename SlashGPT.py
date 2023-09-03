@@ -180,6 +180,8 @@ class SlashGPT:
                 print("/switch {manifest}: " + ", ".join(manifests_manager.keys()))
         elif commands[0] == "import":
             self.import_data(commands)
+        elif commands[0] == "reload":
+            self.config.reload()
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
