@@ -10,15 +10,17 @@ from lib.manifest import Manifest
 
 # https://huggingface.co/rinna/bilingual-gpt-neox-4b-instruction-sft/blob/main/README.md
 
+
 def get_role_japanese(role: str):
-    if (role == "user"):
+    if role == "user":
         return "ユーザー"
-    if (role == "system"):
+    if role == "system":
         return "システム"
-    if (role == "assistant"):
+    if role == "assistant":
         return "システム"
     return "システム"
-    
+
+
 # role user, system, assistant
 def get_prompt_data(messages: List[dict], manifest: Manifest):
     functions = manifest.functions()
@@ -66,10 +68,10 @@ class LLMEngineFromPretrained2(LLMEngineBase):
                 top_p=0.85,
                 pad_token_id=self.tokenizer.pad_token_id,
                 bos_token_id=self.tokenizer.bos_token_id,
-                eos_token_id=self.tokenizer.eos_token_id
+                eos_token_id=self.tokenizer.eos_token_id,
             )
-            
-        output = self.tokenizer.decode(output_ids.tolist()[0][token_ids.size(1):])
+
+        output = self.tokenizer.decode(output_ids.tolist()[0][token_ids.size(1) :])
         # print(output)
 
         res = "".join(output)
