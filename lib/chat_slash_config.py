@@ -26,7 +26,6 @@ class ChatSlashConfig(ChatConfig):
         self.manifests = {}
         files = os.listdir(path)
         for file in files:
-            print(file)
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
