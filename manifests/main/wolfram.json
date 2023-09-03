@@ -5,6 +5,7 @@
   "temperature": 0,
   "actions": {
     "query": {
+      "type": "rest",
       "url": "https://www.wolframalpha.com/api/v1/llm-api?input={input}&appid={appkey}",
       "appkey": "WOLFRAM_API_KEY"
     }

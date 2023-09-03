@@ -26,6 +26,7 @@
   ],
   "actions": {
     "visit_web": {
+      "type": "rest",
       "method": "POST",
       "url": "https://webreader.webpilotai.com/api/visit-web",
       "appkey": "WEBPILOT_UID",

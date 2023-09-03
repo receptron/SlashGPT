@@ -8,7 +8,7 @@
   "resource": "./resources/templates/spacex.json",
   "actions": {
     "call_graphQL": {
-      "graphQL": true,
+      "type": "graphQL",
       "url": "https://spacex-production.up.railway.app/graphql"
     }
   },

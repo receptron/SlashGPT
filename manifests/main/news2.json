@@ -11,6 +11,7 @@
       "url": "https://simbiss.net/news?search={search}"
     },
     "visit_web": {
+      "type": "rest",
       "method": "POST",
       "url": "https://webreader.webpilotai.com/api/visit-web",
       "appkey": "WEBPILOT_UID",
