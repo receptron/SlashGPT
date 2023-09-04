@@ -36,6 +36,9 @@ def fetch(url: str):
 
         return ({"result": "success", "text": body_text}, None)
     else:
-        return ({
-            "reuslt": "error",
-        }, None)
+        return (
+            {
+                "reuslt": "error",
+            },
+            None,
+        )

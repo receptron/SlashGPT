@@ -14,7 +14,7 @@
       "mime_type": "text/calendar",
       "message": "{{ 'result':'Success', 'invitation_link': '{url}' }}"
     },
-    "send_invitation": { "message":"Success. The invitation was sent to {recipients}" }
+    "send_invitation": { "type": "message_template", "message":"Success. The invitation was sent to {recipients}" }
   },
   "intro": [
     "Please let me know if there any event you want to add to your calendar" 
