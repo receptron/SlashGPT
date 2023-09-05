@@ -320,6 +320,10 @@ class SlashGPT:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
+    parser.add_argument("--autotest", action="store_true")
+    args = parser.parse_args()
+
     with open("./manifests/manifests.json", "r") as f:
         manifests_manager = json.load(f)
 
@@ -327,4 +331,8 @@ if __name__ == "__main__":
     config = ChatSlashConfig("./" + dir, llm_models, llm_engine_configs)
     print(ONELINE_HELP)
     main = SlashGPT(config, manifests_manager, "dispatcher")
+    if args.autotest:
+        main.talk("/autotest")
+        main.talk("/bye")
+
     main.start()
