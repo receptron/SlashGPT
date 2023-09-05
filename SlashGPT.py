@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import os
 import platform
 import re
+import sys
 
 from gtts import gTTS
 from playsound import playsound
@@ -32,17 +34,15 @@ def play_text(text, lang):
     playsound("./output/audio.mp3")
 
 
-with open("./manifests/manifests.json", "r") as f:
-    manifests_manager = json.load(f)
-
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
 
 
 class SlashGPT:
-    def __init__(self, config: ChatSlashConfig, agent_name: str):
+    def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
+        self.manifests_manager = manifests_manager
         self.session = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
@@ -178,10 +178,10 @@ class SlashGPT:
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
-            if len(commands) > 1 and manifests_manager.get(commands[1]):
+            if len(commands) > 1 and self.manifests_manager.get(commands[1]):
                 self.switch_manifests(commands[1])
             else:
-                print("/switch {manifest}: " + ", ".join(manifests_manager.keys()))
+                print("/switch {manifest}: " + ", ".join(self.manifests_manager.keys()))
         elif commands[0] == "import":
             self.import_data(commands)
         elif commands[0] == "reload":
@@ -227,7 +227,7 @@ class SlashGPT:
         print("/import {num} show: show history")
 
     def switch_manifests(self, key):
-        m = manifests_manager[key]
+        m = self.manifests_manager[key]
         self.config.load_manifests("./" + m["manifests_dir"])
         self.switch_session(m["default_agent_name"])
 
@@ -320,8 +320,19 @@ class SlashGPT:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
+    parser.add_argument("--autotest", action="store_true")
+    args = parser.parse_args()
+
+    with open("./manifests/manifests.json", "r") as f:
+        manifests_manager = json.load(f)
+
     dir = manifests_manager["main"]["manifests_dir"]
     config = ChatSlashConfig("./" + dir, llm_models, llm_engine_configs)
     print(ONELINE_HELP)
-    main = SlashGPT(config, "dispatcher")
+    main = SlashGPT(config, manifests_manager, "dispatcher")
+    if args.autotest:
+        main.talk("/autotest")
+        main.talk("/bye")
+
     main.start()
