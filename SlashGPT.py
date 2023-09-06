@@ -139,7 +139,7 @@ class SlashGPT:
             if len(commands) == 2:
                 manifest_data = self.config.manifests.get(commands[1])
                 if manifest_data:
-                    print(json.dumps(manifest_data, indent=2))
+                    print(json.dumps(manifest_data, indent=2, ensure_ascii=False))
         elif key == "bye":
             self.runtime.stop()
             self.exit = True
@@ -219,7 +219,7 @@ class SlashGPT:
                     print("imported")
                     return
                 if len(commands) == 3 and commands[2] == "show":
-                    print(json.dumps(log, indent=2))
+                    print(json.dumps(log, indent=2, ensure_ascii=False))
                     return
 
         print("/import: list all histories")
