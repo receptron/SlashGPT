@@ -69,12 +69,11 @@ class FunctionCall:
             # call external api or some
             function_message = self.function_action.call_api(arguments, verbose)
         else:
+            function = None
             if self.__manifest.get("notebook"):
-                # Python code from llm
                 arguments = self.__arguments_for_notebook(history.last())
                 function = getattr(runtime, function_name)
-            else:
-                # Python code from resource file
+            elif self.__manifest.get("module"):
                 function = self.__manifest.get_module(function_name)  # python code
             if function:
                 if isinstance(arguments, str):
@@ -87,7 +86,7 @@ class FunctionCall:
                     history.append_message("assistant", message)
                 function_message = self.__format_python_result(result)
             else:
-                print_error(f"No function {function_name} in the module")
+                print_error(f"No execution for function {function_name}")
 
         if function_message:
             history.append_message("function", function_message, function_name)
