@@ -29,11 +29,14 @@ class ChatHistory:
     def messages(self):
         return self.repository.messages()
 
-    def append_message(self, role: str, message: str, name=None):
+    def preset_messages(self):
+        return self.repository.preset_messages()
+
+    def append_message(self, role: str, message: str, name=None, preset=False):
         if name:
-            self.append({"role": role, "content": message, "name": name})
+            self.append({"role": role, "content": message, "name": name, "preset": preset})
         else:
-            self.append({"role": role, "content": message})
+            self.append({"role": role, "content": message, "preset": preset})
 
     def restore(self, data: List[dict]):
         return self.repository.restore(data)

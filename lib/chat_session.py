@@ -65,7 +65,7 @@ class ChatSession:
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
         if self.prompt:
-            self.append_message("system", self.prompt)
+            self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
         self.vector_db = self.__get_vector_db()
@@ -107,11 +107,11 @@ class ChatSession:
     In case of a function message, the name specifies the function name.
     """
 
-    def append_message(self, role: str, message: str, name=None):
-        self.history.append_message(role, message, name)
+    def append_message(self, role: str, message: str, preset: bool, name=None):
+        self.history.append_message(role, message, name, preset)
 
     def append_user_question(self, message: str):
-        self.append_message("user", message)
+        self.append_message("user", message, False)
         if self.vector_db:
             articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
             assert self.history.get_data(0, "role") == "system", "Missing system message"
@@ -126,7 +126,7 @@ class ChatSession:
     def set_intro(self):
         if self.intro:
             self.intro_message = self.intro[random.randrange(0, len(self.intro))]
-            self.append_message("assistant", self.intro_message)
+            self.append_message("assistant", self.intro_message, True)
 
     """
     Let the LLM generate a responce based on the messasges in this session.
@@ -137,9 +137,18 @@ class ChatSession:
     """
 
     def call_llm(self):
-        (role, res, function_call) = self.llm_model.generate_response(self.history.messages(), self.manifest, self.config.verbose)
+        # all = default
+
+        message = self.history.messages()
+        print(message)
+        # message = self.history.preset_messages()
+        # just_one
+        # latest(3)
+        # preset
+        # summary
+        (role, res, function_call) = self.llm_model.generate_response(message, self.manifest, self.config.verbose)
 
         if role and res:
-            self.append_message(role, res)
+            self.append_message(role, res, False)
 
         return (res, function_call)

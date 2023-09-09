@@ -47,8 +47,17 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
         if self.len() > 0:
             return self.__messages.pop()
 
+    def message_dict(self, x):
+        if x.get("name"):
+            return {"role": x.get("role"), "content": x.get("content"), "name": x.get("name")}
+        return {"role": x.get("role"), "content": x.get("content")}
+
     def messages(self):
-        return self.__messages
+        return list(map(self.message_dict, self.__messages))
+
+    def preset_messages(self):
+        print(self.__messages)
+        return list(filter(lambda x: x.get("preset"), self.__messages))
 
     def restore(self, data):
         self.__messages = data
