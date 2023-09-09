@@ -119,12 +119,12 @@ Here is an example (home2).
 
 ```
   "actions": {
-    "fill_bath": { "message":"Success. I started filling the bath tab." },
-    "set_temperature": { "message":"Success. I set the teperature to {temperature} for {location}" },
-    "start_sprinkler": { "message":"Success. I started the sprinkler for {location}" },
-    "take_picture": { "message":"Success. I took a picture of {location}" },
-    "play_music": { "message":"Success. I started playing {music} in {location}" },
-    "control_light": { "message":"Success. The light switch of {location} is now {switch}." }
+    "fill_bath": { "type": "message_template", "message":"Success. I started filling the bath tab." },
+    "set_temperature": { "type": "message_template", "message":"Success. I set the teperature to {temperature} for {location}" },
+    "start_sprinkler": { "type": "message_template", "message":"Success. I started the sprinkler for {location}" },
+    "take_picture": { "type": "message_template", "message":"Success. I took a picture of {location}" },
+    "play_music": { "type": "message_template", "message":"Success. I started playing {music} in {location}" },
+    "control_light": { "type": "message_template", "message":"Success. The light switch of {location} is now {switch}." }
   }
 ```
 
@@ -140,6 +140,7 @@ Here is an example (currency).
 ```
   "actions": {
     "convert": {
+      "type": "rest",
       "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
     }
   }
@@ -158,6 +159,7 @@ Here is an example for "make_event" function (cal).
 ```
   "actions": {
     "make_event": {
+      "type": "data_url",
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
       "message": "The event was scheduled. Here is the invitation link: '{url}'"
