@@ -106,7 +106,7 @@ Name of that file becomes the slash command. (the slash command of "foo.json" is
 
 It defines template-based function implementations (including mockups), alternative to writing Python code using the "module" property.
 
-It supports three different methods. 
+It supports four different methods. 
 
 ### 1. Formatted string.
 
@@ -146,7 +146,24 @@ Here is an example (currency).
   }
 ```
 
-### 3. data URL
+### 3. GraphQL calls
+
+Use this method to call GraphQL APIs.
+
+- *url* (string, required): GraphQL server url.
+
+Here is an example (spacex).
+
+```
+  "actions": {
+    "convert": {
+      "type": "graphQL",
+      "url": "https://spacex-production.up.railway.app/graphql"
+    }
+  }
+```
+
+### 4. data URL
 
 This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
