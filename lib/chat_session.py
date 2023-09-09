@@ -137,8 +137,8 @@ class ChatSession:
     """
 
     def call_llm(self):
-        message = self.history.messages()
-        (role, res, function_call) = self.llm_model.generate_response(message, self.manifest, self.config.verbose)
+        messages = self.history.messages()
+        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
         if role and res:
             self.append_message(role, res, False)

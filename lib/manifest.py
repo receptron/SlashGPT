@@ -36,6 +36,9 @@ class Manifest:
     def model(self):
         return self.get("model") or "gpt-3.5-turbo-0613"
 
+    def history_type(self):
+        return self.get("history_type") or "all"
+
     def functions(self):
         value = self.__functions()
         agents = self.get("agents")
