@@ -8,12 +8,16 @@ from gql.transport.requests import RequestsHTTPTransport
 from lib.utils.print import print_debug, print_error
 
 
-def graphQLRequest(url: str, arguments: dict):
-    transport = RequestsHTTPTransport(url=url, use_json=True)
-    client = Client(transport=transport)
-    query = arguments.get("query")
-    graphQuery = gql(f"query {query}")
+def graphQLRequest(url: str, headers: dict, appkey_value: str, arguments: dict, verbose: bool):
     try:
+        appkey = {"appkey": appkey_value}
+        headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
+        if verbose:
+            print_debug(f"Posting to {url} {headers}")
+        transport = RequestsHTTPTransport(url=url, headers=headers, use_json=True)
+        client = Client(transport=transport)
+        query = arguments.get("query")
+        graphQuery = gql(f"query {query}")
         response = client.execute(graphQuery)
         return json.dumps(response)
     except Exception as e:
