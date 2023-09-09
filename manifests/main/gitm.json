@@ -1,14 +1,14 @@
 {
-  "title": "GithubMetrics",
-  "description": "Metrics about Github repo",
+  "title": "GitHubMetrics",
+  "description": "Metrics about GitHub repo",
   "bot": "gitmtx",
-  "source": "kozayupapa",
+  "about": "kozayupapa",
   "temperature": "0.0",
   "functions": "./resources/graphQL.json",
   "resource": "./resources/github.graphql",
   "actions": {
     "call_graphQL": {
-      "graphQL": true,
+      "type": "graphQL",
       "url": "https://api.github.com/graphql",
       "appkey": "GITHUB_TOKEN",
       "headers": {
@@ -16,6 +16,7 @@
       }
     }
   },
+  "help": "Prepare your github app token and set to .env file as 'GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
   "model": "gpt-3.5-turbo-16k-0613",
   "sample": "show my login name on github",
   "sample_c": "SingularitySociety/book_reading のcommit数を教えて",
