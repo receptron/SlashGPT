@@ -4,7 +4,6 @@ import json
 import os
 import platform
 import re
-import sys
 
 from gtts import gTTS
 from playsound import playsound
@@ -160,6 +159,7 @@ class SlashGPT:
         elif commands[0] == "history":
             if len(commands) == 1:
                 print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.session.history.preset_messages(), ensure_ascii=False, indent=2))
             elif len(commands) > 1 and commands[1] == "pop":
                 self.session.history.pop()
         elif key == "functions":
