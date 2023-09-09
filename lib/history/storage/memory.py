@@ -2,6 +2,7 @@ import glob
 import json
 import os
 from datetime import datetime
+from typing import List
 
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
 from lib.history.storage.log import create_log_dir, save_log
@@ -10,7 +11,7 @@ from lib.utils.print import print_warning
 
 class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
-        self.__messages = []
+        self.__messages: List[dict] = []
         self.uid = uid
         self.agent_name = agent_name
         self.base_dir = "output"
@@ -48,6 +49,9 @@ class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
 
     def messages(self):
         return self.__messages
+
+    def preset_messages(self):
+        return filter(lambda x: x.get("preset"), self.__messages)
 
     def restore(self, data):
         self.__messages = data

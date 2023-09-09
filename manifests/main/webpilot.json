@@ -1,9 +1,9 @@
 {
   "title": "Web Pilot AI",
   "description": "Allows users to input a URL, retrieves the web page content, and returns a comprehensible summary of it.",
-  "source": "https://gptstore.ai/plugins/webpilotai-com",
+  "about": "https://gptstore.ai/plugins/webpilotai-com",
   "model": "gpt-3.5-turbo-16k-0613",
-  "temperature": "0.5",
+  "temperature": 0.5,
   "functions": [
     {
       "name": "visit_web",
@@ -26,6 +26,7 @@
   ],
   "actions": {
     "visit_web": {
+      "type": "rest",
       "method": "POST",
       "url": "https://webreader.webpilotai.com/api/visit-web",
       "appkey": "WEBPILOT_UID",

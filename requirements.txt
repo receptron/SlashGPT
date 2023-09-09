@@ -22,4 +22,6 @@ isort
 flake8
 pytest
 yamllint
+mypy
 yfinance
+

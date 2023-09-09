@@ -1,6 +1,6 @@
 {
   "title": "Song Recommender",
-  "source": "https://github.com/f/awesome-chatgpt-prompts",
+  "about": "https://github.com/f/awesome-chatgpt-prompts",
   "prompt": [
       "I want you to act as a song recommender.",
       "I will provide you with a song and you will create a playlist of 10 songs that are similar to the given song.",

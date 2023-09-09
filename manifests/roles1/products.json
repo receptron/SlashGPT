@@ -1,12 +1,12 @@
 {
   "title": "Database",
   "bot": "DB",
-  "source": "snakajima",
+  "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
-  "temperature": "0.0",
-  "functions": "./resources/db.json",
-  "resource": "./resources/products.sql",
-  "module": "./resources/db.py",
+  "temperature": 0,
+  "functions": "./resources/functions/db.json",
+  "resource": "./resources/templates/products.sql",
+  "module": "./resources/module/db.py",
   "sample": "List 10 customers with most orders.", 
   "prompt": [
     "Don't make assumptions about what values to plug into functions.",

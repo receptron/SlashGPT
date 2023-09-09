@@ -34,8 +34,11 @@ def fetch(url: str):
             limit = int(len(body_text) * 4500 / num)
             body_text = body_text[:limit]
 
-        return {"result": "success", "text": body_text}
+        return ({"result": "success", "text": body_text}, None)
     else:
-        return {
-            "reuslt": "error",
-        }
+        return (
+            {
+                "reuslt": "error",
+            },
+            None,
+        )

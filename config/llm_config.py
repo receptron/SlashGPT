@@ -1,5 +1,4 @@
-from lib.llms.llm_model import LlmModel
-from lib.manifest import Manifest
+from lib.llms.engine.openai_gpt import LLMEngineOpenAIGPT
 
 llm_models = {
     "gpt3": {
@@ -40,29 +39,34 @@ llm_models = {
         "model_name": "palm",
         "api_key": "GOOGLE_PALM_KEY",
     },
+    "gpt2": {
+        "engine_name": "from_pretrained",
+        "model_name": "rinna/japanese-gpt2-xsmall",
+        "max_token": 4096,
+    },
+    "rinna": {
+        "engine_name": "from_pretrained-rinna",
+        "model_name": "rinna/bilingual-gpt-neox-4b-instruction-sft",
+        "max_token": 4096,
+    },
 }
 
-
-def search_llm_model(llm_model_name: str):
-    llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
-    index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
-
-    if index > -1:
-        llm_model = list(llm_models.values())[index]
-        return llm_model
-    else:
-        return llm_models.get("gpt3")
-
-
-def get_llm_model_from_manifest(manifest: Manifest):
-    llm_model_name = manifest.model()
-    llm_model = search_llm_model(llm_model_name)
-
-    return LlmModel(llm_model)
-
-
-def get_llm_model_from_key(key: str):
-    llm_model = llm_models.get(key)
-    if llm_model:
-        return LlmModel(llm_model)
-    return LlmModel(llm_models.get("gpt3"))
+llm_engine_configs = {
+    "openai-gpt": LLMEngineOpenAIGPT,
+    "replicate": {
+        "module_name": "lib.llms.engine.palm",
+        "class_name": "LLMEnginePaLM",
+    },
+    "palm": {
+        "module_name": "lib.llms.engine.replicate",
+        "class_name": "LLMEngineReplicate",
+    },
+    "from_pretrained": {
+        "module_name": "plugins.engine.from_pretrained",
+        "class_name": "LLMEngineFromPretrained",
+    },
+    "from_pretrained-rinna": {
+        "module_name": "plugins.engine.from_pretrained2",
+        "class_name": "LLMEngineFromPretrained2",
+    },
+}

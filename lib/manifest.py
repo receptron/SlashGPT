@@ -2,6 +2,7 @@ import json
 import random
 import re
 from datetime import datetime
+from typing import List
 
 from lib.utils.print import print_info
 
@@ -34,6 +35,9 @@ class Manifest:
 
     def model(self):
         return self.get("model") or "gpt-3.5-turbo-0613"
+
+    def history_type(self):
+        return self.get("history_type") or "all"
 
     def functions(self):
         value = self.__functions()
@@ -131,7 +135,7 @@ class Manifest:
                 prompt = self.__apply_agent(prompt, agents, manifests)
             return prompt
 
-    def __apply_agent(self, prompt: str, agents: [str], manifests: dict = {}):
+    def __apply_agent(self, prompt: str, agents: List[str], manifests: dict = {}):
         descriptions = [f"{agent}: {manifests[agent].get('description')}" for agent in agents]
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 
@@ -147,3 +151,8 @@ class Manifest:
 
     def skip_function_result(self):
         return self.get("skip_function_result")
+
+    def samples(self):
+        return list(filter(lambda x: x.strip()[:6] == "sample", self.__manifest.keys()))
+
+    # return self.__manifest.keys()

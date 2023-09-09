@@ -1,9 +1,9 @@
 {
   "title": "Currency Converter",
   "description": "Converts currency",
-  "source": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
+  "about": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
   "modelx": "gpt-4-0613",
-  "temperature": "0.0",
+  "temperature": 0,
   "functions": [
     {
       "name": "convert",
@@ -31,6 +31,7 @@
   "sample": "Please convert 1USD into JPY",
   "actions": {
     "convert": {
+      "type": "rest",
       "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
     }
   },

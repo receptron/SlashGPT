@@ -1,11 +1,12 @@
 import uuid
+from typing import List
 
 from lib.history.storage.abstract import ChatHisoryAbstractStorage
 
 
 class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
-        self.__messages = []
+        self.__messages: List[dict] = []
         self.uid = uid
         self.agent_name = agent_name
         self.__new_session_id()
@@ -55,9 +56,14 @@ class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
         if self.len() > 0:
             return self.__messages.pop()
 
+    def message_dict(self, x):
+        if x.get("name"):
+            return {"role": x.get("role"), "content": x.get("content"), "name": x.get("name")}
+        return {"role": x.get("role"), "content": x.get("content")}
+
     def messages(self):
         # select * from log where uid = self.uid and session_id = self.session_id
-        return self.__messages
+        return list(map(self.message_dict, self.__messages))
 
     def restore(self, data):
         self.__new_session_id()

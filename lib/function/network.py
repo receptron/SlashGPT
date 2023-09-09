@@ -34,7 +34,7 @@ def http_request(url: str, method: str, headers: dict, appkey_value: str, argume
         response = requests.post(url, headers=headers, json=arguments)
     else:
         if verbose:
-            print_debug(arguments.items())
+            print_debug(str(arguments.items()))
         url = url.format(
             **{key: urllib.parse.quote(value) for key, value in arguments.items()},
             **appkey,

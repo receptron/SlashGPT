@@ -1,3 +1,6 @@
+from typing import List
+
+
 class ChatHistory:
     def __init__(self, repository):
         self.repository = repository
@@ -6,7 +9,7 @@ class ChatHistory:
         self.repository.append(data)
 
     def get(self, index: int):
-        return self.repository.get(index)
+        return self.message_dict(self.repository.get(index))
 
     def get_data(self, index: int, name: str):
         return self.repository.get_data(index, name)
@@ -18,21 +21,29 @@ class ChatHistory:
         return self.repository.len()
 
     def last(self):
-        return self.repository.last()
+        return self.message_dict(self.repository.last())
 
     def pop(self):
         return self.repository.pop()
 
+    def message_dict(self, x):
+        if x.get("name"):
+            return {"role": x.get("role"), "content": x.get("content"), "name": x.get("name")}
+        return {"role": x.get("role"), "content": x.get("content")}
+
     def messages(self):
-        return self.repository.messages()
+        return list(map(self.message_dict, self.repository.messages()))
 
-    def append_message(self, role: str, message: str, name=None):
+    def preset_messages(self):
+        return list(map(self.message_dict, self.repository.preset_messages()))
+
+    def append_message(self, role: str, message: str, name=None, preset=False):
         if name:
-            self.append({"role": role, "content": message, "name": name})
+            self.append({"role": role, "content": message, "name": name, "preset": preset})
         else:
-            self.append({"role": role, "content": message})
+            self.append({"role": role, "content": message, "preset": preset})
 
-    def restore(self, data: [dict]):
+    def restore(self, data: List[dict]):
         return self.repository.restore(data)
 
     def session_list(self):

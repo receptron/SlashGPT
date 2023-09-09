@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from typing import Optional
 
 from lib.chat_config import ChatConfig
 
@@ -10,10 +11,11 @@ ChatSlashConfig is a singleton, which holds global states, including various sec
 
 
 class ChatSlashConfig(ChatConfig):
-    def __init__(self, pathManifests: str):
-        super().__init__()
-        self.audio = None
+    def __init__(self, pathManifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        super().__init__(llm_models, llm_engine_configs)
+        self.audio: Optional[str] = None
         self.load_manifests(pathManifests)
+        self.pathManifests = pathManifests
 
     """
     Load a set of manifests.
@@ -27,6 +29,9 @@ class ChatSlashConfig(ChatConfig):
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
+
+    def reload(self):
+        self.load_manifests(self.pathManifests)
 
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())

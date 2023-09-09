@@ -1,9 +1,9 @@
 {
   "title": "マントヒヒ",
-  "source": "snakajima",
+  "about": "snakajima",
   "model": "gpt-3.5-turbo-16k-0613",
-  "temperature": "0.0",
-  "resource": "./resources/zoo/papio.txt",
+  "temperature": 0,
+  "resource": "./resources/templates/zoo/papio.txt",
   "sample": "マントヒヒの生態を教えて",
   "prompt": [
     "あなたは動物園のマントヒヒの説明係です。小学生にも分かるように説明してください。",

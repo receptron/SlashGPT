@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import os
 import platform
@@ -7,10 +8,11 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
+from config.llm_config import llm_engine_configs, llm_models
 from lib.chat_session import ChatSession
 from lib.chat_slash_config import ChatSlashConfig
 from lib.function.jupyter_runtime import PythonRuntime
-from lib.llms.models import get_llm_model_from_key, llm_models
+from lib.llms.model import get_llm_model_from_key
 from lib.utils.help import LONG_HELP, ONELINE_HELP
 from lib.utils.print import print_debug, print_error, print_info, print_warning
 from lib.utils.utils import InputStyle
@@ -31,18 +33,16 @@ def play_text(text, lang):
     playsound("./output/audio.mp3")
 
 
-with open("./manifests/manifests.json", "r") as f:
-    manifests_manager = json.load(f)
-
 """
 Main is a singleton, which process the input from the user and manage chat sessions.
 """
 
 
 class SlashGPT:
-    def __init__(self, config: ChatSlashConfig, agent_name: str):
+    def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
-
+        self.manifests_manager = manifests_manager
+        self.session = ChatSession(self.config)
         self.exit = False
         self.runtime = PythonRuntime("./output/notebooks")
         self.switch_session(agent_name)
@@ -54,7 +54,7 @@ class SlashGPT:
 
     def switch_session(self, agent_name: str, intro: bool = True):
         if agent_name is None:
-            self.session = ChatSession(self.config, {})
+            self.session = ChatSession(self.config)
             return
 
         if self.config.has_manifest(agent_name):
@@ -110,6 +110,10 @@ class SlashGPT:
                     print("/sample {agent}: " + ", ".join(agents))
                 else:
                     print_error(f"Error: No manifest named '{sub_key}'")
+        elif commands[0] == "samples":
+            samples = list(map(lambda x: "/" + x, self.session.manifest.samples()))
+            print(", ".join(samples))
+            return None
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
             if sample:
@@ -134,7 +138,7 @@ class SlashGPT:
             if len(commands) == 2:
                 manifest_data = self.config.manifests.get(commands[1])
                 if manifest_data:
-                    print(json.dumps(manifest_data, indent=2))
+                    print(json.dumps(manifest_data, indent=2, ensure_ascii=False))
         elif key == "bye":
             self.runtime.stop()
             self.exit = True
@@ -155,28 +159,33 @@ class SlashGPT:
         elif commands[0] == "history":
             if len(commands) == 1:
                 print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.session.history.preset_messages(), ensure_ascii=False, indent=2))
             elif len(commands) > 1 and commands[1] == "pop":
                 self.session.history.pop()
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
-            if len(commands) > 1 and llm_models.get(commands[1]):
-                llm_model = get_llm_model_from_key(commands[1])
+            if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
+                llm_model = get_llm_model_from_key(commands[1], self.config.llm_models)
                 self.session.set_llm_model(llm_model)
             else:
-                print("/llm: " + ",".join(llm_models.keys()))
+                if self.config.llm_models is None:
+                    raise RuntimeError("self.config.llm_models must be set")
+                print("/llm: " + ",".join(self.config.llm_models.keys()))
         elif key == "new":
             self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
-            if len(commands) > 1 and manifests_manager.get(commands[1]):
+            if len(commands) > 1 and self.manifests_manager.get(commands[1]):
                 self.switch_manifests(commands[1])
             else:
-                print("/switch {manifest}: " + ", ".join(manifests_manager.keys()))
+                print("/switch {manifest}: " + ", ".join(self.manifests_manager.keys()))
         elif commands[0] == "import":
             self.import_data(commands)
+        elif commands[0] == "reload":
+            self.config.reload()
         elif self.config.has_manifest(key):
             self.switch_session(key)
         else:
@@ -210,7 +219,7 @@ class SlashGPT:
                     print("imported")
                     return
                 if len(commands) == 3 and commands[2] == "show":
-                    print(json.dumps(log, indent=2))
+                    print(json.dumps(log, indent=2, ensure_ascii=False))
                     return
 
         print("/import: list all histories")
@@ -218,7 +227,7 @@ class SlashGPT:
         print("/import {num} show: show history")
 
     def switch_manifests(self, key):
-        m = manifests_manager[key]
+        m = self.manifests_manager[key]
         self.config.load_manifests("./" + m["manifests_dir"])
         self.switch_session(m["default_agent_name"])
 
@@ -311,8 +320,19 @@ class SlashGPT:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
+    parser.add_argument("--autotest", action="store_true")
+    args = parser.parse_args()
+
+    with open("./manifests/manifests.json", "r") as f:
+        manifests_manager = json.load(f)
+
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatSlashConfig("./" + dir)
+    config = ChatSlashConfig("./" + dir, llm_models, llm_engine_configs)
     print(ONELINE_HELP)
-    main = SlashGPT(config, "dispatcher")
+    main = SlashGPT(config, manifests_manager, "dispatcher")
+    if args.autotest:
+        main.talk("/autotest")
+        main.talk("/bye")
+
     main.start()

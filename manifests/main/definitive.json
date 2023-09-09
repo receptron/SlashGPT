@@ -1,9 +1,9 @@
 {
   "title": "Definitive Facts",
-  "source": "https://gptstore.ai/plugins/public-advisor-definitive-io",
+  "about": "https://gptstore.ai/plugins/public-advisor-definitive-io",
   "modelx": "gpt-4-0613",
-  "temperature": "0.0",
-  "resource": "./resources/definitive.json",
+  "temperature": 0,
+  "resource": "./resources/templates/definitive.json",
   "sample": "Please get recent news about Tesla",
   "prompt": [
     "You retrieve various facts.",

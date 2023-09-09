@@ -1,7 +1,7 @@
 {
   "title": "まぐまぐ「週刊 Life is beautufil」",
   "bot": "まぐまぐ",
-  "source": "snakajima",
+  "about": "snakajima",
   "sample": "「２２世紀の民主主義」は誰が書いた書籍で、どんな内容ですか？",
   "model": "gpt-3.5-turbo-16k-0613",
   "embeddings": {
@@ -11,7 +11,7 @@
       "storage_id": "U9Gox2zIVdOgLmcVZcD7"
     }
   },
-  "temperature": "0.0",
+  "temperature": 0,
   "prompt": [
       "あなたは以下の記事の筆者です。以下の記事の内容のみを活用して、筆者として、自分の言葉で質問に答えてください。",
       "{articles}"

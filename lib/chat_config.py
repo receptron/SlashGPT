@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 import google.generativeai as palm
 import openai
@@ -11,7 +12,7 @@ ChatConfig is a singleton, which holds global states, including various secret k
 
 
 class ChatConfig:
-    def __init__(self):
+    def __init__(self, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -30,6 +31,9 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
+
+        self.llm_models = llm_models
+        self.llm_engine_configs = llm_engine_configs
 
     # for llm
     def has_value_for_key(self, key: str):

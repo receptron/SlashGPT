@@ -1,15 +1,17 @@
 import random
 import re
 import uuid
+from typing import Optional
 
 from termcolor import colored
 
-from lib.chat_slash_config import ChatSlashConfig
+from lib.chat_config import ChatConfig
 from lib.dbs.pinecone import DBPinecone
 from lib.history.base import ChatHistory
-from lib.history.storage.abstract import ChatHisoryAbstractStorage
 from lib.history.storage.memory import ChatHistoryMemoryStorage
-from lib.llms.models import get_llm_model_from_manifest
+from lib.llms.default_config import default_llm_engine_configs, default_llm_models
+from lib.llms.engine_factory import LLMEngineFactory
+from lib.llms.model import LlmModel, get_llm_model_from_manifest
 from lib.manifest import Manifest
 from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
@@ -23,9 +25,9 @@ The manifest specifies behaviors of the agent.
 class ChatSession:
     def __init__(
         self,
-        config: ChatSlashConfig,
-        user_id: str = None,
-        history_engine: ChatHisoryAbstractStorage = ChatHistoryMemoryStorage,
+        config: ChatConfig,
+        user_id: Optional[str] = None,
+        history_engine=ChatHistoryMemoryStorage,
         manifest={},
         agent_name: str = "GPT",
         intro: bool = True,
@@ -46,14 +48,24 @@ class ChatSession:
         memory_history = history_engine(self.user_id, agent_name)
         self.history = ChatHistory(memory_history)
 
+        # llm
+        if not self.config.llm_models:
+            self.config.llm_models = default_llm_models
+        if not self.config.llm_engine_configs:
+            self.config.llm_engine_configs = default_llm_engine_configs
+
+        # engine
+        if self.config.llm_engine_configs:
+            LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
+
         # Load the model name and make it sure that we have required keys
-        llm_model = get_llm_model_from_manifest(self.manifest)
+        llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
         if self.prompt:
-            self.append_message("system", self.prompt)
+            self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
         self.vector_db = self.__get_vector_db()
@@ -66,7 +78,7 @@ class ChatSession:
         if intro:
             self.set_intro()
 
-    def set_llm_model(self, llm_model: dict):
+    def set_llm_model(self, llm_model: LlmModel):
         if llm_model.check_api_key(self.config):
             self.llm_model = llm_model
         else:
@@ -95,11 +107,11 @@ class ChatSession:
     In case of a function message, the name specifies the function name.
     """
 
-    def append_message(self, role: str, message: str, name=None):
-        self.history.append_message(role, message, name)
+    def append_message(self, role: str, message: str, preset: bool, name=None):
+        self.history.append_message(role, message, name, preset)
 
     def append_user_question(self, message: str):
-        self.append_message("user", message)
+        self.append_message("user", message, False)
         if self.vector_db:
             articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
             assert self.history.get_data(0, "role") == "system", "Missing system message"
@@ -114,7 +126,7 @@ class ChatSession:
     def set_intro(self):
         if self.intro:
             self.intro_message = self.intro[random.randrange(0, len(self.intro))]
-            self.append_message("assistant", self.intro_message)
+            self.append_message("assistant", self.intro_message, True)
 
     """
     Let the LLM generate a responce based on the messasges in this session.
@@ -125,9 +137,10 @@ class ChatSession:
     """
 
     def call_llm(self):
-        (role, res, function_call) = self.llm_model.generate_response(self.history.messages(), self.manifest, self.config.verbose)
+        messages = self.history.messages()
+        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
         if role and res:
-            self.append_message(role, res)
+            self.append_message(role, res, False)
 
         return (res, function_call)

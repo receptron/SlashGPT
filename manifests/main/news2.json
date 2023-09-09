@@ -1,9 +1,9 @@
 {
   "title": "News News",
-  "source": "snakajima",
-  "temperature": "0.0",
+  "about": "snakajima",
+  "temperature": 0,
   "model": "gpt-3.5-turbo-16k-0613",
-  "functions": "./resources/news2.json",
+  "functions": "./resources/functions/news2.json",
   "sample": "News about Tesla",
   "sample2": "News about Apple",
   "actions": {
@@ -11,6 +11,7 @@
       "url": "https://simbiss.net/news?search={search}"
     },
     "visit_web": {
+      "type": "rest",
       "method": "POST",
       "url": "https://webreader.webpilotai.com/api/visit-web",
       "appkey": "WEBPILOT_UID",

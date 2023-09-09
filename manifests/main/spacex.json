@@ -2,13 +2,13 @@
   "title": "SpaceX Information",
   "description": "Anything about SpaceX",
   "bot": "spacex",
-  "source": "snakajima",
-  "temperature": "0.0",
-  "functions": "./resources/graphQL.json",
-  "resource": "./resources/spacex.json",
+  "about": "snakajima",
+  "temperature": 0,
+  "functions": "./resources/functions/graphql.json",
+  "resource": "./resources/templates/spacex.json",
   "actions": {
     "call_graphQL": {
-      "graphQL": true,
+      "type": "graphQL",
       "url": "https://spacex-production.up.railway.app/graphql"
     }
   },

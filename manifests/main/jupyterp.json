@@ -1,8 +1,8 @@
 {
   "title": "Jupyter Notebook with Palm",
   "bot": "Jupyter(Palm)",
-  "source": "snakajima",
-  "temperature": "0.0",
+  "about": "snakajima",
+  "temperature": 0,
   "model": "palm",
   "sample0": "calcurate 3**20.",
   "sample_pri": "print first 50 prime nubmers.",

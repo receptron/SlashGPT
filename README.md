@@ -91,7 +91,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *sample* (string, optional): Sample question (type "/sample" to send it)
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
-- *temperature* (string, optional): Temperature (the default is 0.7)
+- *temperature* (number, optional): Temperature (the default is 0.7)
 - *list* (array of string, optional): {random} will put one of them randamly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
@@ -106,7 +106,7 @@ Name of that file becomes the slash command. (the slash command of "foo.json" is
 
 It defines template-based function implementations (including mockups), alternative to writing Python code using the "module" property.
 
-It supports three different methods. 
+It supports four different methods. 
 
 ### 1. Formatted string.
 
@@ -119,12 +119,12 @@ Here is an example (home2).
 
 ```
   "actions": {
-    "fill_bath": { "message":"Success. I started filling the bath tab." },
-    "set_temperature": { "message":"Success. I set the teperature to {temperature} for {location}" },
-    "start_sprinkler": { "message":"Success. I started the sprinkler for {location}" },
-    "take_picture": { "message":"Success. I took a picture of {location}" },
-    "play_music": { "message":"Success. I started playing {music} in {location}" },
-    "control_light": { "message":"Success. The light switch of {location} is now {switch}." }
+    "fill_bath": { "type": "message_template", "message":"Success. I started filling the bath tab." },
+    "set_temperature": { "type": "message_template", "message":"Success. I set the teperature to {temperature} for {location}" },
+    "start_sprinkler": { "type": "message_template", "message":"Success. I started the sprinkler for {location}" },
+    "take_picture": { "type": "message_template", "message":"Success. I took a picture of {location}" },
+    "play_music": { "type": "message_template", "message":"Success. I started playing {music} in {location}" },
+    "control_light": { "type": "message_template", "message":"Success. The light switch of {location} is now {switch}." }
   }
 ```
 
@@ -140,12 +140,30 @@ Here is an example (currency).
 ```
   "actions": {
     "convert": {
+      "type": "rest",
       "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
     }
   }
 ```
 
-### 3. data URL
+### 3. GraphQL calls
+
+Use this method to call GraphQL APIs.
+
+- *url* (string, required): GraphQL server url.
+
+Here is an example (spacex).
+
+```
+  "actions": {
+    "convert": {
+      "type": "graphQL",
+      "url": "https://spacex-production.up.railway.app/graphql"
+    }
+  }
+```
+
+### 4. data URL
 
 This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
@@ -158,6 +176,7 @@ Here is an example for "make_event" function (cal).
 ```
   "actions": {
     "make_event": {
+      "type": "data_url",
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
       "message": "The event was scheduled. Here is the invitation link: '{url}'"

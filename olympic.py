@@ -7,6 +7,7 @@ import pandas as pd  # for storing text and embeddings data
 import pinecone
 import tiktoken  # for counting tokens
 from dotenv import load_dotenv
+from pinecone import QueryResponse
 
 # Configuration
 load_dotenv()  # Load default environment variables (.env)
@@ -57,7 +58,7 @@ def load_vectors():
 
 
 # search function
-def strings_ranked_by_relatedness(query: str, top_n: int = 100) -> object:
+def strings_ranked_by_relatedness(query: str, top_n: int = 100) -> QueryResponse:
     """Returns a list of strings and relatednesses, sorted from most related to least."""
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,

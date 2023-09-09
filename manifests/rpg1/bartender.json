@@ -1,9 +1,9 @@
 {
   "title": "バーテン",
-  "source": "snakajima",
+  "about": "snakajima",
   "bot": "バーテン",
   "you": "プレーヤー",
-  "temperature": "0.3",
+  "temperature": 0.3,
   "sample": "バーボンをくれ。ちなみに店の前に警察が来ているけど、何かあったのかい？",
   "intro": [
     "いらっしゃい。何にしましょう？"
