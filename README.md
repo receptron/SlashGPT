@@ -159,6 +159,7 @@ Here is an example for "make_event" function (cal).
 ```
   "actions": {
     "make_event": {
+      "type": "data_url",
       "template": "./resources/calendar.ics",
       "mime_type": "text/calendar",
       "message": "The event was scheduled. Here is the invitation link: '{url}'"
