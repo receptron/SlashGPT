@@ -137,15 +137,7 @@ class ChatSession:
     """
 
     def call_llm(self):
-        # all = default
-
         message = self.history.messages()
-        print(message)
-        # message = self.history.preset_messages()
-        # just_one
-        # latest(3)
-        # preset
-        # summary
         (role, res, function_call) = self.llm_model.generate_response(message, self.manifest, self.config.verbose)
 
         if role and res:
