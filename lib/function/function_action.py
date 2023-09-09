@@ -46,11 +46,11 @@ class FunctionAction:
         if type == CallType.GRAPHQL:
             appkey_value = self.__get_appkey_value() or ""
             return graphQLRequest(
-                url = self.__get("url"),
-                headers = self.__function_action_data.get("headers", {}),
-                appkey_value = appkey_value,
-                arguments = arguments,
-                verbose = verbose,
+                url=self.__get("url"),
+                headers=self.__function_action_data.get("headers", {}),
+                appkey_value=appkey_value,
+                arguments=arguments,
+                verbose=verbose,
             )
 
         if type == CallType.DATA_URL:
