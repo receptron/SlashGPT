@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-import argparse
 import json
 import os
 import platform
@@ -8,7 +6,6 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
-from config.llm_config import llm_models
 from lib.chat_session import ChatSession
 from lib.chat_slash_config import ChatSlashConfig
 from lib.function.jupyter_runtime import PythonRuntime
