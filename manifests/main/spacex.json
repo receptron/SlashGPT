@@ -4,7 +4,7 @@
   "bot": "spacex",
   "about": "snakajima",
   "temperature": 0,
-  "functions": "./resources/functions/graphql.json",
+  "functions": "./resources/functions/graphQL.json",
   "resource": "./resources/templates/spacex.json",
   "actions": {
     "call_graphQL": {
