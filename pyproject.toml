@@ -45,6 +45,7 @@ requests-toolbelt = "^1.0.0"
 yfinance = "^0.2.28"
 scipy= "^1.11.1"
 codeboxapi="^0.0.9"
+black = {extras = ["jupyter"], version = "^23.9.1"}
 
 [tool.poetry.dependencies.pyobjc]
 version = "^9.2"
