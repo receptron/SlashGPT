@@ -1,6 +1,6 @@
-from lib.llms.engine.openai_gpt import LLMEngineOpenAIGPT
-from lib.llms.engine.palm import LLMEnginePaLM
-from lib.llms.engine.replicate import LLMEngineReplicate
+from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
+from slashgpt.llms.engine.palm import LLMEnginePaLM
+from slashgpt.llms.engine.replicate import LLMEngineReplicate
 
 default_llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,

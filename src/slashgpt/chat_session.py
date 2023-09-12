@@ -5,15 +5,15 @@ from typing import Optional
 
 from termcolor import colored
 
-from lib.chat_config import ChatConfig
-from lib.dbs.pinecone import DBPinecone
-from lib.history.base import ChatHistory
-from lib.history.storage.memory import ChatHistoryMemoryStorage
-from lib.llms.default_config import default_llm_engine_configs, default_llm_models
-from lib.llms.engine_factory import LLMEngineFactory
-from lib.llms.model import LlmModel, get_llm_model_from_manifest
-from lib.manifest import Manifest
-from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
+from slashgpt.chat_config import ChatConfig
+from slashgpt.dbs.pinecone import DBPinecone
+from slashgpt.history.base import ChatHistory
+from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
+from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
+from slashgpt.llms.engine_factory import LLMEngineFactory
+from slashgpt.llms.model import LlmModel, get_llm_model_from_manifest
+from slashgpt.manifest import Manifest
+from slashgpt.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
 """
 ChatSession represents a chat session with a particular AI agent.

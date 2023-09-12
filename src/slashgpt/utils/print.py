@@ -1,6 +1,6 @@
 from termcolor import colored
 
-from lib.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_INFO, COLOR_WARNING
+from slashgpt.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_INFO, COLOR_WARNING
 
 
 def print_debug(text: str):

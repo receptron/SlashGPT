@@ -3,7 +3,7 @@ import os
 import re
 from typing import Optional
 
-from lib.chat_config import ChatConfig
+from slashgpt.chat_config import ChatConfig
 
 """
 ChatSlashConfig is a singleton, which holds global states, including various secret keys and the list of manifests for SlashGPT app.

@@ -2,10 +2,10 @@
 import argparse
 import json
 
-from config.llm_config import llm_engine_configs, llm_models
-from lib.chat_slash_config import ChatSlashConfig
-from lib.SlashGPT import SlashGPT
-from lib.utils.help import ONELINE_HELP
+from slashgpt.config.llm_config import llm_engine_configs, llm_models
+from slashgpt.chat_slash_config import ChatSlashConfig
+from slashgpt.SlashGPT import SlashGPT
+from slashgpt.utils.help import ONELINE_HELP
 
 
 def cli():

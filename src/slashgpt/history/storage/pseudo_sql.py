@@ -1,7 +1,7 @@
 import uuid
 from typing import List
 
-from lib.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 
 
 class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):

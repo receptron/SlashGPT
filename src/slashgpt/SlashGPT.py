@@ -6,13 +6,13 @@ import re
 from gtts import gTTS
 from playsound import playsound
 
-from lib.chat_session import ChatSession
-from lib.chat_slash_config import ChatSlashConfig
-from lib.function.jupyter_runtime import PythonRuntime
-from lib.llms.model import get_llm_model_from_key
-from lib.utils.help import LONG_HELP, ONELINE_HELP
-from lib.utils.print import print_debug, print_error, print_info, print_warning
-from lib.utils.utils import InputStyle
+from slashgpt.chat_session import ChatSession
+from slashgpt.chat_slash_config import ChatSlashConfig
+from slashgpt.function.jupyter_runtime import PythonRuntime
+from slashgpt.llms.model import get_llm_model_from_key
+from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
+from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
+from slashgpt.utils.utils import InputStyle
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete

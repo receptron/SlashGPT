@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Optional
 
-from lib.function.function_call import FunctionCall
-from lib.manifest import Manifest
-from lib.utils.print import print_warning
+from slashgpt.function.function_call import FunctionCall
+from slashgpt.manifest import Manifest
+from slashgpt.utils.print import print_warning
 
 
 class LLMEngineBase(metaclass=ABCMeta):

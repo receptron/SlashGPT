@@ -2,9 +2,9 @@ from typing import List
 
 import google.generativeai as palm
 
-from lib.llms.engine.base import LLMEngineBase
-from lib.manifest import Manifest
-from lib.utils.print import print_error
+from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.manifest import Manifest
+from slashgpt.utils.print import print_error
 
 
 def get_prompt_data(messages: List[dict]):

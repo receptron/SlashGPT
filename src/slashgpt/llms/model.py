@@ -1,8 +1,8 @@
 from typing import List
 
-from lib.chat_config import ChatConfig
-from lib.llms.engine_factory import LLMEngineFactory
-from lib.manifest import Manifest
+from slashgpt.chat_config import ChatConfig
+from slashgpt.llms.engine_factory import LLMEngineFactory
+from slashgpt.manifest import Manifest
 
 
 class LlmModel:

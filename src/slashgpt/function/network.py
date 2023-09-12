@@ -5,7 +5,7 @@ import requests
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 
-from lib.utils.print import print_debug, print_error
+from slashgpt.utils.print import print_debug, print_error
 
 
 def graphQLRequest(url: str, headers: dict, appkey_value: str, arguments: dict, verbose: bool):

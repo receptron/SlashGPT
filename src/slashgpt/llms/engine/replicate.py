@@ -2,8 +2,8 @@ from typing import List
 
 import replicate
 
-from lib.llms.engine.base import LLMEngineBase
-from lib.manifest import Manifest
+from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.manifest import Manifest
 
 
 def message_to_prompt(messages: List[dict], manifest: Manifest):

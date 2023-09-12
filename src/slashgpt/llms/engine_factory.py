@@ -1,7 +1,7 @@
 import importlib
 import inspect
 
-from lib.utils.print import print_error
+from slashgpt.utils.print import print_error
 
 
 class LLMEngineFactory:

@@ -1,4 +1,4 @@
-from lib.llms.engine.openai_gpt import LLMEngineOpenAIGPT
+from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
 
 llm_models = {
     "gpt3": {
@@ -54,19 +54,19 @@ llm_models = {
 llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,
     "replicate": {
-        "module_name": "lib.llms.engine.palm",
+        "module_name": "slashgpt.llms.engine.palm",
         "class_name": "LLMEnginePaLM",
     },
     "palm": {
-        "module_name": "lib.llms.engine.replicate",
+        "module_name": "slashgpt.llms.engine.replicate",
         "class_name": "LLMEngineReplicate",
     },
     "from_pretrained": {
-        "module_name": "plugins.engine.from_pretrained",
+        "module_name": "slashgpt.plugins.engine.from_pretrained",
         "class_name": "LLMEngineFromPretrained",
     },
     "from_pretrained-rinna": {
-        "module_name": "plugins.engine.from_pretrained2",
+        "module_name": "slashgpt.plugins.engine.from_pretrained2",
         "class_name": "LLMEngineFromPretrained2",
     },
 }

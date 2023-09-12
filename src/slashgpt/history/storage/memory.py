@@ -4,9 +4,9 @@ import os
 from datetime import datetime
 from typing import List
 
-from lib.history.storage.abstract import ChatHisoryAbstractStorage
-from lib.history.storage.log import create_log_dir, save_log
-from lib.utils.print import print_warning
+from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.log import create_log_dir, save_log
+from slashgpt.utils.print import print_warning
 
 
 class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):

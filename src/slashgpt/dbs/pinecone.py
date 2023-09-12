@@ -2,8 +2,8 @@ import openai
 import pinecone
 import tiktoken  # for counting tokens
 
-from lib.chat_config import ChatConfig
-from lib.utils.print import print_debug
+from slashgpt.chat_config import ChatConfig
+from slashgpt.utils.print import print_debug
 
 
 class DBPinecone:

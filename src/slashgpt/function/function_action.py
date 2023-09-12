@@ -2,9 +2,9 @@ import os
 import urllib.parse
 from urllib.parse import urlparse
 
-from lib.function.network import graphQLRequest, http_request
-from lib.utils.print import print_debug, print_error
-from lib.utils.utils import CallType
+from slashgpt.function.network import graphQLRequest, http_request
+from slashgpt.utils.print import print_debug, print_error
+from slashgpt.utils.utils import CallType
 
 
 class FunctionAction:

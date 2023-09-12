@@ -2,10 +2,10 @@ from typing import List
 
 import openai
 
-from lib.function.function_call import FunctionCall
-from lib.llms.engine.base import LLMEngineBase
-from lib.manifest import Manifest
-from lib.utils.print import print_debug
+from slashgpt.function.function_call import FunctionCall
+from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.manifest import Manifest
+from slashgpt.utils.print import print_debug
 
 
 class LLMEngineOpenAIGPT(LLMEngineBase):

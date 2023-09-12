@@ -11,7 +11,7 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from lib.utils.print import print_error
+from slashgpt.utils.print import print_error
 
 load_dotenv()  # Load default environment variables (.env)
 CODEBOX_API_KEY = os.getenv("CODEBOX_API_KEY")

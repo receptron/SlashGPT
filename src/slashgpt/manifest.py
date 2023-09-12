@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from typing import List
 
-from lib.utils.print import print_info
+from slashgpt.utils.print import print_info
 
 
 class Manifest:
