@@ -17,9 +17,8 @@ packages = [
  { include = "slashgpt", from  = "src" },
 ]
 
-include = [
- { path= "manifests/*.json" },
-]
+include = ["manifests/*", "manifests/*/*", "test/*", "resources/*/*",  "data/*"]
+
 
 [tool.poetry.dependencies]
 python = "<3.13,>=3.9"
