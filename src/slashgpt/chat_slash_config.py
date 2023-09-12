@@ -11,11 +11,11 @@ ChatSlashConfig is a singleton, which holds global states, including various sec
 
 
 class ChatSlashConfig(ChatConfig):
-    def __init__(self, pathManifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
-        super().__init__(llm_models, llm_engine_configs)
+    def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        super().__init__(base_path, llm_models, llm_engine_configs)
         self.audio: Optional[str] = None
-        self.load_manifests(pathManifests)
-        self.pathManifests = pathManifests
+        self.load_manifests(path_manifests)
+        self.path_manifests = path_manifests
 
     """
     Load a set of manifests.
@@ -31,7 +31,7 @@ class ChatSlashConfig(ChatConfig):
                     self.manifests[file.split(".")[0]] = json.load(f)
 
     def reload(self):
-        self.load_manifests(self.pathManifests)
+        self.load_manifests(self.path_manifests)
 
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())

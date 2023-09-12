@@ -35,7 +35,7 @@ class ChatSession:
         self.config = config
         self.agent_name = agent_name
 
-        self.manifest = Manifest(manifest if manifest else {}, agent_name)
+        self.manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
 
         self.userName = self.manifest.username()
         self.botName = self.manifest.botname()

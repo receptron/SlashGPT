@@ -2,10 +2,9 @@
 # python -m samples.SimpleGPT
 import platform
 
-from termcolor import colored
-
 from lib.chat_config import ChatConfig
 from lib.chat_session import ChatSession
+from termcolor import colored
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete

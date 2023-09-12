@@ -8,7 +8,8 @@ from slashgpt.utils.print import print_info
 
 
 class Manifest:
-    def __init__(self, manifest: dict = {}, agent_name=None):
+    def __init__(self, manifest: dict = {}, base_dir: str = "", agent_name=None):
+        self.base_dir = base_dir
         self.__manifest = manifest
         self.__agent_name = agent_name
         self.module = self.__read_module()
@@ -56,7 +57,7 @@ class Manifest:
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
                 return value
             if isinstance(value, str):
-                with open(value, "r") as f:
+                with open(self.base_dir + "/" + value, "r") as f:
                     return json.load(f)
         return None
 
@@ -68,7 +69,7 @@ class Manifest:
     def __read_module(self):
         module = self.get("module")
         if module:
-            with open(f"{module}", "r") as f:
+            with open(f"{self.base_dir}/{module}", "r") as f:
                 try:
                     code = f.read()
                     namespace = {}
@@ -117,7 +118,7 @@ class Manifest:
         return prompt
 
     def __replace_from_resource_file(self, prompt, resource_file_name):
-        with open(f"{resource_file_name}", "r") as f:
+        with open(f"{self.base_dir}/{resource_file_name}", "r") as f:
             contents = f.read()
             return re.sub("\\{resource\\}", contents, prompt, 1)
 

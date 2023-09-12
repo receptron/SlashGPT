@@ -1,5 +1,4 @@
 import pytest
-
 from lib.history.base import ChatHistory
 from lib.history.storage.memory import ChatHistoryMemoryStorage
 

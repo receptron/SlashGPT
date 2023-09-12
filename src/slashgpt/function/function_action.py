@@ -30,7 +30,7 @@ class FunctionAction:
         data = self.__get("emit_data")
         return {x: data.get(x).format(**arguments) for x in data}
 
-    def call_api(self, arguments: dict, verbose: bool):
+    def call_api(self, arguments: dict, base_dir: str, verbose: bool):
         type = self.__call_type()
         if type == CallType.REST:
             appkey_value = self.__get_appkey_value() or ""
@@ -55,6 +55,7 @@ class FunctionAction:
 
         if type == CallType.DATA_URL:
             return self.read_dataURL_template(
+                base_dir,
                 self.__get("template"),
                 self.__get("mime_type"),
                 self.__get("message"),
@@ -89,9 +90,9 @@ class FunctionAction:
         if "message" in self.__function_action_data:
             return CallType.MESSAGE_TEMPLATE
 
-    def read_dataURL_template(self, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
+    def read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
-        with open(f"{template_file_name}", "r") as f:
+        with open(f"{base_dir}/{template_file_name}", "r") as f:
             template = f.read()
             if verbose:
                 print_debug(template)

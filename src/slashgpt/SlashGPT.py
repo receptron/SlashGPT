@@ -41,7 +41,7 @@ class SlashGPT:
         self.manifests_manager = manifests_manager
         self.session = ChatSession(self.config)
         self.exit = False
-        self.runtime = PythonRuntime("./output/notebooks")
+        self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
         self.switch_session(agent_name)
 
     """
@@ -190,7 +190,7 @@ class SlashGPT:
 
     def auto_test(self, commands):
         file_name = commands[1] if len(commands) > 1 else "default"
-        file_path = f"./test/{file_name}.json"
+        file_path = f"{self.config.base_path}/test/{file_name}.json"
         if not os.path.exists(file_path):
             print_warning(f"No test script named {file_name}")
             return
@@ -225,7 +225,7 @@ class SlashGPT:
 
     def switch_manifests(self, key):
         m = self.manifests_manager[key]
-        self.config.load_manifests("./" + m["manifests_dir"])
+        self.config.load_manifests(self.config.base_path + "/" + m["manifests_dir"])
         self.switch_session(m["default_agent_name"])
 
     def test(self, agent, message=None, messages=None):

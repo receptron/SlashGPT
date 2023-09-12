@@ -1,5 +1,4 @@
 import pytest
-
 from lib.manifest import Manifest
 
 

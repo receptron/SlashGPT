@@ -17,6 +17,10 @@ packages = [
  { include = "slashgpt", from  = "src" },
 ]
 
+include = [
+ { path= "manifests/*.json" },
+]
+
 [tool.poetry.dependencies]
 python = "<3.13,>=3.9"
 openai = "^0.28.0"
@@ -56,3 +60,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 slashGPT = "slashgpt.cli:cli"
+
+[tool.poetry.build]
+script = "prebuild.py"

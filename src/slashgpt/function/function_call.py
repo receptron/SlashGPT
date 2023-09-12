@@ -67,7 +67,7 @@ class FunctionCall:
 
         if self.function_action:
             # call external api or some
-            function_message = self.function_action.call_api(arguments, verbose)
+            function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
         else:
             function = None
             if self.__manifest.get("notebook"):

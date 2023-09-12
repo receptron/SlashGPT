@@ -12,7 +12,8 @@ ChatConfig is a singleton, which holds global states, including various secret k
 
 
 class ChatConfig:
-    def __init__(self, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+    def __init__(self, base_path: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        self.base_path = base_path
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
