@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-from lib.cli import cli
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+
+from src.slashgpt.cli import cli
+
+
 
 if __name__ == "__main__":
     cli()
