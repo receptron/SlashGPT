@@ -1,8 +1,12 @@
 import json
+import os
+import sys
 
 import pytest
-from lib.history.base import ChatHistory
-from lib.history.storage.memory import ChatHistoryMemoryStorage
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
+from slashgpt.history.base import ChatHistory
+from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 
 
 @pytest.fixture

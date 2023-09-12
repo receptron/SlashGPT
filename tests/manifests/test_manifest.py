@@ -1,5 +1,11 @@
+import os
+import sys
+
 import pytest
-from lib.manifest import Manifest
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
+
+from slashgpt.manifest import Manifest
 
 
 @pytest.fixture
@@ -27,7 +33,7 @@ def manifest():
             "Ask for clarification if a user request is ambiguous.",
         ],
     }
-    return Manifest(manifest_data, "ai-agent")
+    return Manifest(manifest_data, "", "ai-agent")
 
 
 def test_username(manifest):
