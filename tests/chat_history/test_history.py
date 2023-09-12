@@ -5,8 +5,8 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 
-from slashgpt.history.base import ChatHistory
-from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
+from slashgpt.history.base import ChatHistory  # noqa: E402
+from slashgpt.history.storage.memory import ChatHistoryMemoryStorage  # noqa: E402
 
 
 @pytest.fixture
