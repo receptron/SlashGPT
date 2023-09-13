@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-from lib.cli import cli
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+from slashgpt.cli import cli  # noqa: E402
 
 if __name__ == "__main__":
-    cli()
+    current_dir = os.path.dirname(__file__)
+    cli(current_dir)

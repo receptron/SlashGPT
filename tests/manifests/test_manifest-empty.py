@@ -1,12 +1,17 @@
+import os
+import sys
+
 import pytest
 
-from lib.manifest import Manifest
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
+
+from slashgpt.manifest import Manifest  # noqa: E402
 
 
 @pytest.fixture
 def manifest():
     manifest_data = {}
-    return Manifest(manifest_data, "empty-manifest")
+    return Manifest(manifest_data, "", "empty-manifest")
 
 
 def test_botname(manifest):

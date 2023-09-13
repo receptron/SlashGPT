@@ -13,17 +13,12 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/snakajima/SlashGPT"
 
-include = [
- "config",
- "data",
- "docs",
- "lib",
- "manifests",
- "notebooks",
- "plugins",
- "resources",
- "SlashGPT.py"
+packages = [
+ { include = "slashgpt", from  = "src" },
 ]
+
+include = ["manifests/*", "manifests/*/*", "test/*", "resources/*/*",  "data/*"]
+
 
 [tool.poetry.dependencies]
 python = "<3.13,>=3.9"
@@ -63,4 +58,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-slashGPT = "slashGPT:cli"
+slashGPT = "slashgpt.cli:cli"
+
+[tool.poetry.build]
+script = "prebuild.py"
