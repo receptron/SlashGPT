@@ -13,3 +13,8 @@ output/
 
 # emacs
 *~
+
+# for package
+# src/slashgpt/manifests/
+# src/slashgpt/resources/
+# src/slashgpt/test/
