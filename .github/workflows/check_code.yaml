@@ -1,7 +1,6 @@
 name: check code
 
-on:
-  pull_request
+on: [push]
 
 jobs:
   test:
@@ -20,3 +19,14 @@ jobs:
         run: pip install -r requirements.txt
       - name: Lint
         run: make lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install poetry
+        run: pip install poetry
+      - name: Build
+        run: poetry build
+        
