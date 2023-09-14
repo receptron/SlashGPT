@@ -1,6 +1,7 @@
 name: check code
 
-on: [push]
+on:
+  pull_request
 
 jobs:
   test:
@@ -29,4 +30,8 @@ jobs:
         run: pip install poetry
       - name: Build
         run: poetry build
-        
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: dist/
