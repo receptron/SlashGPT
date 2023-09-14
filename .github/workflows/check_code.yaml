@@ -20,3 +20,18 @@ jobs:
         run: pip install -r requirements.txt
       - name: Lint
         run: make lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install poetry
+        run: pip install poetry
+      - name: Build
+        run: poetry build
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: dist/
