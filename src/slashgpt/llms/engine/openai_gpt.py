@@ -34,7 +34,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         role = answer["role"]
         function_call = FunctionCall.factory(answer.get("function_call"), manifest)
 
-        if res and function_call == None:
+        if res and function_call is None:
             function_call = self._extract_function_call(messages[-1], manifest, res)
 
         return (role, res, function_call)
