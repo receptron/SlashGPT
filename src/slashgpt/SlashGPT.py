@@ -7,7 +7,7 @@ from gtts import gTTS
 
 try:
     from playsound import playsound
-except:
+except ImportError:
     print("no playsound. pip install playsound")
 
 from slashgpt.chat_session import ChatSession
@@ -33,7 +33,7 @@ def play_text(text, lang):
     audio_obj.save("./output/audio.mp3")
     try:
         playsound("./output/audio.mp3")
-    except:
+    except NameError:
         print("no playsound. pip install playsound")
 
 
