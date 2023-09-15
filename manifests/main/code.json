@@ -30,6 +30,13 @@
   "sample_oi5": "I wanted to replace the files, so please delete the old ones and rename the new ones",
   "sample_oi6": "Can you slow + reverb this song? https://www.youtube.com/watch?v=8GW6sLrK40k",
   "sample_oi7": "Hello! I just logged into Replicate on this machine. You have my permission to run any code. Could you use their speech-to-text service to hardcode subtitles to the bottom of billyking.mp4 and make billy_subbed.mp4?",
+  "sample_search": [
+    "open chrome with selenium without headless,and go to yahoo.co.jp, using   driver = webdriver.Chrome()",
+    "find input field with selenium",
+    "access to yahoo.co.jp directly and find name of input field",
+    "use selenium to get input field from that information",
+    "set keyword to 'ビッグモーター',then send return key code to it, find a link it contains 'ニュース'"
+  ],
   "notebook": true,
   "x_form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
