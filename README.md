@@ -9,7 +9,7 @@ Here are the design goals:
 3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
 4. It is possible to integrate ChatGPT plugins as agents without writing any code.
 5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
-6. It is able to run generated Python code like Code Interpreter (see "jupyter" agent).
+6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
 ## Initialization
 
@@ -57,13 +57,13 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 Some of agents are built to mimic the behaviors of ChatGPT code intepreter (or Noteable plugin)
 with various LLMs.
 
-- jupyter: GPT3.5
-- jupyterp: PaLM2 (GOOGLE_PALM_KEY key is required)
-- juypter2: LlaMA (REPLICATE_API_TOKEN is required)
+- code: GPT3.5
+- code_palm2: PaLM2 (GOOGLE_PALM_KEY key is required)
+- code_llama: LlaMA (REPLICATE_API_TOKEN is required)
 
-jupyter (GPT3.5) works just like Code Interpreter. It is able to respond to the output of nenerated code appropriately.
+code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of nenerated code appropriately.
 
-jupyterp (PaLM2) and jupyter2 (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
+code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
 
 For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
@@ -85,7 +85,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
 - *skip_function_result* (boolean): skip the chat completion right after the function call.
-- *notebook* (boolean): create a new notebook at the beginning of each session (for jupyter2)
+- *notebook* (boolean): create a new notebook at the beginning of each session (for code_palm2)
 - *bot* (string, optional): Agent name
 - *you* (string, optional): User name. The default is You({agent_name}).
 - *sample* (string, optional): Sample question (type "/sample" to send it)
@@ -262,7 +262,7 @@ Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM
 Iput: /switch main
 
 # Test Code Interpreter
-You: /jupyter
+You: /code
 You: /sample_stock
 Expected Output: <Marketcap history of Apple and Tesla>
 ```
