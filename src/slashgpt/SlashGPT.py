@@ -306,8 +306,11 @@ class SlashGPT:
             if mode == InputStyle.SAMPLE:
                 question = self.process_sample(question)
 
-            if question:
-                self.query_llm(self.session.manifest.format_question(question))
+                if isinstance(question, list):
+                    for q in question:
+                        self.query_llm(self.session.manifest.format_question(q))
+                else:
+                    self.query_llm(self.session.manifest.format_question(question))
 
     def query_llm(self, question):
         self.session.append_user_question(question)
