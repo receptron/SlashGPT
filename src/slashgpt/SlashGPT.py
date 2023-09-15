@@ -4,7 +4,11 @@ import platform
 import re
 
 from gtts import gTTS
-from playsound import playsound
+
+try:
+    from playsound import playsound
+except:
+    print("no playsound. pip install playsound")
 
 from slashgpt.chat_session import ChatSession
 from slashgpt.chat_slash_config import ChatSlashConfig
@@ -27,7 +31,10 @@ utility functions for Main class
 def play_text(text, lang):
     audio_obj = gTTS(text=text, lang=lang, slow=False)
     audio_obj.save("./output/audio.mp3")
-    playsound("./output/audio.mp3")
+    try:
+        playsound("./output/audio.mp3")
+    except:
+        print("no playsound. pip install playsound")
 
 
 """
