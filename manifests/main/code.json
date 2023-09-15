@@ -23,6 +23,13 @@
   "sample_map": "Find public restrooms in Bellevue WA using Overpass API, then display them using folium.",
   "sample_gql": "Retrieve schema of 'Query' field from GraphQL endpoint, https://spacex-production.up.railway.app/",
   "sample_starwars": "Retrieve 'allFilms' from GraphQL endpoint, https://swapi-graphql.netlify.app/.netlify/functions/index",
+  "sample_oi1": "Can you solve this equation? 10x + 14 = 21 / 3",
+  "sample_oi2": "What are the last 10 BBC news headlines?",
+  "sample_oi3": "Can you make a folder called documents and put five .docx files in it and write a sentence about machine learning in each of them?",
+  "sample_oi4": "Go through all the .docx files in my 'documents' folder and replace every occurrence of 'Machine Learning' with 'AI'.",
+  "sample_oi5": "I wanted to replace the files, so please delete the old ones and rename the new ones",
+  "sample_oi6": "Can you slow + reverb this song? https://www.youtube.com/watch?v=8GW6sLrK40k",
+  "sample_oi7": "Hello! I just logged into Replicate on this machine. You have my permission to run any code. Could you use their speech-to-text service to hardcode subtitles to the bottom of billyking.mp4 and make billy_subbed.mp4?",
   "notebook": true,
   "x_form": "{question} Write some Python code and call 'run_python_code' function to fullfil this request.",
   "prompt": [
