@@ -13,7 +13,7 @@
     "agent": "cal",
     "message": "/sample"
   },{
-    "agent": "jupyter",
+    "agent": "code",
     "message": "/sample_stock"
   },{
     "agent": "dispatcher",
