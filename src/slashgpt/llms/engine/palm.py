@@ -39,6 +39,7 @@ class LLMEnginePaLM(LLMEngineBase):
 
         response = palm.chat(**defaults, context=system, examples=[], messages=new_messages)
         res = response.last
+        function_call = None
         if res:
             if verbose:
                 print_error(res)
