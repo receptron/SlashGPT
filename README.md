@@ -13,11 +13,10 @@ Here are the design goals:
 
 > [!NOTE]  
 > If you want to try it out immediately, please try the Google Google Colaboratory version.  
-> 
-> <a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
->   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
-> </a>
->
+
+<a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+</a>
 
 ## Initialization
 
