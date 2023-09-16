@@ -43,6 +43,12 @@ Here are the design goals:
 
 4. Type "/help" to see the list of system commands and available agents.
 
+## Execution on Docker
+
+1. Build docker image `docker build -t slashgpt .`
+
+2. Run SlashGPT on Docker `docker run -it slashgpt  ./SlashGPT.py`
+
 ## Outputs
 
 1. Each conversation will be store as a json file under the "output/{context}" folder, 
