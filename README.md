@@ -11,17 +11,13 @@ Here are the design goals:
 5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
 6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
-
-> note
-> 
+> [!NOTE]  
 > If you want to try it out immediately, please try the Google Google Colaboratory version.  
 > 
 > <a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
 >   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
 > </a>
 >
-> 
-
 
 ## Initialization
 
