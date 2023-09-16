@@ -294,7 +294,14 @@ class SlashGPT:
             self.input_and_talk()
 
     def input_and_talk(self):
-        self.talk(input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip())
+        try:
+            self.talk(input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip())
+        except KeyboardInterrupt:
+            self.exit = True
+            print("bye")
+        except EOFError:
+            self.exit = True
+            print("bye")
 
     def talk(self, question):
         mode = self.detect_input_style(question)
