@@ -4,7 +4,7 @@
   "bot": "gitmtx",
   "about": "kozayupapa",
   "temperature": "0.0",
-  "functions": "./resources/functions/graphQL.json",
+  "functions": "./resources/functions/graphql.json",
   "resource": "./resources/functions/github.graphql",
   "actions": {
     "call_graphQL": {

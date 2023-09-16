@@ -11,6 +11,13 @@ Here are the design goals:
 5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
 6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
+> [!NOTE]  
+> If you want to try it out immediately, please try the Google Google Colaboratory version.  
+
+<a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+</a>
+
 ## Initialization
 
 1. Install the required packages: 
@@ -42,6 +49,12 @@ Here are the design goals:
 3. It activate "dispatcher" agent first, which is able to dispatch queries to appropriate agents.
 
 4. Type "/help" to see the list of system commands and available agents.
+
+## Execution on Docker
+
+1. Build docker image `docker build -t slashgpt .`
+
+2. Run SlashGPT on Docker `docker run -it slashgpt  ./SlashGPT.py`
 
 ## Outputs
 
