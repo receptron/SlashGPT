@@ -1,6 +1,6 @@
 {
   "title": "Jupyter Notebook with Vicuna 16b",
-  "bot": "Jupyter(Vicuna)",
+  "bot": "Code(Vicuna)",
   "about": "snakajima",
   "temperature": 0,
   "model": "vicuna",
