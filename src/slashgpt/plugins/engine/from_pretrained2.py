@@ -1,9 +1,10 @@
 from typing import List
 
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # pip install transformers, sentencepiece, torch
 
