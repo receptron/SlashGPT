@@ -59,7 +59,7 @@ class SlashGPT:
 
     def switch_session(self, agent_name: str, intro: bool = True):
         if agent_name is None:
-            self.session = ChatSession(self.config)
+            self.session = ChatSession(self.config, default_llm_model=self.llm_model)
             return
 
         if self.config.has_manifest(agent_name):
