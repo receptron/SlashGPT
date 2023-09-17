@@ -18,7 +18,25 @@ Here are the design goals:
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
 </a>
 
-## Initialization
+## QuickStart
+
+```
+pip install slashgpt
+```
+
+```
+export OPENAI_API_KEY=XXX
+```
+
+XXX is you open api key.
+
+```
+slashGPT
+```
+
+Then run SlashGPT
+
+## Initialization for develeoper
 
 1. Install the required packages: 
 
