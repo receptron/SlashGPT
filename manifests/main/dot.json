@@ -4,7 +4,6 @@
   "about": "snakajima",
   "temperature": 0,
   "functions": "./resources/functions/dot.json",
-  "model": "gpt-3.5-turbo-16k-0613",
   "sample": "Draw a diagram with A and B",
   "notebook": true,
   "skip_function_result": true,
