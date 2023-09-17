@@ -26,6 +26,7 @@ class ChatSession:
     def __init__(
         self,
         config: ChatConfig,
+        default_llm_model: LlmModel,
         user_id: Optional[str] = None,
         history_engine=ChatHistoryMemoryStorage,
         manifest={},
@@ -59,7 +60,10 @@ class ChatSession:
             LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
 
         # Load the model name and make it sure that we have required keys
-        llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
+        if self.manifest.model():
+            llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
+        else:
+            llm_model = default_llm_model
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message

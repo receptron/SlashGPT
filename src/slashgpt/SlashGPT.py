@@ -13,7 +13,7 @@ except ImportError:
 from slashgpt.chat_session import ChatSession
 from slashgpt.chat_slash_config import ChatSlashConfig
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.llms.model import get_llm_model_from_key
+from slashgpt.llms.model import get_default_llm_model, get_llm_model_from_key
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
@@ -46,7 +46,8 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
         self.manifests_manager = manifests_manager
-        self.session = ChatSession(self.config)
+        self.llm_model = get_default_llm_model(self.config.llm_models)
+        self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.exit = False
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
         self.switch_session(agent_name)
@@ -63,7 +64,7 @@ class SlashGPT:
 
         if self.config.has_manifest(agent_name):
             manifest = self.config.manifests.get(agent_name)
-            self.session = ChatSession(self.config, manifest=manifest, agent_name=agent_name, intro=intro)
+            self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
@@ -171,12 +172,14 @@ class SlashGPT:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
-                llm_model = get_llm_model_from_key(commands[1], self.config.llm_models)
-                self.session.set_llm_model(llm_model)
+                self.llm_model = get_llm_model_from_key(commands[1], self.config.llm_models)
+                self.session.set_llm_model(self.llm_model)
             else:
                 if self.config.llm_models is None:
                     raise RuntimeError("self.config.llm_models must be set")
                 print("/llm: " + ",".join(self.config.llm_models.keys()))
+        elif key == "current_llm":
+            print(self.llm_model.name())
         elif key == "new":
             self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
