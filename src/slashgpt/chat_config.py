@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Optional
 
 import google.generativeai as palm
@@ -20,7 +21,9 @@ class ChatConfig:
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
+        if not self.OPENAI_API_KEY:
+            print("OPENAI_API_KEY environment variable is missing from .env")
+            sys.exit()
         self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
