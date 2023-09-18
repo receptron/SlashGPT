@@ -7,6 +7,7 @@ import pinecone
 from dotenv import load_dotenv
 
 from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
+from slashgpt.llms.engine_factory import LLMEngineFactory
 
 """
 ChatConfig is a singleton, which holds global states, including various secret keys
@@ -37,6 +38,9 @@ class ChatConfig:
 
         self.llm_models = llm_models if llm_models else default_llm_models
         self.llm_engine_configs = llm_engine_configs if llm_engine_configs else default_llm_engine_configs
+        # engine
+        if self.llm_engine_configs:
+            LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
 
 
     # for llm

@@ -9,7 +9,6 @@ from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
-from slashgpt.llms.engine_factory import LLMEngineFactory
 from slashgpt.llms.model import LlmModel, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
 from slashgpt.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
@@ -48,9 +47,6 @@ class ChatSession:
         memory_history = history_engine(self.user_id, agent_name)
         self.history = ChatHistory(memory_history)
 
-        # engine
-        if self.config.llm_engine_configs:
-            LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
             llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)

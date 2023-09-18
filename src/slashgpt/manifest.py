@@ -156,4 +156,3 @@ class Manifest:
     def samples(self):
         return list(filter(lambda x: x.strip()[:6] == "sample", self.__manifest.keys()))
 
-    # return self.__manifest.keys()
