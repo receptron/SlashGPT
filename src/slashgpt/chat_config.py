@@ -35,11 +35,9 @@ class ChatConfig:
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
-        self.llm_models = default_llm_models
-        self.llm_engine_configs = default_llm_engine_configs
+        self.llm_models = llm_models if llm_models else default_llm_models
+        self.llm_engine_configs = llm_engine_configs if llm_engine_configs else default_llm_engine_configs
 
-        self.llm_models = llm_models
-        self.llm_engine_configs = llm_engine_configs
 
     # for llm
     def has_value_for_key(self, key: str):
