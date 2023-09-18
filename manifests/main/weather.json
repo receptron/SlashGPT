@@ -27,7 +27,6 @@
       "appkey": "OPENWEATHER_API_KEY"
     }
   },
-  "model": "gpt-3.5-turbo-16k-0613",
   "sample": "What is the weather in Seattle today?",
   "samplej": "東京の天気は？",
   "prompt": [

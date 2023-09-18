@@ -35,7 +35,7 @@ class Manifest:
         return 0.7
 
     def model(self):
-        return self.get("model") or "gpt-3.5-turbo-0613"
+        return self.get("model")
 
     def history_type(self):
         return self.get("history_type") or "all"
@@ -155,5 +155,3 @@ class Manifest:
 
     def samples(self):
         return list(filter(lambda x: x.strip()[:6] == "sample", self.__manifest.keys()))
-
-    # return self.__manifest.keys()

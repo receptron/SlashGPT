@@ -79,17 +79,6 @@ class FunctionAction:
             if type == "message_template":
                 return CallType.MESSAGE_TEMPLATE
 
-        # for backward compatibility.
-        # TODO: remove later
-        if "url" in self.__function_action_data:
-            if "graphQL" in self.__function_action_data:
-                return CallType.GRAPHQL
-            return CallType.REST
-        if "template" in self.__function_action_data:
-            return CallType.DATA_URL
-        if "message" in self.__function_action_data:
-            return CallType.MESSAGE_TEMPLATE
-
     def read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
         with open(f"{base_dir}/{template_file_name}", "r") as f:
