@@ -1,0 +1,63 @@
+[
+    {
+        "name": "take_off",
+        "description": "Let the drone take off from the ground",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "type": "number",
+                    "description": "height in meters, e.g. 1.2"
+                }
+            }
+        }
+    },
+    {
+        "name": "set_height",
+        "description": "Set the height of the drone",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "type": "number",
+                    "description": "height in meters, e.g. 1.2"
+                }
+            },
+            "required": ["height"]
+        }
+    },
+    {
+        "name": "fly_to",
+        "description": "Let the drone fly to the specified location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "west": {
+                    "type": "number",
+                    "description": "westward distance in meters from the starting position"
+                },
+                "south": {
+                    "type": "number",
+                    "description": "southward distance in meters from the starting position"
+                }
+            },
+            "required": ["west", "south"]
+        }
+    },
+    {
+        "name": "take_back",
+        "description": "Let the drone fly to the original location",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+    {
+        "name": "land",
+        "description": "Let the drone land on the ground",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    }
+]

@@ -1,0 +1,21 @@
+[
+    {
+      "name": "categorize",
+      "description": "Categorize the question",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "Question from the user"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the question.",
+            "enum": ["cal", "home2"]
+          }
+        },
+        "required": ["question", "category"]
+      }
+    }
+  ]

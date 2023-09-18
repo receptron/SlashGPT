@@ -1,0 +1,24 @@
+[
+  {
+    "name": "flight_search",
+    "description": "Search flights on a flight route for certain dates",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "string",
+          "description": "The origin from which the flight starts."
+        },
+        "destination": {
+          "type": "string",
+          "description": "The destination to which the flight goes"
+        },
+        "departDate": {
+          "type": "string",
+          "description": "Departure date of the flight at the origin"
+        }
+      },
+      "required": ["origin", "destination", "amount"]
+    }
+  }
+]

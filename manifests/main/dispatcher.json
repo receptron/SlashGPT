@@ -1,6 +1,5 @@
 {
   "title": "Main Dispatcher",
-  "bot": "Dispatcher",
   "about": "snakajima",
   "temperature": 0,
   "functions": "./resources/functions/dispatcher.json",

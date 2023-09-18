@@ -1,0 +1,29 @@
+{
+  "title": "Calendar",
+  "description": "Schedules events",
+  "bot": "iCal",
+  "about": "snakajima",
+  "x-model": "gpt-4-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/calendar.json",
+  "x-module": "./resources/calendar.py",
+  "actions": {
+    "make_event": {
+      "type": "data_url",
+      "template": "./resources/action_templates/calendar.ics",
+      "mime_type": "text/calendar",
+      "message": "{{ 'result':'Success', 'invitation_link': '{url}' }}"
+    },
+    "send_invitation": { "type": "message_template", "message":"Success. The invitation was sent to {recipients}" }
+  },
+  "intro": [
+    "Please let me know if there any event you want to add to your calendar" 
+  ],
+  "sample": "Please schedule a meeting with Tim Cook from 1pm pacific time for 30 minutes on July 4th, at his office, then, send the invitation to Tim (tim@apple.com).",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "When you specify time, always convert it to UTC",
+    "Current time is {now}."
+  ]
+}

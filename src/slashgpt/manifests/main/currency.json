@@ -1,0 +1,41 @@
+{
+  "title": "Currency Converter",
+  "description": "Converts currency",
+  "about": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
+  "modelx": "gpt-4-0613",
+  "temperature": 0,
+  "functions": [
+    {
+      "name": "convert",
+      "description": "Convert one currency to another",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "The currency to convert from"
+          },
+          "to": {
+            "type": "string",
+            "description": "The currency to convert to"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount to convert"
+          }
+        },
+        "required": ["from", "to", "amount"]
+      }
+    }
+  ],
+  "sample": "Please convert 1USD into JPY",
+  "actions": {
+    "convert": {
+      "type": "rest",
+      "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
+    }
+  },
+  "prompt": [
+    "You convert currency values based on the latest exchange rates."
+  ]
+}

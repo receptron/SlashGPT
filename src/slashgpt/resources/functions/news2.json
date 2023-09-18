@@ -1,0 +1,34 @@
+[
+  {
+    "name": "news",
+    "description": "Retrieve news",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string",
+          "description": "News topic"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "visit_web",
+    "description": "Visit web page",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string",
+          "description": "The web page's url to visit and retrieve content from."
+        },
+        "user_has_request": {
+          "type": "boolean",
+          "description": "Whether user has any requests."
+        }
+      },
+      "required": ["link", "boolean"]
+    }
+  }
+]

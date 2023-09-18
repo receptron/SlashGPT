@@ -1,0 +1,26 @@
+{
+  "title": "Home Cooking System",
+  "description": "Cooks some food",
+  "about": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/cook.json",
+  "resource": "./resources/templates/recipes.json",
+  "actions": {
+    "chop_vegetable": { "type": "message_template", "message":"Success. {amount}g of chopped {vegetable} is ready" },
+    "grind": { "type": "message_template", "message":"Success. {amount}g of ground {ingredient} is ready" },
+    "grate": { "type": "message_template", "message":"Success. {amount}g of grated {ingredient} is ready" },
+    "slice_meat": { "type": "message_template", "message":"Success. {amount}g of sliced {meat} is ready." },
+    "make_sauce": { "type": "message_template", "message":"Success. The sauce is ready." },
+    "stir_fly": { "type": "message_template", "message":"Success. Stir fly is ready to eat. Do not explain the recepe. Just tell to enjoy." },
+    "grill": { "type": "message_template", "message":"Success. Grilled food is ready to eat. Do not explain the recepe. Just tell to enjoy." }
+  },
+  "sample": "Cook pork vegetable stir fly for four.",
+  "prompt": [
+    "Don't make any assumptions about what property values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "You are a AI cooker. Cook using only the recipes provided below.",
+    "Feel free to add, remove or substitute some ingredients if requested",
+    "{resource}"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "title": "GitHubMetrics",
+  "description": "Metrics about GitHub repo",
+  "bot": "gitmtx",
+  "about": "kozayupapa",
+  "temperature": "0.0",
+  "functions": "./resources/functions/graphQL.json",
+  "resource": "./resources/functions/github.graphql",
+  "actions": {
+    "call_graphQL": {
+      "type": "graphQL",
+      "url": "https://api.github.com/graphql",
+      "appkey": "GITHUB_TOKEN",
+      "headers": {
+        "Authorization": "bearer {appkey}"
+      }
+    }
+  },
+  "help": "Prepare your github app token and set to .env file as 'GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "sample": "show my login name on github",
+  "sample_c": "SingularitySociety/book_reading のcommit数を教えて",
+  "prompt": [
+    "You are an expert in GraphQL and use call_graphQL function to retrieve necessary information.",
+    "Ask for clarification if a user request is ambiguous.",
+    "Here is the schema of GraphQL query:",
+    "{resource}"
+  ]
+}

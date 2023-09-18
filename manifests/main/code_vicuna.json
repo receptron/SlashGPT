@@ -1,6 +1,5 @@
 {
   "title": "Code Interpreter with Vicuna 16b",
-  "bot": "Code(Vicuna)",
   "about": "snakajima",
   "temperature": 0,
   "model": "vicuna",

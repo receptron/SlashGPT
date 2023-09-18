@@ -1,0 +1,52 @@
+[
+  {
+    "name": "create_project",
+    "description": "Create a new project to store Notebooks and associated data files.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": ["name"]
+    }
+  },
+  {
+    "name": "create_notebook",
+    "description": "Creates a new notebook. If no project ID is provided, the user's default project will be used.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "title": "Project ID",
+          "type": "string",
+          "description": "The ID of the project to create the notebook in. Defaults to the user's default project.",
+          "format": "uuid"
+        },
+        "notebook_name": {
+          "title": "Notebook Name",
+          "type": "string",
+          "description": "The name of the notebook to create. Must end with .ipynb file extension."
+        },
+        "start_kernel": {
+          "title": "Start Kernel",
+          "type": "boolean",
+          "description": "Whether to start the kernel after creating the notebook.",
+          "default": true
+        }
+      },
+      "required": ["notebook_name"]
+    }
+  },
+  {
+    "name": "get_userinfo",
+    "description": "Get the information about the user",
+    "parameters": {"type": "object", "properties": {}}
+  }
+]

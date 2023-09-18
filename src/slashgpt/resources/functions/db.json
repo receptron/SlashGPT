@@ -1,0 +1,16 @@
+[
+    {
+        "name": "query",
+        "description": "Issue a database query in SQL",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "sql": {
+                    "type": "string",
+                    "description": "Query in SQL"
+                }
+            },
+            "required": ["sql"]
+        }
+    }
+]

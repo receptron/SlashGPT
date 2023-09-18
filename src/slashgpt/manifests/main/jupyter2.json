@@ -1,0 +1,28 @@
+{
+  "title": "Jupyter Notebook with Llamma2",
+  "bot": "Jupyter(Llamma2)",
+  "about": "snakajima",
+  "temperature": 0,
+  "model": "llama2",
+  "sample0": "calcurate 3**20.",
+  "sample_pri": "print first 50 prime nubmers.",
+  "sample_fibo": "print first 20 fibonacci sequence.",
+  "sample_lorenz": "draw Lorenz attractor.",
+  "sample_sine": "draw a sine curve.",
+  "sample_hello": "print 'Hello World'.",
+  "sample": "load a data file from './data/Electric_Vehicle_Population_Data.csv' and list first five rows",
+  "sample2": "list the top seven models, along with others combining all other models.",
+  "sample3": "show me the pie chart.",
+  "sample4": "load ./data/iou_zipcodes_2020.csv and list first 10 rows",
+  "sample5": "present the bar code of residential price for each state from low to high.",
+  "sample_stock": "Graph 4 year stock price of apple and tesla using yfinance",
+  "form": "Write some Python code to {question} (surround it with ```).",
+  "result_form": "Here is the result\n```\n{result}\n```\n",
+  "skip_function_result": true,
+  "notebook": true,
+  "prompt": [
+    "You are a data scientist who runs Python code to analyze data.",
+    "When you write code, make it sure that you expicitly import all necessary libraries, such as mumpy and matplotlib",
+    "Current time is {now}."
+  ]
+}

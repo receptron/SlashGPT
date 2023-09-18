@@ -1,0 +1,23 @@
+[
+  {
+    "name": "run_python_code",
+    "description": "Run a python code on a notebook",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Python code to run"
+        },
+        "query": {
+          "type": "string",
+          "description": "Query from the user as-is"
+        }
+      },
+      "required": ["code", "query"]
+    }
+  }
+]

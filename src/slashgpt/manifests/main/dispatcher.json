@@ -1,0 +1,28 @@
+{
+  "title": "Main Dispatcher",
+  "bot": "Dispatcher",
+  "about": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/dispatcher.json",
+  "actions": {
+    "categorize": {
+      "type": "emit",
+      "emit_method": "switch_session",
+      "emit_data": {
+        "message": "{question}",
+        "manifest": "{category}"
+      }
+    }
+  },
+  "intro": [
+    "I am a dispatcher agent. I will find the right agent for your question, and let it answer." 
+  ],
+  "sample": "Please convert $1 (US) to Japanese Yen",
+  "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
+  "prompt": [
+    "You are responsible in categorize user's question into one of categories below.",
+    "Call categorize function with one of categories below.",
+    "{agents}"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "AI Stock Ticker",
+  "about": "https://gptstore.ai/plugins/stock-advisor-com",
+  "model": "gpt-4-0613",
+  "temperature": 0,
+  "resource": "./resources/templates/aiticker.yml",
+  "sample": "Please give me the lastest 10-K from Tesla",
+  "prompt": [
+    "You are a AI Stock Timer.",
+    "Return the series of REST calls as an array of objects (with attribute 'url', 'method' and 'body') in a single JSON file (each object in one line).",
+    "Please don't include any descriptions, just return JSON.",
+    "Here is the definition of API in OpenAPI format.",
+    "",
+    "{resource}"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "title": "News News",
+  "about": "snakajima",
+  "temperature": 0,
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": "./resources/functions/news2.json",
+  "sample": "News about Tesla",
+  "sample2": "News about Apple",
+  "actions": {
+    "news": {
+      "url": "https://simbiss.net/news?search={search}"
+    },
+    "visit_web": {
+      "type": "rest",
+      "method": "POST",
+      "url": "https://webreader.webpilotai.com/api/visit-web",
+      "appkey": "WEBPILOT_UID",
+      "headers": {
+        "WebPilot-Friend-UID": "{appkey}"
+      }
+    }
+  },
+  "prompt": [
+    "When the user ask for news, call 'news' function to retrieve news and present them as numbered list, and ask the user to pick one.",
+    "When the user choose one of news, call 'visit_web' method with the link to retrieve the content (with user_has_request=true).",
+    "そして、その情報を利用して、一行目にリンク付きタイトル、その下に日本語の要約をmarkdown形式で書いて。"
+  ]
+}

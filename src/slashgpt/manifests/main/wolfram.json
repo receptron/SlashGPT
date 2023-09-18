@@ -1,0 +1,18 @@
+{
+  "title": "Wolfram",
+  "about": "https://gptstore.ai/plugins/wolframalpha-com",
+  "modelx": "gpt-4-0613",
+  "temperature": 0,
+  "actions": {
+    "query": {
+      "type": "rest",
+      "url": "https://www.wolframalpha.com/api/v1/llm-api?input={input}&appid={appkey}",
+      "appkey": "WOLFRAM_API_KEY"
+    }
+  },
+  "functions": "./resources/functions/wolfram.json",
+  "sample": "Please get the information about SpaceX",
+  "prompt": [
+    "Use Walfram to answer questions from the user"
+  ]
+}

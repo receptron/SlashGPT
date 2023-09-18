@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: Drone Pilot API
+  description: Allow users to fly a drone
+servers:
+  - url: http://localhost:8080
+paths:
+  /TakeOff:
+    get:
+      summary: Take off
+      parameters:
+        - in: query
+          name: height
+          required: false
+          schema:
+            type: number
+            example: 2.0
+      responses:
+        "200":
+          description: OK
+  /SetHeight:
+    get:
+      summary: Set the height
+      parameters:
+        - in: query
+          name: height
+          required: true
+          schema:
+            type: number
+            example: 2.0
+      responses:
+        "200":
+          description: OK
+  /FlyTo:
+    get:
+      summary: Fly To
+      parameters:
+        - in: query
+          name: west
+          required: true
+          schema:
+            type: number
+            example: 2.0
+        - in: query
+          name: south
+          required: true
+          schema:
+            type: number
+            example: 2.0
+      responses:
+        "200":
+          description: OK
+  /FlyBack:
+    get:
+      summary: Fly back to the take-off position
+      responses:
+        "200":
+          description: OK
+  /Land:
+    get:
+      summary: Land
+      responses:
+        "200":
+          description: OK

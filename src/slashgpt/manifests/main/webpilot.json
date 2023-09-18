@@ -1,0 +1,43 @@
+{
+  "title": "Web Pilot AI",
+  "description": "Allows users to input a URL, retrieves the web page content, and returns a comprehensible summary of it.",
+  "about": "https://gptstore.ai/plugins/webpilotai-com",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": 0.5,
+  "functions": [
+    {
+      "name": "visit_web",
+      "description": "Visit web page",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "string",
+            "description": "The web page's url to visit and retrieve content from."
+          },
+          "user_has_request": {
+            "type": "boolean",
+            "description": "Whether user has any requests."
+          }
+        },
+        "required": ["link"]
+      }
+    }
+  ],
+  "actions": {
+    "visit_web": {
+      "type": "rest",
+      "method": "POST",
+      "url": "https://webreader.webpilotai.com/api/visit-web",
+      "appkey": "WEBPILOT_UID",
+      "headers": {
+        "WebPilot-Friend-UID": "{appkey}"
+      }
+    }
+  },
+  "sample": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "samplej": "Please fetch the contents of https://www.cnbc.com/2023/07/14/cramer-i-used-apples-new-visionpro-headset-heres-what-it-was-like.html, and present them in markdown format with the title link at the top and the two paragraph summary in Japanese below.",
+  "prompt": [
+    "This tool allows users to provide a URL(or URLs) and optionally requests for interacting with, extracting specific information or how to do with the content from the URL. Requests may include rewrite, translate, and others. If there any requests, when accessing the /api/visit-web endpoint, the parameter 'user_has_request' should be set to 'true. And if there's no any requests, 'user_has_request' should be set to 'false'."
+  ]
+}

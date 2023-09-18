@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Humberger",
+    "ingredients": [
+      {
+        "ingredient": "ground beef",
+        "amount": 200
+      },
+      {
+        "ingredient": "chopped onion",
+        "amount": 150
+      }
+    ],
+    "sauce": [
+      {
+        "ingredient": "salt",
+        "amount": 4
+      }
+    ],
+    "cooking instruction": "Mix ingredients and grill it"
+  }, 
+  {
+    "name": "Pork vegetable stir fly for two",
+    "ingredients": [
+        {
+          "ingredient": "sliced pork",
+          "amount": 150
+        },
+        {
+          "ingredient": "chopped green pepper",
+          "amount": 200
+        },
+        {
+          "ingredient": "chopped cabbage",
+          "amount": 200
+        },
+        {
+          "ingredient": "bean sprouts",
+          "amount": 100
+        },
+        {
+          "ingredient": "chopped carrot",
+          "amount": 100
+        }
+      ],
+    "sauce": [
+      {
+        "ingredient": "sake",
+        "amount": 15
+      },
+      {
+        "ingredient": "soy sauce",
+        "amount": 7.5
+      },
+      {
+        "ingredient": "oystar sauce",
+        "amount": 7.5
+      },
+      {
+        "ingredient": "grated ginger",
+        "amount": 5
+      },
+      {
+        "ingredient": "pepper",
+        "amount": 0.5
+      },
+      {
+        "ingredient": "salt",
+        "amount": 0.5
+      }
+    ],
+    "cooking instruction": "Stir fly all ingredients with sauce"
+  }
+]

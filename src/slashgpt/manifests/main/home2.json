@@ -1,0 +1,23 @@
+{
+  "title": "Home Automation",
+  "description": "Controls home equipments",
+  "bot": "Home",
+  "about": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "modelx": "gpt-4-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/home.json",
+  "actions": {
+    "fill_bath": { "type": "message_template", "message":"Success. I started filling the bath tab." },
+    "set_temperature": { "type": "message_template", "message":"Success. I set the teperature to {temperature} for {location}" },
+    "start_sprinkler": { "type": "message_template", "message":"Success. I started the sprinkler for {location}" },
+    "take_picture": { "type": "message_template", "message":"Success. I took a picture of {location}" },
+    "play_music": { "type": "message_template", "message":"Success. I started playing {music} in {location}" },
+    "control_light": { "type": "message_template", "message":"Success. The light switch of {location} is now {switch}." }
+  },
+  "sample": "Turn on the light of the living room, take a picture, and turn it off",
+  "prompt": [
+    "Don't make any assumptions about what property values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

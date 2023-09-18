@@ -1,0 +1,36 @@
+{
+  "title": "World News",
+  "description": "Gets world news",
+  "about": "https://gptstore.ai/plugins/-simbiss-net",
+  "temperature": 0,
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": [
+    {
+      "name": "news",
+      "description": "Retrieve news",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "News topic"
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "sample": "Please show me the latest news about Tesla",
+  "sample2": "Format them into links in Markdown format with no double quotes",
+  "sample3": "Get the latest news about Tesla, present them with numbers.",
+  "actions": {
+    "news": {
+      "type": "rest",
+      "url": "https://simbiss.net/news?search={search}"
+    }
+  },
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

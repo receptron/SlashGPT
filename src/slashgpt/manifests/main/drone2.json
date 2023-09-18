@@ -1,0 +1,23 @@
+{
+  "title": "Drone Pilot",
+  "description": "Flying drones",
+  "bot": "Pilot",
+  "about": "snakajima",
+  "modelx": "gpt-4-0613",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/drone2.json",
+  "actions": {
+    "take_off": { "type": "message_template", "message":"Success" },
+    "set_height": { "type": "message_template", "message":"Success" },
+    "fly_to": { "type": "message_template", "message":"Success" },
+    "take_back": { "type": "message_template", "message":"Success" },
+    "land": { "type": "message_template", "message":"Success" }
+  },
+  "sample": "Please let the drone take off from the ground, fly around a building twice (first with height=2 meter2, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
+  "prompt": [
+    "You are a drone pilot. You need to make a series of function calls to completed the given task.",
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

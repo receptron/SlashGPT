@@ -1,0 +1,22 @@
+{
+  "main": {
+    "manifests_dir": "manifests/main",
+    "default_agent_name": "dispatcher"
+  },
+  "rpg1": {
+    "manifests_dir": "manifests/rpg1",
+    "default_agent_name": "bartender"
+  },
+  "zoo": {
+    "manifests_dir": "manifests/zoo",
+    "default_agent_name": "monkey"
+  },
+  "roles1": {
+    "manifests_dir": "manifests/roles1",
+    "default_agent_name": null
+  },
+  "roles2": {
+    "manifests_dir": "manifests/roles2",
+    "default_agent_name": null
+  }
+}

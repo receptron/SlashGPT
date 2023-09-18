@@ -1,0 +1,1110 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Origamist",
+    "description": "ChatGPT Plugin server for creating computational notebooks (in Python!), allowing you to execute code, explore data, and visualize results.",
+    "version": "0.28.3"
+  },
+  "servers": [
+    {
+      "url": "https://chat.noteable.io",
+      "description": "Origamist server on https://chat.noteable.io"
+    }
+  ],
+  "paths": {
+    "/api/origami/about/": {
+      "get": {
+        "summary": "About",
+        "description": "# Runtime\nThe notebook runtime extends the jupyter/datascience-notebook image with more packages for python. You can install more.\nProject files are volume mounted in the current working directory of the notebook. `/tmp` is not persisted between notebooks or runs.\n\nAbout",
+        "operationId": "about",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/origami/p/": {
+      "post": {
+        "summary": "Create New Project",
+        "description": "Create a new project to store Notebooks and associated data files.",
+        "operationId": "create_project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectOptions"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/p/default": {
+      "put": {
+        "summary": "Set Default Project",
+        "description": "Configure the user's default project.",
+        "operationId": "set_default_project",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "New Default Project Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "new_default_project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/p/file_list/{project_id}": {
+      "get": {
+        "summary": "Get Project Files",
+        "description": "Get a list of files in a Project (users default Project if no project_id is provided).\nOptionally filter by space-delimited list of file extensions and/or filename fuzzy match.",
+        "operationId": "get_project_files",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "project_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "File Extensions",
+              "type": "string"
+            },
+            "name": "file_extensions",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Filename Fuzzy Match",
+              "type": "string"
+            },
+            "name": "filename_fuzzy_match",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Filename Fuzzy Threshold",
+              "type": "integer",
+              "default": 70
+            },
+            "name": "filename_fuzzy_threshold",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "File Limit",
+              "type": "integer",
+              "default": 20
+            },
+            "name": "file_limit",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Sort By",
+              "enum": [
+                "updated_at",
+                "name"
+              ],
+              "type": "string",
+              "default": "updated_at"
+            },
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Sort Descending",
+              "type": "boolean",
+              "default": false
+            },
+            "name": "sort_descending",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/": {
+      "post": {
+        "summary": "Create Notebook",
+        "description": "Creates a new notebook. If no project ID is provided, the user's default project will be used.",
+        "operationId": "create_notebook",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotebookRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}": {
+      "get": {
+        "summary": "Get Notebook",
+        "description": "Get a summary of a notebook. This includes the list of cell IDs that make up\nthe notebook document, the current kernel state, and the notebook's name.",
+        "operationId": "get_notebook",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/text/{file_id}": {
+      "get": {
+        "summary": "Get Text File",
+        "description": "Get content of a markdown or plain text file.",
+        "operationId": "get_text_file",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/datasources": {
+      "get": {
+        "summary": "Get Datasources",
+        "description": "Get the databases for a notebook file by UUID.",
+        "operationId": "get_datasources",
+        "parameters": [
+          {
+            "description": "The ID of the notebook to get the datasources for.",
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "description": "The ID of the notebook to get the datasources for.",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Datasources",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataSource"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/run_multiple_cells": {
+      "post": {
+        "summary": "Run Multiple Cells",
+        "description": "Execute multiple cells in a Notebook.",
+        "operationId": "run_multiple_cells",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteCellsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/kernel": {
+      "delete": {
+        "summary": "Shutdown Kernel From File",
+        "description": "Shutdown the kernel for a notebook.",
+        "operationId": "shutdown_kernel_from_file",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/c/{cell_id}": {
+      "get": {
+        "summary": "Get Cell",
+        "description": "Return Cell model details",
+        "operationId": "get_cell",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Cell Id",
+              "type": "string"
+            },
+            "name": "cell_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Cell",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Cell",
+        "description": "Replace the source code of a cell.",
+        "operationId": "update_cell",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Cell Id",
+              "type": "string"
+            },
+            "name": "cell_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCellRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Change Cell Type",
+        "description": "Endpoint to allow updating the type of a cell. Currently only supports changing\nbetween Code, Markdown, and SQL cells.",
+        "operationId": "change_cell_type",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Cell Id",
+              "type": "string"
+            },
+            "name": "cell_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCellTypeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/c": {
+      "post": {
+        "summary": "Create Cell",
+        "description": "Create a code or markdown cell.",
+        "operationId": "create_cell",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCellRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Create Cell",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/f/{file_id}/c/{cell_id}/run": {
+      "post": {
+        "summary": "Run Cell",
+        "description": "Run a Cell within a Notebook by ID.",
+        "operationId": "run_cell",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Cell Id",
+              "type": "string"
+            },
+            "name": "cell_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/u/me": {
+      "get": {
+        "summary": "Get User Info",
+        "description": "Get the current user's id, email, auth type, and default project details",
+        "operationId": "get_user_info",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/k/": {
+      "get": {
+        "summary": "Get Active Kernel Sessions",
+        "description": "Returns a list of the user's active kernel sessions.",
+        "operationId": "get_active_kernel_sessions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/origami/k/{kernel_session_id}": {
+      "delete": {
+        "summary": "Shutdown Kernel",
+        "description": "Shutdown the kernel for a notebook.",
+        "operationId": "shutdown_kernel",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Kernel Session Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "kernel_session_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChangeCellTypeRequest": {
+        "title": "ChangeCellTypeRequest",
+        "required": [
+          "cell_type"
+        ],
+        "type": "object",
+        "properties": {
+          "cell_type": {
+            "title": "Cell Type",
+            "enum": [
+              "code",
+              "markdown",
+              "sql"
+            ],
+            "type": "string"
+          },
+          "db_connection": {
+            "title": "Db Connection",
+            "type": "string"
+          },
+          "assign_results_to": {
+            "title": "Assign Results To",
+            "type": "string"
+          }
+        }
+      },
+      "CreateCellRequest": {
+        "title": "CreateCellRequest",
+        "type": "object",
+        "properties": {
+          "cell_id": {
+            "title": "Cell Id",
+            "type": "string"
+          },
+          "cell_type": {
+            "title": "Cell Type",
+            "enum": [
+              "code",
+              "markdown",
+              "sql"
+            ],
+            "type": "string",
+            "description": "The type of cell to create.",
+            "default": "code"
+          },
+          "and_run": {
+            "title": "Run Cell",
+            "type": "boolean",
+            "description": "Whether to run the cell after creating it. Only applies to code and sql cells.",
+            "default": false
+          },
+          "source": {
+            "title": "Source",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Lines of source code to place in the cell."
+          },
+          "after_cell_id": {
+            "title": "After Cell ID",
+            "type": "string",
+            "description": "The ID of the cell to insert this one after. If null, it'll be added to the end of the notebook."
+          },
+          "datasource_id": {
+            "title": "SQL cell datasource ID",
+            "type": "string",
+            "description": "datasource_id to run SQL against if this is a SQL cell"
+          },
+          "assign_results_to": {
+            "title": "SQL cell results variable name",
+            "type": "string",
+            "description": "The variable name to assign SQL query results (as a Dataframe)"
+          }
+        }
+      },
+      "CreateNotebookRequest": {
+        "title": "CreateNotebookRequest",
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "title": "Project ID",
+            "type": "string",
+            "description": "The ID of the project to create the notebook in. Defaults to the user's default project.",
+            "format": "uuid"
+          },
+          "notebook_name": {
+            "title": "Notebook Name",
+            "type": "string",
+            "description": "The name of the notebook to create. Must end with .ipynb file extension."
+          },
+          "start_kernel": {
+            "title": "Start Kernel",
+            "type": "boolean",
+            "description": "Whether to start the kernel after creating the notebook.",
+            "default": true
+          }
+        }
+      },
+      "CreateProjectOptions": {
+        "title": "CreateProjectOptions",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "git_url": {
+            "title": "Git Url",
+            "type": "string"
+          }
+        }
+      },
+      "DataSource": {
+        "title": "DataSource",
+        "required": [
+          "name",
+          "description",
+          "type_id",
+          "sql_cell_handle"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Data Source Name",
+            "type": "string",
+            "description": "Name of the data source."
+          },
+          "description": {
+            "title": "Data Source Description",
+            "type": "string",
+            "description": "The description of the data source."
+          },
+          "type_id": {
+            "title": "Type of database",
+            "type": "string",
+            "description": "Type of Data Source"
+          },
+          "sql_cell_handle": {
+            "title": "db_connection string",
+            "type": "string",
+            "description": "db_connection in the Noteable cell metadata for the database"
+          }
+        }
+      },
+      "ExecuteCellsRequest": {
+        "title": "ExecuteCellsRequest",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "title": "Ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "before_id": {
+            "title": "Before Id",
+            "type": "string"
+          },
+          "after_id": {
+            "title": "After Id",
+            "type": "string"
+          },
+          "all": {
+            "title": "All",
+            "type": "boolean"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "UpdateCellRequest": {
+        "title": "UpdateCellRequest",
+        "type": "object",
+        "properties": {
+          "source": {
+            "title": "Source",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Lines of source code to replace the cell with.",
+            "default": []
+          },
+          "and_run": {
+            "title": "Run Cell",
+            "type": "boolean",
+            "description": "Whether to run the cell after updating it. Only applies to code and sql cells.",
+            "default": false
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

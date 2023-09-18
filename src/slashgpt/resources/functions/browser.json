@@ -1,0 +1,16 @@
+[
+  {
+      "name": "fetch",
+      "description": "Fetch the content of web page",
+      "parameters": {
+          "type": "object",
+          "properties": {
+              "url": {
+                  "type": "string",
+                  "description": "url of the web page"
+              }
+          },
+          "required": ["url"]
+      }
+  }
+]

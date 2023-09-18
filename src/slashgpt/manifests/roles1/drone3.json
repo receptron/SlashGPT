@@ -1,0 +1,13 @@
+{
+  "title": "Drone Pilot (single function with an array of commands)",
+  "bot": "Pilot",
+  "about": "snakajima",
+  "model": "gpt-4-0613",
+  "temperature": 0,
+  "functions": "./resources/functions/drone3.json",
+  "sample": "Please let the drone take off from the ground (at [0,0], to height=2 meters), fly around a building twice (first with height=2 meters, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

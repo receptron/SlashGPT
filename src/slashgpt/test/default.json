@@ -1,0 +1,44 @@
+{
+  "messages":[
+    {
+    "agent": "dispatcher",
+    "messages": ["/sample currency"]
+  },{
+    "agent": "dispatcher",
+    "message": "/sample weather"
+  },{
+    "agent": "spacex",
+    "messages": ["/sample"]
+  },{
+    "agent": "cal",
+    "message": "/sample"
+  },{
+    "agent": "jupyter",
+    "message": "/sample_stock"
+  },{
+    "agent": "dispatcher",
+    "message": "/switch roles1"
+  },{
+    "agent": "business",
+    "messages": [
+      "/new",
+      "/help",
+      "/help spacex",
+      "/audio",
+      "/audio ja",
+      "/audio",
+      "/prompt",
+      "/history",
+      "/llm gpt3",
+      "/llm gpt31",
+      "/llm gpt4",
+      "/llm palm",
+      "/llm llama2",
+      "/llm llama270",
+      "/llm vicuna",
+      "/verbose",
+      "/verbose",
+      "/import"
+    ]
+  }]
+}

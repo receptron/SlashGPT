@@ -1,0 +1,43 @@
+{
+  "title": "Open Weather",
+  "description": "Gets Weather Info",
+  "bot": "Weather",
+  "about": "snakajima, https://openweathermap.org",
+  "temperature": 0,
+  "functions": [
+    {
+      "name": "get_current_weather",
+      "description": "Get the current weather",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The city, e.g. San Francisco"
+          }
+        },
+        "required": ["location"]
+      }
+    }
+  ],
+  "actions": {
+    "get_current_weather": {
+      "type": "rest",
+      "url": "https://api.openweathermap.org/data/2.5/weather?q={location}&appid={appkey}",
+      "appkey": "OPENWEATHER_API_KEY"
+    }
+  },
+  "model": "gpt-3.5-turbo-16k-0613",
+  "sample": "What is the weather in Seattle today?",
+  "samplej": "東京の天気は？",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous.",
+    "When presenting weather, please describe:",
+    "description (such as 'sunny' or 'rain')",
+    "temperature (both in Fahrenheit and Centigrade, NEVER in Kelvin)",
+    "wind",
+    "air pressure",
+    "visibility"
+  ]
+}

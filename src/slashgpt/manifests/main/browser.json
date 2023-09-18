@@ -1,0 +1,17 @@
+{
+  "title": "Internet Browser",
+  "description": "Browses web pages",
+  "about": "snakajima",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "temperature": 0.5,
+  "functions": "./resources/functions/browser.json",
+  "module": "./resources/module/browser.py",
+  "intro": [
+    "I am a Internet Browser. Please specify the URL of the web page you are interested in." 
+  ],
+  "sample": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

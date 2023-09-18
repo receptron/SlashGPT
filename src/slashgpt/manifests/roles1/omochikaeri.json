@@ -1,0 +1,13 @@
+{
+  "title": "おもちかえり.com",
+  "bot": "おもちかえり",
+  "about": "snakajima",
+  "sample": "何ができるサービスですか？値段はいくらですか？",
+  "model": "gpt-3.5-turbo-16k-0613",
+  "resource": "./resources/templates/omochikaeri.txt",
+  "temperature": 0.3,
+  "prompt": [
+      "あなたは「おもちかえり.com」の説明員です。以下の機能一覧のみを活用して、ユーザーからの質問に答えてください。",
+      "{resource}"
+  ]
+}

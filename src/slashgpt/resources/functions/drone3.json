@@ -1,0 +1,39 @@
+[
+    {
+        "name": "fly",
+        "description": "Let the drone take off from the ground",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "name of the command",
+                                "enum": ["take_off", "set_height", "fly_to", "fly_back", "land"]
+                            },
+                            "west": {
+                                "type": "number",
+                                "description": "westward distance in meters from the starting position"
+                            },
+                            "south": {
+                                "type": "number",
+                                "description": "southward distance in meters from the starting position"
+                            },
+                            "height": {
+                                "type": "number",
+                                "description": "height in meters, e.g. 1.2"
+                            }
+                        },
+                        "required": ["name"]
+                    },
+                    "description": "The list of commands to the drone"
+                }
+            },
+            "required": ["commands"]
+        }
+    }
+]

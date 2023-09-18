@@ -1,0 +1,157 @@
+[
+    {
+        "name": "chop_vegetable",
+        "description": "Chop vegetable",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "vegetable": {
+                    "type": "string",
+                    "description": "vegetable to chop"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["vegetable", "amount"]
+        }
+    },
+    {
+        "name": "grind",
+        "description": "Grind something",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredient": {
+                    "type": "string",
+                    "description": "ingredient to grind"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["ingredient", "amount"]
+        }
+    },
+    {
+        "name": "grate",
+        "description": "Grate something",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredient": {
+                    "type": "string",
+                    "description": "ingredient to grate"
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["ingredient", "amount"]
+        }
+    },
+    {
+        "name": "slice_meat",
+        "description": "Slice Meat",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "meat": {
+                    "type": "string",
+                    "description": "Meat to slice",
+                    "enum": ["pork", "beef", "chicken"]
+                },
+                "amount": {
+                    "type": "number",
+                    "description": "amount in gram"
+                }
+            },
+            "required": ["meat", "amount"]
+        }
+    },
+    {
+        "name": "make_sauce",
+        "description": "mix ingredients to make sauce",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "ingredient of sauce",
+                                "enum": ["salt", "soy sauce", "pepper", "sugar", "sake", "oystar sauce", "ground ginger"]
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
+        }
+    },
+    {
+        "name": "stir_fly",
+        "description": "Stir fly ingredients",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "ingredient to cook"
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
+        }
+    },
+    {
+        "name": "grill",
+        "description": "grill ingredients",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ingredient": {
+                                "type": "string",
+                                "description": "ingredient to cook"
+                            },
+                            "amount": {
+                                "type": "number",
+                                "description": "amount in gram"
+                            }
+                        },
+                        "required": ["ingredient", "amount"]
+                    }
+                }
+            },
+            "required": ["ingredients"]
+        }
+    }
+]

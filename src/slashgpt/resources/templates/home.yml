@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: Home Automation API
+  description: Allow users to control various equipments
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /SetAC:
+    get:
+      summary: Set the room temperature in celsius
+      parameters:
+        - in: query
+          name: temperature
+          required: false
+          schema:
+            type: number
+            example: 27.0
+      responses:
+        "200":
+          description: OK

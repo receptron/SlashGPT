@@ -1,0 +1,40 @@
+{
+  "title": "WIP: Noteable",
+  "about": "https://gptstore.ai/plugins/chat-noteable-io",
+  "description": "Create notebooks in Python, SQL, and Markdown to explore data, visualize, and share notebooks with everyone.",
+  "temperature": 0,
+  "model": "gpt-3.5-turbo-16k-0613",
+  "functions": "./resources/functions/noteable.json",
+  "sample": "What is 1+1?",
+  "actions": {
+    "create_project": {
+      "type": "rest",
+      "method": "POST",
+      "url": "https://chat.noteable.io/api/origami/p/",
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
+    },
+    "create_notebook": {
+      "type": "rest",
+      "method": "POST",
+      "url": "https://chat.noteable.io/api/origami/f/",
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
+    },
+    "get_userinfo": {
+      "type": "rest",
+      "url": "https://app.noteable.io/gate/api/users/me",
+      "appkey": "NOTEABLE_API_KEY",
+      "headers": {
+        "Authorization": "Bearer {appkey}"
+      }
+    }
+  },
+  "prompt": [
+    "On https://app.noteable.io, create and run Python notebooks with code, markdown, and SQL cells. # Semantics - Notebook URL, CellID optional: https://app.noteable.io/f/<file_id>/<decorative_file_name>?cellID=<cell_id> - Project URL: https://app.noteable.io/p/<project_id>/<decorative_project_name> - Space URL: https://app.noteable.io/s/<space_id>/<decorative_space_name> project_id, space_id, and file_id are UUIDs; cell_id is a string Spaces contain projects, projects contain notebooks and data files. # Runtime Files should be staged in the `/tmp` directory. IPython supports top level async-await. To display images from disk in the assistant response, use `IPython.display.Image` with `embed=True`. # Noteable UI Direct the user to the Noteable UI to configure RBAC permissions, Environment Variables/Secrets, and Data Sources."
+  ]
+}
