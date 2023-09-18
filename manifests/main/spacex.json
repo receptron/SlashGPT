@@ -1,7 +1,6 @@
 {
   "title": "SpaceX Information",
   "description": "Anything about SpaceX",
-  "bot": "spacex",
   "about": "snakajima",
   "temperature": 0,
   "functions": "./resources/functions/graphql.json",
