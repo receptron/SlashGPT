@@ -1,6 +1,6 @@
 {
-  "title": "Jupyter Notebook with Palm",
-  "bot": "Jupyter(Palm)",
+  "title": "Code Interpreter with Palm",
+  "bot": "Code(Palm)",
   "about": "snakajima",
   "temperature": 0,
   "model": "palm",

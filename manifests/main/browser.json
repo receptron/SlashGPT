@@ -2,7 +2,6 @@
   "title": "Internet Browser",
   "description": "Browses web pages",
   "about": "snakajima",
-  "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0.5,
   "functions": "./resources/functions/browser.json",
   "module": "./resources/module/browser.py",

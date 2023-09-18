@@ -41,6 +41,14 @@ class LlmModel:
         return self.engine.chat_completion(messages, manifest, verbose)
 
 
+def get_default_llm_model_name(llm_models):
+    return llm_models.get("gpt31")
+
+
+def get_default_llm_model(llm_models):
+    return LlmModel(get_default_llm_model_name(llm_models))
+
+
 def __search_llm_model(llm_model_name: str, llm_models={}):
     llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
     index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
@@ -49,7 +57,7 @@ def __search_llm_model(llm_model_name: str, llm_models={}):
         llm_model = list(llm_models.values())[index]
         return llm_model
     else:
-        return llm_models.get("gpt3")
+        return get_default_llm_model_name(llm_models)
 
 
 def get_llm_model_from_manifest(manifest: Manifest, llm_models={}):
@@ -63,4 +71,4 @@ def get_llm_model_from_key(key: str, llm_models={}):
     llm_model = llm_models.get(key)
     if llm_model:
         return LlmModel(llm_model)
-    return LlmModel(llm_models.get("gpt3"))
+    return get_default_llm_model(llm_models)

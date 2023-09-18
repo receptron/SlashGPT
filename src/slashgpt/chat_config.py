@@ -1,10 +1,14 @@
 import os
+import sys
 from typing import Optional
 
 import google.generativeai as palm
 import openai
 import pinecone
 from dotenv import load_dotenv
+
+from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
+from slashgpt.llms.engine_factory import LLMEngineFactory
 
 """
 ChatConfig is a singleton, which holds global states, including various secret keys
@@ -17,7 +21,9 @@ class ChatConfig:
         # Load various keys from .env file
         load_dotenv()
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        assert self.OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
+        if not self.OPENAI_API_KEY:
+            print("OPENAI_API_KEY environment variable is missing from .env")
+            sys.exit()
         self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
@@ -33,8 +39,11 @@ class ChatConfig:
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
-        self.llm_models = llm_models
-        self.llm_engine_configs = llm_engine_configs
+        self.llm_models = llm_models if llm_models else default_llm_models
+        self.llm_engine_configs = llm_engine_configs if llm_engine_configs else default_llm_engine_configs
+        # engine
+        if self.llm_engine_configs:
+            LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
 
     # for llm
     def has_value_for_key(self, key: str):

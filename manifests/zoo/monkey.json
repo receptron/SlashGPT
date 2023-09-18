@@ -2,7 +2,6 @@
   "title": "Monkey Area",
   "bot": "Monkey",
   "about": "snakajima",
-  "model": "gpt-3.5-turbo-16k-0613",
   "temperature": 0,
   "functions": "./resources/functions/dispatcher.json",
   "actions": {

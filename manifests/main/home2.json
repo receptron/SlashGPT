@@ -3,7 +3,6 @@
   "description": "Controls home equipments",
   "bot": "Home",
   "about": "snakajima",
-  "model": "gpt-3.5-turbo-16k-0613",
   "modelx": "gpt-4-0613",
   "temperature": 0,
   "functions": "./resources/functions/home.json",
