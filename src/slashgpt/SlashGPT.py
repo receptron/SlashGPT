@@ -13,6 +13,7 @@ except ImportError:
 from slashgpt.chat_session import ChatSession
 from slashgpt.chat_slash_config import ChatSlashConfig
 from slashgpt.function.jupyter_runtime import PythonRuntime
+from slashgpt.llms.engine_factory import LLMEngineFactory
 from slashgpt.llms.model import get_default_llm_model, get_llm_model_from_key
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
@@ -45,6 +46,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
+        LLMEngineFactory.llm_engine_configs = self.config.llm_engine_configs
         self.manifests_manager = manifests_manager
         self.llm_model = get_default_llm_model(self.config.llm_models)
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)

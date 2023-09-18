@@ -6,6 +6,8 @@ import openai
 import pinecone
 from dotenv import load_dotenv
 
+from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
+
 """
 ChatConfig is a singleton, which holds global states, including various secret keys
 """
@@ -32,6 +34,9 @@ class ChatConfig:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
         if self.GOOGLE_PALM_KEY:
             palm.configure(api_key=self.GOOGLE_PALM_KEY)
+
+        self.llm_models = default_llm_models
+        self.llm_engine_configs = default_llm_engine_configs
 
         self.llm_models = llm_models
         self.llm_engine_configs = llm_engine_configs
