@@ -42,7 +42,7 @@ class LlmModel:
 
 
 def get_default_llm_model_name(llm_models):
-    return llm_models.get("gpt3")
+    return llm_models.get("gpt31")
 
 
 def get_default_llm_model(llm_models):
