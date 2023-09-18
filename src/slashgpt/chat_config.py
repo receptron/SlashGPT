@@ -42,7 +42,6 @@ class ChatConfig:
         if self.llm_engine_configs:
             LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
 
-
     # for llm
     def has_value_for_key(self, key: str):
         if key == "REPLICATE_API_TOKEN":
