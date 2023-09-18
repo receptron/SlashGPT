@@ -1,7 +1,6 @@
 {
-  "title": "Code Interpreter with GPT3.5",
+  "title": "Code Interpreter",
   "description": "Write and run Python code and generate a Jupyter Notebook",
-  "bot": "Code",
   "about": "snakajima",
   "temperature": 0,
   "functions": "./resources/functions/code.json",

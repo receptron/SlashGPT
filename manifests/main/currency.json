@@ -2,7 +2,6 @@
   "title": "Currency Converter",
   "description": "Converts currency",
   "about": "https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co",
-  "modelx": "gpt-4-0613",
   "temperature": 0,
   "functions": [
     {
