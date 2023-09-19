@@ -181,7 +181,7 @@ class SlashGPT:
                     raise RuntimeError("self.config.llm_models must be set")
                 print("/llm: " + ",".join(self.config.llm_models.keys()))
         elif key == "current_llm":
-            print(self.llm_model.name())
+            print(self.session.llm_model.name())
         elif key == "new":
             self.switch_session(self.session.agent_name, intro=False)
         elif commands[0] == "autotest":
