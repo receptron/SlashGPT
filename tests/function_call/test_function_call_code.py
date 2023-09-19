@@ -6,8 +6,7 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 
-from slashgpt.function.function_call import FunctionCall  # noqa: E402
-from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.engine.base import LLMEngineBase  # noqa: E402
 from slashgpt.manifest import Manifest  # noqa: E402
 
 
@@ -77,4 +76,4 @@ def test_markdown_result_should_call(engine):
     }
 
     function_call = engine.test_extract_function_call(last_message, manifest, last_message["content"])
-    assert function_call == None
+    assert function_call is None
