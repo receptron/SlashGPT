@@ -4,7 +4,7 @@ import google.generativeai as palm
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_error, print_debug
+from slashgpt.utils.print import print_debug, print_error
 
 
 def get_prompt_data(messages: List[dict]):
