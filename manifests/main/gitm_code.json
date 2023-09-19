@@ -1,0 +1,25 @@
+{
+  "title": "GitHubMetrics",
+  "description": "Metrics about GitHub repo",
+  "about": "kozayupapa",
+  "temperature": "0.0",
+  "functions": "./resources/functions/code.json",
+  "resource": "./resources/functions/github.graphql",
+  "help": "Prepare your github app token and set to .env file as 'GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
+  "sample": "show my login name on github",
+  "sample2": "SingularitySociety/book_reading のcommit数を教えて",
+  "sample3": "SingularitySociety/book_reading のcommit数を週ごとの時系列グラフで表示して",
+  "sample4": "snakajima/SlashGPT の最近２ヶ月のcommit数をDailyの時系列グラフで表示して",
+  "sample5": "snakajima/SlashGPT のcontributor ごとの各指標を表やグラフをつかって面白く分析して",
+  "notebook": true,
+  "prompt": [
+    "You are an expert in Github GraphQL and a data scientist who writes Python code to analyze data.",
+    "Use Github GraphQL query when you need to find github metrix, and use os.getenv(SLASH_GPT_ENV_GITHUB_TOKEN) as Github Token",
+    "Use pandas and matplotlib to display table and graph",
+    "When you write Python code, call 'run_python_code' function.",
+    "When you see errors in your code, fix it and rerun it up to `Two times`",
+    "Ask for clarification if a user request is ambiguous.",
+    "Here is the schema of Github GraphQL query:",
+    "{resource}"
+  ]
+}
