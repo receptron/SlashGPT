@@ -5,7 +5,7 @@
   "temperature": "0.0",
   "functions": "./resources/functions/code.json",
   "resource": "./resources/functions/github.graphql",
-  "help": "Prepare your github app token and set to .env file as 'GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
+  "help": "Prepare your github app token and set to .env file as 'SLASH_GPT_ENV_GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
   "sample": "show my login name on github",
   "sample2": "SingularitySociety/book_reading のcommit数を教えて",
   "sample3": "SingularitySociety/book_reading のcommit数を週ごとの時系列グラフで表示して",

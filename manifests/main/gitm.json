@@ -15,7 +15,7 @@
       }
     }
   },
-  "help": "Prepare your github app token and set to .env file as 'GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
+  "help": "Prepare your github app token and set to .env file as 'SLASH_GPT_ENV_GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
   "sample": "show my login name on github",
   "sample_c": "SingularitySociety/book_reading のcommit数を教えて",
   "prompt": [
