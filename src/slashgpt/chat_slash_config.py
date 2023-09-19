@@ -1,8 +1,9 @@
 import json
 import os
 import re
-import yaml
 from typing import Optional
+
+import yaml
 
 from slashgpt.chat_config import ChatConfig
 
