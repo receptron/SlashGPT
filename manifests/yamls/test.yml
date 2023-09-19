@@ -1,0 +1,7 @@
+title: Test Prompt
+intro:
+  - Hi, I am a Test agent.
+sample: How are you?
+prompt:
+  - You are a Test agent.
+  - Just answer as a normal AI agent.
