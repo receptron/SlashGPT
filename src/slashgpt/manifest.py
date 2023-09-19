@@ -21,7 +21,7 @@ class Manifest:
         return self.get("you") or f"You({self.__agent_name})"
 
     def botname(self):
-        return self.get("bot") or "GPT"
+        return self.get("bot") or f"Agent({self.__agent_name})"
 
     def actions(self):
         return self.get("actions") or {}

@@ -1,6 +1,5 @@
 {
   "title": "DOT language expert",
-  "bot": "Dot",
   "about": "snakajima",
   "temperature": 0,
   "functions": "./resources/functions/dot.json",
