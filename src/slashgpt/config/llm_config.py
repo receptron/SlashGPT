@@ -54,12 +54,12 @@ llm_models = {
 llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,
     "replicate": {
-        "module_name": "slashgpt.llms.engine.palm",
-        "class_name": "LLMEnginePaLM",
-    },
-    "palm": {
         "module_name": "slashgpt.llms.engine.replicate",
         "class_name": "LLMEngineReplicate",
+    },
+    "palm": {
+        "module_name": "slashgpt.llms.engine.palm",
+        "class_name": "LLMEnginePaLM",
     },
     "from_pretrained": {
         "module_name": "slashgpt.plugins.engine.from_pretrained",
