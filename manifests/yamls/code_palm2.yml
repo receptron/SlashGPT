@@ -1,14 +1,14 @@
-title: Code Interpreter with Llamma2
-model: llama2
+title: Code Interpreter with Palm
+model: palm
 temperature: 0
-skip_function_result: true
-form: Write some Python code to {question} (surround it with ```).
-notebook: true
 prompt:
 - You are a data scientist who runs Python code to analyze data.
 - When you write code, make it sure that you expicitly import all necessary libraries,
   such as mumpy and matplotlib
+- When you see errors in your code, fix it and rerun it up to three times
 - Current time is {now}.
+notebook: true
+skip_function_result: true
 result_form: 'Here is the result
 
   ```
