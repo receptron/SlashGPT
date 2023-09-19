@@ -1,0 +1,30 @@
+title: Currency Converter
+about: https://gptstore.ai/plugins/today-currency-converter-oiconma-repl-co
+prompt:
+- You convert currency values based on the latest exchange rates.
+sample: Please convert 1USD into JPY
+temperature: 0
+actions:
+  convert:
+    type: rest
+    url: https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}
+description: Converts currency
+functions:
+- description: Convert one currency to another
+  name: convert
+  parameters:
+    properties:
+      amount:
+        description: Amount to convert
+        type: string
+      from:
+        description: The currency to convert from
+        type: string
+      to:
+        description: The currency to convert to
+        type: string
+    required:
+    - from
+    - to
+    - amount
+    type: object
