@@ -20,18 +20,18 @@ class LLMEngineBase(metaclass=ABCMeta):
     Returns it in the "function call" format.
     """
 
-    def _extract_function_call(self, last_message: dict, manifest: Manifest, res: str):
+    def _extract_function_call(self, last_message: dict, manifest: Manifest, res: str, is_openai: bool = False):
         if manifest.get("notebook"):
             lines = res.splitlines()
             codes: Optional[list] = None
-            for line in lines:
-                if line[:3] == "```":
+            for key in range(len(lines)):
+                if self.__is_code(lines, key, is_openai):
                     if codes is None:
                         codes = []
                     else:
                         break
                 elif codes is not None:
-                    codes.append(line)
+                    codes.append(lines[key])
             if codes:
                 return FunctionCall(
                     {
@@ -43,3 +43,14 @@ class LLMEngineBase(metaclass=ABCMeta):
 
             print_warning("Debug Message: no code in this reply")
         return None
+
+    def __is_code(self, lines, key, is_openai: bool = False):
+        if is_openai:
+            if len(lines) == key + 1:  # last line has no next line.
+                return lines[key][:3] == "```"
+            else:
+                if lines[key][:3] == "```":
+                    return lines[key + 1].startswith("!pip") or lines[key + 1].startswith("from ") or lines[key + 1].startswith("import ")
+            return False
+        else:
+            return lines[key][:3] == "```"
