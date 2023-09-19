@@ -4,7 +4,7 @@ import google.generativeai as palm
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_error
+from slashgpt.utils.print import print_error, print_debug
 
 
 def get_prompt_data(messages: List[dict]):
@@ -37,6 +37,8 @@ class LLMEnginePaLM(LLMEngineBase):
         }
         (system, new_messages) = get_prompt_data(messages)
 
+        if verbose:
+            print_debug("calling palm.chat")
         response = palm.chat(**defaults, context=system, examples=[], messages=new_messages)
         res = response.last
         function_call = None

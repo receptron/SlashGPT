@@ -4,6 +4,7 @@ import replicate
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
+from slashgpt.utils.print import print_debug
 
 
 def message_to_prompt(messages: List[dict], manifest: Manifest):
@@ -36,6 +37,9 @@ class LLMEngineReplicate(LLMEngineBase):
         replicate_model = self.llm_model.replicate_model()
         prompt = message_to_prompt(messages, manifest)
 
+        if verbose:
+            print_debug("calling replicate.run")
+            
         output = replicate.run(
             replicate_model,
             input={"prompt": prompt},
