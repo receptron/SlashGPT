@@ -18,5 +18,9 @@
   "roles2": {
     "manifests_dir": "manifests/roles2",
     "default_agent_name": null
+  },
+  "yamls": {
+    "manifests_dir": "manifests/yamls",
+    "default_agent_name": "test"
   }
 }

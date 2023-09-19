@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import yaml
 from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
@@ -29,6 +30,10 @@ class ChatSlashConfig(ChatConfig):
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
+            elif re.search(r"\.yml$", file):
+                print("*** found YAML", file)
+                with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
+                    self.manifests[file.split(".")[0]] = yaml.safe_load(f)
 
     def reload(self):
         self.load_manifests(self.path_manifests)
