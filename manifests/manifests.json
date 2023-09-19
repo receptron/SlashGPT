@@ -21,6 +21,6 @@
   },
   "yamls": {
     "manifests_dir": "manifests/yamls",
-    "default_agent_name": "test"
+    "default_agent_name": "code_llama"
   }
 }

@@ -32,7 +32,6 @@ class ChatSlashConfig(ChatConfig):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = json.load(f)
             elif re.search(r"\.yml$", file):
-                print("*** found YAML", file)
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     self.manifests[file.split(".")[0]] = yaml.safe_load(f)
 
