@@ -1,7 +1,6 @@
 {
   "title": "Drone Pilot",
   "description": "Flying drones",
-  "bot": "Pilot",
   "about": "snakajima",
   "modelx": "gpt-4-0613",
   "temperature": 0,

@@ -1,6 +1,5 @@
 {
   "title": "Code Interpreter with Llamma2",
-  "bot": "Code(Llamma2)",
   "about": "snakajima",
   "temperature": 0,
   "model": "llama2",

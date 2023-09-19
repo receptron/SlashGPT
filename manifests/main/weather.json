@@ -1,7 +1,6 @@
 {
   "title": "Open Weather",
   "description": "Gets Weather Info",
-  "bot": "Weather",
   "about": "snakajima, https://openweathermap.org",
   "temperature": 0,
   "functions": [

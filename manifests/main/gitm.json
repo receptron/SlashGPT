@@ -1,7 +1,6 @@
 {
   "title": "GitHubMetrics",
   "description": "Metrics about GitHub repo",
-  "bot": "gitmtx",
   "about": "kozayupapa",
   "temperature": "0.0",
   "functions": "./resources/functions/graphql.json",
