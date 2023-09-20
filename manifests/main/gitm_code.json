@@ -8,9 +8,9 @@
   "help": "Prepare your github app token and set to .env file as 'SLASH_GPT_ENV_GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
   "sample": "show my login name on github using Github graphql",
   "sample2": "Github graphql で SingularitySociety/book_reading のcommit数を教えて",
-  "sample3": "Github graphql で SingularitySociety/book_reading のmainブランチcontributor ごとのcommit数を週ごとの時系列グラフで表示して",
+  "sample3": "Github graphql で SingularitySociety/book_reading のmainブランチで、contributorごとのcommit数を週ごとに集計して時系列グラフで表示して",
   "sample4": "Github graphql で snakajima/SlashGPT のmainブランチでの2023-08-01からのadd行数を時系列グラフで表示して",
-  "sample5": "Github graphql で snakajima/SlashGPT repo の mainブランチでのcontributor ごとのcommit数を日毎に集計し、時系列グラフで表示して",
+  "sample5": "Github graphql で snakajima/SlashGPT repo の mainブランチでcontributor ごとのcommit数を日毎に集計し、時系列グラフで表示して",
   "notebook": true,
   "prompt": [
     "You are an expert in GraphQL and a data scientist who writes Python code to analyze data.",
