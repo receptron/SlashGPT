@@ -1,0 +1,2080 @@
+
+"""
+Represents a comment.
+"""
+interface Comment {
+  """
+  The actor who authored the comment.
+  """
+  author: Actor
+
+  """
+  Author's association with the subject of the comment.
+  """
+  authorAssociation: CommentAuthorAssociation!
+
+  """
+  The body as Markdown.
+  """
+  body: String!
+
+  """
+  The body rendered to HTML.
+  """
+  bodyHTML: HTML!
+
+  """
+  The body rendered to text.
+  """
+  bodyText: String!
+
+  """
+  Identifies the date and time when the object was created.
+  """
+  createdAt: DateTime!
+
+  """
+  Check if this comment was created via an email reply.
+  """
+  createdViaEmail: Boolean!
+
+  """
+  The actor who edited the comment.
+  """
+  editor: Actor
+  id: ID!
+
+  """
+  Check if this comment was edited and includes an edit with the creation data
+  """
+  includesCreatedEdit: Boolean!
+
+  """
+  The moment the editor made the last edit
+  """
+  lastEditedAt: DateTime
+
+  """
+  Identifies when the comment was published at.
+  """
+  publishedAt: DateTime
+
+  """
+  Identifies the date and time when the object was last updated.
+  """
+  updatedAt: DateTime!
+
+  """
+  A list of edits to this content.
+  """
+  userContentEdits(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): UserContentEditConnection
+
+  """
+  Did the viewer author this comment.
+  """
+  viewerDidAuthor: Boolean!
+}
+
+"""
+A comment author association with repository.
+"""
+enum CommentAuthorAssociation {
+  """
+  Author has been invited to collaborate on the repository.
+  """
+  COLLABORATOR
+
+  """
+  Author has previously committed to the repository.
+  """
+  CONTRIBUTOR
+
+  """
+  Author has not previously committed to GitHub.
+  """
+  FIRST_TIMER
+
+  """
+  Author has not previously committed to the repository.
+  """
+  FIRST_TIME_CONTRIBUTOR
+
+  """
+  Author is a placeholder for an unclaimed user.
+  """
+  MANNEQUIN
+
+  """
+  Author is a member of the organization that owns the repository.
+  """
+  MEMBER
+
+  """
+  Author has no association with the repository.
+  """
+  NONE
+
+  """
+  Author is the owner of the repository.
+  """
+  OWNER
+}
+
+"""
+The possible errors that will prevent a user from updating a comment.
+"""
+enum CommentCannotUpdateReason {
+  """
+  Unable to create comment because repository is archived.
+  """
+  ARCHIVED
+
+  """
+  You cannot update this comment
+  """
+  DENIED
+
+  """
+  You must be the author or have write access to this repository to update this comment.
+  """
+  INSUFFICIENT_ACCESS
+
+  """
+  Unable to create comment because issue is locked.
+  """
+  LOCKED
+
+  """
+  You must be logged in to update this comment.
+  """
+  LOGIN_REQUIRED
+
+  """
+  Repository is under maintenance.
+  """
+  MAINTENANCE
+
+  """
+  At least one email address must be verified to update this comment.
+  """
+  VERIFIED_EMAIL_REQUIRED
+}
+
+"""
+Represents a 'comment_deleted' event on a given issue or pull request.
+"""
+type CommentDeletedEvent implements Node {
+  """
+  Identifies the actor who performed the event.
+  """
+  actor: Actor
+
+  """
+  Identifies the date and time when the object was created.
+  """
+  createdAt: DateTime!
+
+  """
+  Identifies the primary key from the database.
+  """
+  databaseId: Int
+
+  """
+  The user who authored the deleted comment.
+  """
+  deletedCommentAuthor: Actor
+  id: ID!
+}
+
+"""
+Represents a Git commit.
+"""
+type Commit implements GitObject & Node & Subscribable & UniformResourceLocatable {
+  """
+  An abbreviated version of the Git object ID
+  """
+  abbreviatedOid: String!
+
+  """
+  The number of additions in this commit.
+  """
+  additions: Int!
+
+  """
+  The merged Pull Request that introduced the commit to the repository. If the
+  commit is not present in the default branch, additionally returns open Pull
+  Requests associated with the commit
+  """
+  associatedPullRequests(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for pull requests.
+    """
+    orderBy: PullRequestOrder = {field: CREATED_AT, direction: ASC}
+  ): PullRequestConnection
+
+  """
+  Authorship details of the commit.
+  """
+  author: GitActor
+
+  """
+  Check if the committer and the author match.
+  """
+  authoredByCommitter: Boolean!
+
+  """
+  The datetime when this commit was authored.
+  """
+  authoredDate: DateTime!
+
+  """
+  The list of authors for this commit based on the git author and the Co-authored-by
+  message trailer. The git author will always be first.
+  """
+  authors(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): GitActorConnection!
+
+  """
+  Fetches `git blame` information.
+  """
+  blame(
+    """
+    The file whose Git blame information you want.
+    """
+    path: String!
+  ): Blame!
+
+  """
+  We recommend using the `changedFilesIfAvailable` field instead of
+  `changedFiles`, as `changedFiles` will cause your request to return an error
+  if GitHub is unable to calculate the number of changed files.
+  """
+  changedFiles: Int!
+    @deprecated(
+      reason: "`changedFiles` will be removed. Use `changedFilesIfAvailable` instead. Removal on 2023-01-01 UTC."
+    )
+
+  """
+  The number of changed files in this commit. If GitHub is unable to calculate
+  the number of changed files (for example due to a timeout), this will return
+  `null`. We recommend using this field instead of `changedFiles`.
+  """
+  changedFilesIfAvailable: Int
+
+  """
+  The check suites associated with a commit.
+  """
+  checkSuites(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Filters the check suites by this type.
+    """
+    filterBy: CheckSuiteFilter
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CheckSuiteConnection
+
+  """
+  Comments made on the commit.
+  """
+  comments(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CommitCommentConnection!
+
+  """
+  The HTTP path for this Git object
+  """
+  commitResourcePath: URI!
+
+  """
+  The HTTP URL for this Git object
+  """
+  commitUrl: URI!
+
+  """
+  The datetime when this commit was committed.
+  """
+  committedDate: DateTime!
+
+  """
+  Check if committed via GitHub web UI.
+  """
+  committedViaWeb: Boolean!
+
+  """
+  Committer details of the commit.
+  """
+  committer: GitActor
+
+  """
+  The number of deletions in this commit.
+  """
+  deletions: Int!
+
+  """
+  The deployments associated with a commit.
+  """
+  deployments(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Environments to list deployments for
+    """
+    environments: [String!]
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for deployments returned from the connection.
+    """
+    orderBy: DeploymentOrder = {field: CREATED_AT, direction: ASC}
+  ): DeploymentConnection
+
+  """
+  The tree entry representing the file located at the given path.
+  """
+  file(
+    """
+    The path for the file
+    """
+    path: String!
+  ): TreeEntry
+
+  """
+  The linear commit history starting from (and including) this commit, in the same order as `git log`.
+  """
+  history(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    If non-null, filters history to only show commits with matching authorship.
+    """
+    author: CommitAuthor
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    If non-null, filters history to only show commits touching files under this path.
+    """
+    path: String
+
+    """
+    Allows specifying a beginning time or date for fetching commits.
+    """
+    since: GitTimestamp
+
+    """
+    Allows specifying an ending time or date for fetching commits.
+    """
+    until: GitTimestamp
+  ): CommitHistoryConnection!
+  id: ID!
+
+  """
+  The Git commit message
+  """
+  message: String!
+
+  """
+  The Git commit message body
+  """
+  messageBody: String!
+
+  """
+  The commit message body rendered to HTML.
+  """
+  messageBodyHTML: HTML!
+
+  """
+  The Git commit message headline
+  """
+  messageHeadline: String!
+
+  """
+  The commit message headline rendered to HTML.
+  """
+  messageHeadlineHTML: HTML!
+
+  """
+  The Git object ID
+  """
+  oid: GitObjectID!
+
+  """
+  The organization this commit was made on behalf of.
+  """
+  onBehalfOf: Organization
+
+  """
+  The parents of a commit.
+  """
+  parents(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CommitConnection!
+
+  """
+  The datetime when this commit was pushed.
+  """
+  pushedDate: DateTime @deprecated(reason: "`pushedDate` is no longer supported. Removal on 2023-07-01 UTC.")
+
+  """
+  The Repository this commit belongs to
+  """
+  repository: Repository!
+
+  """
+  The HTTP path for this commit
+  """
+  resourcePath: URI!
+
+  """
+  Commit signing information, if present.
+  """
+  signature: GitSignature
+
+  """
+  Status information for this commit
+  """
+  status: Status
+
+  """
+  Check and Status rollup information for this commit.
+  """
+  statusCheckRollup: StatusCheckRollup
+
+  """
+  Returns a list of all submodules in this repository as of this Commit parsed from the .gitmodules file.
+  """
+  submodules(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SubmoduleConnection!
+
+  """
+  Returns a URL to download a tarball archive for a repository.
+  Note: For private repositories, these links are temporary and expire after five minutes.
+  """
+  tarballUrl: URI!
+
+  """
+  Commit's root Tree
+  """
+  tree: Tree!
+
+  """
+  The HTTP path for the tree of this commit
+  """
+  treeResourcePath: URI!
+
+  """
+  The HTTP URL for the tree of this commit
+  """
+  treeUrl: URI!
+
+  """
+  The HTTP URL for this commit
+  """
+  url: URI!
+
+  """
+  Check if the viewer is able to change their subscription status for the repository.
+  """
+  viewerCanSubscribe: Boolean!
+
+  """
+  Identifies if the viewer is watching, not watching, or ignoring the subscribable entity.
+  """
+  viewerSubscription: SubscriptionState
+
+  """
+  Returns a URL to download a zipball archive for a repository.
+  Note: For private repositories, these links are temporary and expire after five minutes.
+  """
+  zipballUrl: URI!
+}
+
+"""
+Specifies an author for filtering Git commits.
+"""
+input CommitAuthor {
+  """
+  Email addresses to filter by. Commits authored by any of the specified email addresses will be returned.
+  """
+  emails: [String!]
+
+  """
+  ID of a User to filter by. If non-null, only commits authored by this user
+  will be returned. This field takes precedence over emails.
+  """
+  id: ID
+}
+
+"""
+Parameters to be used for the commit_author_email_pattern rule
+"""
+type CommitAuthorEmailPatternParameters {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean!
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+Parameters to be used for the commit_author_email_pattern rule
+"""
+input CommitAuthorEmailPatternParametersInput {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+Represents a comment on a given Commit.
+"""
+type CommitComment implements Comment & Deletable & Minimizable & Node & Reactable & RepositoryNode & Updatable & UpdatableComment {
+  """
+  The actor who authored the comment.
+  """
+  author: Actor
+
+  """
+  Author's association with the subject of the comment.
+  """
+  authorAssociation: CommentAuthorAssociation!
+
+  """
+  Identifies the comment body.
+  """
+  body: String!
+
+  """
+  The body rendered to HTML.
+  """
+  bodyHTML: HTML!
+
+  """
+  The body rendered to text.
+  """
+  bodyText: String!
+
+  """
+  Identifies the commit associated with the comment, if the commit exists.
+  """
+  commit: Commit
+
+  """
+  Identifies the date and time when the object was created.
+  """
+  createdAt: DateTime!
+
+  """
+  Check if this comment was created via an email reply.
+  """
+  createdViaEmail: Boolean!
+
+  """
+  Identifies the primary key from the database.
+  """
+  databaseId: Int
+
+  """
+  The actor who edited the comment.
+  """
+  editor: Actor
+  id: ID!
+
+  """
+  Check if this comment was edited and includes an edit with the creation data
+  """
+  includesCreatedEdit: Boolean!
+
+  """
+  Returns whether or not a comment has been minimized.
+  """
+  isMinimized: Boolean!
+
+  """
+  The moment the editor made the last edit
+  """
+  lastEditedAt: DateTime
+
+  """
+  Returns why the comment was minimized. One of `abuse`, `off-topic`,
+  `outdated`, `resolved`, `duplicate` and `spam`. Note that the case and
+  formatting of these values differs from the inputs to the `MinimizeComment` mutation.
+  """
+  minimizedReason: String
+
+  """
+  Identifies the file path associated with the comment.
+  """
+  path: String
+
+  """
+  Identifies the line position associated with the comment.
+  """
+  position: Int
+
+  """
+  Identifies when the comment was published at.
+  """
+  publishedAt: DateTime
+
+  """
+  A list of reactions grouped by content left on the subject.
+  """
+  reactionGroups: [ReactionGroup!]
+
+  """
+  A list of Reactions left on the Issue.
+  """
+  reactions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Allows filtering Reactions by emoji.
+    """
+    content: ReactionContent
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Allows specifying the order in which reactions are returned.
+    """
+    orderBy: ReactionOrder
+  ): ReactionConnection!
+
+  """
+  The repository associated with this node.
+  """
+  repository: Repository!
+
+  """
+  The HTTP path permalink for this commit comment.
+  """
+  resourcePath: URI!
+
+  """
+  Identifies the date and time when the object was last updated.
+  """
+  updatedAt: DateTime!
+
+  """
+  The HTTP URL permalink for this commit comment.
+  """
+  url: URI!
+
+  """
+  A list of edits to this content.
+  """
+  userContentEdits(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): UserContentEditConnection
+
+  """
+  Check if the current viewer can delete this object.
+  """
+  viewerCanDelete: Boolean!
+
+  """
+  Check if the current viewer can minimize this object.
+  """
+  viewerCanMinimize: Boolean!
+
+  """
+  Can user react to this subject
+  """
+  viewerCanReact: Boolean!
+
+  """
+  Check if the current viewer can update this object.
+  """
+  viewerCanUpdate: Boolean!
+
+  """
+  Reasons why the current viewer can not update this comment.
+  """
+  viewerCannotUpdateReasons: [CommentCannotUpdateReason!]!
+
+  """
+  Did the viewer author this comment.
+  """
+  viewerDidAuthor: Boolean!
+}
+
+"""
+The connection type for CommitComment.
+"""
+type CommitCommentConnection {
+  """
+  A list of edges.
+  """
+  edges: [CommitCommentEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CommitComment]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type CommitCommentEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CommitComment
+}
+
+"""
+A thread of comments on a commit.
+"""
+type CommitCommentThread implements Node & RepositoryNode {
+  """
+  The comments that exist in this thread.
+  """
+  comments(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CommitCommentConnection!
+
+  """
+  The commit the comments were made on.
+  """
+  commit: Commit
+  id: ID!
+
+  """
+  The file the comments were made on.
+  """
+  path: String
+
+  """
+  The position in the diff for the commit that the comment was made on.
+  """
+  position: Int
+
+  """
+  The repository associated with this node.
+  """
+  repository: Repository!
+}
+
+"""
+The connection type for Commit.
+"""
+type CommitConnection {
+  """
+  A list of edges.
+  """
+  edges: [CommitEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Commit]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+Ordering options for commit contribution connections.
+"""
+input CommitContributionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection!
+
+  """
+  The field by which to order commit contributions.
+  """
+  field: CommitContributionOrderField!
+}
+
+"""
+Properties by which commit contribution connections can be ordered.
+"""
+enum CommitContributionOrderField {
+  """
+  Order commit contributions by how many commits they represent.
+  """
+  COMMIT_COUNT
+
+  """
+  Order commit contributions by when they were made.
+  """
+  OCCURRED_AT
+}
+
+"""
+This aggregates commits made by a user within one repository.
+"""
+type CommitContributionsByRepository {
+  """
+  The commit contributions, each representing a day.
+  """
+  contributions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for commit contributions returned from the connection.
+    """
+    orderBy: CommitContributionOrder = {field: OCCURRED_AT, direction: DESC}
+  ): CreatedCommitContributionConnection!
+
+  """
+  The repository in which the commits were made.
+  """
+  repository: Repository!
+
+  """
+  The HTTP path for the user's commits to the repository in this time range.
+  """
+  resourcePath: URI!
+
+  """
+  The HTTP URL for the user's commits to the repository in this time range.
+  """
+  url: URI!
+}
+
+"""
+An edge in a connection.
+"""
+type CommitEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Commit
+}
+
+"""
+The connection type for Commit.
+"""
+type CommitHistoryConnection {
+  """
+  A list of edges.
+  """
+  edges: [CommitEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Commit]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A message to include with a new commit
+"""
+input CommitMessage {
+  """
+  The body of the message.
+  """
+  body: String
+
+  """
+  The headline of the message.
+  """
+  headline: String!
+}
+
+"""
+Parameters to be used for the commit_message_pattern rule
+"""
+type CommitMessagePatternParameters {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean!
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+Parameters to be used for the commit_message_pattern rule
+"""
+input CommitMessagePatternParametersInput {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+A git ref for a commit to be appended to.
+
+The ref must be a branch, i.e. its fully qualified name must start
+with `refs/heads/` (although the input is not required to be fully
+qualified).
+
+The Ref may be specified by its global node ID or by the
+`repositoryNameWithOwner` and `branchName`.
+
+### Examples
+
+Specify a branch using a global node ID:
+
+    { "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
+
+Specify a branch using `repositoryNameWithOwner` and `branchName`:
+
+    {
+      "repositoryNameWithOwner": "github/graphql-client",
+      "branchName": "main"
+    }
+"""
+input CommittableBranch {
+  """
+  The unqualified name of the branch to append the commit to.
+  """
+  branchName: String
+
+  """
+  The Node ID of the Ref to be updated.
+  """
+  id: ID
+
+  """
+  The nameWithOwner of the repository to commit to.
+  """
+  repositoryNameWithOwner: String
+}
+
+"""
+Parameters to be used for the committer_email_pattern rule
+"""
+type CommitterEmailPatternParameters {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean!
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+Parameters to be used for the committer_email_pattern rule
+"""
+input CommitterEmailPatternParametersInput {
+  """
+  How this rule will appear to users.
+  """
+  name: String
+
+  """
+  If true, the rule will fail if the pattern matches.
+  """
+  negate: Boolean
+
+  """
+  The operator to use for matching.
+  """
+  operator: String!
+
+  """
+  The pattern to match with.
+  """
+  pattern: String!
+}
+
+"""
+Represents a comparison between two commit revisions.
+"""
+type Comparison implements Node {
+  """
+  The number of commits ahead of the base branch.
+  """
+  aheadBy: Int!
+
+  """
+  The base revision of this comparison.
+  """
+  baseTarget: GitObject!
+
+  """
+  The number of commits behind the base branch.
+  """
+  behindBy: Int!
+
+  """
+  The commits which compose this comparison.
+  """
+  commits(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ComparisonCommitConnection!
+
+  """
+  The head revision of this comparison.
+  """
+  headTarget: GitObject!
+  id: ID!
+
+  """
+  The status of this comparison.
+  """
+  status: ComparisonStatus!
+}
+
+"""
+The connection type for Commit.
+"""
+type ComparisonCommitConnection {
+  """
+  The total count of authors and co-authors across all commits.
+  """
+  authorCount: Int!
+
+  """
+  A list of edges.
+  """
+  edges: [CommitEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Commit]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+The status of a git comparison between two refs.
+"""
+enum ComparisonStatus {
+  """
+  The head ref is ahead of the base ref.
+  """
+  AHEAD
+
+  """
+  The head ref is behind the base ref.
+  """
+  BEHIND
+
+  """
+  The head ref is both ahead and behind of the base ref, indicating git history has diverged.
+  """
+  DIVERGED
+
+  """
+  The head ref and base ref are identical.
+  """
+  IDENTICAL
+}
+
+"""
+Represents a 'connected' event on a given issue or pull request.
+"""
+type ConnectedEvent implements Node {
+  """
+  Identifies the actor who performed the event.
+  """
+  actor: Actor
+
+  """
+  Identifies the date and time when the object was created.
+  """
+  createdAt: DateTime!
+  id: ID!
+
+  """
+  Reference originated in a different repository.
+  """
+  isCrossRepository: Boolean!
+
+  """
+  Issue or pull request that made the reference.
+  """
+  source: ReferencedSubject!
+
+  """
+  Issue or pull request which was connected.
+  """
+  subject: ReferencedSubject!
+}
+
+"""
+The Contributing Guidelines for a repository.
+"""
+type ContributingGuidelines {
+  """
+  The body of the Contributing Guidelines.
+  """
+  body: String
+
+  """
+  The HTTP path for the Contributing Guidelines.
+  """
+  resourcePath: URI
+
+  """
+  The HTTP URL for the Contributing Guidelines.
+  """
+  url: URI
+}
+
+"""
+Represents a contribution a user made on GitHub, such as opening an issue.
+"""
+interface Contribution {
+  """
+  Whether this contribution is associated with a record you do not have access to. For
+  example, your own 'first issue' contribution may have been made on a repository you can no
+  longer access.
+  """
+  isRestricted: Boolean!
+
+  """
+  When this contribution was made.
+  """
+  occurredAt: DateTime!
+
+  """
+  The HTTP path for this contribution.
+  """
+  resourcePath: URI!
+
+  """
+  The HTTP URL for this contribution.
+  """
+  url: URI!
+
+  """
+  The user who made this contribution.
+  """
+  user: User!
+}
+
+"""
+A calendar of contributions made on GitHub by a user.
+"""
+type ContributionCalendar {
+  """
+  A list of hex color codes used in this calendar. The darker the color, the more contributions it represents.
+  """
+  colors: [String!]!
+
+  """
+  Determine if the color set was chosen because it's currently Halloween.
+  """
+  isHalloween: Boolean!
+
+  """
+  A list of the months of contributions in this calendar.
+  """
+  months: [ContributionCalendarMonth!]!
+
+  """
+  The count of total contributions in the calendar.
+  """
+  totalContributions: Int!
+
+  """
+  A list of the weeks of contributions in this calendar.
+  """
+  weeks: [ContributionCalendarWeek!]!
+}
+
+"""
+Represents a single day of contributions on GitHub by a user.
+"""
+type ContributionCalendarDay {
+  """
+  The hex color code that represents how many contributions were made on this day compared to others in the calendar.
+  """
+  color: String!
+
+  """
+  How many contributions were made by the user on this day.
+  """
+  contributionCount: Int!
+
+  """
+  Indication of contributions, relative to other days. Can be used to indicate
+  which color to represent this day on a calendar.
+  """
+  contributionLevel: ContributionLevel!
+
+  """
+  The day this square represents.
+  """
+  date: Date!
+
+  """
+  A number representing which day of the week this square represents, e.g., 1 is Monday.
+  """
+  weekday: Int!
+}
+
+"""
+A month of contributions in a user's contribution graph.
+"""
+type ContributionCalendarMonth {
+  """
+  The date of the first day of this month.
+  """
+  firstDay: Date!
+
+  """
+  The name of the month.
+  """
+  name: String!
+
+  """
+  How many weeks started in this month.
+  """
+  totalWeeks: Int!
+
+  """
+  The year the month occurred in.
+  """
+  year: Int!
+}
+
+"""
+A week of contributions in a user's contribution graph.
+"""
+type ContributionCalendarWeek {
+  """
+  The days of contributions in this week.
+  """
+  contributionDays: [ContributionCalendarDay!]!
+
+  """
+  The date of the earliest square in this week.
+  """
+  firstDay: Date!
+}
+
+"""
+Varying levels of contributions from none to many.
+"""
+enum ContributionLevel {
+  """
+  Lowest 25% of days of contributions.
+  """
+  FIRST_QUARTILE
+
+  """
+  Highest 25% of days of contributions. More contributions than the third quartile.
+  """
+  FOURTH_QUARTILE
+
+  """
+  No contributions occurred.
+  """
+  NONE
+
+  """
+  Second lowest 25% of days of contributions. More contributions than the first quartile.
+  """
+  SECOND_QUARTILE
+
+  """
+  Second highest 25% of days of contributions. More contributions than second quartile, less than the fourth quartile.
+  """
+  THIRD_QUARTILE
+}
+
+"""
+Ordering options for contribution connections.
+"""
+input ContributionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection!
+}
+
+"""
+A contributions collection aggregates contributions such as opened issues and commits created by a user.
+"""
+type ContributionsCollection {
+  """
+  Commit contributions made by the user, grouped by repository.
+  """
+  commitContributionsByRepository(
+    """
+    How many repositories should be included.
+    """
+    maxRepositories: Int = 25
+  ): [CommitContributionsByRepository!]!
+
+  """
+  A calendar of this user's contributions on GitHub.
+  """
+  contributionCalendar: ContributionCalendar!
+
+  """
+  The years the user has been making contributions with the most recent year first.
+  """
+  contributionYears: [Int!]!
+
+  """
+  Determine if this collection's time span ends in the current month.
+  """
+  doesEndInCurrentMonth: Boolean!
+
+  """
+  The date of the first restricted contribution the user made in this time
+  period. Can only be non-null when the user has enabled private contribution counts.
+  """
+  earliestRestrictedContributionDate: Date
+
+  """
+  The ending date and time of this collection.
+  """
+  endedAt: DateTime!
+
+  """
+  The first issue the user opened on GitHub. This will be null if that issue was
+  opened outside the collection's time range and ignoreTimeRange is false. If
+  the issue is not visible but the user has opted to show private contributions,
+  a RestrictedContribution will be returned.
+  """
+  firstIssueContribution: CreatedIssueOrRestrictedContribution
+
+  """
+  The first pull request the user opened on GitHub. This will be null if that
+  pull request was opened outside the collection's time range and
+  ignoreTimeRange is not true. If the pull request is not visible but the user
+  has opted to show private contributions, a RestrictedContribution will be returned.
+  """
+  firstPullRequestContribution: CreatedPullRequestOrRestrictedContribution
+
+  """
+  The first repository the user created on GitHub. This will be null if that
+  first repository was created outside the collection's time range and
+  ignoreTimeRange is false. If the repository is not visible, then a
+  RestrictedContribution is returned.
+  """
+  firstRepositoryContribution: CreatedRepositoryOrRestrictedContribution
+
+  """
+  Does the user have any more activity in the timeline that occurred prior to the collection's time range?
+  """
+  hasActivityInThePast: Boolean!
+
+  """
+  Determine if there are any contributions in this collection.
+  """
+  hasAnyContributions: Boolean!
+
+  """
+  Determine if the user made any contributions in this time frame whose details
+  are not visible because they were made in a private repository. Can only be
+  true if the user enabled private contribution counts.
+  """
+  hasAnyRestrictedContributions: Boolean!
+
+  """
+  Whether or not the collector's time span is all within the same day.
+  """
+  isSingleDay: Boolean!
+
+  """
+  A list of issues the user opened.
+  """
+  issueContributions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Should the user's first issue ever be excluded from the result.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented issue be excluded from the result.
+    """
+    excludePopular: Boolean = false
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for contributions returned from the connection.
+    """
+    orderBy: ContributionOrder = {direction: DESC}
+  ): CreatedIssueContributionConnection!
+
+  """
+  Issue contributions made by the user, grouped by repository.
+  """
+  issueContributionsByRepository(
+    """
+    Should the user's first issue ever be excluded from the result.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented issue be excluded from the result.
+    """
+    excludePopular: Boolean = false
+
+    """
+    How many repositories should be included.
+    """
+    maxRepositories: Int = 25
+  ): [IssueContributionsByRepository!]!
+
+  """
+  When the user signed up for GitHub. This will be null if that sign up date
+  falls outside the collection's time range and ignoreTimeRange is false.
+  """
+  joinedGitHubContribution: JoinedGitHubContribution
+
+  """
+  The date of the most recent restricted contribution the user made in this time
+  period. Can only be non-null when the user has enabled private contribution counts.
+  """
+  latestRestrictedContributionDate: Date
+
+  """
+  When this collection's time range does not include any activity from the user, use this
+  to get a different collection from an earlier time range that does have activity.
+  """
+  mostRecentCollectionWithActivity: ContributionsCollection
+
+  """
+  Returns a different contributions collection from an earlier time range than this one
+  that does not have any contributions.
+  """
+  mostRecentCollectionWithoutActivity: ContributionsCollection
+
+  """
+  The issue the user opened on GitHub that received the most comments in the specified
+  time frame.
+  """
+  popularIssueContribution: CreatedIssueContribution
+
+  """
+  The pull request the user opened on GitHub that received the most comments in the
+  specified time frame.
+  """
+  popularPullRequestContribution: CreatedPullRequestContribution
+
+  """
+  Pull request contributions made by the user.
+  """
+  pullRequestContributions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Should the user's first pull request ever be excluded from the result.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented pull request be excluded from the result.
+    """
+    excludePopular: Boolean = false
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for contributions returned from the connection.
+    """
+    orderBy: ContributionOrder = {direction: DESC}
+  ): CreatedPullRequestContributionConnection!
+
+  """
+  Pull request contributions made by the user, grouped by repository.
+  """
+  pullRequestContributionsByRepository(
+    """
+    Should the user's first pull request ever be excluded from the result.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented pull request be excluded from the result.
+    """
+    excludePopular: Boolean = false
+
+    """
+    How many repositories should be included.
+    """
+    maxRepositories: Int = 25
+  ): [PullRequestContributionsByRepository!]!
+
+  """
+  Pull request review contributions made by the user. Returns the most recently
+  submitted review for each PR reviewed by the user.
+  """
+  pullRequestReviewContributions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for contributions returned from the connection.
+    """
+    orderBy: ContributionOrder = {direction: DESC}
+  ): CreatedPullRequestReviewContributionConnection!
+
+  """
+  Pull request review contributions made by the user, grouped by repository.
+  """
+  pullRequestReviewContributionsByRepository(
+    """
+    How many repositories should be included.
+    """
+    maxRepositories: Int = 25
+  ): [PullRequestReviewContributionsByRepository!]!
+
+  """
+  A list of repositories owned by the user that the user created in this time range.
+  """
+  repositoryContributions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Should the user's first repository ever be excluded from the result.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for contributions returned from the connection.
+    """
+    orderBy: ContributionOrder = {direction: DESC}
+  ): CreatedRepositoryContributionConnection!
+
+  """
+  A count of contributions made by the user that the viewer cannot access. Only
+  non-zero when the user has chosen to share their private contribution counts.
+  """
+  restrictedContributionsCount: Int!
+
+  """
+  The beginning date and time of this collection.
+  """
+  startedAt: DateTime!
+
+  """
+  How many commits were made by the user in this time span.
+  """
+  totalCommitContributions: Int!
+
+  """
+  How many issues the user opened.
+  """
+  totalIssueContributions(
+    """
+    Should the user's first issue ever be excluded from this count.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented issue be excluded from this count.
+    """
+    excludePopular: Boolean = false
+  ): Int!
+
+  """
+  How many pull requests the user opened.
+  """
+  totalPullRequestContributions(
+    """
+    Should the user's first pull request ever be excluded from this count.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented pull request be excluded from this count.
+    """
+    excludePopular: Boolean = false
+  ): Int!
+
+  """
+  How many pull request reviews the user left.
+  """
+  totalPullRequestReviewContributions: Int!
+
+  """
+  How many different repositories the user committed to.
+  """
+  totalRepositoriesWithContributedCommits: Int!
+
+  """
+  How many different repositories the user opened issues in.
+  """
+  totalRepositoriesWithContributedIssues(
+    """
+    Should the user's first issue ever be excluded from this count.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented issue be excluded from this count.
+    """
+    excludePopular: Boolean = false
+  ): Int!
+
+  """
+  How many different repositories the user left pull request reviews in.
+  """
+  totalRepositoriesWithContributedPullRequestReviews: Int!
+
+  """
+  How many different repositories the user opened pull requests in.
+  """
+  totalRepositoriesWithContributedPullRequests(
+    """
+    Should the user's first pull request ever be excluded from this count.
+    """
+    excludeFirst: Boolean = false
+
+    """
+    Should the user's most commented pull request be excluded from this count.
+    """
+    excludePopular: Boolean = false
+  ): Int!
+
+  """
+  How many repositories the user created.
+  """
+  totalRepositoryContributions(
+    """
+    Should the user's first repository ever be excluded from this count.
+    """
+    excludeFirst: Boolean = false
+  ): Int!
+
+  """
+  The user who made the contributions in this collection.
+  """
+  user: User!
+}
