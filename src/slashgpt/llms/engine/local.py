@@ -57,7 +57,8 @@ class LLMEngineLocal(LLMEngineBase):
             'x-api-key': self.api_key
         }
         response = requests.post(self.url, headers=headers, json=arguments)
-        print("***response", response)
+        print("***response.status_code", response.status_code)
+        print("***response.text", response.text)
 
         output = ["Hello World"]
         '''
