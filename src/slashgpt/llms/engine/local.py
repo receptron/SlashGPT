@@ -27,15 +27,15 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
     return "\n".join(prompts)
 
 
-class LLMEngineReplicate(LLMEngineBase):
+class LLMEngineLocal(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
-        temperature = manifest.temperature()
-        replicate_model = self.llm_model.replicate_model()
-        prompt = message_to_prompt(messages, manifest)
+        # temperature = manifest.temperature()
+        # replicate_model = self.llm_model.replicate_model()
+        # prompt = message_to_prompt(messages, manifest)
 
         if verbose:
             print_debug("calling *** local")
