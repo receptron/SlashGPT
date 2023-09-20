@@ -15,7 +15,7 @@ def manifest():
 
 
 def test_botname(manifest):
-    assert manifest.botname() == "GPT"
+    assert manifest.botname() == "Agent(empty-manifest)"
 
 
 def test_username(manifest):
