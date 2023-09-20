@@ -1,5 +1,5 @@
-title: Code Interpreter with Llamma2
-model: llama2
+title: Code Interpreter with local_Llamma2
+model: local_llama2
 temperature: 0
 skip_function_result: true
 form: Write some Python code to {question} (surround it with ```).
