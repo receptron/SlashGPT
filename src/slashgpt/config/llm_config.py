@@ -24,7 +24,9 @@ llm_models = {
     },
     "local_llama2": {
         "engine_name": "local",
-        "model_name": "local_llama2"
+        "model_name": "local_llama2",
+        "x_api_key": "KSERVE_API_KEY",
+        "url": "https://bge-base-en.staging.kubeflow.platform.nedra.app/v2/models/bge-base-en/infer",
     },
     "llama270": {
         "engine_name": "replicate",

@@ -31,9 +31,12 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
 class LLMEngineLocal(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
+        print("***llm_model", self.llm_model.llm_model_data)
         # LATER: Move them to config file
-        self.api_key = os.getenv("KSERVE_API_KEY", "")
-        self.url = "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer"
+        self.api_key = os.getenv(self.llm_model.llm_model_data.get("x_api_key"), "")
+        self.url = self.llm_model.llm_model_data.get("url")
+        # "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer"
+        # self.url = "https://bge-base-en.staging.kubeflow.platform.nedra.app/v2/models/bge-base-en/infer"
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
@@ -43,7 +46,7 @@ class LLMEngineLocal(LLMEngineBase):
         if verbose:
             print_debug("calling *** local")
 
-        print_debug("calling *** local")
+        print("calling *** local", self.url)
         arguments = {
             'inputs': [{
                 "name": "input-0",

@@ -30,10 +30,6 @@ default_llm_models = {
         "api_key": "REPLICATE_API_TOKEN",
         "replicate_model": "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
     },
-    "local_llama2": {
-        "engine_name": "local",
-        "model_name": "local_llama2"
-    },
     "llama270": {
         "engine_name": "replicate",
         "model_name": "llama270",
