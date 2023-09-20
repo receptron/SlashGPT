@@ -33,6 +33,7 @@ class LLMEngineLocal(LLMEngineBase):
         self.llm_model = llm_model
         print("***llm_model", self.llm_model.llm_model_data)
         self.api_key = os.getenv(self.llm_model.llm_model_data.get("x_api_key"), "")
+        self.header_key = self.llm_model.llm_model_data.get("header_api_key")
         self.url = self.llm_model.llm_model_data.get("url")
         return
 
@@ -45,7 +46,7 @@ class LLMEngineLocal(LLMEngineBase):
 
         print("calling *** local", self.url)
         arguments = {"inputs": [{"name": "input-0", "data": [prompt], "datatype": "BYTES", "shape": [-1]}]}
-        headers = {"Content-Type": "application/json", "x-api-key": self.api_key}
+        headers = {"Content-Type": "application/json", self.header_key: self.api_key}
         response = requests.post(self.url, headers=headers, json=arguments)
         print("***response.status_code", response.status_code)
         print("***response.text", response.text)
