@@ -1,6 +1,7 @@
 from typing import List
 
-import replicate
+import os
+import requests
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
@@ -30,17 +31,34 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
 class LLMEngineLocal(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
+        # LATER: Move them to config file
+        self.api_key = os.getenv("KSERVE_API_KEY", "")
+        self.url = "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer"
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         # temperature = manifest.temperature()
-        # replicate_model = self.llm_model.replicate_model()
-        # prompt = message_to_prompt(messages, manifest)
+        prompt = message_to_prompt(messages, manifest)
 
         if verbose:
             print_debug("calling *** local")
 
         print_debug("calling *** local")
+        arguments = {
+            'inputs': [{
+                "name": "input-0",
+                "data": [prompt],
+                "datatype": "BYTES",
+                "shape": [-1]
+            }]
+        }
+        headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': self.api_key
+        }
+        response = requests.post(self.url, headers=headers, json=arguments)
+        print("***response", response)
+
         output = ["Hello World"]
         '''
         output = replicate.run(
