@@ -28,7 +28,7 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
     return "\n".join(prompts)
 
 
-class LLMEngineLocal(LLMEngineBase):
+class LLMEngineHosted(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
         print("***llm_model", self.llm_model.llm_model_data)

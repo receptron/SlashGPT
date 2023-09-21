@@ -26,14 +26,14 @@ llm_models = {
         "replicate_model": "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
     },
     "local_llama2": {
-        "engine_name": "local",
+        "engine_name": "hosted",
         "model_name": "local_llama2",
         "x_api_key": "KSERVE_API_KEY",
         "header_api_key": "x-api-key",
         "url": "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer",
     },
     "local_embed": {
-        "engine_name": "local",
+        "engine_name": "hosted",
         "model_name": "local_embed",
         "x_api_key": "KSERVE_API_KEY",
         "header_api_key": "x-api-key",
@@ -78,9 +78,9 @@ llm_engine_configs = {
         "module_name": "slashgpt.llms.engine.palm",
         "class_name": "LLMEnginePaLM",
     },
-    "local": {
-        "module_name": "slashgpt.llms.engine.local",
-        "class_name": "LLMEngineLocal",
+    "hosted": {
+        "module_name": "slashgpt.llms.engine.hosted",
+        "class_name": "LLMEngineHosted",
     },
     "from_pretrained": {
         "module_name": "slashgpt.plugins.engine.from_pretrained",
