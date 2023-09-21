@@ -64,6 +64,10 @@ llm_engine_configs = {
         "module_name": "slashgpt.llms.engine.palm",
         "class_name": "LLMEnginePaLM",
     },
+    "hosted": {
+        "module_name": "slashgpt.llms.engine.hosted",
+        "class_name": "LLMEngineHosted",
+    },
     "from_pretrained": {
         "module_name": "slashgpt.plugins.engine.from_pretrained",
         "class_name": "LLMEngineFromPretrained",
