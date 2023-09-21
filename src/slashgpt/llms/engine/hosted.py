@@ -37,15 +37,20 @@ class LLMEngineHosted(LLMEngineBase):
             json_data = json.loads(response.text)
             # print(json.dumps(json_data, indent=2))
             outputs = json_data.get("outputs")
-            if outputs:
+            if outputs and isinstance(outputs, list):
                 # print("*** found outputs")
-                data = outputs[0].get("data")
-                if data:
+                output0 = outputs[0]
+                datatype = output0.get("datatype")
+                data = output0.get("data")
+                if datatype == "BYTES":
                     # print("*** found data", data[0])
                     json_data2 = json.loads(data[0])
                     if json_data2:
                         # print("*** found json_data2", json.dumps(json_data2, indent=2))
                         output = json_data2.get("message")
+                elif datatype == "FP64":
+                    print(datatype, data[0])
+                    output = [str(data)]
         else:
             print_error(f"Error:{response.status_code}\n{response.text}")
 
