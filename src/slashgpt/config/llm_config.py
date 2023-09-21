@@ -25,13 +25,6 @@ llm_models = {
         "api_key": "REPLICATE_API_TOKEN",
         "replicate_model": "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
     },
-    "local_llama2": {
-        "engine_name": "hosted",
-        "model_name": "local_llama2",
-        "api_key": "KSERVE_API_KEY",
-        "header_api_key": "x-api-key",
-        "url": "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer",
-    },
     "llama270": {
         "engine_name": "replicate",
         "model_name": "llama270",
