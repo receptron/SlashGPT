@@ -22,4 +22,8 @@ llm_engine_configs = {
         "module_name": "plugins.engine.from_pretrained2",
         "class_name": "LLMEngineFromPretrained2",
     },
+    "hosted": {
+        "module_name": "slashgpt.llms.engine.hosted",
+        "class_name": "LLMEngineHosted",
+    },
 }
