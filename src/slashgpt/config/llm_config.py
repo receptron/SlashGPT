@@ -32,13 +32,6 @@ llm_models = {
         "header_api_key": "x-api-key",
         "url": "https://llama2-7b-chat.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-chat/infer",
     },
-    "local_embed": {
-        "engine_name": "hosted",
-        "model_name": "local_embed",
-        "api_key": "KSERVE_API_KEY",
-        "header_api_key": "x-api-key",
-        "url": "https://bge-base-en.staging.kubeflow.platform.nedra.app/v2/models/bge-base-en/infer",
-    },
     "llama270": {
         "engine_name": "replicate",
         "model_name": "llama270",
