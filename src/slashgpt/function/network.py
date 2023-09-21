@@ -31,7 +31,13 @@ def graphQLRequest(url: str, headers: dict, appkey_value: str, arguments: dict, 
         client = Client(transport=transport)
         query = arguments.get("query")
         graphQuery = gql(f"query {query}")
-        response = client.execute(graphQuery)
+        params = arguments.get("variables")
+        if params:
+            if verbose:
+                print_debug(f"params={params}")
+            response = client.execute(graphQuery, variable_values=params)                     
+        else: 
+            response = client.execute(graphQuery)
         return json.dumps(response)
     except Exception as e:
         return str(e)
