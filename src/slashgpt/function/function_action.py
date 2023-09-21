@@ -1,6 +1,5 @@
 import os
-import urllib.parse
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
 from slashgpt.utils.print import print_debug, print_error
@@ -86,7 +85,7 @@ class FunctionAction:
             if verbose:
                 print_debug(template)
             data = template.format(**arguments)
-            dataURL = f"data:{_mime_type};charset=utf-8,{urllib.parse.quote_plus(data)}"
+            dataURL = f"data:{_mime_type};charset=utf-8,{quote_plus(data)}"
             return message_template.format(url=dataURL)
 
     def __get_appkey_value(self):
