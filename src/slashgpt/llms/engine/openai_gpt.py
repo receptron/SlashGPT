@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 import openai
@@ -5,12 +6,17 @@ import openai
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug
+from slashgpt.utils.print import print_debug, print_error
 
 
 class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
+        key = llm_model.get_api_key_value()
+        if key == "":
+            print_error("OPENAI_API_KEY environment variable is missing from .env")
+            sys.exit()
+        openai.api_key = key
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):

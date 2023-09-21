@@ -1,9 +1,6 @@
 import os
-import sys
 from typing import Optional
 
-import google.generativeai as palm
-import openai
 import pinecone
 from dotenv import load_dotenv
 
@@ -20,18 +17,12 @@ class ChatConfig:
         self.base_path = base_path
         # Load various keys from .env file
         load_dotenv()
-        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        if not self.OPENAI_API_KEY:
-            print("OPENAI_API_KEY environment variable is missing from .env")
-            sys.exit()
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
 
         self.verbose = False
 
-        # Initialize OpenAI and optinoally Pinecone and Palm
-        openai.api_key = self.OPENAI_API_KEY
         if self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
 
@@ -40,7 +31,3 @@ class ChatConfig:
         # engine
         if self.llm_engine_configs:
             LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
-
-    # for llm
-    def has_environment_value(self, key: str):
-        return os.getenv(key, None) is not None

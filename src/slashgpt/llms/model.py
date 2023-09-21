@@ -1,8 +1,6 @@
 import os
-
 from typing import List
 
-from slashgpt.chat_config import ChatConfig
 from slashgpt.llms.engine_factory import LLMEngineFactory
 from slashgpt.manifest import Manifest
 
