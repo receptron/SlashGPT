@@ -7,4 +7,29 @@ model:
   url: https://nsql.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-nsql/infer
 prompt:
 - Current time is {now}.
+
 sample: 'Which distinct product subfamilies use PVC? Show me the subfamily and total sales.'
+sample1: What materials are in the database?
+sample2: Which are the three most understocked materials?
+sample3: What are the three most popular product families? In your response, show subfamily and total sales.
+sample4: Which distinct product subfamilies use nylon as a material? Show me the subfamilies and their total sales.
+sample5: What types of small leather goods sell best at High Street stores in August? Show me the types and sales numbers.
+sample6: Rank the store clusters by cluster productivity.
+sample7: What distinct product subfamilies use PVC?
+sample8: Which distinct product subfamilies use PVC? Show me the subfamily and total sales.
+sample9: Show me locations where products containing PVC are sold, and include the total sales in your response.
+sample10: Show me product subfamilies that use PVC and their total stock.
+sample11: What columns are there in the database?
+sample12: What are the distinct product subfamilies?
+sample13: Show me the top five lowest selling product subfamilies and their total sales.
+sample14: What product families are in the database?
+sample15: What distinct product subfamilies share the family of small leather goods?
+sample16: What distinct product subfamilies share the family of handbag?
+sample17: What distinct product subfamilies share the family of fashion accessories?
+sample18: Show me the product families and their total sales
+sample19: What distinct years are contained in the dataset?
+
+
+
+
+
