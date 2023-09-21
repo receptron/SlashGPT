@@ -24,7 +24,6 @@ class ChatConfig:
         if not self.OPENAI_API_KEY:
             print("OPENAI_API_KEY environment variable is missing from .env")
             sys.exit()
-        self.GOOGLE_PALM_KEY = os.getenv("GOOGLE_PALM_KEY", None)
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
@@ -36,8 +35,6 @@ class ChatConfig:
         openai.api_key = self.OPENAI_API_KEY
         if self.PINECONE_API_KEY and self.PINECONE_ENVIRONMENT:
             pinecone.init(api_key=self.PINECONE_API_KEY, environment=self.PINECONE_ENVIRONMENT)
-        if self.GOOGLE_PALM_KEY:
-            palm.configure(api_key=self.GOOGLE_PALM_KEY)
 
         self.llm_models = llm_models if llm_models else default_llm_models
         self.llm_engine_configs = llm_engine_configs if llm_engine_configs else default_llm_engine_configs
