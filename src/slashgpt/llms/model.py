@@ -64,8 +64,14 @@ def __search_llm_model(llm_model_name: str, llm_models={}):
 
 
 def get_llm_model_from_manifest(manifest: Manifest, llm_models={}):
-    llm_model_name = manifest.model()
-    llm_model = __search_llm_model(llm_model_name, llm_models)
+    model = manifest.model()
+    if isinstance(model, dict):
+        # This code enables llm model definition embedded in the manifest file
+        llm_model = model
+        llm_model_name = model.get("model_name")
+    else:
+        llm_model_name = model
+        llm_model = __search_llm_model(llm_model_name, llm_models)
 
     return LlmModel(llm_model)
 

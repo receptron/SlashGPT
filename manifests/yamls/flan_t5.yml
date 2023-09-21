@@ -1,0 +1,10 @@
+title: Chat with flan t5 large
+model: 
+  engine_name: hosted
+  model_name: flan_t5
+  api_key: KSERVE_API_KEY
+  header_api_key: x-api-key
+  url: https://flan-t5-summ.staging.kubeflow.platform.nedra.app/v2/models/flan-t5-summ/infer
+prompt:
+- Current time is {now}.
+sample: 'Summarize following text: The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess. It is named after its creator Arpad Elo, a Hungarian-American physics professor.\nThe Elo system was invented as an improved chess-rating system over the previously used Harkness system, but is also used as a rating system in association football, American football, baseball, basketball, pool, table tennis, various board games and esports, and more recently large language models.'
