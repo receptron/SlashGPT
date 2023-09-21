@@ -66,7 +66,7 @@ class LLMEngineHosted(LLMEngineBase):
                     if json_data2:
                         # print("*** found json_data2", json.dumps(json_data2, indent=2))
                         output = json_data2.get("message")
-                        
+
         res = "\n" + "".join(output)
         function_call = self._extract_function_call(messages[-1], manifest, res)
 
