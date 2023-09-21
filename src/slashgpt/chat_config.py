@@ -27,7 +27,6 @@ class ChatConfig:
         self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
         self.PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "")
-        self.REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", None)
 
         self.verbose = False
 
