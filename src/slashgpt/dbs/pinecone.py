@@ -4,26 +4,25 @@ import openai
 import pinecone
 import tiktoken  # for counting tokens
 
-from slashgpt.chat_config import ChatConfig
 from slashgpt.utils.print import print_debug, print_error
 
 
 class DBPinecone:
     @classmethod
-    def factory(cls, table_name: str, config: ChatConfig):
+    def factory(cls, table_name: str, verbose: bool):
         pinecone_api_key = os.getenv("PINECONE_API_KEY", "")
         pinecone_environment = os.getenv("PINECONE_ENVIRONMENT", "")
 
         if table_name and pinecone_api_key and pinecone_environment:
             pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
             assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
-            return DBPinecone(table_name, config)
+            return DBPinecone(table_name, verbose)
         else:
             print_error("PINECONE_API_KEY / PINECONE_ENVIRONMENT environment variable is missing from .env")
 
-    def __init__(self, table_name: str, config: ChatConfig):
+    def __init__(self, table_name: str, verbose: bool):
         self.EMBEDDING_MODEL = os.getenv("PINECONE_EMBEDDING_MODEL", "text-embedding-ada-002")
-        self.config = config
+        self.verbose = verbose
         self.index = pinecone.Index(table_name)
 
     # Fetch artciles related to user messages
@@ -44,7 +43,7 @@ class DBPinecone:
         articles = ""
         count = 0
         base_token = self.__messages_tokens(messages, model_name)
-        if self.config.verbose:
+        if self.verbose:
             print_debug(f"messages token:{base_token}")
         for match in results["matches"]:
             article = match["metadata"]["text"]
@@ -54,9 +53,9 @@ class DBPinecone:
             else:
                 count += 1
                 articles += article_with_section
-                if self.config.verbose:
+                if self.verbose:
                     print(len(article), self.__num_tokens(article, model_name))
-        if self.config.verbose:
+        if self.verbose:
             print_debug(f"Articles:{count}, Tokens:{self.__num_tokens(articles + query, model_name)}")
         return articles
 
