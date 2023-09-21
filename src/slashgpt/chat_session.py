@@ -71,7 +71,7 @@ class ChatSession:
             self.set_intro()
 
     def set_llm_model(self, llm_model: LlmModel):
-        if llm_model.check_api_key(self.config):
+        if llm_model.check_api_key():
             self.llm_model = llm_model
         else:
             print(
@@ -90,7 +90,7 @@ class ChatSession:
             table_name = embeddings.get("name")
             try:
                 if embeddings["db_type"] == "pinecone":
-                    return DBPinecone.factory(table_name, self.config)
+                    return DBPinecone.factory(table_name, self.config.verbose)
             except Exception as e:
                 print(colored(f"Pinecone Error: {e}", COLOR_WARNING))
 
