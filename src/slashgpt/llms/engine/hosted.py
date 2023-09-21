@@ -6,27 +6,7 @@ import requests
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
-
-
-def message_to_prompt(messages: List[dict], manifest: Manifest):
-    functions = manifest.functions()
-    prompts = []
-    for message in messages:
-        role = message["role"]
-        content = message["content"]
-        if content:
-            prompts.append(f"{role}:{content}")
-    if functions:
-        # insert before last
-        last = prompts.pop()
-        prompts.append(
-            f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument."
-        )
-        prompts.append(last)
-
-    prompts.append("assistant:")
-    return "\n".join(prompts)
-
+from slashgpt.llms.engine.replicate import message_to_prompt
 
 class LLMEngineHosted(LLMEngineBase):
     def __init__(self, llm_model):
