@@ -9,7 +9,8 @@ from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
-from slashgpt.llms.model import LlmModel, get_llm_model_from_manifest
+from slashgpt.llms.default_config import default_llm_models
+from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
 from slashgpt.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
 
@@ -24,7 +25,7 @@ class ChatSession:
     def __init__(
         self,
         config: ChatConfig,
-        default_llm_model: LlmModel,
+        default_llm_model: LlmModel = None,
         user_id: Optional[str] = None,
         history_engine=ChatHistoryMemoryStorage,
         manifest={},
@@ -51,7 +52,10 @@ class ChatSession:
         if self.manifest.model():
             llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
         else:
-            llm_model = default_llm_model
+            if default_llm_model:
+                llm_model = default_llm_model
+            else:
+                llm_model = get_default_llm_model(default_llm_models)
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message

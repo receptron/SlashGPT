@@ -8,17 +8,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from slashgpt.chat_session import ChatSession  # noqa: E402
 from slashgpt.chat_slash_config import ChatSlashConfig  # noqa: E402
-from slashgpt.llms.default_config import default_llm_models  # noqa: E402
-from slashgpt.llms.model import get_default_llm_model  # noqa: E402
 
 
 class Main:
     def __init__(self, config: ChatSlashConfig):
-        llm_model = get_default_llm_model(default_llm_models)
         with open("./manifests/agents/chomsky.json", "r") as f:
-            self.sessionA = ChatSession(config, default_llm_model=llm_model, manifest=json.load(f), agent_name="chomsky")
+            self.sessionA = ChatSession(config, manifest=json.load(f), agent_name="chomsky")
         with open("./manifests/agents/tawara.json", "r") as f:
-            self.sessionB = ChatSession(config, default_llm_model=llm_model, manifest=json.load(f), agent_name="tawara")
+            self.sessionB = ChatSession(config, manifest=json.load(f), agent_name="tawara")
 
     def start(self, theme):
         print(f"\033[92m\033[1mテーマ\033[95m\033[0m: {theme}")
