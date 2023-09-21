@@ -22,7 +22,7 @@ class DBPinecone:
             print_error("PINECONE_API_KEY / PINECONE_ENVIRONMENT environment variable is missing from .env")
 
     def __init__(self, table_name: str, config: ChatConfig):
-        self.EMBEDDING_MODEL = "text-embedding-ada-002"
+        self.EMBEDDING_MODEL = os.getenv("PINECONE_EMBEDDING_MODEL", "text-embedding-ada-002")
         self.config = config
         self.index = pinecone.Index(table_name)
 
