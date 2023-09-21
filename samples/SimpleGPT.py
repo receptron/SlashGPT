@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 # python -m samples.SimpleGPT
+import os
 import platform
+import sys
 
-from lib.chat_config import ChatConfig
-from lib.chat_session import ChatSession
-from termcolor import colored
+sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
+
+from slashgpt.chat_config import ChatConfig  # noqa: E402
+from slashgpt.chat_session import ChatSession  # noqa: E402
+from slashgpt.utils.print import print_bot, print_error, print_function, print_info  # noqa: E402
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -32,17 +36,17 @@ manifest = {
 class SimpleGPT:
     def __init__(self, config: ChatConfig, agent_name: str):
         self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
-        print(colored(f"Activating: {self.session.title}", "blue"))
+        print_info(f"Activating: {self.session.title}")
 
         if self.session.intro_message:
-            self.print_bot(self.session.intro_message)
+            print_bot(self.session.botName, self.session.intro_message)
 
     def process_llm(self, session):
         try:
             (res, function_call) = session.call_llm()
 
             if res:
-                self.print_bot(res)
+                print_bot(self.session.botName, res)
 
             if function_call:
                 (
@@ -55,13 +59,13 @@ class SimpleGPT:
                     None,
                 )
                 if function_message:
-                    self.print_function(function_name, function_message)
+                    print_function(function_name, function_message)
 
                 if should_call_llm:
                     self.process_llm()
 
         except Exception as e:
-            print(colored(f"Exception: Restarting the chat :{e}", "red"))
+            print_error(f"Exception: Restarting the chat :{e}")
 
     def start(self):
         while True:
@@ -70,14 +74,10 @@ class SimpleGPT:
                 self.session.append_user_question(self.session.manifest.format_question(question))
                 self.process_llm(self.session)
 
-    def print_bot(self, message):
-        print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
-
-    def print_function(self, function_name, message):
-        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
-
 
 if __name__ == "__main__":
-    config = ChatConfig()
+    path = os.path.join(os.path.dirname(__file__), "../")
+
+    config = ChatConfig(path)
     main = SimpleGPT(config, "names")
     main.start()

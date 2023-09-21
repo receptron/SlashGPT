@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # python -m samples.AgentGPT
 import json
+import os
+import sys
 
-from lib.chat_session import ChatSession
-from lib.chat_slash_config import ChatSlashConfig
+sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
+
+from slashgpt.chat_session import ChatSession  # noqa: E402
+from slashgpt.chat_slash_config import ChatSlashConfig  # noqa: E402
 
 
 class Main:
@@ -33,6 +37,8 @@ class Main:
 
 
 if __name__ == "__main__":
-    config = ChatSlashConfig("./manifests/agents")
+    current_dir = os.path.join(os.path.dirname(__file__), "../")
+
+    config = ChatSlashConfig(current_dir, current_dir + "/manifests/agents")
     main = Main(config)
     main.start("自由と国家について")

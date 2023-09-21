@@ -16,7 +16,7 @@ from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.llms.engine_factory import LLMEngineFactory
 from slashgpt.llms.model import get_default_llm_model, get_llm_model_from_key
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
-from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
+from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
 
 if platform.system() == "Darwin":
@@ -78,7 +78,7 @@ class SlashGPT:
                 print_info(f"Created a notebook: {result.get('notebook_name')}")
 
             if self.session.intro_message:
-                self.print_bot(self.session.intro_message)
+                print_bot(self.session.botName, self.session.intro_message)
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
@@ -256,7 +256,7 @@ class SlashGPT:
             (res, function_call) = self.session.call_llm()
 
             if res:
-                self.print_bot(res)
+                print_bot(self.session.botName, res)
 
                 if self.config.audio:
                     play_text(res, self.config.audio)
@@ -279,7 +279,7 @@ class SlashGPT:
                         self.config.verbose,
                     )
                     if function_message:
-                        self.print_function(function_name, function_message)
+                        print_function(function_name, function_message)
 
                     if should_call_llm:
                         self.process_llm()
@@ -327,12 +327,3 @@ class SlashGPT:
     def query_llm(self, question):
         self.session.append_user_question(question)
         self.process_llm()
-
-    def print_bot(self, message):
-        print(f"\033[92m\033[1m{self.session.botName}\033[95m\033[0m: {message}")
-
-    def print_user(self, message):
-        print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{message}")
-
-    def print_function(self, function_name, message):
-        print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
