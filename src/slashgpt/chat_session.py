@@ -3,15 +3,14 @@ import re
 import uuid
 from typing import Optional
 
-from termcolor import colored
-
 from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
-from slashgpt.llms.model import LlmModel, get_llm_model_from_manifest
+from slashgpt.llms.default_config import default_llm_models
+from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
-from slashgpt.utils.utils import COLOR_DEBUG, COLOR_ERROR, COLOR_WARNING
+from slashgpt.utils.print import print_debug, print_error, print_warning
 
 """
 ChatSession represents a chat session with a particular AI agent.
@@ -24,7 +23,7 @@ class ChatSession:
     def __init__(
         self,
         config: ChatConfig,
-        default_llm_model: LlmModel,
+        default_llm_model: LlmModel = None,
         user_id: Optional[str] = None,
         history_engine=ChatHistoryMemoryStorage,
         manifest={},
@@ -51,7 +50,10 @@ class ChatSession:
         if self.manifest.model():
             llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models)
         else:
-            llm_model = default_llm_model
+            if default_llm_model:
+                llm_model = default_llm_model
+            else:
+                llm_model = get_default_llm_model(default_llm_models)
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
@@ -65,7 +67,7 @@ class ChatSession:
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
         if self.functions and self.config.verbose:
-            print(colored(self.functions, COLOR_DEBUG))
+            print_debug(self.functions)
 
         if intro:
             self.set_intro()
@@ -74,14 +76,9 @@ class ChatSession:
         if llm_model.check_api_key():
             self.llm_model = llm_model
         else:
-            print(
-                colored(
-                    "You need to set " + llm_model.get("api_key") + " to use this model. ",
-                    COLOR_ERROR,
-                )
-            )
+            print_error("You need to set " + llm_model.get("api_key") + " to use this model. ")
         if self.config.verbose:
-            print(colored(f"Model = {self.llm_model.name()}", COLOR_DEBUG))
+            print_debug(f"Model = {self.llm_model.name()}")
 
     def __get_vector_db(self):
         # Todo: support other vector dbs.
@@ -92,7 +89,7 @@ class ChatSession:
                 if embeddings["db_type"] == "pinecone":
                     return DBPinecone.factory(table_name, self.config.verbose)
             except Exception as e:
-                print(colored(f"Pinecone Error: {e}", COLOR_WARNING))
+                print_warning(f"Pinecone Error: {e}")
 
     """
     Append a message to the chat session, specifying the role ("user", "system" or "function").

@@ -17,3 +17,11 @@ def print_info(text: str):
 
 def print_warning(text: str):
     print(colored(text, COLOR_WARNING))
+
+
+def print_bot(botName: str, message: str):
+    print(f"\033[92m\033[1m{botName}\033[95m\033[0m: {message}")
+
+
+def print_function(function_name: str, message: str):
+    print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
