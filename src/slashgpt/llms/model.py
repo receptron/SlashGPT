@@ -1,3 +1,5 @@
+import os
+
 from typing import List
 
 from slashgpt.chat_config import ChatConfig
@@ -22,10 +24,13 @@ class LlmModel:
     def engine_name(self):
         return self.get("engine_name")
 
-    def check_api_key(self, config: ChatConfig):
+    def check_api_key(self):
         if self.get("api_key"):
-            return config.has_environment_value(self.get("api_key"))
+            return os.getenv(self.get("api_key"), None) is not None
         return True
+
+    def get_api_key_value(self):
+        return os.getenv(self.get("api_key"), "")
 
     def replicate_model(self):
         if self.get("replicate_model"):

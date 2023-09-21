@@ -71,7 +71,7 @@ class ChatSession:
             self.set_intro()
 
     def set_llm_model(self, llm_model: LlmModel):
-        if llm_model.check_api_key(self.config):
+        if llm_model.check_api_key():
             self.llm_model = llm_model
         else:
             print(
