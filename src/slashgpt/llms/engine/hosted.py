@@ -1,4 +1,4 @@
-import os
+import json
 from typing import List
 
 import requests
@@ -48,16 +48,24 @@ class LLMEngineHosted(LLMEngineBase):
         headers = {"Content-Type": "application/json", self.header_key: self.api_key}
         response = requests.post(self.url, headers=headers, json=arguments)
         print("***response.status_code", response.status_code)
-        print("***response.text", response.text)
+        # print("***response.text", response.text)
 
         output = ["Hello World"]
-        """
-        output = replicate.run(
-            replicate_model,
-            input={"prompt": prompt},
-            temperature=temperature,
-        )
-        """
+        if response.status_code < 300:
+            # print("*** success")
+            json_data = json.loads(response.text)
+            # print(json.dumps(json_data, indent=2))
+            outputs = json_data.get("outputs")
+            if outputs:
+                # print("*** found outputs")
+                data = outputs[0].get("data")
+                if data:
+                    # print("*** found data", data[0])
+                    json_data2 = json.loads(data[0])
+                    if json_data2:
+                        print("*** found json_data2", json.dumps(json_data2, indent=2))
+                        output = json_data2.get("message")
+                        
         res = "".join(output)
         function_call = self._extract_function_call(messages[-1], manifest, res)
 
