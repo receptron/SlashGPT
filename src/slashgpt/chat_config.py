@@ -18,7 +18,14 @@ class ChatConfig:
 
         self.verbose = False
 
-        self.llm_models = {**default_llm_models, **llm_models, } if llm_models else default_llm_models
+        self.llm_models = (
+            {
+                **default_llm_models,
+                **llm_models,
+            }
+            if llm_models
+            else default_llm_models
+        )
         self.llm_engine_configs = {**default_llm_engine_configs, **llm_engine_configs} if llm_engine_configs else default_llm_engine_configs
         # engine
         if self.llm_engine_configs:
