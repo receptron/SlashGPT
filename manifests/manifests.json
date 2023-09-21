@@ -19,8 +19,8 @@
     "manifests_dir": "manifests/roles2",
     "default_agent_name": null
   },
-  "yamls": {
-    "manifests_dir": "manifests/yamls",
+  "tne": {
+    "manifests_dir": "manifests/tne",
     "default_agent_name": "llama_nsql"
   }
 }
