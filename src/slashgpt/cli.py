@@ -3,6 +3,7 @@ import argparse
 import importlib
 import json
 import os
+import sys
 
 from slashgpt.chat_slash_config import ChatSlashConfig
 from slashgpt.SlashGPT import SlashGPT
@@ -26,6 +27,7 @@ def cli(base_dir=""):
     dir = manifests_manager["main"]["manifests_dir"]
 
     if args.llm_config:
+        sys.path.append(os.getcwd())
         module = importlib.import_module(args.llm_config)
         llm_models = getattr(module, "llm_models")
         llm_engine_configs = getattr(module, "llm_engine_configs")
