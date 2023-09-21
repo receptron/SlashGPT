@@ -1,5 +1,3 @@
-from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
-
 llm_models = {
     "gpt2": {
         "engine_name": "from_pretrained",
