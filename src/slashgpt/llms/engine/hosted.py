@@ -43,12 +43,13 @@ class LLMEngineHosted(LLMEngineBase):
         if verbose:
             print_debug("calling *** local")
 
-        print("calling *** local", self.url)
+        # print("calling *** local", self.url)
         arguments = {"inputs": [{"name": "input-0", "data": [prompt], "datatype": "BYTES", "shape": [-1]}]}
         headers = {"Content-Type": "application/json", self.header_key: self.api_key}
         response = requests.post(self.url, headers=headers, json=arguments)
-        print("***response.status_code", response.status_code)
-        # print("***response.text", response.text)
+        if verbose:
+            print("***response.status_code", response.status_code)
+            print("***response.text", response.text)
 
         output = ["Hello World"]
         if response.status_code < 300:
@@ -63,10 +64,10 @@ class LLMEngineHosted(LLMEngineBase):
                     # print("*** found data", data[0])
                     json_data2 = json.loads(data[0])
                     if json_data2:
-                        print("*** found json_data2", json.dumps(json_data2, indent=2))
+                        # print("*** found json_data2", json.dumps(json_data2, indent=2))
                         output = json_data2.get("message")
                         
-        res = "".join(output)
+        res = "\n" + "".join(output)
         function_call = self._extract_function_call(messages[-1], manifest, res)
 
         role = "assistant"
