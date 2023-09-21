@@ -1,19 +1,28 @@
+import os
+
 import openai
 import pinecone
 import tiktoken  # for counting tokens
 
 from slashgpt.chat_config import ChatConfig
-from slashgpt.utils.print import print_debug
+from slashgpt.utils.print import print_debug, print_error
 
 
 class DBPinecone:
     @classmethod
     def factory(cls, table_name: str, config: ChatConfig):
-        if table_name and config.PINECONE_API_KEY and config.PINECONE_ENVIRONMENT:
+        pinecone_api_key = os.getenv("PINECONE_API_KEY", "")
+        pinecone_environment = os.getenv("PINECONE_ENVIRONMENT", "")
+
+        if table_name and pinecone_api_key and pinecone_environment:
+            pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
             assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
             return DBPinecone(table_name, config)
+        else:
+            print_error("PINECONE_API_KEY / PINECONE_ENVIRONMENT environment variable is missing from .env")
 
     def __init__(self, table_name: str, config: ChatConfig):
+        self.EMBEDDING_MODEL = "text-embedding-ada-002"
         self.config = config
         self.index = pinecone.Index(table_name)
 
@@ -25,7 +34,7 @@ class DBPinecone:
             if message["role"] == "user":
                 query = message["content"] + "\n" + query
         query_embedding_response = openai.Embedding.create(
-            model=self.config.EMBEDDING_MODEL,
+            model=self.EMBEDDING_MODEL,
             input=query,
         )
         query_embedding = query_embedding_response["data"][0]["embedding"]
