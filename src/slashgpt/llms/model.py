@@ -24,7 +24,7 @@ class LlmModel:
 
     def check_api_key(self, config: ChatConfig):
         if self.get("api_key"):
-            return config.has_value_for_key(self.get("api_key"))
+            return config.has_environment_value(self.get("api_key"))
         return True
 
     def replicate_model(self):

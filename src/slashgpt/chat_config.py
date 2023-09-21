@@ -46,9 +46,5 @@ class ChatConfig:
             LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
 
     # for llm
-    def has_value_for_key(self, key: str):
-        if key == "REPLICATE_API_TOKEN":
-            return self.REPLICATE_API_TOKEN is not None
-        if key == "GOOGLE_PALM_KEY":
-            return self.GOOGLE_PALM_KEY is not None
-        return False
+    def has_environment_value(self, key: str):
+        return os.getenv(key, None) is not None
