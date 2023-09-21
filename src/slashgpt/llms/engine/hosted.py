@@ -4,9 +4,10 @@ from typing import List
 import requests
 
 from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.engine.replicate import message_to_prompt
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
-from slashgpt.llms.engine.replicate import message_to_prompt
+
 
 class LLMEngineHosted(LLMEngineBase):
     def __init__(self, llm_model):
