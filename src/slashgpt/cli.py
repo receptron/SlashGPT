@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import argparse
+import importlib
 import json
 import os
 
 from slashgpt.chat_slash_config import ChatSlashConfig
-from slashgpt.config.llm_config import llm_engine_configs, llm_models
 from slashgpt.SlashGPT import SlashGPT
 from slashgpt.utils.help import ONELINE_HELP
 
@@ -13,6 +13,7 @@ def cli(base_dir=""):
     parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
     parser.add_argument("--autotest", action="store_true")
     parser.add_argument("--agent", default="dispatcher")
+    parser.add_argument("--llm-config")
     parser.add_argument("--run")
 
     args = parser.parse_args()
@@ -23,7 +24,15 @@ def cli(base_dir=""):
         manifests_manager = json.load(f)
 
     dir = manifests_manager["main"]["manifests_dir"]
-    config = ChatSlashConfig(current_dir, current_dir + "/" + dir, llm_models, llm_engine_configs)
+
+    if args.llm_config:
+        module = importlib.import_module(args.llm_config)
+        llm_models = getattr(module, "llm_models")
+        llm_engine_configs = getattr(module, "llm_engine_configs")
+        config = ChatSlashConfig(current_dir, current_dir + "/" + dir, llm_models, llm_engine_configs)
+    else:
+        config = ChatSlashConfig(current_dir, current_dir + "/" + dir)
+
     print(ONELINE_HELP)
     main = SlashGPT(config, manifests_manager, args.agent)
     if args.autotest:
