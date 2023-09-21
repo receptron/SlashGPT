@@ -4,7 +4,7 @@ model:
   model_name: llama_nsql
   api_key: KSERVE_API_KEY
   header_api_key: x-api-key
-  url: https://nsql.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-nsql/infer
+  url: https://nsql.staging.kubeflow.platform.nedra.app/v2/models/llama2-7b-nsql-20231001/infer
 prompt:
 - Current time is {now}.
 sample: 'Which distinct product subfamilies use PVC? Show me the subfamily and total sales.'
