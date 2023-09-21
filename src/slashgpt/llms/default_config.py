@@ -1,11 +1,13 @@
 from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
 from slashgpt.llms.engine.palm import LLMEnginePaLM
 from slashgpt.llms.engine.replicate import LLMEngineReplicate
+from slashgpt.llms.engine.hosted import LLMEngineHosted
 
 default_llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,
     "replicate": LLMEngineReplicate,
     "palm": LLMEnginePaLM,
+    "hosted": LLMEngineHosted,
 }
 
 default_llm_models = {
