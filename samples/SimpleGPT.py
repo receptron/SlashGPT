@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 # python -m samples.SimpleGPT
+import os
 import platform
+import sys
 
-from lib.chat_config import ChatConfig
-from lib.chat_session import ChatSession
-from termcolor import colored
+sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
+
+from termcolor import colored  # noqa: E402
+
+from slashgpt.chat_config import ChatConfig  # noqa: E402
+from slashgpt.chat_session import ChatSession  # noqa: E402
+from slashgpt.llms.default_config import default_llm_models  # noqa: E402
+from slashgpt.llms.model import get_default_llm_model  # noqa: E402
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -31,7 +38,8 @@ manifest = {
 
 class SimpleGPT:
     def __init__(self, config: ChatConfig, agent_name: str):
-        self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
+        llm_model = get_default_llm_model(default_llm_models)
+        self.session = ChatSession(config, default_llm_model=llm_model, manifest=manifest, agent_name=agent_name)
         print(colored(f"Activating: {self.session.title}", "blue"))
 
         if self.session.intro_message:
@@ -78,6 +86,8 @@ class SimpleGPT:
 
 
 if __name__ == "__main__":
-    config = ChatConfig()
+    path = os.path.join(os.path.dirname(__file__), "../")
+
+    config = ChatConfig(path)
     main = SimpleGPT(config, "names")
     main.start()
