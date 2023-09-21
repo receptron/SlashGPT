@@ -4,10 +4,10 @@ import json
 import os
 
 from slashgpt.chat_slash_config import ChatSlashConfig
-from slashgpt.config.llm_config import llm_engine_configs, llm_models
 from slashgpt.SlashGPT import SlashGPT
 from slashgpt.utils.help import ONELINE_HELP
 
+from config.llm_config import llm_models, llm_engine_configs
 
 def cli(base_dir=""):
     parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
