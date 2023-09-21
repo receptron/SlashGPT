@@ -31,8 +31,7 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
 class LLMEngineHosted(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
-        print("***llm_model", self.llm_model.llm_model_data)
-        self.api_key = os.getenv(self.llm_model.llm_model_data.get("x_api_key"), "")
+        self.api_key = os.getenv(self.llm_model.llm_model_data.get("api_key"), "")
         self.header_key = self.llm_model.llm_model_data.get("header_api_key")
         self.url = self.llm_model.llm_model_data.get("url")
         return
