@@ -5,7 +5,7 @@ import requests
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug
+from slashgpt.utils.print import print_debug, print_error
 
 
 def message_to_prompt(messages: List[dict], manifest: Manifest):
@@ -51,7 +51,7 @@ class LLMEngineHosted(LLMEngineBase):
             print("***response.status_code", response.status_code)
             print("***response.text", response.text)
 
-        output = ["Hello World"]
+        output = []
         if response.status_code < 300:
             # print("*** success")
             json_data = json.loads(response.text)
@@ -66,6 +66,8 @@ class LLMEngineHosted(LLMEngineBase):
                     if json_data2:
                         # print("*** found json_data2", json.dumps(json_data2, indent=2))
                         output = json_data2.get("message")
+        else:
+            print_error(f"Error:{response.status_code}\n{response.text}")
 
         res = "\n" + "".join(output)
         function_call = self._extract_function_call(messages[-1], manifest, res)
