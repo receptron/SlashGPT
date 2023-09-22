@@ -1,4 +1,5 @@
 import json
+import re
 import urllib.parse
 
 import requests
@@ -8,8 +9,23 @@ from gql.transport.requests import RequestsHTTPTransport
 from slashgpt.utils.print import print_debug, print_error
 
 
+def ensure_dict(input_data):
+    if isinstance(input_data, dict):
+        return input_data
+    elif isinstance(input_data, str):
+        try:
+            # remove unnecessary \n from GPT
+            input_mod = re.sub(r"\n", "", input_data)
+            return json.loads(input_mod)
+        except json.JSONDecodeError:
+            raise ValueError("Provided string is not valid JSON")
+    else:
+        raise TypeError("Input must be of type dict or str")
+
+
 def graphQLRequest(url: str, headers: dict, appkey_value: str, arguments: dict, verbose: bool):
     try:
+        arguments = ensure_dict(arguments)
         appkey = {"appkey": appkey_value}
         headers = {key: value.format(**arguments, **appkey) for key, value in headers.items()}
         if verbose:
@@ -18,7 +34,13 @@ def graphQLRequest(url: str, headers: dict, appkey_value: str, arguments: dict, 
         client = Client(transport=transport)
         query = arguments.get("query")
         graphQuery = gql(f"query {query}")
-        response = client.execute(graphQuery)
+        params = arguments.get("variables")
+        if params:
+            if verbose:
+                print_debug(f"params={params}")
+            response = client.execute(graphQuery, variable_values=params)
+        else:
+            response = client.execute(graphQuery)
         return json.dumps(response)
     except Exception as e:
         return str(e)
