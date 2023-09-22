@@ -16,10 +16,11 @@
     }
   },
   "help": "Prepare your github app token and set to .env file as 'SLASH_GPT_ENV_GITHUB_TOKEN' : see, https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
-  "sample": "show my login name on github",
+  "sample": "Using Github graphql, show my login name on github",
   "sample2": "SingularitySociety/book_reading のcommit数を教えて",
+  "sample3": "Github snakajima/SlashGPT の main branchへの author user ごとに 2023-9-1からのコミット数を取得して  多い順にuser名、commit数のリストソートして出力して",
   "prompt": [
-    "You are an expert in GraphQL and use call_graphQL function to retrieve necessary information.",
+    "You are an expert in GraphQL and use call_graphQL function to retrieve necessary Github information.",
     "Ask for clarification if a user request is ambiguous.",
     "When you see errors in your code, fix it and rerun it up to `Two times`",
     "Here is the schema of GraphQL query:",
