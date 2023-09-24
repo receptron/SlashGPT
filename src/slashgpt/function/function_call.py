@@ -30,26 +30,27 @@ class FunctionCall:
     def __name(self):
         return self.__get("name")
 
-    def emit_data(self):
+    def emit_data(self, verbose: bool = False):
         if self.function_action and self.function_action.has_emit():
             return (
-                self.function_action.emit_data(self.__arguments()),
+                self.function_action.emit_data(self.__arguments(verbose)),
                 self.function_action.emit_method(),
             )
         return (None, None)
 
-    def __arguments(self):
+    def __arguments(self, verbose: bool):
         function_name = self.__get("name")
         arguments = self.__get("arguments")
         if arguments and isinstance(arguments, str):
             try:
                 return json.loads(arguments)
             except Exception:
-                print_warning(f"Function {function_name}: Failed to load arguments as json")
+                if verbose:
+                    print_warning(f"Function {function_name}: Failed to load arguments as json")
         return arguments
 
-    def __function_arguments(self, last_messages: dict):
-        arguments = self.__arguments()
+    def __function_arguments(self, last_messages: dict, verbose: bool):
+        arguments = self.__arguments(verbose)
         if self.__manifest.get("notebook") and self.__name() == "python" and isinstance(arguments, str):
             print_warning("python function was called")
             return {"code": arguments, "query": last_messages["content"]}
@@ -61,19 +62,25 @@ class FunctionCall:
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose=False):
+    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
-        arguments = self.__function_arguments(history.last())
-        print_info(json.dumps(self.data(), indent=2))
+        arguments = self.__function_arguments(history.last(), verbose)
+        if verbose:
+            print_info(json.dumps(self.data(), indent=2))
 
         if self.function_action:
             function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
         else:
             function = self.get_function(runtime, function_name)
             if function:
+                if arguments.get("code"):
+                    if isinstance(arguments["code"], list):
+                        print("\n".join(arguments["code"]))
+                    else:
+                        print(arguments["code"])
                 if isinstance(arguments, str):
                     (result, message) = function(arguments)
                 else:

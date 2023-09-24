@@ -109,7 +109,7 @@ class SlashGPT:
             if sub_manifest_data:
                 sample = sub_manifest_data.get("sample")
                 if sample:
-                    print(sample)
+                    print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{sample}")
                     return sample
             else:
                 agents = self.session.manifest.get("agents")
@@ -124,7 +124,7 @@ class SlashGPT:
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
             if sample:
-                print(sample)
+                print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{sample}")
                 return sample
             print_error(f"Error: No {key} in the manifest file")
         return None
@@ -262,7 +262,7 @@ class SlashGPT:
                     play_text(res, self.config.audio)
 
             if function_call:
-                (action_data, action_method) = function_call.emit_data()
+                (action_data, action_method) = function_call.emit_data(self.config.verbose)
                 if action_method:
                     # All emit methods must be processed here
                     if action_method == "switch_session":
