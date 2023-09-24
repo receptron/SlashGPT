@@ -30,10 +30,10 @@ class FunctionCall:
     def __name(self):
         return self.__get("name")
 
-    def emit_data(self):
+    def emit_data(self, verbose: bool = False):
         if self.function_action and self.function_action.has_emit():
             return (
-                self.function_action.emit_data(self.__arguments()),
+                self.function_action.emit_data(self.__arguments(verbose)),
                 self.function_action.emit_method(),
             )
         return (None, None)
@@ -62,7 +62,7 @@ class FunctionCall:
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose: bool=False):
+    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)

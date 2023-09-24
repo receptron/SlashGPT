@@ -262,7 +262,7 @@ class SlashGPT:
                     play_text(res, self.config.audio)
 
             if function_call:
-                (action_data, action_method) = function_call.emit_data()
+                (action_data, action_method) = function_call.emit_data(self.config.verbose)
                 if action_method:
                     # All emit methods must be processed here
                     if action_method == "switch_session":
