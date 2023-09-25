@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from slashgpt.chat_config import ChatConfig  # noqa: E402
 from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.history.storage.file import ChatHistoryFileStorage
+from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
 from slashgpt.utils.print import print_bot, print_error, print_function, print_info  # noqa: E402
 
 if platform.system() == "Darwin":
@@ -36,15 +36,13 @@ manifest = {
 
 class SimpleGPT:
     def __init__(self, config: ChatConfig, agent_name: str):
-        self.config = config
-        self.agent_name = agent_name
-        engine = ChatHistoryFileStorage("aa", agent_name)
+        engine = ChatHistoryFileStorage("sample", agent_name)
         self.session_id = engine.session_id
         session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine)
         print_info(f"Activating: {session.title}")
 
         if session.intro_message:
-            print_bot(self.session.botName, self.session.intro_message)
+            print_bot(session.botName, session.intro_message)
 
     def process_llm(self, session):
         try:
@@ -59,7 +57,6 @@ class SimpleGPT:
                     function_name,
                     should_call_llm,
                 ) = function_call.process_function_call(
-                    session.manifest,
                     session.history,
                     None,
                 )
@@ -72,15 +69,14 @@ class SimpleGPT:
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
 
-    def start(self):
-        while True:
-            engine = ChatHistoryFileStorage("aa", self.agent_name, session_id=self.session_id)
-            session = ChatSession(self.config, manifest=manifest, agent_name=self.agent_name, history_engine=engine, intro=False, restore=True)
+    def loop(self, config: ChatConfig, agent_name: str):
+        engine = ChatHistoryFileStorage("sample", agent_name, session_id=self.session_id)
+        session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine, intro=False, restore=True)
 
-            question = input(f"\033[95m\033[1m{session.userName}: \033[95m\033[0m").strip()
-            if question:
-                session.append_user_question(session.manifest.format_question(question))
-                self.process_llm(session)
+        question = input(f"\033[95m\033[1m{session.userName}: \033[95m\033[0m").strip()
+        if question:
+            session.append_user_question(session.manifest.format_question(question))
+            self.process_llm(session)
 
 
 if __name__ == "__main__":
@@ -88,4 +84,5 @@ if __name__ == "__main__":
 
     config = ChatConfig(path)
     main = SimpleGPT(config, "names")
-    main.start()
+    while True:
+        main.loop(config, "names")

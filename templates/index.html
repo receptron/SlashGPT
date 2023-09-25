@@ -1,0 +1,103 @@
+<html lang="ja">
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>Vue 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- チャットメッセージ -->
+      <div class="container mx-auto mt-8">
+        <div class="flex">
+          <!-- チャットメッセージリスト -->
+          <div class="w-2/3">
+            <div v-for="(message, k) in messages" :key="k">
+              <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
+                <div class="text-gray-600">[[ message.role ]]</div>
+                <p class="text-gray-800"> [[ message.content ]]</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-2">
+            <div class="bg-white shadow p-4 rounded-lg mb-4">
+              <h3>manifests</h3>
+              <li v-for="(manifest, k) in manifests" :key="k"
+                  :class="k == agent ? 'font-bold' : ''"
+                  @click="updateAgent(k)"
+                  >
+                [[ k ]]
+              </li>
+            </div>
+            <div class="bg-white shadow p-4 rounded-lg mb-4">
+              history
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- メッセージ入力フォーム -->
+      <div class="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4">
+        <div class="container mx-auto">
+          <div class="flex">
+            <input type="text" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="メッセージを入力..." v-model="message">
+            <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="send">送信</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp, ref } = Vue
+    
+      createApp({
+        setup() {
+          const manifests = ref([]);
+          const manifests_key = "main";
+          let session_id = null;
+          const agent = ref("spacex");
+          const message = ref("who is ceo of spacex")
+          const messages = ref([]);
+
+          const getManifest = async () => {
+            const res = await fetch("/manifests/" + manifests_key)
+            manifests.value = (await res.json())["manifests"];
+          }
+          
+          getManifest()
+
+          const send = async () => {
+            console.log(message.value)
+            const headers = {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            };
+            const body = JSON.stringify({message: message.value});
+            const pathBase = "/manifests/" + manifests_key + "/" + agent.value + "/talk";
+            const res = await fetch(session_id ? pathBase + "/" + session_id : pathBase,
+                                    {method: "POST", headers, body}
+                                   )
+            const data = await res.json();
+            session_id = data.session_id;
+            messages.value = data.messages;
+          };
+          const updateAgent = (a) => {
+            agent.value= a;
+          };
+          return {
+            message,
+            messages,
+            manifests,
+            agent,
+            send,
+            updateAgent,
+          }
+        },
+        delimiters: ['[[', ']]']
+
+      }).mount('#app')
+    </script>
+  </body>
+</html>
