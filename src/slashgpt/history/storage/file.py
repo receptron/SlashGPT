@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import uuid
+from typing import List
 
 from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 from slashgpt.history.storage.log import create_log_dir
