@@ -2,29 +2,30 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta charset="UTF-8" />
-    <title>Vue 3</title>
+    <title>SlashGPT</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
     <div id="app">
-      <div v-if="loading" class="container mx-auto mt-8 mb-20">
-        loading
-      </div>
-      <!-- チャットメッセージ -->
-      <div class="container mx-auto mt-8 mb-20">
+      <div class="container mx-auto mt-8 mb-36">
         <div class="flex">
-          <!-- チャットメッセージリスト -->
           <div class="w-1/2">
+            <div v-if="loading">
+              loading
+            </div>
             <div v-for="(message, k) in messages" :key="k">
               <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
                 <div class="text-gray-600">[[ message.role ]]</div>
                 <p class="text-gray-800"> [[ message.content ]]</p>
               </div>
             </div>
+            <div v-if="messages.length > 0">
+              <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="clear">Clear</button>
+            </div>
           </div>
           <div class="p-2 w-1/4">
             <div class="bg-white shadow p-4 rounded-lg mb-4">
-              <h3>manifests</h3>
+              <h3>Agents</h3>
               <li v-for="(manifest, k) in manifests" :key="k"
                   :class="k == agent ? 'font-bold' : ''"
                   @click="updateAgent(k)"
@@ -46,12 +47,11 @@
         </div>
       </div>
       
-      <!-- メッセージ入力フォーム -->
       <div class="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4">
         <div class="container mx-auto">
           <div class="flex">
-            <input type="text" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="メッセージを入力..." v-model="message">
-            <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="send">送信</button>
+            <input type="text" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="Write message..." v-model="message">
+            <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="send">Send</button>
           </div>
         </div>
       </div>
@@ -108,11 +108,14 @@
             session_id = data.session_id;
             messages.value = data.messages;
           };
-          const updateAgent = (a) => {
+          const clear = () => {
             messages.value =[];
             message.value = "";
-            agent.value= a;
             session_id = null;
+          };
+          const updateAgent = (a) => {
+            clear();
+            agent.value= a;
             samples.value = loadSamples()
           };
           const updateMessage = (m) => {
@@ -127,6 +130,7 @@
             agent,
             loading,
             // func
+            clear,
             send,
             updateAgent,
             updateMessage,
