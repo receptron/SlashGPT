@@ -47,7 +47,8 @@ class LLMEngineHosted(LLMEngineBase):
                     # print("*** found data", data[0])
                     json_data2 = json.loads(data[0])
                     if json_data2:
-                        # print("*** found json_data2", json.dumps(json_data2, indent=2))
+                        if verbose:
+                            print("json_data2:", json.dumps(json_data2, indent=2))
                         output = json_data2.get("message")
                 elif datatype == "FP64":
                     print(datatype, data[0])
@@ -55,7 +56,15 @@ class LLMEngineHosted(LLMEngineBase):
         else:
             print_error(f"Error:{response.status_code}\n{response.text}")
 
-        res = "\n" + "".join(output)
+        if isinstance(output, list):
+            if isinstance(output[0], list):
+                output00 = output[0][0]
+                gen = output00.get("generation")
+                res = gen.get("content")
+                if verbose:
+                    print("content", res)
+            else:
+                res = "\n" + "".join(output)
         function_call = self._extract_function_call(messages[-1], manifest, res)
 
         role = "assistant"
