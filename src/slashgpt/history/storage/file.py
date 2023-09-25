@@ -9,7 +9,7 @@ from slashgpt.utils.print import print_warning
 
 
 class ChatHistoryFileStorage(ChatHisoryAbstractStorage):
-    def __init__(self, uid: str, agent_name: str, session_id: str = None):
+    def __init__(self, uid: str, agent_name: str, session_id: str = ""):
         # self.__messages: List[dict] = []
         self.base_dir = "filememory"
 
@@ -20,11 +20,11 @@ class ChatHistoryFileStorage(ChatHisoryAbstractStorage):
 
         self.__messages = []
         create_log_dir(self.base_dir, agent_name)
-        if session_id:
+        if session_id == "":
+            self.session_id = str(uuid.uuid4())
+        else:
             self.session_id = session_id
             self.__load_session()
-        else:
-            self.session_id = str(uuid.uuid4())
 
     def __save_session(self):
         with open(f"{self.base_dir}/{self.agent_name}/{self.session_id}.json", "w") as f:
