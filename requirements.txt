@@ -24,4 +24,4 @@ pytest
 yamllint
 mypy
 yfinance
-
+flask
