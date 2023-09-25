@@ -78,10 +78,11 @@ def process_llm(session):
 @app.route("/manifests/<manifests>/<agent>/talk/<session_id>", methods=["POST"])
 def talk(manifests, agent, session_id=None):
     config = ChatSlashConfig(current_dir, current_dir + "/manifests/" + manifests)
+    config.verbose = True
     m = config.manifests[agent]
 
     message = request.json["message"]
-    print(m, message)
+    # print(m, message)
 
     if session_id is None:
         (session_id, session, engine) = init_session(config, agent, m)
@@ -97,7 +98,6 @@ def talk(manifests, agent, session_id=None):
             session.append_user_question(session.manifest.format_question(message))
             process_llm(session)
 
-    print(session_id)
     return jsonify({"session_id": session_id, "messages": engine.messages()})
 
 
