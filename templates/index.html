@@ -7,12 +7,14 @@
   </head>
   <body>
     <div id="app">
-
+      <div v-if="loading" class="container mx-auto mt-8 mb-20">
+        loading
+      </div>
       <!-- チャットメッセージ -->
-      <div class="container mx-auto mt-8">
+      <div class="container mx-auto mt-8 mb-20">
         <div class="flex">
           <!-- チャットメッセージリスト -->
-          <div class="w-2/3">
+          <div class="w-1/2">
             <div v-for="(message, k) in messages" :key="k">
               <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
                 <div class="text-gray-600">[[ message.role ]]</div>
@@ -20,7 +22,7 @@
               </div>
             </div>
           </div>
-          <div class="p-2">
+          <div class="p-2 w-1/4">
             <div class="bg-white shadow p-4 rounded-lg mb-4">
               <h3>manifests</h3>
               <li v-for="(manifest, k) in manifests" :key="k"
@@ -30,8 +32,15 @@
                 [[ k ]]
               </li>
             </div>
-            <div class="bg-white shadow p-4 rounded-lg mb-4">
-              history
+          </div>
+          <div class="p-2 w-1/4">
+            <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
+              <h3>Samples</h3>
+              <li v-for="(sample, k) in samples" :key="k"
+                  @click="updateMessage(sample)"
+                  >
+                [[ sample ]]
+              </li>
             </div>
           </div>
         </div>
@@ -60,40 +69,67 @@
           const agent = ref("spacex");
           const message = ref("who is ceo of spacex")
           const messages = ref([]);
-
+          const samples = ref([]);
+          const loading = ref(false);
+          
+          const loadSamples = () => {
+            const m = manifests.value[agent.value];
+            return Object.keys(m).reduce((tmp, k) => {
+              if (k.startsWith("sample")) {
+                tmp.push(m[k]);
+              }
+              return tmp;
+            }, []);
+          }
           const getManifest = async () => {
             const res = await fetch("/manifests/" + manifests_key)
             manifests.value = (await res.json())["manifests"];
+            samples.value = loadSamples()
           }
+
           
           getManifest()
 
           const send = async () => {
-            console.log(message.value)
             const headers = {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             };
             const body = JSON.stringify({message: message.value});
             const pathBase = "/manifests/" + manifests_key + "/" + agent.value + "/talk";
+            message.value = "";
+            loading.value = true;
             const res = await fetch(session_id ? pathBase + "/" + session_id : pathBase,
                                     {method: "POST", headers, body}
                                    )
+            loading.value = false;
             const data = await res.json();
+
             session_id = data.session_id;
             messages.value = data.messages;
           };
           const updateAgent = (a) => {
             messages.value =[];
+            message.value = "";
             agent.value= a;
+            session_id = null;
+            samples.value = loadSamples()
+          };
+          const updateMessage = (m) => {
+            message.value = m;
           };
           return {
+            // ref
             message,
             messages,
+            samples,
             manifests,
             agent,
+            loading,
+            // func
             send,
             updateAgent,
+            updateMessage,
           }
         },
         delimiters: ['[[', ']]']

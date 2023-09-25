@@ -31,8 +31,11 @@ class ChatHistoryFileStorage(ChatHisoryAbstractStorage):
             json.dump(self.__messages, f, ensure_ascii=False, indent=2)
 
     def __load_session(self):
-        with open(f"{self.base_dir}/{self.agent_name}/{self.session_id}.json", "r") as f:
-            self.__messages = json.load(f)
+        try:
+            with open(f"{self.base_dir}/{self.agent_name}/{self.session_id}.json", "r") as f:
+                self.__messages = json.load(f)
+        except FileNotFoundError:
+            self.__messages = []
 
     def append(self, data: dict):
         self.__messages.append(data)
