@@ -7,7 +7,9 @@
   </head>
   <body>
     <div id="app">
-
+      <div v-if="loading" class="container mx-auto mt-8 mb-20">
+        loading
+      </div>
       <!-- チャットメッセージ -->
       <div class="container mx-auto mt-8 mb-20">
         <div class="flex">
@@ -68,6 +70,7 @@
           const message = ref("who is ceo of spacex")
           const messages = ref([]);
           const samples = ref([]);
+          const loading = ref(false);
           
           const loadSamples = () => {
             const m = manifests.value[agent.value];
@@ -95,9 +98,11 @@
             const body = JSON.stringify({message: message.value});
             const pathBase = "/manifests/" + manifests_key + "/" + agent.value + "/talk";
             message.value = "";
+            loading.value = true;
             const res = await fetch(session_id ? pathBase + "/" + session_id : pathBase,
                                     {method: "POST", headers, body}
                                    )
+            loading.value = false;
             const data = await res.json();
 
             session_id = data.session_id;
@@ -120,6 +125,7 @@
             samples,
             manifests,
             agent,
+            loading,
             // func
             send,
             updateAgent,
