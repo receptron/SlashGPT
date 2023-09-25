@@ -60,7 +60,7 @@ class LLMEngineHosted(LLMEngineBase):
             if isinstance(output[0], list):
                 output00 = output[0][0]
                 gen = output00.get("generation")
-                res = gen.get("content")
+                res = gen.get("content").strip()
                 if verbose:
                     print("content", res)
             else:
