@@ -6,6 +6,7 @@ from typing import Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
+from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.default_config import default_llm_models
 from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_from_manifest
@@ -25,10 +26,11 @@ class ChatSession:
         config: ChatConfig,
         default_llm_model: LlmModel = None,
         user_id: Optional[str] = None,
-        history_engine=ChatHistoryMemoryStorage,
+        history_engine: ChatHisoryAbstractStorage = None,
         manifest={},
         agent_name: str = "GPT",
         intro: bool = True,
+        restore: bool = False,
     ):
         self.config = config
         self.agent_name = agent_name
@@ -43,8 +45,10 @@ class ChatSession:
 
         self.intro_message = None
         self.user_id = user_id if user_id else str(uuid.uuid4())
-        memory_history = history_engine(self.user_id, agent_name)
-        self.history = ChatHistory(memory_history)
+
+        if history_engine is None:
+            history_engine = ChatHistoryMemoryStorage(self.user_id, agent_name)
+        self.history = ChatHistory(history_engine)
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
@@ -58,7 +62,7 @@ class ChatSession:
 
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
-        if self.prompt:
+        if self.prompt and not restore:
             self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
