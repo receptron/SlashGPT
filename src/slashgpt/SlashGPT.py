@@ -196,9 +196,9 @@ class SlashGPT:
         elif commands[0] == "reload":
             self.config.reload()
         elif self.config.has_manifest(commands[0]):
-            messages = self.session.history.nonpreset_messages() # for "-chain" option
+            messages = self.session.history.nonpreset_messages()  # for "-chain" option
             self.switch_session(commands[0])
-            if len(commands)> 1 and commands[1] == "-chain":
+            if len(commands) > 1 and commands[1] == "-chain":
                 if self.config.verbose:
                     print_debug(f"Chaining {len(messages)} messages")
                 for m in messages:
