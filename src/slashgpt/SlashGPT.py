@@ -195,8 +195,9 @@ class SlashGPT:
             self.import_data(commands)
         elif commands[0] == "reload":
             self.config.reload()
-        elif self.config.has_manifest(key):
-            self.switch_session(key)
+        elif self.config.has_manifest(commands[0]):
+            print("***", commands[1] if len(commands) > 1 else "N/A")
+            self.switch_session(commands[0])
         else:
             print_error(f"Invalid slash command: {key}")
 
