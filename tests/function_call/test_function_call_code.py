@@ -77,3 +77,17 @@ def test_markdown_result_should_call(engine):
 
     function_call = engine.test_extract_function_call(last_message, manifest, last_message["content"])
     assert function_call is None
+
+
+def test_latex_result_should_call(engine):
+    content = "I am trying to get the 4 year stock price of apple and tesla using yfinance.\n\n\\begin{code}\nimport yfinance as yf\n\napple = yf.Ticker('AAPL')\ntesla = yf.Ticker('TSLA')\n\napple_price = apple.history(period='4y')\ntesla_price = tesla.history(period='4y')\n\\end{code}"
+    content = content.replace("\\begin{code}", "```").replace("\\end{code}", "```")
+
+    last_message = {
+        "role": "assistant",
+        "content": content,
+        "preset": False,
+    }
+
+    function_call = engine.test_extract_function_call(last_message, manifest, last_message["content"])
+    assert function_call is not None
