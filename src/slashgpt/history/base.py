@@ -37,6 +37,9 @@ class ChatHistory:
     def preset_messages(self):
         return list(map(self.message_dict, self.repository.preset_messages()))
 
+    def nonpreset_messages(self):
+        return list(map(self.message_dict, self.repository.nonpreset_messages()))
+
     def append_message(self, role: str, message: str, name=None, preset=False):
         if name:
             self.append({"role": role, "content": message, "name": name, "preset": preset})

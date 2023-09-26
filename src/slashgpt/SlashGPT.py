@@ -195,8 +195,15 @@ class SlashGPT:
             self.import_data(commands)
         elif commands[0] == "reload":
             self.config.reload()
-        elif self.config.has_manifest(key):
-            self.switch_session(key)
+        elif self.config.has_manifest(commands[0]):
+            messages = self.session.history.nonpreset_messages()  # for "-chain" option
+            self.switch_session(commands[0])
+            if len(commands) > 1 and commands[1] == "-chain":
+                if self.config.verbose:
+                    print_debug(f"Chaining {len(messages)} messages")
+                for m in messages:
+                    self.session.history.append_message(m.get("role"), m.get("content"), m.get("name"), False)
+
         else:
             print_error(f"Invalid slash command: {key}")
 
