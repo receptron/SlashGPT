@@ -70,6 +70,9 @@ class ChatHistoryFileStorage(ChatHisoryAbstractStorage):
     def preset_messages(self):
         return filter(lambda x: x.get("preset"), self.__messages)
 
+    def nonpreset_messages(self):
+        return filter(lambda x: not x.get("preset"), self.__messages)
+
     def restore(self, data):
         self.__messages = data
 

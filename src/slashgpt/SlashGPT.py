@@ -197,7 +197,10 @@ class SlashGPT:
             self.config.reload()
         elif self.config.has_manifest(commands[0]):
             print("***", commands[1] if len(commands) > 1 else "N/A")
+            print(json.dumps(self.session.history.nonpreset_messages(), ensure_ascii=False, indent=2))
             self.switch_session(commands[0])
+            print(json.dumps(self.session.history.nonpreset_messages(), ensure_ascii=False, indent=2))
+
         else:
             print_error(f"Invalid slash command: {key}")
 
