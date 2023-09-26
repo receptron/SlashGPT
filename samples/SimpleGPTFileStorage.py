@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# python -m samples.SimpleGPT
+# python -m samples.SimpleGPTFileStorage
 import os
 import platform
 import sys
