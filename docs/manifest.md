@@ -34,7 +34,9 @@ The *prompt* defines the system prompt to LLM.
 
 When the user select this agent, SlashGPT creates a new chat session with this manifest file and wait for user's input. When the user enters a question, it sends that question to GPT 3.5 (which is the default LLM) along with a system prompt specified in the manifest file, and present the response to the user. 
 
-Here is a little bit complext example, defines the "Code Interpreter" agent on top of Code Llama2.
+## Code Interpreter
+
+Here is a little bit complext example, which defines the "Code Interpreter" agent on top of Code Llama2.
 
 ```
 title: Code Interpreter with code_llamma
@@ -53,7 +55,40 @@ prompt:
 - The *form* defines the template to modify user's question.
 - The *notebook* defines if we want to record the interaction in Jupyter Notebook or not.
 
-Here is another example, which uses an external API. 
+If the user enters a question, "Graph 4 year stock price of apple and tesla using yfinance", the agent generates the following code.
+
+```
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+# Get the stock data for Apple
+apple = yf.Ticker('AAPL')
+apple_data = apple.history(period='4y')
+
+# Get the stock data for Tesla
+tesla = yf.Ticker('TSLA')
+tesla_data = tesla.history(period='4y')
+
+# Plot the stock prices
+plt.figure(figsize=(12, 6))
+plt.plot(apple_data['Close'], label='Apple')
+plt.plot(tesla_data['Close'], label='Tesla')
+plt.title('4 Year Stock Price of Apple and Tesla')
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.legend()
+plt.show()
+```
+
+SlashGPT executes this code, and genrates the graph below.
+
+![](https://satoshi.blogs.com/mag2/chart_stock.png)
+
+## Plug-in
+
+SlashGPT also supports plug-ins, which is API compatible with OpenAI's plug-ins. 
+
+Here is a example, which uses an external API to convert currencies. 
 
 ```
 title: Currency Converter
@@ -87,3 +122,15 @@ actions:
 
 - The *functions* defines a set of functions to be called.
 - The *actions* defines the implementations of those functions
+
+When the user enters "Plese convert 1USD into JPY", the LLM indicates that it wants to make the following function call.
+
+```
+convert(amount=1, from="USD", to="JPY")
+```
+
+SlashGPT accesses the REST API specified in the *action* attributes, passes the result (in JSON) back to the LLM, and the LLM generates a response to the user:
+
+```
+1 USD is 147.54 JPY
+```
