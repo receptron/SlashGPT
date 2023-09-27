@@ -51,7 +51,110 @@
             </div>
             <!-- Edit view -->
             <div v-if="tabMode == 'edit'">
-              <pre class="break-words whitespace-pre-wrap">[[ currentManifest ]]</pre>
+              <table>
+                <tr>
+                  <td>title</td>
+                  <td>
+                    <input v-model="currentManifest['title']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
+                </tr>
+                <tr>
+                  <td>prompt</td>
+                  <td>
+                    <textarea
+                      rows="10"
+                      class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      >[[ currentManifest['prompt'].join("\n") ]]</textarea>
+                  </td>
+                </tr>
+              
+                <tr>
+                  <td>bot</td>
+                  <td>
+                    <input v-model="currentManifest['bot']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
+                </tr>
+                <tr>
+                  <td>you</td>
+                  <td>
+                    <input v-model="currentManifest['you']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
+                </tr>
+              
+                <tr>
+                  <td>model</td>
+                  <td>[[ currentManifest['model'] ]]</td>
+                </tr>
+                <tr>
+                  <td>tempereture</td>
+                  <td>[[ currentManifest['tempereture'] ]]</td>
+                </tr>
+                <tr>
+                  <td>sample</td>
+                  <td>
+                    <input v-model="currentManifest['sample']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+
+                    </td>
+                </tr>
+                <tr>
+                  <td>intro </td>
+                  <td>
+                    <input v-model="currentManifest['intro']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
+                </tr>
+                <tr>
+                  <td>functions</td>
+                  <td>[[ currentManifest['functions'] ]]</td>
+                </tr>
+                <tr>
+                  <td>form </td>
+                  <td>[[ currentManifest['form'] ]]</td>
+                </tr>
+                <tr>
+                  <td>actions</td>
+                  <td>[[ currentManifest['actions'] ]]</td>
+                </tr>
+                <tr>
+                  <td>notebook</td>
+                  <td>[[ currentManifest['notebook'] ]]</td></tr>
+                <tr>
+                  <td>module</td>
+                  <td>[[ currentManifest['module'] ]]</td></tr>
+                <tr>
+                  <td>result_form</td>
+                  <td>
+                    <input v-model="currentManifest['result_form']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
+                </tr>
+                <tr>
+                  <td>skip_function_result</td>
+                  <td>[[ currentManifest['skip_function_result'] ]]</td></tr>
+                <tr>
+                  <td>embeddings</td>
+                  <td>[[ currentManifest['embeddings'] ]]</td></tr>
+                <tr>
+                  <td>about</td>
+                  <td>
+                    <input v-model="currentManifest['about']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                    
+                  </td>
+                </tr>
+              </table>
+              
             </div>
           </div>
           <div class="p-2 w-1/4">
