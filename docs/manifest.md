@@ -4,9 +4,9 @@
 
 I started writing LLM applications on top of GPT3.5 in April 2023, inspired by my son's open source project, [BabyAGI](https://github.com/yoheinakajima/babyagi). 
 
-I was aware that there is a library called [LangChain](https://github.com/langchain-ai/langchain), which was alredy quite popular among developers, but I chose to write directly on top of OpenAI's API -- because the API is quite simple and straightfoward.
+I was aware that there is a library called [LangChain](https://github.com/langchain-ai/langchain), which was already quite popular among developers, but I chose to write directly on top of OpenAI's API -- because the API is quite simple and straightfoward.
 
-I also felt that LangChain's helper-API based approach is not the right direction. I strongly felt that the "Declarative" approach is suitable for LLM applications, especially for enterprise applicatinos.
+I also felt that LangChain's helper-API based approach is not the right direction. I strongly felt that the "Declarative" approach is suitable for LLM applications, especially for enterprise applications.
 
 Since I wanted to create multiple LLM applications quickly, I started it as an open source project, [SlashGPT](https://github.com/snakajima/SlashGPT), as my playground (this name came from "slash commands", which allows me to switch among AI agents from the terminal).
 
@@ -45,7 +45,7 @@ When the user select this agent, SlashGPT creates a new chat session with this m
 
 ## Code Interpreter
 
-Here is a slightly complext example, which defines the "Code Interpreter" agent on top of Code Llama2.
+Here is a slightly complicated example, which defines the "Code Interpreter" agent on top of Code Llama2.
 
 ```
 title: Code Interpreter with code_llamma
@@ -207,7 +207,7 @@ The *resource* specifies the location of graphQL schema file, which will be embe
 When the user enters "Who is CEO of SpaceX?" as the question, the LLM incidates that it needs to the following function call:
 
 ```
-call_graphQL('{  "query": "{ company { ceo } }"n}')
+call_graphQL('{  "query": "{ company { ceo } }"}')
 ```
 
 SlashGPT accesses SpaceX's graphQL endpoint, which returns the following reply:
