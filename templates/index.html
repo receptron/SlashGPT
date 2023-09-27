@@ -118,7 +118,11 @@
                 </tr>
                 <tr>
                   <td>form </td>
-                  <td>[[ currentManifest['form'] ]]</td>
+                  <td>
+                    <input v-model="currentManifest['form']" type="text"
+                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                           />
+                  </td>
                 </tr>
                 <tr>
                   <td>actions</td>
@@ -126,7 +130,12 @@
                 </tr>
                 <tr>
                   <td>notebook</td>
-                  <td>[[ currentManifest['notebook'] ]]</td></tr>
+                  <td>
+                    <input type="checkbox"
+                           class="form-checkbox h-5 w-5 rounded border-2 border-gray-300"
+                           v-model="currentManifest['notebook']" />
+                  </td>
+                </tr>
                 <tr>
                   <td>module</td>
                   <td>[[ currentManifest['module'] ]]</td></tr>
@@ -140,7 +149,12 @@
                 </tr>
                 <tr>
                   <td>skip_function_result</td>
-                  <td>[[ currentManifest['skip_function_result'] ]]</td></tr>
+                  <td>
+                    <input type="checkbox"
+                           class="form-checkbox h-5 w-5 rounded border-2 border-gray-300"
+                           v-model="currentManifest['skip_function_result']">
+                  </td>
+                </tr>
                 <tr>
                   <td>embeddings</td>
                   <td>[[ currentManifest['embeddings'] ]]</td></tr>
