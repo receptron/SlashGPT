@@ -2,19 +2,28 @@
 
 **Author:** Satoshi Nakajima
 
-I started writing LLM applications on top of GPT3.5 in April 2023, inspired by my son's open source project, [BabyAGI](https://github.com/yoheinakajima/babyagi). I was aware that there is a library called [LangChain](https://github.com/langchain-ai/langchain), which was quite popular among developers, but I chose to write directly on top of OpenAI's API -- because the API is quite simple and straightfoward.
+I started writing LLM applications on top of GPT3.5 in April 2023, inspired by my son's open source project, [BabyAGI](https://github.com/yoheinakajima/babyagi). 
 
-Since I wanted to create multiple LLM applications, I started it as an open source project, [SlashGPT](https://github.com/snakajima/SlashGPT), as my playground (this name came from "slash commands", which allows me to switch among AI agents from the terminal).
+I was aware that there is a library called [LangChain](https://github.com/langchain-ai/langchain), which was alredy quite popular among developers, but I chose to write directly on top of OpenAI's API -- because the API is quite simple and straightfoward.
+
+I also felt that LangChain's helper-API based approach is not the right direction. I strongly felt that the "Declarative" approach is suitable for LLM applications, especially for enterprise applicatinos.
+
+Since I wanted to create multiple LLM applications quickly, I started it as an open source project, [SlashGPT](https://github.com/snakajima/SlashGPT), as my playground (this name came from "slash commands", which allows me to switch among AI agents from the terminal).
 
 The design goal of this project was very clear from the beginning. 
 
 1. It allows developers to create various LLM applications very quickly.
-2. It allows developers to define the behavior of each LLM agent declaratively (without writing code).
+2. It allows developers to define the behavior of each LLM agent **declaratively** by simply creating a *manifest* file (without writing code).
 3. It enables complex applications, which involves embedded database and code execution.
 
-I am a big fan of "Declarative Programming", because it will significantly simplify the application development process, allowing web-based application creation (by non-developers) or even full automations. You can think of it as a part of the no-code movement. 
+I am a big fan of "Declarative Programming", because it will significantly simplify the application development and test process, enabling web-based app creation (by non-developers) or even fully automated app creation. You can think of it as a part of the no-code movement. 
 
 If we want to build a scalable LLM application business targeting tens of thousands of enterprise customers, it does not make sense to write custom code for each customer. The "Declarative Programming" is the only way to scale such a business.
+
+#### Terminology:
+- **LLM Application**: A LLM-based aplication which consists of a collection of AI agents, the front-end (the user interface) and associated tools. 
+- **AI Agent**: A chatbot, which has a specific behavior for a particular purpose.
+- **Manifest File**: A static file (either in YAML or JSON), which defines the behavior of an AI agent, which includes the prompt, templates, and definitions of function, REST API, database schema, and embedding database.
 
 ## Manifest File
 
@@ -139,7 +148,7 @@ SlashGPT accesses the REST API specified in the *action* attributes, passes the 
 
 ## RAG (Retrieval Augmented Generation)
 
-It is possible to define an AI agent, which retrieves associated information from vector database. Here is an example.
+It is possible to create an AI agent, which embeds associated articles from vector database into the prompt before calling the LLM. Here is an example.
 
 ```
 title: Olympic 2022
