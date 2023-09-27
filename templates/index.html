@@ -133,6 +133,11 @@
                         ./resources/functions/[[ f ]].json
                       </option>
                     </select>
+                    <div v-if="functionKey">
+                      <div v-for="(f, k) in functions[functionKey]" :key="k">
+                        [[ f["name"] ]] - [[ f["description"] ]]
+                      </div>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -295,7 +300,7 @@
             manifests_modes.value = (await res.json())["modes"];
           };
           const getManifest = async () => {
-            const res = await fetch("/manifests/" + manifests_key.value)
+            const res = await fetch("/manifests/" + manifests_key.value);
             manifests.value = (await res.json())["manifests"];
             samples.value = loadSamples()
           };
@@ -325,7 +330,13 @@
           const currentManifest = computed(() => {
             return manifests.value[agent.value];
           });
-          
+          const functionKey = computed(() => {
+            const keyBase = currentManifest.value['functions'].split("/")[3];
+            if (keyBase) {
+              return keyBase.split(".")[0]
+            }
+            return null;
+          });
           // methods for web
           const send = async () => {
             const headers = {
@@ -386,7 +397,9 @@
             manifests_key,
             agent,
             loading,
+            // computed
             currentManifest,
+            functionKey,
             // func
             clear,
             send,
