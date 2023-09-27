@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -21,8 +22,8 @@ app = Flask(__name__)
 current_dir = os.path.dirname(__file__)
 
 
-# with open(current_dir + "/manifests/manifests.json", "r") as f:
-#    manifests_manager = json.load(f)
+with open(current_dir + "/manifests/manifests.json", "r") as f:
+    manifests_manager = json.load(f)
 # dir = manifests_manager["main"]["manifests_dir"]
 # config = ChatSlashConfig(current_dir, current_dir + "/" + dir)
 
@@ -32,6 +33,11 @@ runtime = PythonRuntime(current_dir + "/output/notebooks")
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/manifests")
+def manifests():
+    return jsonify({"modes": manifests_manager})
 
 
 @app.route("/manifests/<manifests>")
