@@ -12,7 +12,7 @@ The design goal of this project was very clear from the beginning.
 2. It allows developers to define the behavior of each LLM agent declaratively (without writing code).
 3. It enables complex applications, which involves embedded database and code execution.
 
-I am a big fan of "Declarative Programming", because it will significantly simplify the application development process, allowing web-based application creation (by non-developers) or even full automations. You can think is a part of no-code movement. 
+I am a big fan of "Declarative Programming", because it will significantly simplify the application development process, allowing web-based application creation (by non-developers) or even full automations. You can think of it as a part of the no-code movement. 
 
 If we want to build a scalable LLM application business targeting tens of thousands of enterprise customers, it does not make sense to write custom code for each customer. The "Declarative Programming" is the only way to scale such a business.
 
@@ -36,7 +36,7 @@ When the user select this agent, SlashGPT creates a new chat session with this m
 
 ## Code Interpreter
 
-Here is a little bit complext example, which defines the "Code Interpreter" agent on top of Code Llama2.
+Here is a slightly complext example, which defines the "Code Interpreter" agent on top of Code Llama2.
 
 ```
 title: Code Interpreter with code_llamma
@@ -46,11 +46,11 @@ form: Write some Python code to {question} (surround it with ```).
 notebook: true
 prompt:
 - You are a data scientist who runs Python code to analyze data.
-- When you write code, make it sure that you expicitly import all necessary libraries,
-  such as mumpy and matplotlib
+- When you write code, make sure you explicitly import all necessary libraries,
+  such as numpy and matplotlib
 ```
 
-- The *model* defines the LLM.
+- The *model* specifies the LLM to use (such as gpt3.5, gpt4, llama2 and palm2).
 - The *temperature* defines the temperature for LLM (between 0 and 1.0)
 - The *form* defines the template to modify user's question.
 - The *notebook* defines if we want to record the interaction in Jupyter Notebook or not.
@@ -80,7 +80,7 @@ plt.legend()
 plt.show()
 ```
 
-SlashGPT executes this code, and genrates the graph below.
+SlashGPT executes this code, and generates the graph below.
 
 ![](https://satoshi.blogs.com/mag2/chart_stock.png)
 
@@ -137,7 +137,29 @@ SlashGPT accesses the REST API specified in the *action* attributes, passes the 
 1 USD is 147.54 JPY
 ```
 
-## RAG(Retrieval Augmented Generation)
+## RAG (Retrieval Augmented Generation)
+
+It is possible to define an AI agent, which retrieves associated information from vector database. Here is an example.
+
+```
+title: Olympic 2022
+temperature: 0
+embeddings:
+  db_type: pinecone
+  api_key: PINECONE_API_KEY
+  api_env: us-east4-gcp
+  name: olympic-2022
+prompt:
+- Use the below articles on the 2022 Winter Olympics to answer the subsequent question.
+  If the answer cannot be found in the articles, write 'I could not find an answer'.
+- '{articles}'
+```
+
+The *embeddings* specifies the type and the location of the embedding database (a Pinecode database in this case). Notice that the api_key is not the key itself, but the name of environment variable, which stores the API key.
+
+When the user enters "Please list the names of Japanese athletes won the gold medal at the 2022 Winter Olympics along with event names they won the medal.", SlashGPT creates an embedding vector for this string, accesses the embedding database to retrieve related articles.
+
+Then, SlashGPT will embed those articles in the prompt (as specified in '{articles}' in the *prompt* property), passes it to LLM to retrieves the response. 
 
 ## GraphQL
 
