@@ -10,23 +10,55 @@
       <div class="container mx-auto mt-8 mb-36">
         <div class="flex">
           <div class="w-1/2">
-            <div v-if="loading">
-              loading
+            <div v-if="manifests[agent]">
+              [[ manifests[agent]["title"] ]] - [[ manifests[agent]["description"] ]]
             </div>
-            <div v-for="(message, k) in messages" :key="k">
-              <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
-                <div class="text-gray-600">[[ message.role ]]</div>
-                <p class="text-gray-800"> [[ message.content ]]</p>
+            <!-- Tab -->
+            <div class="flex mt-2">
+              <div class="flex-1">
+                <div
+                  class="relative flex h-6 cursor-pointer flex-col items-center justify-center  shadow p-4 rounded-t-lg mb-4"
+                  :class="tabMode == 'chat' ? 'bg-gray-200':''"
+                  @click="tabMode = 'chat'"
+                  >
+                  chat
+                </div>
+              </div>
+              <div class="flex-1">
+                <div
+                  class="relative flex h-6 cursor-pointer flex-col items-center justify-center  shadow p-4 rounded-t-lg mb-4"
+                  :class="tabMode == 'edit' ? 'bg-gray-200':''"
+                  @click="tabMode = 'edit'"
+                  >
+                  edit
+                </div>
               </div>
             </div>
-            <div v-if="messages.length > 0">
-              <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="clear">Clear</button>
+            <!-- Chat View -->
+            <div v-if="tabMode == 'chat'">
+              <div v-if="loading">
+                loading
+              </div>
+              <div v-for="(message, k) in messages" :key="k">
+                <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
+                  <div class="text-gray-600">[[ message.role ]]</div>
+                  <p class="text-gray-800"> [[ message.content ]]</p>
+                </div>
+              </div>
+              <div v-if="messages.length > 0">
+                <button class="bg-blue-500 text-white py-2 px-4 ml-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" @click="clear">Clear</button>
+              </div>
+            </div>
+            <!-- Edit view -->
+            <div v-if="tabMode == 'edit'">
+              <pre class="break-words whitespace-pre-wrap">[[ currentManifest ]]</pre>
             </div>
           </div>
           <div class="p-2 w-1/4">
             <div class="bg-white shadow p-4 rounded-lg mb-4">
               <h3>Agents</h3>
               <li v-for="(manifest, k) in manifests" :key="k"
+                  class="cursor-pointer"
                   :class="k == agent ? 'font-bold' : ''"
                   @click="updateAgent(k)"
                   >
@@ -36,12 +68,33 @@
           </div>
           <div class="p-2 w-1/4">
             <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
+              <h3>LLMs</h3>
+              [[ llm ]]
+              <li v-for="(l, k) in llms" :key="k"
+                  :class="llm == l ? 'font-bold' : ''"
+                  class="cursor-pointer"
+                  @click="updateLLM(l)"
+                  >
+                [[ l ]]
+              </li>
+            </div>
+            <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
               <h3>Samples</h3>
               <li v-for="(sample, k) in samples" :key="k"
+                  class="cursor-pointer"
                   @click="updateMessage(sample)"
                   >
                 [[ sample ]]
               </li>
+            </div>
+            <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
+              <h3>Mode</h3>
+              <li v-for="(m, k) in Object.keys(manifests_modes)" :key="k"
+                  :class="manifests_key === m ? 'font-bold' : ''"
+                  class="cursor-pointer"
+                  @click="updateManifestKey(m)"
+                  >
+                [[ m ]]
             </div>
           </div>
         </div>
@@ -59,44 +112,73 @@
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-      const { createApp, ref } = Vue
+      const { createApp, ref, computed } = Vue
     
       createApp({
         setup() {
-          const manifests = ref([]);
-          const manifests_key = "main";
-          let session_id = null;
+          const tabMode = ref("chat")
+          const manifests_modes = ref([]);
+          const manifests = ref({});
+          const manifests_key = ref("main");
           const agent = ref("spacex");
+          
+          // const manifests_key = "roles1";
+          // const agent = ref("hotel");
+      
+          const llm = ref("gpt31")
+          let session_id = null;
           const message = ref("who is ceo of spacex")
           const messages = ref([]);
           const samples = ref([]);
+          const llms = ref([]);
           const loading = ref(false);
           
           const loadSamples = () => {
             const m = manifests.value[agent.value];
-            return Object.keys(m).reduce((tmp, k) => {
-              if (k.startsWith("sample")) {
-                tmp.push(m[k]);
-              }
-              return tmp;
-            }, []);
+            if (m) {
+              return Object.keys(m).reduce((tmp, k) => {
+                if (k.startsWith("sample")) {
+                  tmp.push(m[k]);
+                }
+                return tmp;
+              }, []);
+            }
+            return [];
           }
+          const getManifestModes = async () => {
+            const res = await fetch("/manifests")
+            manifests_modes.value = (await res.json())["modes"];
+          };
           const getManifest = async () => {
-            const res = await fetch("/manifests/" + manifests_key)
+            const res = await fetch("/manifests/" + manifests_key.value)
             manifests.value = (await res.json())["manifests"];
             samples.value = loadSamples()
-          }
-
+          };
+          const getLLMs = async () => {
+            const res = await fetch("/llms/" + manifests_key.value)
+            llms.value =  (await res.json())["llms"];
+          };
           
-          getManifest()
+          const init = () => {
+            getManifestModes();
+            getManifest();
+            getLLMs();
+          };
+          init();
 
+          // computed
+          const currentManifest = computed(() => {
+            return manifests.value[agent.value];
+          });
+          
+          // methods for web
           const send = async () => {
             const headers = {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             };
-            const body = JSON.stringify({message: message.value});
-            const pathBase = "/manifests/" + manifests_key + "/" + agent.value + "/talk";
+            const body = JSON.stringify({message: message.value, llm: llm.value});
+            const pathBase = "/manifests/" + manifests_key.value + "/" + agent.value + "/talk";
             message.value = "";
             loading.value = true;
             const res = await fetch(session_id ? pathBase + "/" + session_id : pathBase,
@@ -118,22 +200,39 @@
             agent.value= a;
             samples.value = loadSamples()
           };
+          const updateLLM = (l) => {
+            llm.value = l
+          };
           const updateMessage = (m) => {
             message.value = m;
           };
+          const updateManifestKey = async (m) => {
+            manifests_key.value = m;
+            agent.value = manifests_modes.value[m].default_agent_name;
+            await getManifest();
+            loadSamples();
+          };
           return {
             // ref
+            tabMode,
             message,
             messages,
+            llms,
+            llm,
             samples,
+            manifests_modes,
             manifests,
+            manifests_key,
             agent,
             loading,
+            currentManifest,
             // func
             clear,
             send,
             updateAgent,
+            updateLLM,
             updateMessage,
+            updateManifestKey,
           }
         },
         delimiters: ['[[', ']]']
