@@ -90,7 +90,9 @@
                 <tr>
                   <td>model</td>
                   <td>
-                    <select v-model="currentManifest['model']">
+                    <select v-model="currentManifest['model']"
+                            class="w-full p-2 border border-gray-300 rounded-md "
+                            >
                       <option value="">Please default model</option>
                       <option v-for="(l, k) in llms" :key="k">
                         [[ l ]]
@@ -127,7 +129,9 @@
                 <tr>
                   <td>functions</td>
                   <td>
-                    <select v-model="currentManifest['functions']">
+                    <select v-model="currentManifest['functions']"
+                            class="w-full p-2 border border-gray-300 rounded-md "
+                            >
                       <option value="">Please functions</option>
                       <option v-for="(f, k) in Object.keys(functions)" :key="k">
                         ./resources/functions/[[ f ]].json
@@ -163,7 +167,9 @@
                 <tr>
                   <td>module</td>
                   <td>
-                    <select v-model="currentManifest['module']">
+                    <select v-model="currentManifest['module']"
+                            class="w-full p-2 border border-gray-300 rounded-md "
+                            >
                       <option value="">Please modules</option>
                       <option v-for="(m, k) in Object.keys(modules)" :key="k">
                         ./resources/module/[[ m ]].py

@@ -40,6 +40,7 @@ def index():
 def manifests():
     return jsonify({"modes": manifests_manager})
 
+
 @app.route("/functions")
 def functions():
     path = current_dir + "/resources/functions"
@@ -49,9 +50,9 @@ def functions():
         if re.search(r"\.json$", file):
             with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                 functions[file.split(".")[0]] = json.load(f)
-   
-    
+
     return jsonify({"functions": functions})
+
 
 @app.route("/modules")
 def modules():
@@ -62,8 +63,7 @@ def modules():
         if re.search(r"\.py$", file):
             with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                 functions[file.split(".")[0]] = f.read()
-   
-    
+
     return jsonify({"modules": functions})
 
 
