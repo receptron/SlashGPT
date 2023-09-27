@@ -92,6 +92,7 @@ Here is a example, which uses an external API to convert currencies.
 
 ```
 title: Currency Converter
+description: Converts currency
 temperature: 0
 prompt:
 - You convert currency values based on the latest exchange rates.
@@ -120,6 +121,7 @@ actions:
     url: https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}
 ```
 
+- The *description* specifies the role of agent (to other agents, not to the user)
 - The *functions* defines a set of functions to be called.
 - The *actions* defines the implementations of those functions
 
@@ -133,4 +135,58 @@ SlashGPT accesses the REST API specified in the *action* attributes, passes the 
 
 ```
 1 USD is 147.54 JPY
+```
+
+## RAG(Retrieval Augmented Generation)
+
+## GraphQL
+
+It is also quite straightforward to use graphQL to retrieve information. Here is an example, which uses the graphQL endpoint provided by SpaceX.
+
+```
+title: SpaceX Information
+description: Anything about SpaceX
+temperature: 0
+actions:
+  call_graphQL:
+    type: graphQL
+    url: https://spacex-production.up.railway.app/graphql
+functions:
+- description: access graphQL endpoint
+  name: call_graphQL
+  parameters:
+    properties:
+      query:
+        description: graphQL query
+        type: string
+    required:
+    - query
+    type: object
+resource: ./resources/templates/spacex.json
+prompt:
+- You are an expert in GraphQL and use call_graphQL function to retrieve necessary
+  information.
+- Ask for clarification if a user request is ambiguous.
+- 'Here is the schema of GraphQL query:'
+- '{resource}'
+```
+
+The *resource* specifies the location of graphQL schema file, which will be embedded in the prompt (as specified by '{resource}' in the *prompt* property).
+
+When the user enters "Who is CEO of SpaceX?" as the question, the LLM incidates that it needs to the following function call:
+
+```
+call_graphQL('{  "query": "{ company { ceo } }"n}')
+```
+
+SlashGPT accesses SpaceX's graphQL endpoint, which returns the following reply:
+
+```
+ {"company": {"ceo": "Elon Musk"}}
+```
+
+SlashGPT passes this reply to the LLM, and the LLM generates a reply to the user:
+
+```
+The CEO of SpaceX is Elon Musk.
 ```
