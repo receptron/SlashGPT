@@ -186,7 +186,7 @@
                                    )
             loading.value = false;
             const data = await res.json();
-
+            
             session_id = data.session_id;
             messages.value = data.messages;
           };
@@ -197,8 +197,12 @@
           };
           const updateAgent = (a) => {
             clear();
-            agent.value= a;
+            agent.value = a;
             samples.value = loadSamples()
+            const m = manifests.value[agent.value];
+            if (m["model"]) {
+              llm.value = m["model"];
+            }
           };
           const updateLLM = (l) => {
             llm.value = l
