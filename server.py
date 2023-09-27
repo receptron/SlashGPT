@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 
 from dotenv import load_dotenv
@@ -38,6 +39,32 @@ def index():
 @app.route("/manifests")
 def manifests():
     return jsonify({"modes": manifests_manager})
+
+@app.route("/functions")
+def functions():
+    path = current_dir + "/resources/functions"
+    files = os.listdir(path)
+    functions = {}
+    for file in files:
+        if re.search(r"\.json$", file):
+            with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
+                functions[file.split(".")[0]] = json.load(f)
+   
+    
+    return jsonify({"functions": functions})
+
+@app.route("/modules")
+def modules():
+    path = current_dir + "/resources/module"
+    files = os.listdir(path)
+    functions = {}
+    for file in files:
+        if re.search(r"\.py$", file):
+            with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
+                functions[file.split(".")[0]] = f.read()
+   
+    
+    return jsonify({"modules": functions})
 
 
 @app.route("/manifests/<manifests>")
@@ -126,4 +153,5 @@ def talk(manifests, agent, session_id=None):
 
 
 if __name__ == "__main__":
+    # app.run(debug=True, port=5001)
     app.run(debug=True)

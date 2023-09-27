@@ -89,7 +89,15 @@
               
                 <tr>
                   <td>model</td>
-                  <td>[[ currentManifest['model'] ]]</td>
+                  <td>
+                    <select v-model="currentManifest['model']">
+                      <option value="">Please default model</option>
+                      <option v-for="(l, k) in llms" :key="k">
+                        [[ l ]]
+                      </option>
+                    </select>
+
+                  </td>
                 </tr>
                 <tr>
                   <td>tempereture</td>
@@ -118,7 +126,14 @@
                 </tr>
                 <tr>
                   <td>functions</td>
-                  <td>[[ currentManifest['functions'] ]]</td>
+                  <td>
+                    <select v-model="currentManifest['functions']">
+                      <option value="">Please functions</option>
+                      <option v-for="(f, k) in Object.keys(functions)" :key="k">
+                        ./resources/functions/[[ f ]].json
+                      </option>
+                    </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>form </td>
@@ -142,7 +157,15 @@
                 </tr>
                 <tr>
                   <td>module</td>
-                  <td>[[ currentManifest['module'] ]]</td></tr>
+                  <td>
+                    <select v-model="currentManifest['module']">
+                      <option value="">Please modules</option>
+                      <option v-for="(m, k) in Object.keys(modules)" :key="k">
+                        ./resources/module/[[ m ]].py
+                      </option>
+                    </select>
+                  </td>
+                </tr>
                 <tr>
                   <td>result_form</td>
                   <td>
@@ -243,15 +266,16 @@
           const manifests_key = ref("main");
           const agent = ref("spacex");
           
-          // const manifests_key = "roles1";
-          // const agent = ref("hotel");
-      
           const llm = ref("gpt31")
           let session_id = null;
           const message = ref("who is ceo of spacex")
           const messages = ref([]);
           const samples = ref([]);
+
           const llms = ref([]);
+          const functions = ref({});
+          const modules = ref({});
+          
           const loading = ref(false);
           
           const loadSamples = () => {
@@ -279,11 +303,21 @@
             const res = await fetch("/llms/" + manifests_key.value)
             llms.value =  (await res.json())["llms"];
           };
+          const getModules = async () => {
+            const res = await fetch("/modules")
+            modules.value =  (await res.json())["modules"];
+          };
+          const getFunctions = async () => {
+            const res = await fetch("/functions")
+            functions.value =  (await res.json())["functions"];
+          };
           
           const init = () => {
             getManifestModes();
             getManifest();
             getLLMs();
+            getModules();
+            getFunctions();
           };
           init();
 
@@ -344,6 +378,8 @@
             messages,
             llms,
             llm,
+            functions,
+            modules,
             samples,
             manifests_modes,
             manifests,
