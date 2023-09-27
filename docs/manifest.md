@@ -93,11 +93,11 @@ SlashGPT executes this code, and generates the graph below.
 
 ![](https://satoshi.blogs.com/mag2/chart_stock.png)
 
-## Plug-in
+## Plug-ins
 
 SlashGPT also supports plug-ins, which is API compatible with OpenAI's plug-ins. 
 
-Here is a example, which uses an external API to convert currencies. 
+Here is an example, which uses an external API to convert currencies. 
 
 ```
 title: Currency Converter
@@ -134,7 +134,7 @@ actions:
 - The *functions* defines a set of functions to be called.
 - The *actions* defines the implementations of those functions
 
-When the user enters "Plese convert 1USD into JPY", the LLM indicates that it wants to make the following function call.
+When the user enters "Please convert 1USD into JPY", the LLM indicates that it needs to call the following function:
 
 ```
 convert(amount=1, from="USD", to="JPY")
@@ -204,7 +204,7 @@ prompt:
 
 The *resource* specifies the location of graphQL schema file, which will be embedded in the prompt (as specified by '{resource}' in the *prompt* property).
 
-When the user enters "Who is CEO of SpaceX?" as the question, the LLM incidates that it needs to the following function call:
+When the user enters "Who is CEO of SpaceX?" as the question, the LLM indicates that it needs to call the following function:
 
 ```
 call_graphQL('{  "query": "{ company { ceo } }"}')
