@@ -13,6 +13,7 @@
             <div v-if="loading">
               loading
             </div>
+            [[ manifests[agent]["title"] ]] - [[ manifests[agent]["description"] ]]
             <div v-for="(message, k) in messages" :key="k">
               <div class="bg-white shadow p-4 rounded-lg mb-4" v-if="message.role !== 'system'">
                 <div class="text-gray-600">[[ message.role ]]</div>
@@ -35,6 +36,16 @@
             </div>
           </div>
           <div class="p-2 w-1/4">
+            <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
+              <h3>LLMs</h3>
+              [[ llm ]]
+              <li v-for="(l, k) in llms" :key="k"
+                  :class="llm == l ? 'font-bold' : ''"
+                  @click="updateLLM(l)"
+                  >
+                [[ l ]]
+              </li>
+            </div>
             <div class="bg-white shadow p-4 rounded-lg mb-4 break-words">
               <h3>Samples</h3>
               <li v-for="(sample, k) in samples" :key="k"
@@ -65,11 +76,15 @@
         setup() {
           const manifests = ref([]);
           const manifests_key = "main";
-          let session_id = null;
           const agent = ref("spacex");
+          // const manifests_key = "roles1";
+          // const agent = ref("hotel");
+          const llm = ref("gpt31")
+          let session_id = null;
           const message = ref("who is ceo of spacex")
           const messages = ref([]);
           const samples = ref([]);
+          const llms = ref([]);
           const loading = ref(false);
           
           const loadSamples = () => {
@@ -85,17 +100,25 @@
             const res = await fetch("/manifests/" + manifests_key)
             manifests.value = (await res.json())["manifests"];
             samples.value = loadSamples()
-          }
-
+          };
+          const getLLMs = async () => {
+            const res = await fetch("/llms/" + manifests_key)
+            llms.value =  (await res.json())["llms"];
+          };
           
-          getManifest()
-
+          const init = () => {
+            getManifest();
+            getLLMs();
+          };
+          init();
+          
+          // methods for web
           const send = async () => {
             const headers = {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             };
-            const body = JSON.stringify({message: message.value});
+            const body = JSON.stringify({message: message.value, llm: llm.value});
             const pathBase = "/manifests/" + manifests_key + "/" + agent.value + "/talk";
             message.value = "";
             loading.value = true;
@@ -118,6 +141,9 @@
             agent.value= a;
             samples.value = loadSamples()
           };
+          const updateLLM = (l) => {
+            llm.value = l
+          };
           const updateMessage = (m) => {
             message.value = m;
           };
@@ -125,6 +151,8 @@
             // ref
             message,
             messages,
+            llms,
+            llm,
             samples,
             manifests,
             agent,
@@ -133,6 +161,7 @@
             clear,
             send,
             updateAgent,
+            updateLLM,
             updateMessage,
           }
         },
