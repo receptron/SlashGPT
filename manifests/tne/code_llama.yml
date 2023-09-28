@@ -4,7 +4,7 @@ model:
   model_name: code_llama2
   api_key: KSERVE_API_KEY
   header_api_key: x-api-key
-  url: https://codellama.staging.kubeflow.platform.nedra.app/v2/models/codellama-7b-instruct-20231001/infer
+  url: http://54.213.91.193:8080/v2/models/codellama-7b-instruct-20231001/infer
 temperature: 0
 skip_function_result: true
 form: Write some Python code to {question} (surround it with ```).
