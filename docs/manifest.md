@@ -13,7 +13,7 @@ Since I wanted to create multiple LLM applications quickly, I started it as an o
 The design goal of this project was very clear from the beginning. 
 
 1. It allows developers to create various LLM applications very quickly.
-2. It allows developers to define the behavior of each LLM agent **declaratively** by simply creating a *manifest* file (without writing code).
+2. It allows developers to define the behavior of each *AI agent* **declaratively** by simply creating a *manifest* file (without writing code).
 3. It enables complex applications, which involves embedded database and code execution.
 
 I am a big fan of "Declarative Programming", because it will significantly simplify the application development and test process, enabling web-based app creation (by non-developers) or even fully automated app creation. You can think of it as a part of the no-code movement. 
@@ -27,7 +27,7 @@ If we want to build a scalable LLM application business targeting tens of thousa
 
 ## Manifest File
 
-In order to create an AI agent (a chat bot, with a specific prompt and behaviors), we need to create a manifest file.
+In order to create an AI agent, we need to create a manifest file.
 
 Here is a simple example, which defines a "Brand Manager" agent.
 
@@ -38,10 +38,10 @@ prompt:
 - You help companies to come up with attractive vision & mission statements, and even company names.
 ```
 
-The *title* defines the title of the agent (for the user).
-The *prompt* defines the system prompt to LLM.
+- The *title* defines the title of the agent (for the user).
+- The *prompt* defines the system prompt to LLM.
 
-When the user select this agent, SlashGPT creates a new chat session with this manifest file and wait for user's input. When the user enters a question, it sends that question to GPT 3.5 (which is the default LLM) along with a system prompt specified in the manifest file, and present the response to the user. 
+When the user select this agent, SlashGPT creates a new chat session with this manifest file and wait for user's input. When the user enters a question, it sends that question to GPT 3.5 (which is the default LLM) along with a system prompt specified in the manifest file, and presents the response to the user. 
 
 ## Code Interpreter
 
