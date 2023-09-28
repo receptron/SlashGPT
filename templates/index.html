@@ -142,6 +142,12 @@
                         [[ f["name"] ]] - [[ f["description"] ]]
                       </div>
                     </div>
+                    <div v-else-if="currentManifest['functions']">
+                      
+                      <div v-for="(f, k) in currentManifest['functions']" :key="k">
+                        [[ f["name"] ]] - [[ f["description"] ]]
+                      </div>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -156,9 +162,15 @@
                   <td>actions</td>
                   <td>
                     <table>
-                      <tr v-for="(a, k) in Object.keys(currentManifest['actions'] || {})">
+                      <tr v-for="(a, k) in Object.keys(currentManifest['actions'] || {})" :key="k">
                         <td>[[ a ]]</td>
-                        <td>[[ currentManifest['actions'][a] ]]</td>
+                        <td>
+                          <div v-if="currentManifest['actions'][a]['type'] === 'rest'">
+                            URL: [[ currentManifest['actions'][a]['url'] ]]<br />
+                            Method: [[ currentManifest['actions'][a]['method'] ]]<br />
+                          </div>
+
+                        </td>
                       </tr>
                     </table>
                   </td>
@@ -344,9 +356,12 @@
             return manifests.value[agent.value];
           });
           const functionKey = computed(() => {
-            const keyBase = (currentManifest.value['functions'] || "").split("/")[3];
-            if (keyBase) {
-              return keyBase.split(".")[0]
+            try {
+              const keyBase = (currentManifest.value['functions'] || "").split("/")[3];
+              if (keyBase) {
+                return keyBase.split(".")[0]
+              }
+            } catch (e) {
             }
             return null;
           });
