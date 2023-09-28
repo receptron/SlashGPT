@@ -133,7 +133,7 @@
                             class="w-full p-2 border border-gray-300 rounded-md "
                             >
                       <option value="">Please functions</option>
-                      <option v-for="(f, k) in Object.keys(functions)" :key="k">
+                      <option v-for="(f, k) in Object.keys(functions||{})" :key="k">
                         ./resources/functions/[[ f ]].json
                       </option>
                     </select>
@@ -154,7 +154,14 @@
                 </tr>
                 <tr>
                   <td>actions</td>
-                  <td>[[ currentManifest['actions'] ]]</td>
+                  <td>
+                    <table>
+                      <tr v-for="(a, k) in Object.keys(currentManifest['actions'] || {})">
+                        <td>[[ a ]]</td>
+                        <td>[[ currentManifest['actions'][a] ]]</td>
+                      </tr>
+                    </table>
+                  </td>
                 </tr>
                 <tr>
                   <td>notebook</td>
@@ -308,7 +315,7 @@
           const getManifest = async () => {
             const res = await fetch("/manifests/" + manifests_key.value);
             manifests.value = (await res.json())["manifests"];
-            samples.value = loadSamples()
+            samples.value = loadSamples();
           };
           const getLLMs = async () => {
             const res = await fetch("/llms/" + manifests_key.value)
@@ -337,7 +344,7 @@
             return manifests.value[agent.value];
           });
           const functionKey = computed(() => {
-            const keyBase = currentManifest.value['functions'].split("/")[3];
+            const keyBase = (currentManifest.value['functions'] || "").split("/")[3];
             if (keyBase) {
               return keyBase.split(".")[0]
             }
