@@ -127,7 +127,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
-- *functions* (string, optional): location of the function definitions 
+- *functions* (string or list, optional): string - location of the function definitions, list - function definitions
 - *module* (string, optional): location of the Python script to be loaded for function calls
 - *actions* (object, optional): Template-based function processor (see details below)
 
