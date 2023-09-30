@@ -1,14 +1,11 @@
-
-
-from transformers import AutoProcessor, Blip2ForConditionalGeneration
-import torch
-
 import requests
+import torch
 from PIL import Image
+from transformers import AutoProcessor, Blip2ForConditionalGeneration
 
 
 def generated_text_from_image_url(url: str):
-    image = Image.open(requests.get(url, stream=True).raw).convert('RGB')  
+    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
 
     processor = AutoProcessor.from_pretrained("Salesforce/blip2-opt-2.7b")
     model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b")
@@ -22,6 +19,3 @@ def generated_text_from_image_url(url: str):
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
 
     return ({"result": "success", "text": generated_text}, None)
-
-
-
