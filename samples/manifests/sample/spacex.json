@@ -1,0 +1,26 @@
+{
+  "title": "SpaceX Information",
+  "description": "Anything about SpaceX",
+  "about": "snakajima",
+  "temperature": 0,
+  "functions": "./resources/functions/graphql.json",
+  "resource": "./resources/templates/spacex.json",
+  "actions": {
+    "call_graphQL": {
+      "type": "graphQL",
+      "url": "https://spacex-production.up.railway.app/graphql"
+    }
+  },
+  "sample": "Who is CEO of SpaceX?",
+  "sample1": "What kind of information are you able to get?",
+  "sample2": "Get all the information of last 10 launches",
+  "sample3": "Next Launch",
+  "sample4": "Get names of all rockets",
+  "sample5": "List all launchpads",
+  "prompt": [
+    "You are an expert in GraphQL and use call_graphQL function to retrieve necessary information.",
+    "Ask for clarification if a user request is ambiguous.",
+    "Here is the schema of GraphQL query:",
+    "{resource}"
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "role": "system",
+    "content": "Don't make any assumptions about what property values to plug into functions.\nAsk for clarification if a user request is ambiguous.\nYou are a AI cooker. Cook using only the recipes provided below.\nFeel free to add, remove or substitute some ingredients if requested\n[\n  {\n    \"name\": \"Humberger\",\n    \"ingredients\": [\n      {\n        \"ingredient\": \"ground beef\",\n        \"amount\": 200\n      },\n      {\n        \"ingredient\": \"chopped onion\",\n        \"amount\": 150\n      }\n    ],\n    \"sauce\": [\n      {\n        \"ingredient\": \"salt\",\n        \"amount\": 4\n      }\n    ],\n    \"cooking instruction\": \"Mix ingredients and grill it\"\n  }, \n  {\n    \"name\": \"Pork vegetable stir fly for two\",\n    \"ingredients\": [\n        {\n          \"ingredient\": \"sliced pork\",\n          \"amount\": 150\n        },\n        {\n          \"ingredient\": \"chopped green pepper\",\n          \"amount\": 200\n        },\n        {\n          \"ingredient\": \"chopped cabbage\",\n          \"amount\": 200\n        },\n        {\n          \"ingredient\": \"bean sprouts\",\n          \"amount\": 100\n        },\n        {\n          \"ingredient\": \"chopped carrot\",\n          \"amount\": 100\n        }\n      ],\n    \"sauce\": [\n      {\n        \"ingredient\": \"sake\",\n        \"amount\": 15\n      },\n      {\n        \"ingredient\": \"soy sauce\",\n        \"amount\": 7.5\n      },\n      {\n        \"ingredient\": \"oystar sauce\",\n        \"amount\": 7.5\n      },\n      {\n        \"ingredient\": \"grated ginger\",\n        \"amount\": 5\n      },\n      {\n        \"ingredient\": \"pepper\",\n        \"amount\": 0.5\n      },\n      {\n        \"ingredient\": \"salt\",\n        \"amount\": 0.5\n      }\n    ],\n    \"cooking instruction\": \"Stir fly all ingredients with sauce\"\n  }\n]",
+    "preset": true
+  },
+  {
+    "role": "user",
+    "content": "麻婆豆腐を作って",
+    "preset": false
+  },
+  {
+    "role": "assistant",
+    "content": "麻婆豆腐のレシピを提供するために、いくつかの質問をさせていただきます。\n\n1. 豆腐の種類は何ですか？（絹ごし豆腐、木綿豆腐など）\n2. 豆腐の量はどれくらいですか？\n3. 豚ひき肉や牛ひき肉を使用しますか？また、使用する場合は量はどれくらいですか？\n4. 他に使用する具材や調味料はありますか？\n\n上記の質問にお答えいただければ、麻婆豆腐のレシピを提供できます。",
+    "preset": false
+  }
+]
