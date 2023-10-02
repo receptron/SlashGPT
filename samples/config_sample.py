@@ -18,6 +18,7 @@ current_dir = os.path.dirname(__file__)
 runtime = PythonRuntime(current_dir + "/output/notebooks")
 config = ChatSlashConfig(current_dir, current_dir + "/manifests/sample", llm_models, llm_engine_configs)
 
+
 def process_llm(session):
     try:
         (res, function_call) = session.call_llm()
@@ -39,6 +40,7 @@ def process_llm(session):
     except Exception as e:
         print_error(f"Exception: Restarting the chat :{e}")
 
+
 def create_session(agent_name: str, llm_name: str):
     manifest = config.manifests[agent_name]
     history = ChatHistoryFileStorage("sample", agent_name)
@@ -48,6 +50,7 @@ def create_session(agent_name: str, llm_name: str):
     session.set_llm_model(model)
     return (session, history)
 
+
 def main():
     (session, history) = create_session("spacex", "gpt3")
 
@@ -55,9 +58,10 @@ def main():
     session.append_user_question(session.manifest.format_question(question))
     process_llm(session)
     messages = history.messages()
-    last_message = messages[len(messages)-1]
+    last_message = messages[len(messages) - 1]
 
     print(f"Q: {question}")
     print(f"A: {last_message.get('content')}")
+
 
 main()
