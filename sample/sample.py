@@ -23,14 +23,11 @@ config = ChatSlashConfig(current_dir, current_dir + "/manifests/sample", llm_mod
 agent_name = "spacex"
 llm_name = "gpt3"
 manifest = config.manifests[agent_name]
-# print(manifest)
 model = get_llm_model_from_key(llm_name, config.llm_models)
-# print(model)
 
 engine = ChatHistoryFileStorage("sample", agent_name)
 session_id = engine.session_id
-print(session_id)
-# session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine)
-# session.set_llm_model(llm_name)
-# print (session_id, session, engine)
+
+session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine)
+session.set_llm_model(model)
 
