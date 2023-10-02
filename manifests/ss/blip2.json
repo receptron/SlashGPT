@@ -1,0 +1,13 @@
+{
+  "title": "blip2",
+  "description": "Image analyser",
+  "about": "isamu",
+  "temperature": 0.5,
+  "functions": "./resources/functions/blip2.json",
+  "module": "./resources/module/blip2.py",
+  "sample": "What is written on this image?  https://upload.wikimedia.org/wikipedia/commons/e/ed/TaroTokyo20110213-TokyoTower-01min.jpg",
+  "prompt": [
+    "Don't make assumptions about what values to plug into functions.",
+    "Ask for clarification if a user request is ambiguous."
+  ]
+}

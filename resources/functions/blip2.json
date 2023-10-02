@@ -1,0 +1,16 @@
+[
+  {
+      "name": "generated_text_from_image_url",
+      "description": "Fetch the image and explain what is in the image",
+      "parameters": {
+          "type": "object",
+          "properties": {
+              "url": {
+                  "type": "string",
+                  "description": "url of the image"
+              }
+          },
+          "required": ["url"]
+      }
+  }
+]

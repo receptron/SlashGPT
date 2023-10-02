@@ -22,5 +22,9 @@
   "tne": {
     "manifests_dir": "manifests/tne",
     "default_agent_name": "llama_nsql"
+  },
+  "ss": {
+    "manifests_dir": "manifests/ss",
+    "default_agent_name": "blip2"
   }
 }
