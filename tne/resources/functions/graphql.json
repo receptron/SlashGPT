@@ -1,0 +1,16 @@
+[
+  {
+    "name": "call_graphQL",
+    "description": "access graphQL endpoint",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "graphQL query"
+        }
+      },
+      "required": ["query"]
+    }
+  }
+]
