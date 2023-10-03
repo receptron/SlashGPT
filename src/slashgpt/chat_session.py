@@ -27,15 +27,15 @@ class ChatSession:
         restore: bool = False,
     ):
         self.config = config
-        """Configuration Object, which specifies accessible LLM models"""
+        """Configuration Object (ChatConfig), which specifies accessible LLM models"""
         self.agent_name = agent_name
-        """Display name of the AI agent"""
+        """Display name of the AI agent (str)"""
         self.manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
-        """Manifest which specifies the behavior of the AI agent"""
+        """Manifest which specifies the behavior of the AI agent (Manifest)"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
-        """User id"""
+        """Specified user id or randomly generated uuid (str)"""
         self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
-        """Chat history"""
+        """Chat history (ChatHistory)"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
@@ -49,20 +49,26 @@ class ChatSession:
 
         # Load the prompt, fill variables and append it as the system message
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
+        """Prompt for the AI agent (str)"""
+
         if self.prompt and not restore:
             self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
         self.vector_db = self.__get_vector_db()
+        """Associated vector database (DBPinecone, optional, to be virtualized)"""
 
         # Load functions file if it is specified
         self.functions = self.manifest.functions()
+        """List of function definitions (list, optional)"""
         if self.functions and self.config.verbose:
             print_debug(self.functions)
 
         self.intro_message = self.__set_intro(intro)
+        """Introduction message (str, optional)"""
 
     def set_llm_model(self, llm_model: LlmModel):
+        """Set the LLM model"""
         if llm_model.check_api_key():
             self.llm_model = llm_model
         else:
@@ -71,7 +77,7 @@ class ChatSession:
             print_debug(f"Model = {self.llm_model.name()}")
 
     def __get_vector_db(self):
-        # Todo: support other vector dbs.
+        # Todo: support other vector db
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
@@ -87,9 +93,19 @@ class ChatSession:
     """
 
     def append_message(self, role: str, message: str, preset: bool, name=None):
+        """Append a message to the chat history
+        Args:
+
+            role (str): Either "user", "system" or "function"
+            message (str): Message
+            preset (bool): True, if it is preset by the manifest
+            name (str, optional): function name (when the role is "function")
+        """
         self.history.append_message(role, message, name, preset)
 
     def append_user_question(self, message: str):
+        """Append a question from the user to the history 
+        and update the prompt if necessary (e.g, RAG)"""
         self.append_message("user", message, False)
         if self.vector_db:
             articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
@@ -110,15 +126,16 @@ class ChatSession:
             self.append_message("assistant", intro_message, True)
         return intro_message
 
-    """
-    Let the LLM generate a responce based on the messasges in this session.
-    Return values:
-        role: "assistent"
-        res: message
-        function_call: json representing the function call (optional)
-    """
-
     def call_llm(self):
+        """
+        Let the LLM generate a responce based on the messasges in this session.
+
+        Returns:
+
+            role: "assistent"
+            res: message
+            function_call: json representing the function call (optional)
+        """
         messages = self.history.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
