@@ -12,7 +12,7 @@ ChatSlashConfig is a singleton, which holds global states, including various sec
 """
 
 
-class ChatSlashConfig(ChatConfig):
+class ChatConfigWithManifests(ChatConfig):
     """
     A subclass of ChatConfig, which maintains the set of manifests loaded from
     a specified folder.
@@ -28,7 +28,6 @@ class ChatSlashConfig(ChatConfig):
             llm_engine_configs (dict, optional): collection of custom LLM engine definitions
         """
         super().__init__(base_path, llm_models, llm_engine_configs)
-        self.audio: Optional[str] = None
         self.manifests = self.__load_manifests(path_manifests)
         """Set of manifests loaded from the specified folder"""
         self.path_manifests = path_manifests
@@ -64,9 +63,6 @@ class ChatSlashConfig(ChatConfig):
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())
 
-    def help_list(self):
-        return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
-
     def has_manifest(self, key: str):
         """Check if a manifest file with a specified name exits
         Args:
@@ -74,3 +70,25 @@ class ChatSlashConfig(ChatConfig):
             key (str): the name of manifest
         """
         return key in self.manifests
+
+
+class ChatSlashConfig(ChatConfigWithManifests):
+    """
+    A subclass of ChatConfigManifest, which maintains the audio flag.
+    """
+    def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        """
+        Args:
+
+            base_path (str): path to the "base" folder.
+            path_manifests (str): path to the manifests folder (json or yaml)
+            llm_models (dict, optional): collection of custom LLM model definitions
+            llm_engine_configs (dict, optional): collection of custom LLM engine definitions
+        """
+        super().__init__(base_path, path_manifests, llm_models, llm_engine_configs)
+        self.audio: Optional[str] = None
+        """Flag indicating if the audio mode is on or not"""
+
+    def help_list(self):
+        return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
+
