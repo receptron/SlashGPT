@@ -60,9 +60,6 @@ class ChatConfigWithManifests(ChatConfig):
         """Reload manifest files"""
         self.manifests = self.__load_manifests(self.path_manifests)
 
-    def __get_manifests_keys(self):
-        return sorted(self.manifests.keys())
-
     def has_manifest(self, key: str):
         """Check if a manifest file with a specified name exits
         Args:
@@ -89,6 +86,9 @@ class ChatSlashConfig(ChatConfigWithManifests):
         super().__init__(base_path, path_manifests, llm_models, llm_engine_configs)
         self.audio: Optional[str] = None
         """Flag indicating if the audio mode is on or not"""
+
+    def __get_manifests_keys(self):
+        return sorted(self.manifests.keys())
 
     def help_list(self):
         return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
