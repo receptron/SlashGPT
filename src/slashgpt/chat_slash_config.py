@@ -16,7 +16,7 @@ class ChatSlashConfig(ChatConfig):
     def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
         super().__init__(base_path, llm_models, llm_engine_configs)
         self.audio: Optional[str] = None
-        self.load_manifests(path_manifests)
+        self.manifests = self.__load_manifests(path_manifests)
         self.path_manifests = path_manifests
 
     """
@@ -24,19 +24,24 @@ class ChatSlashConfig(ChatConfig):
     It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
     """
 
-    def load_manifests(self, path: str):
-        self.manifests = {}
+    def __load_manifests(self, path: str):
+        manifests = {}
         files = os.listdir(path)
         for file in files:
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
-                    self.manifests[file.split(".")[0]] = json.load(f)
+                    manifests[file.split(".")[0]] = json.load(f)
             elif re.search(r"\.yml$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
-                    self.manifests[file.split(".")[0]] = yaml.safe_load(f)
+                    manifests[file.split(".")[0]] = yaml.safe_load(f)
+        return manifests
+    
+    def switch_manifests(self, path: str):
+        self.path_manifests = path
+        self.reload()
 
     def reload(self):
-        self.load_manifests(self.path_manifests)
+        self.manifests = self.__load_manifests(self.path_manifests)
 
     def __get_manifests_keys(self):
         return sorted(self.manifests.keys())
