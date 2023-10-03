@@ -73,7 +73,7 @@ def __search_llm_model(llm_model_name: str, llm_models={}, llm_engine_configs={}
         llm_model = list(llm_models.values())[index]
         return llm_model
     else:
-        return get_default_llm_model_name(llm_models, llm_engine_configs)
+        return get_default_llm_model_name(llm_models)
 
 
 def get_llm_model_from_manifest(manifest: Manifest, llm_models={}, llm_engine_configs={}):
