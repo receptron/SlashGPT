@@ -69,7 +69,7 @@ class SlashGPT:
             self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro)
             if self.config.verbose:
                 print_info(
-                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
+                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})"
                 )
             else:
                 print_info(f"Activating: {self.session.title()}")
