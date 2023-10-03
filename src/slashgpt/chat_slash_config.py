@@ -13,18 +13,29 @@ ChatSlashConfig is a singleton, which holds global states, including various sec
 
 
 class ChatSlashConfig(ChatConfig):
+    """
+    A subclass of ChatConfig, which maintains the set of manifests loaded from
+    a specified folder.
+    """
+
     def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        """
+        Args:
+
+            base_path (str): path to the "base" folder.
+            path_manifests (str): path to the manifests folder (json or yaml)
+            llm_models (dict, optional): collection of custom LLM model definitions
+            llm_engine_configs (dict, optional): collection of custom LLM engine definitions
+        """
         super().__init__(base_path, llm_models, llm_engine_configs)
         self.audio: Optional[str] = None
         self.manifests = self.__load_manifests(path_manifests)
+        """Set of manifests loaded from the specified folder"""
         self.path_manifests = path_manifests
+        """Location of the folder where manifests were loaded"""
 
-    """
-    Load a set of manifests.
-    It's called initially, but it's called also when the user makes a request to switch the set (such as roles1).
-    """
-
-    def __load_manifests(self, path: str):
+    @classmethod
+    def __load_manifests(cls, path: str):
         manifests = {}
         files = os.listdir(path)
         for file in files:
@@ -35,12 +46,19 @@ class ChatSlashConfig(ChatConfig):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     manifests[file.split(".")[0]] = yaml.safe_load(f)
         return manifests
-    
+
     def switch_manifests(self, path: str):
+        """Switch the set of manifests
+
+        Args:
+
+            path (str): path to the manifests folder (json or yaml)
+        """
         self.path_manifests = path
         self.reload()
 
     def reload(self):
+        """Reload manifest files"""
         self.manifests = self.__load_manifests(self.path_manifests)
 
     def __get_manifests_keys(self):
@@ -50,4 +68,9 @@ class ChatSlashConfig(ChatConfig):
         return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
 
     def has_manifest(self, key: str):
+        """Check if a manifest file with a specified name exits
+        Args:
+
+            key (str): the name of manifest
+        """
         return key in self.manifests
