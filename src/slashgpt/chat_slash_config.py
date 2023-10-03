@@ -76,6 +76,7 @@ class ChatSlashConfig(ChatConfigWithManifests):
     """
     A subclass of ChatConfigManifest, which maintains the audio flag.
     """
+
     def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
         """
         Args:
@@ -91,4 +92,3 @@ class ChatSlashConfig(ChatConfigWithManifests):
 
     def help_list(self):
         return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
-
