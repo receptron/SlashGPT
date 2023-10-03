@@ -6,7 +6,7 @@ I started writing LLM applications on top of GPT3.5 in April 2023, inspired by m
 
 I was aware of the popular library among developers called [LangChain](https://github.com/langchain-ai/langchain). However, I chose to write directly on top of OpenAI's API due to its simplicity and straightforwardness.
 
-I also felt that LangChain's helper-API-based approach is not the right direction. I strongly believe that the "Declarative" approach is more suitable for LLM applications, especially for enterprise applications.
+I also felt that LangChain's helper-API-based approach is not the right direction. I strongly believe that the "Declarative" approach is more suitable for LLM applications, especially for enterprise applications where each company or even each division needs to have its own application.
 
 Since I wanted to create multiple LLM applications quickly, I started it as an open source project, [SlashGPT](https://github.com/snakajima/SlashGPT), as my playground (this name came from "slash commands", which allows me to switch among AI agents from the terminal).
 
