@@ -46,8 +46,9 @@ def create_session(agent_name: str, llm_name: str):
     history = ChatHistoryFileStorage("sample", agent_name)
     # session_id = engine.session_id
     model = get_llm_model_from_key(llm_name, config.llm_models)
-    session = ChatSession(config, default_llm_model = model, manifest=manifest, agent_name=agent_name, history_engine=history)
+    session = ChatSession(config, default_llm_model=model, manifest=manifest, agent_name=agent_name, history_engine=history)
     return (session, history)
+
 
 def main():
     (session, history) = create_session("spacex", "gpt3")
