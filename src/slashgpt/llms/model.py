@@ -40,7 +40,6 @@ class LlmModel:
         return "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
 
     def set_engine(self, llm_engine_configs: dict):
-        # def factory(cls, engine_name: str, llm_model):
         class_data = llm_engine_configs.get(self.engine_name())
 
         if class_data:
