@@ -41,7 +41,7 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
-            llm_model = get_llm_model_from_manifest(self.manifest, self.config.llm_models, self.config.llm_engine_configs)
+            llm_model = get_llm_model_from_manifest(self.manifest, self.config)
         else:
             if default_llm_model:
                 llm_model = default_llm_model
