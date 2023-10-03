@@ -38,10 +38,6 @@ class ChatSession:
         """Bot name specified in the manifest"""
         self.title = self.manifest.title()
         """Title of the AI agent specified in the manifest"""
-        self.intro = self.manifest.get("intro")
-        """Introduction messages specified in the manifest"""
-        self.temperature = self.manifest.temperature()
-        """Temperature specified in the manifest"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
         """User id"""
         self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
@@ -112,10 +108,11 @@ class ChatSession:
                 },
             )
 
-    def __set_intro(self, intro:bool):
+    def __set_intro(self, use_intro:bool):
         intro_message = None
-        if intro and self.intro:
-            intro_message = self.intro[random.randrange(0, len(self.intro))]
+        intro = self.intro()
+        if use_intro and intro:
+            intro_message = intro[random.randrange(0, len(intro))]
             self.append_message("assistant", intro_message, True)
         return intro_message
 
@@ -135,3 +132,13 @@ class ChatSession:
             self.append_message(role, res, False)
 
         return (res, function_call)
+
+    def temperature(self):
+        """Temperature specified in the manifest"""
+        return self.manifest.temperature()
+
+    def intro(self):    
+        """Introduction messages specified in the manifest"""
+        return self.manifest.get("intro")
+
+
