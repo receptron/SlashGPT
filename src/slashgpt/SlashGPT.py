@@ -172,7 +172,7 @@ class SlashGPT:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
-                self.llm_model = get_llm_model_from_key(commands[1], self.config.llm_models, self.config.llm_engine_configs)
+                self.llm_model = get_llm_model_from_key(commands[1], self.config)
                 self.session.set_llm_model(self.llm_model)
             else:
                 if self.config.llm_models is None:
