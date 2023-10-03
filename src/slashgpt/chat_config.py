@@ -1,7 +1,6 @@
 from typing import Optional
 
 from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
-from slashgpt.llms.engine_factory import LLMEngineFactory
 
 
 class ChatConfig:
@@ -30,6 +29,3 @@ class ChatConfig:
         """collection of LLM model definitions"""
         self.llm_engine_configs = {**default_llm_engine_configs, **llm_engine_configs} if llm_engine_configs else default_llm_engine_configs
         """collection of LLM engine definitions"""
-        if self.llm_engine_configs:
-            # WARNING: This is a global state
-            LLMEngineFactory.llm_engine_configs = self.llm_engine_configs
