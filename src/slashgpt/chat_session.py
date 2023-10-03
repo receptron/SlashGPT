@@ -13,14 +13,8 @@ from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_f
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error, print_warning
 
-"""
-ChatSession represents a chat session with a particular AI agent.
-The key is the identifier of the agent.
-The manifest specifies behaviors of the agent.
-"""
-
-
 class ChatSession:
+    """It represents a chat session with a particular AI agent."""
     def __init__(
         self,
         config: ChatConfig,
@@ -33,22 +27,25 @@ class ChatSession:
         restore: bool = False,
     ):
         self.config = config
+        """Configuration Object, which specifies accessible LLM models"""
         self.agent_name = agent_name
-
+        """Display name of the AI agent"""
         self.manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
-
+        """Manifest which specifies the behavior of the AI agent"""
         self.userName = self.manifest.username()
+        """User name specified in the manifest"""
         self.botName = self.manifest.botname()
+        """Bot name specified in the manifest"""
         self.title = self.manifest.title()
+        """Title of the AI agent specified in the manifest"""
         self.intro = self.manifest.get("intro")
+        """Introduction messages specified in the manifest"""
         self.temperature = self.manifest.temperature()
-
-        self.intro_message = None
+        """Temperature specified in the manifest"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
-
-        if history_engine is None:
-            history_engine = ChatHistoryMemoryStorage(self.user_id, agent_name)
-        self.history = ChatHistory(history_engine)
+        """User id"""
+        self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
+        """Chat history"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
@@ -73,8 +70,7 @@ class ChatSession:
         if self.functions and self.config.verbose:
             print_debug(self.functions)
 
-        if intro:
-            self.set_intro()
+        self.intro_message = self.__set_intro(intro)
 
     def set_llm_model(self, llm_model: LlmModel):
         if llm_model.check_api_key():
@@ -116,10 +112,12 @@ class ChatSession:
                 },
             )
 
-    def set_intro(self):
-        if self.intro:
-            self.intro_message = self.intro[random.randrange(0, len(self.intro))]
-            self.append_message("assistant", self.intro_message, True)
+    def __set_intro(self, intro:bool):
+        intro_message = None
+        if intro and self.intro:
+            intro_message = self.intro[random.randrange(0, len(self.intro))]
+            self.append_message("assistant", intro_message, True)
+        return intro_message
 
     """
     Let the LLM generate a responce based on the messasges in this session.
