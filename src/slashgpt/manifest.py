@@ -8,42 +8,63 @@ from slashgpt.utils.print import print_info
 
 
 class Manifest:
+    """Manifest specifies the behavior of an LLM agent"""
+
     def __init__(self, manifest: dict = {}, base_dir: str = "", agent_name=None):
+        """
+        Args:
+            manifest (dict): Manifest definition
+            base_dir (str): The base folder location
+            agent_name (str, optional): The display name of LLM agent
+        """
         self.base_dir = base_dir
+        """The base folder location"""
         self.__manifest = manifest
         self.__agent_name = agent_name
-        self.module = self.__read_module()
+        self.__module = self.__read_module()
 
     def get(self, key: str):
+        """Returns the spcified property of the manifest definition (str, dict or list)"""
         return self.__manifest.get(key)
 
     def username(self):
+        """Returns the user name to be displayed (str)"""
         return self.get("you") or f"You({self.__agent_name})"
 
     def botname(self):
+        """Returns the bot (agent) name to be displayed (str)"""
         return self.get("bot") or f"Agent({self.__agent_name})"
 
     def actions(self):
+        """Returns the action property of the manifest definition (dict)"""
         return self.get("actions") or {}
 
     def title(self):
+        """Returns the title of the LLM agent (str)"""
         return self.get("title") or ""
 
     def temperature(self):
+        """Returns the temperature of this LLM agent (float)"""
         if "temperature" in self.__manifest:
             return float(self.get("temperature"))
         return 0.7
 
     def model(self):
+        """Returns the specified LLM model (str or dict)"""
         return self.get("model")
 
     def history_type(self):
+        """Returns the history type (str)
+
+        NOTE: Is it obsolete?"""
         return self.get("history_type") or "all"
 
     def functions(self):
+        """Returns function defintions (list)"""
         value = self.__functions()
         agents = self.get("agents")
 
+        # If agents are spcified, inject their keys into the definition of categrize function.
         if value and agents:
             # WARNING: It assumes that categorize(category, ...) function
             for function in value:
@@ -82,7 +103,8 @@ class Manifest:
         return None
 
     def get_module(self, function_name: str):
-        return self.module and self.module.get(function_name) or None
+        """Returns the specified function of the dynamically loaded module (function)"""
+        return self.__module and self.__module.get(function_name) or None
 
     def __read_prompt(self):
         prompt = self.get("prompt")
@@ -123,6 +145,7 @@ class Manifest:
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
     def prompt_data(self, manifests: dict = {}):
+        """Generate an appropriate prompt for a ChatSession (str)"""
         prompt = self.__read_prompt()
         agents = self.get("agents")
         if prompt:
@@ -141,6 +164,7 @@ class Manifest:
         return re.sub("\\{agents\\}", "\n".join(descriptions), prompt, 1)
 
     def format_question(self, question: str):
+        """Format the question if the "form" property is specified in the manifest (str)"""
         if question[:1] == "`":
             print_info("skipping form")
             return question[1:]
@@ -151,7 +175,9 @@ class Manifest:
         return question
 
     def skip_function_result(self):
+        """Returns the "skip_function_result" property in the manifest (bool)"""
         return self.get("skip_function_result")
 
     def samples(self):
+        """Returns the sample questions specified in the manifest (list)"""
         return list(filter(lambda x: x.strip()[:6] == "sample", self.__manifest.keys()))

@@ -13,8 +13,10 @@ from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_f
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error, print_warning
 
+
 class ChatSession:
     """It represents a chat session with a particular AI agent."""
+
     def __init__(
         self,
         config: ChatConfig,
@@ -104,7 +106,7 @@ class ChatSession:
         self.history.append_message(role, message, name, preset)
 
     def append_user_question(self, message: str):
-        """Append a question from the user to the history 
+        """Append a question from the user to the history
         and update the prompt if necessary (e.g, RAG)"""
         self.append_message("user", message, False)
         if self.vector_db:
@@ -118,7 +120,7 @@ class ChatSession:
                 },
             )
 
-    def __set_intro(self, use_intro:bool):
+    def __set_intro(self, use_intro: bool):
         intro_message = None
         intro = self.intro()
         if use_intro and intro:
@@ -148,7 +150,7 @@ class ChatSession:
         """Temperature specified in the manifest"""
         return self.manifest.temperature()
 
-    def intro(self):    
+    def intro(self):
         """Introduction messages specified in the manifest"""
         return self.manifest.get("intro")
 
@@ -156,12 +158,10 @@ class ChatSession:
         """User name specified in the manifest"""
         return self.manifest.username()
 
-    def botname(self):    
+    def botname(self):
         """Bot name specified in the manifest"""
         return self.manifest.botname()
-    
+
     def title(self):
         """Title of the AI agent specified in the manifest"""
         return self.manifest.title()
-
-
