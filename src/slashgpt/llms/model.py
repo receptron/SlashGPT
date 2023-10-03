@@ -11,7 +11,7 @@ from slashgpt.utils.print import print_error
 class LlmModel:
     def __init__(self, llm_model_data: dict, llm_engine_configs: dict):
         self.llm_model_data = llm_model_data
-        self.engine = self.get_engine(llm_engine_configs)
+        self.engine = self.__get_engine(llm_engine_configs)
 
     def get(self, key: str):
         return self.llm_model_data.get(key)
@@ -40,7 +40,7 @@ class LlmModel:
         # TODO default replicate model
         return "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
 
-    def get_engine(self, llm_engine_configs: dict):
+    def __get_engine(self, llm_engine_configs: dict):
         class_data = llm_engine_configs.get(self.engine_name())
 
         if class_data:
