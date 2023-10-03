@@ -32,12 +32,6 @@ class ChatSession:
         """Display name of the AI agent"""
         self.manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
         """Manifest which specifies the behavior of the AI agent"""
-        self.userName = self.manifest.username()
-        """User name specified in the manifest"""
-        self.botName = self.manifest.botname()
-        """Bot name specified in the manifest"""
-        self.title = self.manifest.title()
-        """Title of the AI agent specified in the manifest"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
         """User id"""
         self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
@@ -140,5 +134,17 @@ class ChatSession:
     def intro(self):    
         """Introduction messages specified in the manifest"""
         return self.manifest.get("intro")
+
+    def username(self):
+        """User name specified in the manifest"""
+        return self.manifest.username()
+
+    def botname(self):    
+        """Bot name specified in the manifest"""
+        return self.manifest.botname()
+    
+    def title(self):
+        """Title of the AI agent specified in the manifest"""
+        return self.manifest.title()
 
 

@@ -69,16 +69,16 @@ class SlashGPT:
             self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro)
             if self.config.verbose:
                 print_info(
-                    f"Activating: {self.session.title} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
+                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature}, max_token={self.session.llm_model.max_token()})"
                 )
             else:
-                print_info(f"Activating: {self.session.title}")
+                print_info(f"Activating: {self.session.title()}")
             if self.session.manifest.get("notebook"):
                 (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
                 print_info(f"Created a notebook: {result.get('notebook_name')}")
 
             if self.session.intro_message:
-                print_bot(self.session.botName, self.session.intro_message)
+                print_bot(self.session.botname(), self.session.intro_message)
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
@@ -109,7 +109,7 @@ class SlashGPT:
             if sub_manifest_data:
                 sample = sub_manifest_data.get("sample")
                 if sample:
-                    print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{sample}")
+                    print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{sample}")
                     return sample
             else:
                 agents = self.session.manifest.get("agents")
@@ -124,7 +124,7 @@ class SlashGPT:
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
             if sample:
-                print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{sample}")
+                print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{sample}")
                 return sample
             print_error(f"Error: No {key} in the manifest file")
         return None
@@ -250,11 +250,11 @@ class SlashGPT:
     def test(self, agent, message=None, messages=None):
         self.switch_session(agent)
         if message:
-            print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{message}")
+            print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{message}")
             self.talk(message)
         if messages:
             for m in messages:
-                print(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m{m}")
+                print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{m}")
                 self.talk(m)
 
     def process_llm(self):
@@ -263,7 +263,7 @@ class SlashGPT:
             (res, function_call) = self.session.call_llm()
 
             if res:
-                print_bot(self.session.botName, res)
+                print_bot(self.session.botname(), res)
 
                 if self.config.audio:
                     play_text(res, self.config.audio)
@@ -307,7 +307,7 @@ class SlashGPT:
 
     def input_and_talk(self):
         try:
-            self.talk(input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip())
+            self.talk(input(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m").strip())
         except KeyboardInterrupt:
             self.exit = True
             print("bye")
