@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from config.llm_config_sample import llm_engine_configs, llm_models  # noqa: E402
 from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.chat_slash_config import ChatSlashConfig  # noqa: E402
+from slashgpt.chat_slash_config import ChatConfigWithManifests  # noqa: E402
 from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
 from slashgpt.llms.model import get_llm_model_from_key  # noqa: E402
@@ -16,7 +16,7 @@ from slashgpt.utils.print import print_error  # noqa: E402
 load_dotenv()
 current_dir = os.path.dirname(__file__)
 runtime = PythonRuntime(current_dir + "/output/notebooks")
-config = ChatSlashConfig(current_dir, current_dir + "/manifests/sample", llm_models, llm_engine_configs)
+config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/sample", llm_models, llm_engine_configs)
 
 
 def process_llm(session):
