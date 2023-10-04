@@ -21,6 +21,9 @@ class Main:
         print(f"\033[92m\033[1mテーマ\033[95m\033[0m: {theme}")
         self.sessionB.append_user_question(theme)
 
+        if len(sys.argv) == 2 and sys.argv[1] == "test":
+            sys.exit()
+
         self.talk_with_input(theme, self.sessionA)
         while True:
             last_message_a = self.sessionA.history.last()
