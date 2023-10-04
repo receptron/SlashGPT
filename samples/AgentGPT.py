@@ -6,8 +6,8 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
-from slashgpt.chat_session import ChatSession  # noqa: E402
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
+from slashgpt.chat_session import ChatSession  # noqa: E402
 
 
 class Main:
