@@ -9,11 +9,11 @@ from flask import Flask, jsonify, render_template, request
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from config.llm_config import llm_engine_configs, llm_models  # noqa: E402
+from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
 from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.chat_slash_config import ChatSlashConfig  # noqa: E402
 from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
-from slashgpt.llms.model import get_llm_model_from_key  # noqa: E402
+from slashgpt.llms.model_utils import get_llm_model_from_key  # noqa: E402
 from slashgpt.utils.print import print_error  # noqa: E402
 
 load_dotenv()
@@ -26,7 +26,7 @@ current_dir = os.path.dirname(__file__)
 with open(current_dir + "/manifests/manifests.json", "r") as f:
     manifests_manager = json.load(f)
 # dir = manifests_manager["main"]["manifests_dir"]
-# config = ChatSlashConfig(current_dir, current_dir + "/" + dir)
+# config = ChatConfigWithManifests(current_dir, current_dir + "/" + dir)
 
 runtime = PythonRuntime(current_dir + "/output/notebooks")
 
@@ -69,7 +69,7 @@ def modules():
 
 @app.route("/manifests/<manifests>")
 def manifests_list(manifests):
-    config = ChatSlashConfig(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
+    config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
 
     return jsonify({"manifests": config.manifests})
 
@@ -77,7 +77,7 @@ def manifests_list(manifests):
 @app.route("/llms/<manifests>")
 def llm_list(manifests):
     print(manifests)
-    config = ChatSlashConfig(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
+    config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
     return jsonify({"llms": list(config.llm_models.keys())})
 
 
@@ -123,7 +123,7 @@ def process_llm(session):
 @app.route("/manifests/<manifests>/<agent>/talk", methods=["POST"])
 @app.route("/manifests/<manifests>/<agent>/talk/<session_id>", methods=["POST"])
 def talk(manifests, agent, session_id=None):
-    config = ChatSlashConfig(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
+    config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/" + manifests, llm_models, llm_engine_configs)
     config.verbose = True
     m = config.manifests[agent]
 
@@ -134,7 +134,7 @@ def talk(manifests, agent, session_id=None):
     model = None
     if llm:
         print(llm_models)
-        model = get_llm_model_from_key(llm, config.llm_models)
+        model = get_llm_model_from_key(llm, config)
     if session_id is None:
         (session_id, session, engine) = init_session(config, agent, m, model)
         if message:
