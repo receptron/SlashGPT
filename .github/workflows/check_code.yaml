@@ -14,6 +14,9 @@ jobs:
         run: make test
       - name: Run SlashGPT
         run: OPENAI_API_KEY=TEST ./SlashGPT.py --run /bye
+      - name: Run SimpleGPT
+        run: OPENAI_API_KEY=TEST python -m samples.SimpleGPT
+
   lint:
     runs-on: ubuntu-latest
     steps:
