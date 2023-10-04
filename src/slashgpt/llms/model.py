@@ -60,14 +60,6 @@ class LlmModel:
         """Returns the api key specified in the eivironment"""
         return os.getenv(self.get("api_key"), "")
 
-    def replicate_model(self):
-        """Returns the replicate model (WHY HERE?)"""
-        if self.get("replicate_model"):
-            return self.get("replicate_model")
-
-        # TODO default replicate model
-        return "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
-
     def __get_engine(self, llm_engine_configs: dict):
         class_data = llm_engine_configs.get(self.engine_name())
 

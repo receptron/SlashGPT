@@ -27,6 +27,9 @@ def message_to_prompt(messages: List[dict], manifest: Manifest):
     return "\n".join(prompts)
 
 
+default_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
+
+
 class LLMEngineReplicate(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
@@ -34,7 +37,8 @@ class LLMEngineReplicate(LLMEngineBase):
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
-        replicate_model = self.llm_model.replicate_model()
+
+        replicate_model = self.llm_model.get("replicate_model") or default_model
         prompt = message_to_prompt(messages, manifest)
 
         if verbose:
