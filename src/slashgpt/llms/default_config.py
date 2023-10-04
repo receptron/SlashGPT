@@ -22,6 +22,7 @@ default_llm_models = {
         "model_name": "gpt-3.5-turbo-16k-0613",
         "api_key": "OPENAI_API_KEY",
         "max_token": 4096 * 4,
+        "default": True,
     },
     "gpt4": {
         "engine_name": "openai-gpt",

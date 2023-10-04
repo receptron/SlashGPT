@@ -59,7 +59,8 @@ class LlmModel:
 
 
 def get_default_llm_model_name(llm_models):
-    return llm_models.get("gpt31")
+    default_key = next(filter(lambda key: llm_models[key].get("default"), llm_models.keys()), None)
+    return llm_models.get(default_key)
 
 
 def get_default_llm_model(default_llm_models, llm_engine_configs):
