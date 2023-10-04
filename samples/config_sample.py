@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from config.llm_config_sample import llm_engine_configs, llm_models  # noqa: E402
+from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
 from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.chat_slash_config import ChatConfigWithManifests  # noqa: E402
 from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
 from slashgpt.llms.model import get_llm_model_from_key  # noqa: E402
