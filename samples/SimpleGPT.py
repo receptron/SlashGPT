@@ -36,17 +36,17 @@ manifest = {
 class SimpleGPT:
     def __init__(self, config: ChatConfig, agent_name: str):
         self.session = ChatSession(config, manifest=manifest, agent_name=agent_name)
-        print_info(f"Activating: {self.session.title}")
+        print_info(f"Activating: {self.session.title()}")
 
         if self.session.intro_message:
-            print_bot(self.session.botName, self.session.intro_message)
+            print_bot(self.session.botname(), self.session.intro_message)
 
     def process_llm(self, session):
         try:
             (res, function_call) = session.call_llm()
 
             if res:
-                print_bot(self.session.botName, res)
+                print_bot(self.session.botname(), res)
 
             if function_call:
                 (
@@ -69,7 +69,7 @@ class SimpleGPT:
 
     def start(self):
         while True:
-            question = input(f"\033[95m\033[1m{self.session.userName}: \033[95m\033[0m").strip()
+            question = input(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m").strip()
             if question:
                 self.session.append_user_question(self.session.manifest.format_question(question))
                 self.process_llm(self.session)

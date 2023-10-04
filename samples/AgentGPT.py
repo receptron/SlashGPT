@@ -33,7 +33,7 @@ class Main:
         (message, _) = session.call_llm()
 
         if message:
-            print(f"\033[92m\033[1m{session.botName}\033[95m\033[0m: {message}")
+            print(f"\033[92m\033[1m{session.botname()}\033[95m\033[0m: {message}")
 
 
 if __name__ == "__main__":
