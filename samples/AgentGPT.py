@@ -7,11 +7,11 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.chat_slash_config import ChatSlashConfig  # noqa: E402
+from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
 
 
 class Main:
-    def __init__(self, config: ChatSlashConfig):
+    def __init__(self, config: ChatConfigWithManifests):
         with open("./manifests/agents/chomsky.json", "r") as f:
             self.sessionA = ChatSession(config, manifest=json.load(f), agent_name="chomsky")
         with open("./manifests/agents/tawara.json", "r") as f:
@@ -39,6 +39,6 @@ class Main:
 if __name__ == "__main__":
     current_dir = os.path.join(os.path.dirname(__file__), "../")
 
-    config = ChatSlashConfig(current_dir, current_dir + "/manifests/agents")
+    config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/agents")
     main = Main(config)
     main.start("自由と国家について")

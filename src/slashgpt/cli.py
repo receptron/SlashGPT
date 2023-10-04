@@ -5,8 +5,7 @@ import json
 import os
 import sys
 
-from slashgpt.chat_slash_config import ChatSlashConfig
-from slashgpt.SlashGPT import SlashGPT
+from slashgpt.SlashGPT import ChatSlashConfig, SlashGPT
 from slashgpt.utils.help import ONELINE_HELP
 
 

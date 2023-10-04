@@ -2,6 +2,7 @@ import json
 import os
 import platform
 import re
+from typing import Optional
 
 from gtts import gTTS
 
@@ -10,8 +11,8 @@ try:
 except ImportError:
     print("no playsound. pip install playsound")
 
+from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
-from slashgpt.chat_slash_config import ChatSlashConfig
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.llms.model import get_default_llm_model, get_llm_model_from_key
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
@@ -35,6 +36,36 @@ def play_text(text, lang):
         playsound("./output/audio.mp3")
     except NameError:
         print("no playsound. pip install playsound")
+
+
+"""
+ChatSlashConfig is a singleton, which holds global states, including various secret keys and the list of manifests for SlashGPT app.
+"""
+
+
+class ChatSlashConfig(ChatConfigWithManifests):
+    """
+    A subclass of ChatConfigManifest, which maintains the audio flag.
+    """
+
+    def __init__(self, base_path: str, path_manifests: str, llm_models: Optional[dict] = None, llm_engine_configs: Optional[dict] = None):
+        """
+        Args:
+
+            base_path (str): path to the "base" folder.
+            path_manifests (str): path to the manifests folder (json or yaml)
+            llm_models (dict, optional): collection of custom LLM model definitions
+            llm_engine_configs (dict, optional): collection of custom LLM engine definitions
+        """
+        super().__init__(base_path, path_manifests, llm_models, llm_engine_configs)
+        self.audio: Optional[str] = None
+        """Flag indicating if the audio mode is on or not"""
+
+    def __get_manifests_keys(self):
+        return sorted(self.manifests.keys())
+
+    def help_list(self):
+        return (f"/{(key+'         ')[:12]} {self.manifests.get(key).get('title')}" for key in self.__get_manifests_keys())
 
 
 """
