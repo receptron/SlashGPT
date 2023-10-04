@@ -9,7 +9,8 @@ from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.default_config import default_llm_models
-from slashgpt.llms.model import LlmModel, get_default_llm_model, get_llm_model_from_manifest
+from slashgpt.llms.model import LlmModel
+from slashgpt.llms.model_utils import get_default_llm_model, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error, print_warning
 
