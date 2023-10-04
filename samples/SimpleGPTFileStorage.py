@@ -39,17 +39,17 @@ class SimpleGPT:
         engine = ChatHistoryFileStorage("sample", agent_name)
         self.session_id = engine.session_id
         session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine)
-        print_info(f"Activating: {session.title}")
+        print_info(f"Activating: {session.title()}")
 
         if session.intro_message:
-            print_bot(session.botName, session.intro_message)
+            print_bot(session.botname(), session.intro_message)
 
     def process_llm(self, session):
         try:
             (res, function_call) = session.call_llm()
 
             if res:
-                print_bot(session.botName, res)
+                print_bot(session.botname(), res)
 
             if function_call:
                 (
@@ -73,7 +73,7 @@ class SimpleGPT:
         engine = ChatHistoryFileStorage("sample", agent_name, session_id=self.session_id)
         session = ChatSession(config, manifest=manifest, agent_name=agent_name, history_engine=engine, intro=False, restore=True)
 
-        question = input(f"\033[95m\033[1m{session.userName}: \033[95m\033[0m").strip()
+        question = input(f"\033[95m\033[1m{session.username()}: \033[95m\033[0m").strip()
         if question:
             session.append_user_question(session.manifest.format_question(question))
             self.process_llm(session)
