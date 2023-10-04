@@ -53,10 +53,9 @@ class Manifest:
         """Returns the specified LLM model (str or dict)"""
         return self.get("model")
 
-    def history_type(self):
-        """Returns the history type (str)
-
-        NOTE: Is it obsolete?"""
+    # NOTE: Let's keep it hidden until we implement it.
+    def __history_type(self):
+        """Returns the history type, which controls the behavior of history"""
         return self.get("history_type") or "all"
 
     def functions(self):
