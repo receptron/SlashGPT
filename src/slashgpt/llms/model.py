@@ -8,6 +8,8 @@ from slashgpt.utils.print import print_error
 
 
 class LlmModel:
+    """It represents a LLM model"""
+
     def __init__(self, llm_model_data: dict, llm_engine_configs: dict):
         self.llm_model_data = llm_model_data
         self.engine = self.__get_engine(llm_engine_configs)

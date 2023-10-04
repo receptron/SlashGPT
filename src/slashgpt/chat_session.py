@@ -135,9 +135,9 @@ class ChatSession:
 
         Returns:
 
-            role: "assistent"
-            res: message
-            function_call: json representing the function call (optional)
+            role (str): "assistent"
+            res (str): message
+            function_call (dict): json representing the function call (optional)
         """
         messages = self.history.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
