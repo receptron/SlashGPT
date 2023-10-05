@@ -8,9 +8,7 @@ from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
-from slashgpt.llms.default_config import default_llm_models
 from slashgpt.llms.model import LlmModel
-from slashgpt.llms.model_utils import get_default_llm_model, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error, print_warning
 
@@ -29,6 +27,17 @@ class ChatSession:
         intro: bool = True,
         restore: bool = False,
     ):
+        """
+        Args:
+
+            config (ChatConfig or its subclass): Chat configuration (LLM models and engines)
+            default_llm_model (LlmModel, optional): Default LLM model
+            user_id (str, optional): User Id (for history)
+            history_engine (ChatHisoryAbstractStorage, optional): Histroy engine
+            agent_name (str, optional): Display name of agent
+            intro (bool, optional): True if the introduction message should be appended.
+            restore (bool, optional): True if we are restoring an existing session.
+        """
         self.config = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
         self.agent_name = agent_name
@@ -42,12 +51,12 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
-            llm_model = get_llm_model_from_manifest(self.manifest, self.config)
+            llm_model = self.config.get_llm_model_from_manifest(self.manifest)
         else:
             if default_llm_model:
                 llm_model = default_llm_model
             else:
-                llm_model = get_default_llm_model(default_llm_models, self.config.llm_engine_configs)
+                llm_model = self.config.get_default_llm_model()
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message

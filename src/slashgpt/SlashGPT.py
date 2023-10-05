@@ -14,7 +14,6 @@ except ImportError:
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.llms.model_utils import get_default_llm_model, get_llm_model_from_key
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
@@ -77,7 +76,7 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
         self.manifests_manager = manifests_manager
-        self.llm_model = get_default_llm_model(self.config.llm_models, self.config.llm_engine_configs)
+        self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.exit = False
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
@@ -203,7 +202,7 @@ class SlashGPT:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
-                self.llm_model = get_llm_model_from_key(commands[1], self.config)
+                self.llm_model = self.config.get_llm_model_from_key(commands[1])
                 self.session.set_llm_model(self.llm_model)
             else:
                 if self.config.llm_models is None:
