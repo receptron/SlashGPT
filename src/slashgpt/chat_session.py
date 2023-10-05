@@ -27,6 +27,17 @@ class ChatSession:
         intro: bool = True,
         restore: bool = False,
     ):
+        """
+        Args:
+
+            config (ChatConfig or its subclass): Chat configuration (LLM models and engines)
+            default_llm_model (LlmModel, optional): Default LLM model
+            user_id (str, optional): User Id (for history)
+            history_engine (ChatHisoryAbstractStorage, optional): Histroy engine
+            agent_name (str, optional): Display name of agent
+            intro (bool, optional): True if the introduction message should be appended.
+            restore (bool, optional): True if we are restoring an existing session.
+        """
         self.config = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
         self.agent_name = agent_name
