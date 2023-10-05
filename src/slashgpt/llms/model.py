@@ -3,9 +3,9 @@ import inspect
 import os
 from typing import List
 
+from slashgpt.chat_config import ChatConfig
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error
-from slashgpt.chat_config import ChatConfig
 
 
 class LlmModel:
@@ -39,7 +39,6 @@ class LlmModel:
     def __get_default_llm_model_name(cls, llm_models: dict):
         default_key = next(filter(lambda key: llm_models[key].get("default"), llm_models.keys()), None)
         return llm_models.get(default_key)
-
 
     @classmethod
     def __search_llm_model(cls, llm_model_name: str, llm_models: dict = {}):
