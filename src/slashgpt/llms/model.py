@@ -52,7 +52,7 @@ class LlmModel:
             return cls.__get_default_llm_model_name(llm_models)
 
     @classmethod
-    def get_default_llm_model(cls,  config: ChatConfig):
+    def get_default_llm_model(cls, config: ChatConfig):
         """Returns the LLM model specified as the default LLM in the llm_models"""
         return LlmModel(cls.__get_default_llm_model_name(config.llm_models), config.llm_engine_configs)
 
