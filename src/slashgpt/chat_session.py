@@ -10,7 +10,6 @@ from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.default_config import default_llm_models
 from slashgpt.llms.model import LlmModel
-from slashgpt.llms.model_utils import get_default_llm_model, get_llm_model_from_manifest
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error, print_warning
 
@@ -42,12 +41,12 @@ class ChatSession:
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
-            llm_model = get_llm_model_from_manifest(self.manifest, self.config)
+            llm_model = LlmModel.get_llm_model_from_manifest(self.manifest, self.config)
         else:
             if default_llm_model:
                 llm_model = default_llm_model
             else:
-                llm_model = get_default_llm_model(default_llm_models, self.config.llm_engine_configs)
+                llm_model = LlmModel.get_default_llm_model(default_llm_models, self.config.llm_engine_configs)
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message

@@ -13,7 +13,7 @@ from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa:
 from slashgpt.chat_session import ChatSession  # noqa: E402
 from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
-from slashgpt.llms.model_utils import get_llm_model_from_key  # noqa: E402
+from slashgpt.llms.model import LlmModel  # noqa: E402
 from slashgpt.utils.print import print_error  # noqa: E402
 
 load_dotenv()
@@ -134,7 +134,7 @@ def talk(manifests, agent, session_id=None):
     model = None
     if llm:
         print(llm_models)
-        model = get_llm_model_from_key(llm, config)
+        model = LlmModel.get_llm_model_from_key(llm, config)
     if session_id is None:
         (session_id, session, engine) = init_session(config, agent, m, model)
         if message:
