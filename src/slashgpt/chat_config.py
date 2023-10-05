@@ -4,6 +4,7 @@ from slashgpt.llms.default_config import default_llm_engine_configs, default_llm
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
 
+
 class ChatConfig:
     """Configuration object (singleton), which holds global states across the app"""
 
