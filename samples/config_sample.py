@@ -10,7 +10,7 @@ from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa:
 from slashgpt.chat_session import ChatSession  # noqa: E402
 from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
-from slashgpt.llms.model import get_llm_model_from_key  # noqa: E402
+from slashgpt.llms.model import LlmModel  # noqa: E402
 from slashgpt.utils.print import print_error  # noqa: E402
 
 load_dotenv()
@@ -45,7 +45,7 @@ def create_session(agent_name: str, llm_name: str):
     manifest = config.manifests[agent_name]
     history = ChatHistoryFileStorage("sample", agent_name)
     # session_id = engine.session_id
-    model = get_llm_model_from_key(llm_name, config.llm_models)
+    model = LlmModel.get_llm_model_from_key(llm_name, config)
     session = ChatSession(config, default_llm_model=model, manifest=manifest, agent_name=agent_name, history_engine=history)
     return (session, history)
 
