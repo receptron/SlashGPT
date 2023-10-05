@@ -52,9 +52,9 @@ class LlmModel:
             return cls.__get_default_llm_model_name(llm_models)
 
     @classmethod
-    def get_default_llm_model(cls, llm_models: dict, llm_engine_configs: dict):
+    def get_default_llm_model(cls,  config: ChatConfig):
         """Returns the LLM model specified as the default LLM in the llm_models"""
-        return LlmModel(cls.__get_default_llm_model_name(llm_models), llm_engine_configs)
+        return LlmModel(cls.__get_default_llm_model_name(config.llm_models), config.llm_engine_configs)
 
     @classmethod
     def get_llm_model_from_manifest(cls, manifest: Manifest, config: ChatConfig):
@@ -76,7 +76,7 @@ class LlmModel:
         llm_model = config.llm_models.get(key)
         if llm_model:
             return LlmModel(llm_model, config.llm_engine_configs)
-        return cls.get_default_llm_model(config.llm_models, config.llm_engine_configs)
+        return cls.get_default_llm_model(config)
 
     def get(self, key: str):
         """Returns the specified property of the model data"""

@@ -77,7 +77,7 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
         self.manifests_manager = manifests_manager
-        self.llm_model = LlmModel.get_default_llm_model(self.config.llm_models, self.config.llm_engine_configs)
+        self.llm_model = LlmModel.get_default_llm_model(self.config)
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.exit = False
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
