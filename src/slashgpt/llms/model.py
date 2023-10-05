@@ -52,11 +52,13 @@ class LlmModel:
             return cls.__get_default_llm_model_name(llm_models)
 
     @classmethod
-    def get_default_llm_model(cls, default_llm_models: dict, llm_engine_configs: dict):
-        return LlmModel(cls.__get_default_llm_model_name(default_llm_models), llm_engine_configs)
+    def get_default_llm_model(cls, llm_models: dict, llm_engine_configs: dict):
+        """Returns the LLM model specified as the default LLM in the llm_models"""
+        return LlmModel(cls.__get_default_llm_model_name(llm_models), llm_engine_configs)
 
     @classmethod
     def get_llm_model_from_manifest(cls, manifest: Manifest, config: ChatConfig):
+        """Returns the LLM model specified in the manifest"""
         model = manifest.model()
         if isinstance(model, dict):
             # This code enables llm model definition embedded in the manifest file
@@ -70,6 +72,7 @@ class LlmModel:
 
     @classmethod
     def get_llm_model_from_key(cls, key: str, config: ChatConfig):
+        """Returns a specific LLM model"""
         llm_model = config.llm_models.get(key)
         if llm_model:
             return LlmModel(llm_model, config.llm_engine_configs)
