@@ -23,7 +23,7 @@ class LlmModel:
         self.llm_model_data = llm_model_data
         """
         Parameters to the LLM model (dict):
-        
+
             engine_name (str): name of the engine (e.g, openai-gpt')
             model_name (str): specific model name (e.g, 'gpt-3.5-turbo-0613')
             api_key (str): name of the env. variable which holds a secret key (e.g, 'OPENAI_API_KEY')
@@ -31,7 +31,7 @@ class LlmModel:
             default (boolean, optional): True if this is the default model
         """
         self.engine = self.__get_engine(llm_engine_configs)
-        """A subclass of LLEngineBase, 
+        """A subclass of LLEngineBase,
         which implements chat_completion method for a particular LLM
         """
 
