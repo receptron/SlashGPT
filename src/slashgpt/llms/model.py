@@ -3,7 +3,6 @@ import inspect
 import os
 from typing import List
 
-from slashgpt.chat_config import ChatConfig
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error
 
@@ -13,7 +12,7 @@ class LlmModel:
 
     def __init__(self, llm_model_data: dict, llm_engine_configs: dict):
         """Although it is possible to create LlmModel object directly,
-        it is a lot easier to create it using one of helper class methods below
+        you should use one of ChatConfig method to create it instead.
 
         Args:
 
@@ -34,49 +33,6 @@ class LlmModel:
         """A subclass of LLEngineBase,
         which implements chat_completion method for a particular LLM
         """
-
-    @classmethod
-    def __get_default_llm_model_name(cls, llm_models: dict):
-        default_key = next(filter(lambda key: llm_models[key].get("default"), llm_models.keys()), None)
-        return llm_models.get(default_key)
-
-    @classmethod
-    def __search_llm_model(cls, llm_model_name: str, llm_models: dict = {}):
-        llm_model_list = list(map(lambda x: x.get("model_name"), llm_models.values()))
-        index = llm_model_list.index(llm_model_name) if llm_model_name in llm_model_list else -1
-
-        if index > -1:
-            llm_model = list(llm_models.values())[index]
-            return llm_model
-        else:
-            return cls.__get_default_llm_model_name(llm_models)
-
-    @classmethod
-    def get_default_llm_model(cls, config: ChatConfig):
-        """Returns the LLM model specified as the default LLM in the llm_models"""
-        return LlmModel(cls.__get_default_llm_model_name(config.llm_models), config.llm_engine_configs)
-
-    @classmethod
-    def get_llm_model_from_manifest(cls, manifest: Manifest, config: ChatConfig):
-        """Returns the LLM model specified in the manifest"""
-        model = manifest.model()
-        if isinstance(model, dict):
-            # This code enables llm model definition embedded in the manifest file
-            llm_model = model
-            llm_model_name = model.get("model_name")
-        else:
-            llm_model_name = model
-            llm_model = cls.__search_llm_model(llm_model_name, config.llm_models)
-
-        return LlmModel(llm_model, config.llm_engine_configs)
-
-    @classmethod
-    def get_llm_model_from_key(cls, key: str, config: ChatConfig):
-        """Returns a specific LLM model"""
-        llm_model = config.llm_models.get(key)
-        if llm_model:
-            return LlmModel(llm_model, config.llm_engine_configs)
-        return cls.get_default_llm_model(config)
 
     def get(self, key: str):
         """Returns the specified property of the model data"""

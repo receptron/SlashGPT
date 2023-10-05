@@ -77,7 +77,7 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.config = config
         self.manifests_manager = manifests_manager
-        self.llm_model = LlmModel.get_default_llm_model(self.config)
+        self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.exit = False
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
@@ -203,7 +203,7 @@ class SlashGPT:
                 print(json.dumps(self.session.functions, indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
-                self.llm_model = LlmModel.get_llm_model_from_key(commands[1], self.config)
+                self.llm_model = self.config.get_llm_model_from_key(commands[1])
                 self.session.set_llm_model(self.llm_model)
             else:
                 if self.config.llm_models is None:
