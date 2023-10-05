@@ -46,7 +46,7 @@ class ChatSession:
             if default_llm_model:
                 llm_model = default_llm_model
             else:
-                llm_model = LlmModel.get_default_llm_model(default_llm_models, self.config.llm_engine_configs)
+                llm_model = LlmModel.get_default_llm_model(self.config)
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
