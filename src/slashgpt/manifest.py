@@ -24,7 +24,7 @@ class Manifest:
         self.__module = self.__read_module()
 
     def get(self, key: str):
-        """Returns the spcified property of the manifest definition (str, dict or list)"""
+        """Returns the specified property of the manifest definition (str, dict or list)"""
         return self.__manifest.get(key)
 
     def username(self):
@@ -63,11 +63,11 @@ class Manifest:
         return self.__manifest
 
     def functions(self):
-        """Returns function defintions (list)"""
+        """Returns function definitions (list)"""
         value = self.__functions()
         agents = self.get("agents")
 
-        # If agents are spcified, inject their keys into the definition of categrize function.
+        # If agents are specified, inject their keys into the definition of categorize function.
         if value and agents:
             # WARNING: It assumes that categorize(category, ...) function
             for function in value:
