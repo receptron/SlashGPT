@@ -34,7 +34,7 @@ sample_gql: Retrieve schema of 'Query' field from GraphQL endpoint, https://spac
 sample_lorenz: Draw Lorenz attractor
 sample_map: Find public restrooms in Bellevue WA using Overpass API, then display
   them using folium.
-sample_pri: Show me the first 50 prime nubmers
+sample_pri: Show me the first 50 prime numbers
 sample_sine: Draw a sine curve.
 sample_starwars: Retrieve 'allFilms' from GraphQL endpoint, https://swapi-graphql.netlify.app/.netlify/functions/index
 sample_stock: Graph 4 year stock price of apple and tesla using yfinance

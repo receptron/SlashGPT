@@ -31,6 +31,6 @@ sample5: present the bar code of residential price for each state from low to hi
 sample_fibo: print first 20 fibonacci sequence.
 sample_hello: print 'Hello World'.
 sample_lorenz: draw Lorenz attractor.
-sample_pri: print first 50 prime nubmers.
+sample_pri: print first 50 prime numbers.
 sample_sine: draw a sine curve.
 sample_stock: Graph 4 year stock price of apple and tesla using yfinance
