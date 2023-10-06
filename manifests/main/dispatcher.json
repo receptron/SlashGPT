@@ -16,7 +16,7 @@
   "intro": [
     "I am a dispatcher agent. I will find the right agent for your question, and let it answer." 
   ],
-  "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
+  "agents": ["cal", "home", "drone", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "Call categorize function with one of categories below.",

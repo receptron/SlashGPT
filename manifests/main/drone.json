@@ -6,8 +6,8 @@
   "temperature": 0,
   "functions": "./resources/functions/drone2.json",
   "actions": {
-    "take_off": { "type": "message_template", "message":"Success" },
-    "set_height": { "type": "message_template", "message":"Success" },
+    "take_off": { "type": "message_template", "message":"Success. The drone is flying." },
+    "set_height": { "type": "message_template", "message":"Success." },
     "fly_to": { "type": "message_template", "message":"Success" },
     "take_back": { "type": "message_template", "message":"Success" },
     "land": { "type": "message_template", "message":"Success" }
