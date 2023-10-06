@@ -146,8 +146,8 @@ class SlashGPT:
                 else:
                     print_error(f"Error: No manifest named '{sub_key}'")
         elif commands[0] == "samples":
-            samples = list(map(lambda x: "/" + x, self.session.manifest.samples()))
-            print(", ".join(samples))
+            samples = list(map(lambda x: f"/{x}: {self.session.manifest.get(x)}", self.session.manifest.samples()))
+            print("\n".join(samples))
             return None
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
@@ -200,6 +200,8 @@ class SlashGPT:
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
+        elif key == "manifest":
+            print(json.dumps(self.session.manifest.manifest(), indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
                 self.llm_model = self.config.get_llm_model_from_key(commands[1])

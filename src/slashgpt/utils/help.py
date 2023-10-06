@@ -7,7 +7,10 @@ LONG_HELP = """
 /new:       Start a new chat session
 /prompt:    Display the current prompt
 /history:   Display the chat history
-/sample:    Make the sample request
+/manifest:  Display the manifest
+/functions: Display the functions
+/samples:   Show available samples
+/sample*:   Make a sample request (sample {agent} for a sub-agent sample)
 /reload:    Reload manifest set
 /llm gpt3:      Switch the model to gpt-3.5-turbo-0613
 /llm gpt31:     Switch the model to gpt-3.5-turbo-16k-0613

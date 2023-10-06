@@ -58,6 +58,10 @@ class Manifest:
         """Returns the history type, which controls the behavior of history"""
         return self.get("history_type") or "all"
 
+    def manifest(self):
+        """Returns the manifest definition (dict)"""
+        return self.__manifest
+
     def functions(self):
         """Returns function defintions (list)"""
         value = self.__functions()
