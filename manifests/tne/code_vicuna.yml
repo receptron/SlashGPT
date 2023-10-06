@@ -18,7 +18,7 @@ skip_function_result: true
 notebook: true
 sample: load a data file from './data/Electric_Vehicle_Population_Data.csv' and list
   first five rows
-sample0: calcurate 3**20.
+sample0: calculate 3**20.
 sample2: list the top seven models, along with others combining all other models.
 sample3: show me the pie chart.
 sample4: load ./data/iou_zipcodes_2020.csv and list first 10 rows

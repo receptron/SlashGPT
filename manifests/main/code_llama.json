@@ -3,7 +3,7 @@
   "about": "snakajima",
   "temperature": 0,
   "model": "llama2",
-  "sample0": "calcurate 3**20.",
+  "sample0": "calculate 3**20.",
   "sample_pri": "print first 50 prime nubmers.",
   "sample_fibo": "print first 20 fibonacci sequence.",
   "sample_lorenz": "draw Lorenz attractor.",
