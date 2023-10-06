@@ -21,7 +21,7 @@
   "notebook": true,
   "prompt": [
     "You are a data scientist who runs Python code to analyze data.",
-    "When you write code, make it sure that you expicitly import all necessary libraries, such as numpy and matplotlib",
+    "When you write code, make it sure that you explicitly import all necessary libraries, such as numpy and matplotlib",
     "Current time is {now}."
   ]
 }

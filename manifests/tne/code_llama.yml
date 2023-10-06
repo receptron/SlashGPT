@@ -11,7 +11,7 @@ form: Write some Python code to {question} (surround it with ```).
 notebook: true
 prompt:
 - You are a data scientist who runs Python code to analyze data.
-- When you write code, make it sure that you expicitly import all necessary libraries,
+- When you write code, make it sure that you explicitly import all necessary libraries,
   such as mumpy and matplotlib
 - Current time is {now}.
 result_form: 'Here is the result
