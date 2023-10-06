@@ -8,7 +8,7 @@
   "intro": [
     "I am a Internet Browser. Please specify the URL of the web page you are interested in." 
   ],
-  "sample": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895",
+  "sample": "Please write a summary of the web page at https://www.bbc.com/news/live/world-europe-66049895",
   "prompt": [
     "Don't make assumptions about what values to plug into functions.",
     "Ask for clarification if a user request is ambiguous."
