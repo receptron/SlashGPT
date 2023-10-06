@@ -38,7 +38,7 @@ def fetch(url: str):
     else:
         return (
             {
-                "reuslt": "error",
+                "result": "error",
             },
             None,
         )
