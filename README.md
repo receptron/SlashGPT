@@ -1,14 +1,14 @@
 # SlashGPT
 
-SlashGPT is a playground for develeopers to make quick prototypes of LLM agents (or apps with Natural Language UI).
+SlashGPT is a playground for developers to make quick prototypes of LLM agents (or apps with Natural Language UI).
 
 Here are the design goals:
 
 1. Extremely easy to create a new LLM agent. You just need to add a new manifest file (in Json).
-2. Instantly switch amang agents, by just typing "/{agent_name}"
+2. Instantly switch among agents, by just typing "/{agent_name}"
 3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
 4. It is possible to integrate ChatGPT plugins as agents without writing any code.
-5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
+5. It enables broker agent (or dispatcher), which routes user's message to an appropriate agent.
 6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
 > [!NOTE]  
@@ -36,7 +36,7 @@ slashGPT
 
 Then run SlashGPT
 
-## Initialization for develeoper
+## Initialization for developer
 
 1. Install the required packages: 
 
@@ -85,16 +85,16 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 ## Code Interpreter Agents
 
-Some of agents are built to mimic the behaviors of ChatGPT code intepreter (or Noteable plugin)
+Some of agents are built to mimic the behaviors of ChatGPT code interpreter (or Noteable plugin)
 with various LLMs.
 
 - code: GPT3.5
 - code_palm2: PaLM2 (GOOGLE_PALM_KEY key is required)
 - code_llama: LlaMA (REPLICATE_API_TOKEN is required)
 
-code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of nenerated code appropriately.
+code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of generated code appropriately.
 
-code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
+code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
 
 For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
