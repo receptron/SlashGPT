@@ -146,8 +146,8 @@ class SlashGPT:
                 else:
                     print_error(f"Error: No manifest named '{sub_key}'")
         elif commands[0] == "samples":
-            samples = list(map(lambda x: "/" + x, self.session.manifest.samples()))
-            print(", ".join(samples))
+            samples = list(map(lambda x: f"/{x}: {self.session.manifest.get(x)}", self.session.manifest.samples()))
+            print("\n".join(samples))
             return None
         elif key[:6] == "sample":
             sample = self.session.manifest.get(key)
