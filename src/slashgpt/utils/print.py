@@ -24,4 +24,4 @@ def print_bot(botName: str, message: str):
 
 
 def print_function(function_name: str, message: str):
-    print(f"\033[95m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
+    print(f"\033[94m\033[1mfunction({function_name}): \033[95m\033[0m{message}")
