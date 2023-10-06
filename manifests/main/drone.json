@@ -6,11 +6,11 @@
   "temperature": 0,
   "functions": "./resources/functions/drone2.json",
   "actions": {
-    "take_off": { "type": "message_template", "message":"Success. The drone is flying." },
-    "set_height": { "type": "message_template", "message":"Success." },
-    "fly_to": { "type": "message_template", "message":"Success" },
-    "take_back": { "type": "message_template", "message":"Success" },
-    "land": { "type": "message_template", "message":"Success" }
+    "take_off": { "type": "message_template", "message":"Success. Flying." },
+    "set_height": { "type": "message_template", "message":"Success. The hight is /b{height} meters" },
+    "fly_to": { "type": "message_template", "message":"Success. The posion is ({west}, {south})." },
+    "take_back": { "type": "message_template", "message":"Success. Moved back to the home position." },
+    "land": { "type": "message_template", "message":"Success. Landed." }
   },
   "sample": "Please let the drone take off from the ground, fly around a building twice (first with height=2 meter2, and then with height=3 meters) with four corners at [(10,10), (10,20), (30,20), (30,10)] keeping the constant distance (3 meters away for the first round, and 2 meters away from the second round) from the building, then fly back to the original take-off position and land.",
   "prompt": [
