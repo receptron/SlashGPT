@@ -94,7 +94,7 @@ with various LLMs.
 
 code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of generated code appropriately.
 
-code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
+code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analyze the result.
 
 For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
@@ -123,7 +123,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (number, optional): Temperature (the default is 0.7)
-- *list* (array of string, optional): {random} will put one of them randamly into the prompt
+- *list* (array of string, optional): {random} will put one of them randomly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
@@ -143,7 +143,7 @@ It supports four different methods.
 
 Use this method to develop the front-end of a system before the backend become ready. 
 
-- *message* (format string, required): chat messgae to be added 
+- *message* (format string, required): chat message to be added 
 - *manifest* (format string, optional): manifest file name to be loaded for chained action
 
 Here is an example (home2).
@@ -151,7 +151,7 @@ Here is an example (home2).
 ```
   "actions": {
     "fill_bath": { "type": "message_template", "message":"Success. I started filling the bath tab." },
-    "set_temperature": { "type": "message_template", "message":"Success. I set the teperature to {temperature} for {location}" },
+    "set_temperature": { "type": "message_template", "message":"Success. I set the temperature to {temperature} for {location}" },
     "start_sprinkler": { "type": "message_template", "message":"Success. I started the sprinkler for {location}" },
     "take_picture": { "type": "message_template", "message":"Success. I took a picture of {location}" },
     "play_music": { "type": "message_template", "message":"Success. I started playing {music} in {location}" },
@@ -196,7 +196,7 @@ Here is an example (spacex).
 
 ### 4. data URL
 
-This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
+This method allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
 - *template* (string, required): The location of the template file.
 - *mime_type* (string, required): The mime type of the data.
@@ -267,9 +267,9 @@ The definition of "make_event" function.
 }
 ```
 
-## Standard Test Squence
+## Standard Test Sequence
 
-This is the standard test squence.
+This is the standard test sequence.
 
 ```
 # Test REST API
@@ -290,7 +290,7 @@ Input: /switch main
 # Test DataURL
 You: /sample cal
 Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM UTC for 30 minutes. The meeting will be held at Tim Cook's office. I have sent the invitation to Tim Cook at tim@apple.com.
-Iput: /switch main
+Input: /switch main
 
 # Test Code Interpreter
 You: /code
