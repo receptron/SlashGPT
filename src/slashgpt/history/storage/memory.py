@@ -4,12 +4,12 @@ import os
 from datetime import datetime
 from typing import List
 
-from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.log import create_log_dir, save_log
 from slashgpt.utils.print import print_warning
 
 
-class ChatHistoryMemoryStorage(ChatHisoryAbstractStorage):
+class ChatHistoryMemoryStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
         self.__messages: List[dict] = []
         self.uid = uid
