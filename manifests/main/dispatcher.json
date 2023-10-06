@@ -16,11 +16,13 @@
   "intro": [
     "I am a dispatcher agent. I will find the right agent for your question, and let it answer." 
   ],
-  "sample": "Please convert $1 (US) to Japanese Yen",
   "agents": ["cal", "home2", "drone2", "webpilot", "cook", "currency", "weather", "worldnews", "spacex"],
   "prompt": [
     "You are responsible in categorize user's question into one of categories below.",
     "Call categorize function with one of categories below.",
     "{agents}"
-  ]
+  ],
+  "sample": "Who is the CEO of SpaceX?",
+  "sample2": "What is the weather in Seattle today?",
+  "sample3": "Please write a summary of the web paga at https://www.bbc.com/news/live/world-europe-66049895"
 }

@@ -200,6 +200,8 @@ class SlashGPT:
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
+        elif key == "manifest":
+            print(json.dumps(self.session.manifest.manifest(), indent=2))
         elif commands[0] == "llm" or commands[0] == "llms":
             if len(commands) > 1 and self.config.llm_models and self.config.llm_models.get(commands[1]):
                 self.llm_model = self.config.get_llm_model_from_key(commands[1])
