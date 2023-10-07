@@ -6,7 +6,7 @@ from typing import Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
-from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
@@ -21,7 +21,7 @@ class ChatSession:
         config: ChatConfig,
         default_llm_model: LlmModel = None,
         user_id: Optional[str] = None,
-        history_engine: ChatHisoryAbstractStorage = None,
+        history_engine: ChatHistoryAbstractStorage = None,
         manifest={},
         agent_name: str = "GPT",
         intro: bool = True,
@@ -33,7 +33,7 @@ class ChatSession:
             config (ChatConfig or its subclass): Chat configuration (LLM models and engines)
             default_llm_model (LlmModel, optional): Default LLM model
             user_id (str, optional): User Id (for history)
-            history_engine (ChatHisoryAbstractStorage, optional): Histroy engine
+            history_engine (ChatHistoryAbstractStorage, optional): Histroy engine
             agent_name (str, optional): Display name of agent
             intro (bool, optional): True if the introduction message should be appended.
             restore (bool, optional): True if we are restoring an existing session.

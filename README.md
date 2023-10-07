@@ -1,14 +1,14 @@
 # SlashGPT
 
-SlashGPT is a playground for develeopers to make quick prototypes of LLM agents (or apps with Natural Language UI).
+SlashGPT is a playground for developers to make quick prototypes of LLM agents (or apps with Natural Language UI).
 
 Here are the design goals:
 
 1. Extremely easy to create a new LLM agent. You just need to add a new manifest file (in Json).
-2. Instantly switch amang agents, by just typing "/{agent_name}"
+2. Instantly switch among agents, by just typing "/{agent_name}"
 3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
 4. It is possible to integrate ChatGPT plugins as agents without writing any code.
-5. It enables broker agent (or dispatcher), which routes user's messgae to an appropraite agent.
+5. It enables broker agent (or dispatcher), which routes user's message to an appropriate agent.
 6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
 > [!NOTE]  
@@ -36,7 +36,7 @@ slashGPT
 
 Then run SlashGPT
 
-## Initialization for develeoper
+## Initialization for developer
 
 1. Install the required packages: 
 
@@ -85,16 +85,16 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 ## Code Interpreter Agents
 
-Some of agents are built to mimic the behaviors of ChatGPT code intepreter (or Noteable plugin)
+Some of agents are built to mimic the behaviors of ChatGPT code interpreter (or Noteable plugin)
 with various LLMs.
 
 - code: GPT3.5
 - code_palm2: PaLM2 (GOOGLE_PALM_KEY key is required)
 - code_llama: LlaMA (REPLICATE_API_TOKEN is required)
 
-code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of nenerated code appropriately.
+code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of generated code appropriately.
 
-code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinit loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analize the result.
+code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analyze the result.
 
 For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
@@ -124,7 +124,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (number, optional): Temperature (the default is 0.7)
-- *list* (array of string, optional): {random} will put one of them randamly into the prompt
+- *list* (array of string, optional): {random} will put one of them randomly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
@@ -144,7 +144,7 @@ It supports four different methods.
 
 Use this method to develop the front-end of a system before the backend become ready. 
 
-- *message* (format string, required): chat messgae to be added 
+- *message* (format string, required): chat message to be added 
 - *manifest* (format string, optional): manifest file name to be loaded for chained action
 
 Here is an example (home2).
@@ -152,7 +152,7 @@ Here is an example (home2).
 ```
   "actions": {
     "fill_bath": { "type": "message_template", "message":"Success. I started filling the bath tab." },
-    "set_temperature": { "type": "message_template", "message":"Success. I set the teperature to {temperature} for {location}" },
+    "set_temperature": { "type": "message_template", "message":"Success. I set the temperature to {temperature} for {location}" },
     "start_sprinkler": { "type": "message_template", "message":"Success. I started the sprinkler for {location}" },
     "take_picture": { "type": "message_template", "message":"Success. I took a picture of {location}" },
     "play_music": { "type": "message_template", "message":"Success. I started playing {music} in {location}" },
@@ -197,7 +197,7 @@ Here is an example (spacex).
 
 ### 4. data URL
 
-This mechod allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
+This method allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
 - *template* (string, required): The location of the template file.
 - *mime_type* (string, required): The mime type of the data.
@@ -268,9 +268,9 @@ The definition of "make_event" function.
 }
 ```
 
-## Standard Test Squence
+## Standard Test Sequence
 
-This is the standard test squence.
+This is the standard test sequence.
 
 ```
 # Test REST API
@@ -291,7 +291,7 @@ Input: /switch main
 # Test DataURL
 You: /sample cal
 Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM UTC for 30 minutes. The meeting will be held at Tim Cook's office. I have sent the invitation to Tim Cook at tim@apple.com.
-Iput: /switch main
+Input: /switch main
 
 # Test Code Interpreter
 You: /code

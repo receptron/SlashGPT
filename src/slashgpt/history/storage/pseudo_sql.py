@@ -1,10 +1,10 @@
 import uuid
 from typing import List
 
-from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 
 
-class ChatHistoryPseudoSQLStorage(ChatHisoryAbstractStorage):
+class ChatHistoryPseudoSQLStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
         self.__messages: List[dict] = []
         self.uid = uid

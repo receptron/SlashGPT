@@ -57,7 +57,7 @@ class LlmModel:
         return True
 
     def get_api_key_value(self):
-        """Returns the api key specified in the eivironment"""
+        """Returns the api key specified in the environment"""
         return os.getenv(self.get("api_key"), "")
 
     def __get_engine(self, llm_engine_configs: dict):

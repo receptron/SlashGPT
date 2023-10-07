@@ -44,7 +44,7 @@
             "properties": {
                 "location": {
                     "type": "string",
-                    "enum": ["all", "lawn", "vegitable garden", "front yard"],
+                    "enum": ["all", "lawn", "vegetable garden", "front yard"],
                     "description": "Specify the location to water."
                 }
             },

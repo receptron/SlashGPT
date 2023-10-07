@@ -21,7 +21,7 @@ I am a big fan of "Declarative Programming", because it will significantly simpl
 If we want to build a scalable LLM application business targeting tens of thousands of enterprise customers, it does not make sense to write custom code for each customer. The "Declarative Programming" is the only way to scale such a business.
 
 #### Terminology:
-- **LLM Application**: A LLM-based aplication which consists of a collection of AI agents, the front-end (the user interface) and associated tools. 
+- **LLM Application**: A LLM-based application which consists of a collection of AI agents, the front-end (the user interface) and associated tools. 
 - **AI Agent**: A chatbot, which has a specific behavior for a particular purpose.
 - **Manifest File**: A static file (either in YAML or JSON), which defines the behavior of an AI agent, which includes the prompt, templates, and definitions of function, REST API, database schema, and embedding database.
 

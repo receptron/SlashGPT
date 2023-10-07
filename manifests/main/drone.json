@@ -8,7 +8,7 @@
   "actions": {
     "take_off": { "type": "message_template", "message":"Success. Flying." },
     "set_height": { "type": "message_template", "message":"Success. The hight is /b{height} meters" },
-    "fly_to": { "type": "message_template", "message":"Success. The posion is ({west}, {south})." },
+    "fly_to": { "type": "message_template", "message":"Success. The position is ({west}, {south})." },
     "take_back": { "type": "message_template", "message":"Success. Moved back to the home position." },
     "land": { "type": "message_template", "message":"Success. Landed." }
   },
