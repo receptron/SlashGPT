@@ -112,6 +112,7 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 
 - *title* (string, **required**): Title for the user to see
 - *about* (string, optional): About the manifest (URL, email, github id, or twitter id)
+- *description* (string, optional): Human/LLM readable description of this agent
 - *prompt* (array of strings, **required**): The system prompts which define the agent (required)
 - *form* (string): format string to extend user's query (e.g. "Write python code to {question}").
 - *result_form* (string): format string to extend function call result.
