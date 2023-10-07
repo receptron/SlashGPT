@@ -88,14 +88,14 @@ class FunctionCall:
 
                 if message:
                     # Embed code for the context
-                    history.append_message({"role":"assistant", "content":message})
+                    history.append_message({"role": "assistant", "content": message})
                 function_message = self.__format_python_result(result)
             else:
                 function_message = None
                 print_error(f"No execution for function {function_name}")
 
         if function_message:
-            history.append_message({"role":"function", "content":function_message, "name":function_name})
+            history.append_message({"role": "function", "content": function_message, "name": function_name})
 
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)

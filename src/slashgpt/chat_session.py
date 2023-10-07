@@ -113,7 +113,7 @@ class ChatSession:
             preset (bool): True, if it is preset by the manifest
             name (str, optional): function name (when the role is "function")
         """
-        self.history.append_message({"role":role, "content":message, "name": name, "preset":preset})
+        self.history.append_message({"role": role, "content": message, "name": name, "preset": preset})
 
     def append_user_question(self, message: str):
         """Append a question from the user to the history
