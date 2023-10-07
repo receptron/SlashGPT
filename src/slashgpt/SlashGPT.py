@@ -287,40 +287,25 @@ class SlashGPT:
                 print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{m}")
                 self.talk(m)
 
+    def callback(self, callback_type, data):
+        if callback_type == "bot":
+            print_bot(self.session.botname(), data)
+
+            if self.config.audio:
+                play_text(data, self.config.audio)
+        if callback_type == "emit":
+            (action_method, action_data) = data
+            # All emit methods must be processed here
+            if action_method == "switch_session":
+                self.switch_session(action_data.get("manifest"), intro=False)
+                self.query_llm(action_data.get("message"))
+        if callback_type == "function":
+            (function_name, function_message) = data
+            print_function(function_name, function_message)
+
     def process_llm(self):
         try:
-            # Ask LLM to generate a response.
-            (res, function_call) = self.session.call_llm()
-
-            if res:
-                print_bot(self.session.botname(), res)
-
-                if self.config.audio:
-                    play_text(res, self.config.audio)
-
-            if function_call:
-                (action_data, action_method) = function_call.emit_data(self.config.verbose)
-                if action_method:
-                    # All emit methods must be processed here
-                    if action_method == "switch_session":
-                        self.switch_session(action_data.get("manifest"), intro=False)
-                        self.query_llm(action_data.get("message"))
-                else:
-                    (
-                        function_message,
-                        function_name,
-                        should_call_llm,
-                    ) = function_call.process_function_call(
-                        self.session.history,
-                        self.runtime,
-                        self.config.verbose,
-                    )
-                    if function_message:
-                        print_function(function_name, function_message)
-
-                    if should_call_llm:
-                        self.process_llm()
-
+            self.session.call_loop(callback, self.config.verbose, self.runtime)
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.agent_name)

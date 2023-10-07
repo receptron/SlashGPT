@@ -175,3 +175,30 @@ class ChatSession:
     def title(self):
         """Title of the AI agent specified in the manifest"""
         return self.manifest.title()
+
+    def call_loop(self, callback, verbose, runtime):
+        # Ask LLM to generate a response.
+        (res, function_call) = self.call_llm()
+
+        if res:
+            callback("bot", res)
+
+        if function_call:
+            (action_data, action_method) = function_call.emit_data(verbose)
+            if action_method:
+                callback("emit", (action_method, action_data))
+            else:
+                (
+                    function_message,
+                    function_name,
+                    should_call_llm,
+                ) = function_call.process_function_call(
+                    self.history,
+                    runtime,
+                    verbose,
+                )
+                if function_message:
+                    callback("function", (function_name, function_message))
+
+                if should_call_llm:
+                    self.call_loop(callback, verbose, runtime)
