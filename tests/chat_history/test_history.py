@@ -31,7 +31,7 @@ def test_get_data1(history):
 
 def test_set(history):
     data = {"name": "set", "content": "set_data", "role": None}
-    history.set(2, data)
+    history.set_message(2, data)
     assert history.get_message(2) == data
 
 
