@@ -305,7 +305,7 @@ class SlashGPT:
 
     def process_llm(self):
         try:
-            self.session.call_loop(callback, self.config.verbose, self.runtime)
+            self.session.call_loop(self.callback, self.config.verbose, self.runtime)
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.agent_name)
