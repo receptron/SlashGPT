@@ -67,7 +67,7 @@ class FunctionCall:
         if function_name is None:
             return (None, None, False)
 
-        arguments = self.__function_arguments(history.last(), verbose)
+        arguments = self.__function_arguments(history.last_message(), verbose)
         if verbose:
             print_info(json.dumps(self.data(), indent=2))
 
@@ -88,14 +88,14 @@ class FunctionCall:
 
                 if message:
                     # Embed code for the context
-                    history.append_message("assistant", message)
+                    history.append_message({"role": "assistant", "content": message})
                 function_message = self.__format_python_result(result)
             else:
                 function_message = None
                 print_error(f"No execution for function {function_name}")
 
         if function_message:
-            history.append_message("function", function_message, function_name)
+            history.append_message({"role": "function", "content": function_message, "name": function_name})
 
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
