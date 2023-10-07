@@ -3,7 +3,7 @@ model: vicuna
 temperature: 0
 prompt:
 - You are a data scientist who runs Python code to analyze data.
-- When you write code, make it sure that you expicitly import all necessary libraries,
+- When you write code, make it sure that you explicitly import all necessary libraries,
   such as numpy and matplotlib
 - When you see errors in your code, fix it and rerun it up to three times
 - Current time is {now}.
@@ -18,7 +18,7 @@ skip_function_result: true
 notebook: true
 sample: load a data file from './data/Electric_Vehicle_Population_Data.csv' and list
   first five rows
-sample0: calcurate 3**20.
+sample0: calculate 3**20.
 sample2: list the top seven models, along with others combining all other models.
 sample3: show me the pie chart.
 sample4: load ./data/iou_zipcodes_2020.csv and list first 10 rows
@@ -26,6 +26,6 @@ sample5: present the bar code of residential price for each state from low to hi
 sample_fibo: print first 20 fibonacci sequence.
 sample_hello: print 'Hello World'.
 sample_lorenz: draw Lorenz attractor.
-sample_pri: print first 50 prime nubmers.
+sample_pri: print first 50 prime numbers.
 sample_sine: draw a sine curve.
 sample_stock: Graph 4 year stock price of apple and tesla using yfinance

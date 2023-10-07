@@ -4,12 +4,12 @@ import os
 import uuid
 from typing import List
 
-from slashgpt.history.storage.abstract import ChatHisoryAbstractStorage
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.log import create_log_dir
 from slashgpt.utils.print import print_warning
 
 
-class ChatHistoryFileStorage(ChatHisoryAbstractStorage):
+class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str, session_id: str = ""):
         self.__messages: List[dict] = []
         self.base_dir = "filememory"

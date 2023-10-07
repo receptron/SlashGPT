@@ -3,8 +3,8 @@
   "about": "snakajima",
   "temperature": 0,
   "model": "vicuna",
-  "sample0": "calcurate 3**20.",
-  "sample_pri": "print first 50 prime nubmers.",
+  "sample0": "calculate 3**20.",
+  "sample_pri": "print first 50 prime numbers.",
   "sample_fibo": "print first 20 fibonacci sequence.",
   "sample_lorenz": "draw Lorenz attractor.",
   "sample_sine": "draw a sine curve.",
@@ -20,7 +20,7 @@
   "notebook": true,
   "prompt": [
     "You are a data scientist who runs Python code to analyze data.",
-    "When you write code, make it sure that you expicitly import all necessary libraries, such as numpy and matplotlib",
+    "When you write code, make it sure that you explicitly import all necessary libraries, such as mumpy and matplotlib",
     "When you see errors in your code, fix it and rerun it up to three times",
     "Current time is {now}."
   ]
