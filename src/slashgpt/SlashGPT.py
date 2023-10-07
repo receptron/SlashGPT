@@ -187,8 +187,8 @@ class SlashGPT:
                 self.config.audio = None if commands[1] == "off" else commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
-            if self.session.history.len() >= 1:
-                print(self.session.history.get_data(0, "content"))
+            if self.session.history.messages_len() >= 1:
+                print(self.session.history.get_message_prop(0, "content"))
             if self.config.verbose and self.session.functions:
                 print_debug(self.session.functions)
         elif commands[0] == "history":
@@ -196,7 +196,7 @@ class SlashGPT:
                 print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
                 print(json.dumps(self.session.history.preset_messages(), ensure_ascii=False, indent=2))
             elif len(commands) > 1 and commands[1] == "pop":
-                self.session.history.pop()
+                self.session.history.pop_message()
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
@@ -232,7 +232,7 @@ class SlashGPT:
                 if self.config.verbose:
                     print_debug(f"Chaining {len(messages)} messages")
                 for m in messages:
-                    self.session.history.append_message(m.get("role"), m.get("content"), m.get("name"), False)
+                    self.session.history.append_message({"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False})
 
         else:
             print_error(f"Invalid slash command: {key}")

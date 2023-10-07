@@ -113,7 +113,7 @@ class ChatSession:
             preset (bool): True, if it is preset by the manifest
             name (str, optional): function name (when the role is "function")
         """
-        self.history.append_message(role, message, name, preset)
+        self.history.append_message({"role":role, "content":message, "name": name, "preset":preset})
 
     def append_user_question(self, message: str):
         """Append a question from the user to the history
@@ -121,8 +121,8 @@ class ChatSession:
         self.append_message("user", message, False)
         if self.vector_db:
             articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
-            assert self.history.get_data(0, "role") == "system", "Missing system message"
-            self.history.set(
+            assert self.history.get_message_prop(0, "role") == "system", "Missing system message"
+            self.history.set_message(
                 0,
                 {
                     "role": "system",
