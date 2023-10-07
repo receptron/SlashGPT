@@ -5,25 +5,25 @@ class ChatHistory:
     def __init__(self, repository):
         self.repository = repository
 
-    def append(self, data: dict):
+    def append_message(self, data: dict):
         self.repository.append(data)
 
-    def get(self, index: int):
+    def get_message(self, index: int):
         return self.message_dict(self.repository.get(index))
 
-    def get_data(self, index: int, name: str):
+    def get_message_prop(self, index: int, name: str):
         return self.repository.get_data(index, name)
 
-    def set(self, index: int, data: dict):
+    def set_message(self, index: int, data: dict):
         self.repository.set(index, data)
 
-    def len(self):
+    def len_messages(self):
         return self.repository.len()
 
-    def last(self):
+    def last_message(self):
         return self.message_dict(self.repository.last())
 
-    def pop(self):
+    def pop_message(self):
         return self.repository.pop()
 
     def message_dict(self, x):
@@ -39,12 +39,6 @@ class ChatHistory:
 
     def nonpreset_messages(self):
         return list(map(self.message_dict, self.repository.nonpreset_messages()))
-
-    def append_message(self, role: str, message: str, name=None, preset=False):
-        if name:
-            self.append({"role": role, "content": message, "name": name, "preset": preset})
-        else:
-            self.append({"role": role, "content": message, "preset": preset})
 
     def restore(self, data: List[dict]):
         return self.repository.restore(data)
