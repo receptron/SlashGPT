@@ -22,7 +22,7 @@ def history():
 
 
 def test_get1(history):
-    assert history.get_message(0).get_message("name") == "1"
+    assert history.get_message(0).get("name") == "1"
 
 
 def test_get_data1(history):
