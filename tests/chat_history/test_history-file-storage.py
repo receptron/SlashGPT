@@ -22,7 +22,7 @@ def history():
 
 
 def test_get1(history):
-    assert history.get(0).get_message("name") == "1"
+    assert history.get_message(0).get_message("name") == "1"
 
 
 def test_get_data1(history):
@@ -31,7 +31,7 @@ def test_get_data1(history):
 
 def test_set(history):
     data = {"name": "set", "content": "set_data", "role": None}
-    history.set(2, data)
+    history.set_message(2, data)
     assert history.get_message(2) == data
 
 
