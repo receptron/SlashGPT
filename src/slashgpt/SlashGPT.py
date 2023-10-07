@@ -187,7 +187,7 @@ class SlashGPT:
                 self.config.audio = None if commands[1] == "off" else commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
-            if self.session.history.messages_len() >= 1:
+            if self.session.history.len_messages() >= 1:
                 print(self.session.history.get_message_prop(0, "content"))
             if self.config.verbose and self.session.functions:
                 print_debug(self.session.functions)
