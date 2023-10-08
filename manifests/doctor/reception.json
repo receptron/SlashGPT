@@ -12,9 +12,12 @@
       "type": "emit",
       "emit_method": "memorize",
       "emit_data": {
-        "name": "{name}",
-        "sex": "{sex}",
-        "dob": "{dob}"
+        "agent": "nurse",
+        "data": {
+          "name": "{name}",
+          "sex": "{sex}",
+          "dob": "{dob}"
+        }
       }
     }
   },
@@ -43,5 +46,6 @@
   }],
   "intro": [
     "Welcome to the clinic. Please give me your name."
-  ]
+  ],
+  "sample": "My name of Joe Smith. Male. My DOB is 1/1/1990."
 }
