@@ -87,14 +87,16 @@ class SlashGPT:
     The key specifies the AI agent.
     """
 
-    def switch_session(self, agent_name: str, intro: bool = True):
+    def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
         if agent_name is None:
             self.session = ChatSession(self.config, default_llm_model=self.llm_model)
             return
 
         if self.config.has_manifest(agent_name):
             manifest = self.config.manifests.get(agent_name)
-            self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro)
+            self.session = ChatSession(
+                self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory
+            )
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})"
@@ -277,8 +279,9 @@ class SlashGPT:
         self.config.switch_manifests(self.config.base_path + "/" + m["manifests_dir"])
         self.switch_session(m["default_agent_name"])
 
-    def test(self, agent, message=None, messages=None):
-        self.switch_session(agent)
+    def test(self, agent=None, message=None, messages=None):
+        if agent is not None:
+            self.switch_session(agent)
         if message:
             print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{message}")
             self.talk(message)
@@ -297,8 +300,19 @@ class SlashGPT:
             (action_method, action_data) = data
             # All emit methods must be processed here
             if action_method == "switch_session":
-                self.switch_session(action_data.get("manifest"), intro=False)
+                self.switch_session(action_data.get("agent"), intro=False)
                 self.query_llm(action_data.get("message"))
+            if action_method == "memorize":
+                agent_to_activate = action_data.get("agent")
+                if agent_to_activate:
+                    memory = action_data.get("memory")
+                    if memory is not None and self.session.memory is not None and action_data.get("merge"):
+                        merged_memory = self.session.memory.copy()
+                        merged_memory.update(memory)
+                        memory = merged_memory
+                    self.switch_session(agent_to_activate, memory=memory)
+                    self.process_llm()
+
         if callback_type == "function":
             (function_name, function_message) = data
             print_function(function_name, function_message)

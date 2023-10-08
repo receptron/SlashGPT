@@ -5,7 +5,7 @@ from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.base import ChatHistory
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_error, print_info, print_warning
+from slashgpt.utils.print import print_error, print_warning
 
 
 class FunctionCall:
@@ -20,6 +20,9 @@ class FunctionCall:
         self.__manifest = manifest
         actions = self.__manifest.actions()
         self.function_action = FunctionAction.factory(actions.get(self.__name()))
+
+    def __str__(self):
+        return f"{self.__name()}: ({self.__arguments(False)})"
 
     def __get(self, key: str):
         return self.__function_call_data.get(key)
@@ -68,8 +71,6 @@ class FunctionCall:
             return (None, None, False)
 
         arguments = self.__function_arguments(history.last_message(), verbose)
-        if verbose:
-            print_info(json.dumps(self.data(), indent=2))
 
         if self.function_action:
             function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)

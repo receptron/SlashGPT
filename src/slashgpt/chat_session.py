@@ -11,7 +11,7 @@ from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug, print_error, print_warning
+from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
 
 
 class ChatSession:
@@ -27,6 +27,7 @@ class ChatSession:
         agent_name: str = "GPT",
         intro: bool = True,
         restore: bool = False,
+        memory: Optional[dict] = None,
     ):
         """
         Args:
@@ -38,6 +39,7 @@ class ChatSession:
             agent_name (str, optional): Display name of agent
             intro (bool, optional): True if the introduction message should be appended.
             restore (bool, optional): True if we are restoring an existing session.
+            memory (dict, optional): The initial value of short term memory
         """
         self.config = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
@@ -61,7 +63,8 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
+        self.memory = memory  # LATER: Store it in ChatContext
+        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
         if self.prompt and not restore:
@@ -151,6 +154,9 @@ class ChatSession:
         """
         messages = self.history.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+
+        if self.config.verbose and function_call is not None:
+            print_info(function_call)
 
         if role and res:
             self.append_message(role, res, False)

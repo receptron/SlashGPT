@@ -1,0 +1,9 @@
+{
+  "manifests": "doctor",
+  "messages":[{
+    "agent": "reception",
+    "message": "/sample"
+  },{
+    "message": "/sample"
+  }]
+}

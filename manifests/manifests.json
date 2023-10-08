@@ -26,5 +26,9 @@
   "ss": {
     "manifests_dir": "manifests/ss",
     "default_agent_name": "blip2"
+  },
+  "doctor": {
+    "manifests_dir": "manifests/doctor",
+    "default_agent_name": "reception"
   }
 }
