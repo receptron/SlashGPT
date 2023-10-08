@@ -3,7 +3,7 @@
   "functions": [
     {
       "name": "profile",
-      "emit": "next_agent",
+      "emit": "spacex",
       "description": "information",
       "parameters": {
         "type": "object",

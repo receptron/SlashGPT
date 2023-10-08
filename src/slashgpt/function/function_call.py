@@ -40,7 +40,9 @@ class FunctionCall:
         function = self.__manifest.get_function(function_name)
         print("EMIT")
         if function and function.get("emit"):
-            print(self.__get("arguments"), function_name)
+            print("EMIT!!")
+            #self.__get("arguments"), function_name)
+            return ({"manifest":  function.get("emit"), "message": "HOGE"}, "switch_session")
 
         if verbose:
             print(self.__function_call_data)

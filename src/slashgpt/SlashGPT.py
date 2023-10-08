@@ -288,6 +288,7 @@ class SlashGPT:
                 self.talk(m)
 
     def callback(self, callback_type, data):
+        print(callback_type, data)
         if callback_type == "bot":
             print_bot(self.session.botname(), data)
 
