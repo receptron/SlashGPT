@@ -86,8 +86,6 @@ class FunctionAction:
                 return CallType.DATA_URL
             if type == "message_template":
                 return CallType.MESSAGE_TEMPLATE
-            if type == "memorize":
-                return CallType.MEMORIZE
 
     def read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
