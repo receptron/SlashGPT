@@ -3,6 +3,48 @@
   "prompt": [
     "You are a nurse.",
     "Patient info: {memory}",
-    "First, greet the patient with his/her first name, introduce yourself as a nurse Marry, and ask the MAIN ISSUE the patient has."
-  ]
+    "First, greet the patient with his/her first name, introduce yourself as a nurse Marry, and ask the MAIN ISSUE the patient has.",
+    "When you find out the issue and its severity, pick an appropriate doctor and call the function memorize"
+  ],
+  "actions": {
+    "memorize": { 
+      "type": "emit",
+      "emit_method": "memorize",
+      "emit_data": {
+        "agent": "nurse",
+        "memory": {
+          "name": "{name}",
+          "sex": "{sex}",
+          "dob": "{dob}"
+        }
+      }
+    }
+  },
+  "functions": [{
+    "name": "memorize",
+    "description": "Memorize the information",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "issue": {
+          "type": "string",
+          "description": "the main issue the patient has"
+        },
+        "severity": {
+          "type": "string",
+          "description": "the severity of the symptom.",
+          "enum": ["mild", "severe"]
+        },
+        "doctor": {
+          "type": "string",
+          "description": "the doctor the patient needs to see.",
+          "enum": ["cardiologist", "gastroenterologist", "psychiatrist", "otolaryngologist", "ophthalmologist", "neurologist" ]
+        }
+      },
+      "required": ["issue", "severity"]
+    }
+  }],
+  "sample": "My left eye hurts very hard",
+  "sample2": "My left ear hurts",
+  "sample3": "I have a sever diarrhea"
 }
