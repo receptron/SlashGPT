@@ -300,7 +300,7 @@ class SlashGPT:
             (action_method, action_data) = data
             # All emit methods must be processed here
             if action_method == "switch_session":
-                self.switch_session(action_data.get("manifest"), intro=False)
+                self.switch_session(action_data.get("agent"), intro=False)
                 self.query_llm(action_data.get("message"))
             if action_method == "memorize":
                 agent_to_activate = action_data.get("agent")

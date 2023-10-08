@@ -72,7 +72,6 @@ class FunctionAction:
 
         if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
-
         return "Success"
 
     def __call_type(self):
