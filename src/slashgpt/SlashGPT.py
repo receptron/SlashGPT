@@ -304,6 +304,7 @@ class SlashGPT:
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
                     self.switch_session(agent_to_activate, memory = action_data.get("memory"))
+                    self.process_llm()
 
         if callback_type == "function":
             (function_name, function_message) = data
