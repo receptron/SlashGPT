@@ -301,9 +301,9 @@ class SlashGPT:
                 self.query_llm(action_data.get("message"))
             if action_method == "memorize":
                 print("Memorize", action_data)
-                # next_agent = action_data.get("agent")
-                # if next_agent:
-                #    self.switch_session()
+                agent_to_activate = action_data.get("agent")
+                if agent_to_activate:
+                    self.switch_session(agent_to_activate)
 
         if callback_type == "function":
             (function_name, function_message) = data

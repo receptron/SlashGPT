@@ -13,7 +13,7 @@
       "emit_method": "memorize",
       "emit_data": {
         "agent": "nurse",
-        "data": {
+        "memory": {
           "name": "{name}",
           "sex": "{sex}",
           "dob": "{dob}"
