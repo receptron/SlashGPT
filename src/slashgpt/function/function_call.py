@@ -36,6 +36,15 @@ class FunctionCall:
                 self.function_action.emit_data(self.__arguments(verbose)),
                 self.function_action.emit_method(),
             )
+        function_name = self.__name()
+        function = self.__manifest.get_function(function_name)
+        print("EMIT")
+        if function and function.get("emit"):
+            print(self.__get("arguments"), function_name)
+
+        if verbose:
+            print(self.__function_call_data)
+            print(function)
         return (None, None)
 
     def __arguments(self, verbose: bool):

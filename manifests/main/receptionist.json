@@ -1,0 +1,35 @@
+{
+  "title": "Receptionist",
+  "functions": [
+    {
+      "name": "profile",
+      "emit": "next_agent",
+      "description": "information",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name of the person."
+          },
+          "gender": {
+            "type": "string",
+            "description": "the person's gender."
+          },
+          "Birthday": {
+            "type": "string",
+            "description": "Birthday."
+          }
+        },
+        "required": ["name", "gender", "Birthday"]
+      }
+    }
+  ],
+  "prompt": [
+    "You are recepitionist of a Clinic and you are responsible in retrieving following information.",
+    "name, gender, Birthday"
+  ],
+  "intro": [
+    "Welcome to the clinic. Please give me your name."
+  ]
+}

@@ -85,6 +85,10 @@ class Manifest:
                     return json.load(f)
         return None
 
+    def get_function(self, key):
+        value = self.functions()
+        return next(filter(lambda func: func.get("name") == key, value), None)
+
     """
     Read Module
     Read Python file if module is in manifest.
