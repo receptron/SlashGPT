@@ -5,7 +5,7 @@ from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.base import ChatHistory
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_error, print_info, print_warning
+from slashgpt.utils.print import print_error, print_warning
 
 
 class FunctionCall:

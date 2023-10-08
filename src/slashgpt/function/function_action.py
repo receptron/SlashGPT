@@ -1,4 +1,3 @@
-import json
 import os
 from urllib.parse import quote_plus, urlparse
 
