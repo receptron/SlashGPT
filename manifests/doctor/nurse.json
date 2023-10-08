@@ -41,10 +41,11 @@
           "enum": ["cardiologist", "gastroenterologist", "psychiatrist", "otolaryngologist", "ophthalmologist", "neurologist" ]
         }
       },
-      "required": ["issue", "severity"]
+      "required": ["issue", "severity", "doctor"]
     }
   }],
   "sample": "My left eye hurts very hard",
-  "sample2": "My left ear hurts",
-  "sample3": "I have a sever diarrhea"
+  "sample2": "I feel dizzy all the time.",
+  "sample3": "I have a sever diarrhea",
+  "sample4": "My left ear hurts"
 }

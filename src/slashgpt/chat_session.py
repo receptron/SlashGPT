@@ -10,7 +10,7 @@ from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug, print_error, print_warning
+from slashgpt.utils.print import print_debug, print_info, print_error, print_warning
 
 
 class ChatSession:
@@ -153,6 +153,9 @@ class ChatSession:
         """
         messages = self.history.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+
+        if self.config.verbose and function_call is not None:
+            print_info(function_call)
 
         if role and res:
             self.append_message(role, res, False)
