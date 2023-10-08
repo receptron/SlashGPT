@@ -23,7 +23,7 @@ class FunctionCall:
 
     def __str__(self):
         return f"{self.__name()}: ({self.__arguments(False)})"
-    
+
     def __get(self, key: str):
         return self.__function_call_data.get(key)
 

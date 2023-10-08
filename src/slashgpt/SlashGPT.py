@@ -94,7 +94,9 @@ class SlashGPT:
 
         if self.config.has_manifest(agent_name):
             manifest = self.config.manifests.get(agent_name)
-            self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory)
+            self.session = ChatSession(
+                self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory
+            )
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})"
@@ -308,7 +310,7 @@ class SlashGPT:
                         merged_memory = self.session.memory.copy()
                         merged_memory.update(memory)
                         memory = merged_memory
-                    self.switch_session(agent_to_activate, memory = memory)
+                    self.switch_session(agent_to_activate, memory=memory)
                     self.process_llm()
 
         if callback_type == "function":

@@ -1,6 +1,5 @@
-import os
 import json
-
+import os
 from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
@@ -32,7 +31,7 @@ class FunctionAction:
             if isinstance(value, str):
                 return value.format(**arguments)
             elif isinstance(value, dict):
-                return {x: format(value.get(x)) for x in value} 
+                return {x: format(value.get(x)) for x in value}
             return value
 
         data = self.__get("emit_data")
