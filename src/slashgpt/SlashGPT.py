@@ -299,6 +299,8 @@ class SlashGPT:
             if action_method == "switch_session":
                 self.switch_session(action_data.get("manifest"), intro=False)
                 self.query_llm(action_data.get("message"))
+            if action_method == "memorize":
+                print("Memorize", action_data)
         if callback_type == "function":
             (function_name, function_message) = data
             print_function(function_name, function_message)

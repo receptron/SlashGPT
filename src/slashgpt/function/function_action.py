@@ -67,9 +67,6 @@ class FunctionAction:
         if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
 
-        if type == CallType.MEMORIZE:
-            return json.dumps(arguments)
-
         return "Success"
 
     def __call_type(self):

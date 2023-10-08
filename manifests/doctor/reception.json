@@ -9,7 +9,13 @@
   ],
   "actions": {
     "memorize": { 
-      "type": "memorize"
+      "type": "emit",
+      "emit_method": "memorize",
+      "emit_data": {
+        "name": "{name}",
+        "sex": "{sex}",
+        "dob": "{dob}"
+      }
     }
   },
   "functions": [{
