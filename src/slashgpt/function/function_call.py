@@ -39,10 +39,13 @@ class FunctionCall:
         function_name = self.__name()
         function = self.__manifest.get_function(function_name)
         if function and function.get("emit"):
-            return ({
-                "manifest": function_name,
-                "data": self.__arguments(verbose),
-            }, "switch_session")
+            return (
+                {
+                    "manifest": function_name,
+                    "data": self.__arguments(verbose),
+                },
+                "switch_session",
+            )
 
         return (None, None)
 

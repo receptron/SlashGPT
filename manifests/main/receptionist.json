@@ -2,7 +2,7 @@
   "title": "Receptionist",
   "functions": [
     {
-      "name": "profile",
+      "name": "nurse",
       "emit": true,
       "description": "information",
       "parameters": {
