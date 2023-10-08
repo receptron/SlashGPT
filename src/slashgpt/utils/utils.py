@@ -14,6 +14,7 @@ class CallType(Enum):
     DATA_URL = 3
     MESSAGE_TEMPLATE = 4
     EMIT = 5
+    MEMORIZE = 6
 
 
 COLOR_DEBUG = "cyan"

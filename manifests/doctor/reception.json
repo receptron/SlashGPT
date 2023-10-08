@@ -9,8 +9,7 @@
   ],
   "actions": {
     "memorize": { 
-      "type": "message_template",
-      "message": "name:{name}, sex:{sex}, dob:{dob}." 
+      "type": "memorize"
     }
   },
   "functions": [{

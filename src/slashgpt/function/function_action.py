@@ -1,4 +1,6 @@
 import os
+import json
+
 from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
@@ -64,6 +66,10 @@ class FunctionAction:
 
         if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
+
+        if type == CallType.MEMORIZE:
+            return json.dumps(arguments)
+
         return "Success"
 
     def __call_type(self):
@@ -77,6 +83,8 @@ class FunctionAction:
                 return CallType.DATA_URL
             if type == "message_template":
                 return CallType.MESSAGE_TEMPLATE
+            if type == "memorize":
+                return CallType.MEMORIZE
 
     def read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
