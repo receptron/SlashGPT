@@ -277,8 +277,9 @@ class SlashGPT:
         self.config.switch_manifests(self.config.base_path + "/" + m["manifests_dir"])
         self.switch_session(m["default_agent_name"])
 
-    def test(self, agent, message=None, messages=None):
-        self.switch_session(agent)
+    def test(self, agent=None, message=None, messages=None):
+        if agent is not None:
+            self.switch_session(agent)
         if message:
             print(f"\033[95m\033[1m{self.session.username()}: \033[95m\033[0m{message}")
             self.talk(message)
