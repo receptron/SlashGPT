@@ -87,14 +87,14 @@ class SlashGPT:
     The key specifies the AI agent.
     """
 
-    def switch_session(self, agent_name: str, intro: bool = True):
+    def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
         if agent_name is None:
             self.session = ChatSession(self.config, default_llm_model=self.llm_model)
             return
 
         if self.config.has_manifest(agent_name):
             manifest = self.config.manifests.get(agent_name)
-            self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro)
+            self.session = ChatSession(self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory)
             if self.config.verbose:
                 print_info(
                     f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})"
@@ -303,7 +303,7 @@ class SlashGPT:
                 print("Memorize", action_data)
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_to_activate)
+                    self.switch_session(agent_to_activate, memory = action_data.get("memory"))
 
         if callback_type == "function":
             (function_name, function_message) = data

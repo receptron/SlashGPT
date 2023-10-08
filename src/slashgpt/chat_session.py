@@ -26,6 +26,7 @@ class ChatSession:
         agent_name: str = "GPT",
         intro: bool = True,
         restore: bool = False,
+        memory: Optional[dict] = None
     ):
         """
         Args:
@@ -60,7 +61,7 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
+        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
         if self.prompt and not restore:
