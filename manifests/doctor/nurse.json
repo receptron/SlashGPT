@@ -12,6 +12,7 @@
       "emit_method": "memorize",
       "emit_data": {
         "agent": "{doctor}",
+        "merge": true,
         "memory": {
           "issue": "{issue}",
           "severity": "{severity}"

@@ -31,8 +31,9 @@ class FunctionAction:
         def format(value):
             if isinstance(value, str):
                 return value.format(**arguments)
-            else:
+            elif isinstance(value, dict):
                 return {x: format(value.get(x)) for x in value} 
+            return value
 
         data = self.__get("emit_data")
         return {x: format(data.get(x)) for x in data}

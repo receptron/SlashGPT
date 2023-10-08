@@ -303,7 +303,10 @@ class SlashGPT:
                 print("Memorize", action_data)
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_to_activate, memory = action_data.get("memory"))
+                    memory = action_data.get("memory")
+                    if self.session.memory is not None and action_data.get("merge"):
+                        print("**merging", memory, self.session.memory)
+                    self.switch_session(agent_to_activate, memory = memory)
                     self.process_llm()
 
         if callback_type == "function":

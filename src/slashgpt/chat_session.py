@@ -38,6 +38,7 @@ class ChatSession:
             agent_name (str, optional): Display name of agent
             intro (bool, optional): True if the introduction message should be appended.
             restore (bool, optional): True if we are restoring an existing session.
+            memory (dict, optional): The initial value of short term memory
         """
         self.config = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
@@ -61,6 +62,7 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
+        self.memory = memory # LATER: Store it in ChatContext
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
