@@ -300,12 +300,13 @@ class SlashGPT:
                 self.switch_session(action_data.get("manifest"), intro=False)
                 self.query_llm(action_data.get("message"))
             if action_method == "memorize":
-                print("Memorize", action_data)
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
                     memory = action_data.get("memory")
-                    if self.session.memory is not None and action_data.get("merge"):
-                        print("**merging", memory, self.session.memory)
+                    if memory is not None and self.session.memory is not None and action_data.get("merge"):
+                        merged_memory = self.session.memory.copy()
+                        merged_memory.update(memory)
+                        memory = merged_memory
                     self.switch_session(agent_to_activate, memory = memory)
                     self.process_llm()
 
