@@ -42,7 +42,6 @@ class FunctionCall:
             return ({
                 "manifest": function_name,
                 "data": self.__arguments(verbose),
-                "message": ""
             }, "switch_session")
 
         return (None, None)

@@ -81,7 +81,7 @@ class SlashGPT:
         self.exit = False
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
         self.switch_session(agent_name)
-
+        self.data = {}
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
@@ -299,7 +299,11 @@ class SlashGPT:
             # All emit methods must be processed here
             if action_method == "switch_session":
                 self.switch_session(action_data.get("manifest"), intro=False)
-                self.query_llm(action_data.get("message"))
+                if action_data.get("message"):
+                    self.query_llm(action_data.get("message"))
+                    self.session.manifest
+                if action_data.get("data"):
+                    self.data 
         if callback_type == "function":
             (function_name, function_message) = data
             print_function(function_name, function_message)

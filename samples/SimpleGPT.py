@@ -43,6 +43,7 @@ class SimpleGPT:
 
     def process_llm(self, session):
         try:
+            self.session.call_loop(self.callback)
             (res, function_call) = session.call_llm()
 
             if res:
