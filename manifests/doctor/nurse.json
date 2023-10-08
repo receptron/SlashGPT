@@ -11,11 +11,10 @@
       "type": "emit",
       "emit_method": "memorize",
       "emit_data": {
-        "agent": "nurse",
+        "agent": "{doctor}",
         "memory": {
-          "name": "{name}",
-          "sex": "{sex}",
-          "dob": "{dob}"
+          "issue": "{issue}",
+          "severity": "{severity}"
         }
       }
     }
