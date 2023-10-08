@@ -60,12 +60,12 @@ class FunctionCall:
         return arguments
 
     def get_function(self, runtime: PythonRuntime, function_name: str):
-        if self.__manifest.get("notebook"):
+        if self.__manifest.get("notebook") and runtime is not None:
             return getattr(runtime, function_name)
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose: bool = False):
+    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime = None, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)

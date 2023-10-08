@@ -5,6 +5,7 @@ from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
+from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
@@ -182,7 +183,7 @@ class ChatSession:
         """Title of the AI agent specified in the manifest"""
         return self.manifest.title()
 
-    def call_loop(self, callback, verbose, runtime):
+    def call_loop(self, callback, verbose: bool = False, runtime: PythonRuntime = None):
         # Ask LLM to generate a response.
         (res, function_call) = self.call_llm()
 

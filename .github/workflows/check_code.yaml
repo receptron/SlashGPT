@@ -16,6 +16,8 @@ jobs:
         run: OPENAI_API_KEY=TEST ./SlashGPT.py --run /bye
       - name: Run SimpleGPT
         run: OPENAI_API_KEY=TEST python -m samples.SimpleGPT test
+      - name: Run SimpleGPT2
+        run: OPENAI_API_KEY=TEST python -m samples.SimpleGPT2 test
       - name: Run AgentGPT
         run: OPENAI_API_KEY=TEST python -m samples.AgentGPT test
 
