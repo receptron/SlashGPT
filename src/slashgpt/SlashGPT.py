@@ -296,22 +296,25 @@ class SlashGPT:
 
             if self.config.audio:
                 play_text(data, self.config.audio)
+
         if callback_type == "emit":
-            (action_method, action_data) = data
             # All emit methods must be processed here
-            if action_method == "switch_session":
-                self.switch_session(action_data.get("agent"), intro=False)
-                self.query_llm(action_data.get("message"))
-            if action_method == "memorize":
-                agent_to_activate = action_data.get("agent")
-                if agent_to_activate:
-                    memory = action_data.get("memory")
-                    if memory is not None and self.session.memory is not None and action_data.get("merge"):
-                        merged_memory = self.session.memory.copy()
-                        merged_memory.update(memory)
-                        memory = merged_memory
-                    self.switch_session(agent_to_activate, memory=memory)
-                    self.process_llm()
+            (action_method, action_data) = data
+
+            memory = action_data.get("memory")
+            if memory is not None and self.session.memory is not None and action_data.get("merge"):
+                merged_memory = self.session.memory.copy()
+                merged_memory.update(memory)
+                memory = merged_memory
+
+            # LATER: Update the memory in the context if memory is not None
+            agent_to_activate = action_data.get("agent")
+            if agent_to_activate:
+                self.switch_session(agent_to_activate, memory=memory)
+                message_to_append = action_data.get("message")
+                if message_to_append:
+                    self.session.append_user_question(message_to_append)
+                self.process_llm()
 
         if callback_type == "function":
             (function_name, function_message) = data
