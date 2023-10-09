@@ -10,7 +10,7 @@
   "actions": {
     "memorize": { 
       "type": "emit",
-      "emit_method": "memorize",
+      "emit_method": "switch_session",
       "emit_data": {
         "agent": "nurse",
         "memory": {
