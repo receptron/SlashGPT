@@ -301,21 +301,22 @@ class SlashGPT:
             # All emit methods must be processed here
             (action_method, action_data) = data
 
-            memory = action_data.get("memory")
-            if memory is not None:
-                if self.session.memory is not None and action_data.get("merge"):
-                    merged_memory = self.session.memory.copy()
-                    merged_memory.update(memory)
-                    memory = merged_memory
-                self.session.memory = memory  # LATER: use context
+            if action_method == "switch_session":
+                memory = action_data.get("memory")
+                if memory is not None:
+                    if self.session.memory is not None and action_data.get("merge"):
+                        merged_memory = self.session.memory.copy()
+                        merged_memory.update(memory)
+                        memory = merged_memory
+                    self.session.memory = memory  # LATER: use context
 
-            agent_to_activate = action_data.get("agent")
-            if agent_to_activate:
-                self.switch_session(agent_to_activate, memory=memory)
-                message_to_append = action_data.get("message")
-                if message_to_append:
-                    self.session.append_user_question(message_to_append)
-                self.process_llm()
+                agent_to_activate = action_data.get("agent")
+                if agent_to_activate:
+                    self.switch_session(agent_to_activate, memory=memory)
+                    message_to_append = action_data.get("message")
+                    if message_to_append:
+                        self.session.append_user_question(message_to_append)
+                    self.process_llm()
 
         if callback_type == "function":
             (function_name, function_message) = data
