@@ -1,9 +1,9 @@
 import json
 from typing import Union
 
+from slashgpt.chat_context import ChatContext
 from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.chat_context import ChatContext
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error, print_warning
 

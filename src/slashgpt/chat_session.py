@@ -4,9 +4,9 @@ import uuid
 from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
+from slashgpt.chat_context import ChatContext
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.chat_context import ChatContext
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel

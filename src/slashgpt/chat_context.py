@@ -4,17 +4,17 @@ from typing import List
 class ChatContext:
     def __init__(self, repository):
         self.repository = repository
-        self._memory = {} # LATER: Move this to repository
+        self._memory = {}  # LATER: Move this to repository
 
-    def setMemory(self, memory:dict, merge:bool = True):
+    def setMemory(self, memory: dict, merge: bool = True):
         if merge:
             merged_memory = self.memory().copy()
             merged_memory.update(memory)
             memory = merged_memory
-        self._memory = memory # LATER: Move this to repository
+        self._memory = memory  # LATER: Move this to repository
 
     def memory(self):
-        return self._memory.copy() # LATER: Move this to repository
+        return self._memory.copy()  # LATER: Move this to repository
 
     def append_message(self, data: dict):
         self.repository.append(data)
