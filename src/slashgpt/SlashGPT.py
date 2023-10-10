@@ -189,16 +189,16 @@ class SlashGPT:
                 self.config.audio = None if commands[1] == "off" else commands[1]
             print(f"Audio mode: {self.config.audio}")
         elif key == "prompt":
-            if self.session.history.len_messages() >= 1:
-                print(self.session.history.get_message_prop(0, "content"))
+            if self.session.context.len_messages() >= 1:
+                print(self.session.context.get_message_prop(0, "content"))
             if self.config.verbose and self.session.functions:
                 print_debug(self.session.functions)
         elif commands[0] == "history":
             if len(commands) == 1:
-                print(json.dumps(self.session.history.messages(), ensure_ascii=False, indent=2))
-                print(json.dumps(self.session.history.preset_messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.session.context.messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.session.context.preset_messages(), ensure_ascii=False, indent=2))
             elif len(commands) > 1 and commands[1] == "pop":
-                self.session.history.pop_message()
+                self.session.context.pop_message()
         elif key == "functions":
             if self.session.functions:
                 print(json.dumps(self.session.functions, indent=2))
@@ -228,13 +228,13 @@ class SlashGPT:
         elif commands[0] == "reload":
             self.config.reload()
         elif self.config.has_manifest(commands[0]):
-            messages = self.session.history.nonpreset_messages()  # for "-chain" option
+            messages = self.session.context.nonpreset_messages()  # for "-chain" option
             self.switch_session(commands[0])
             if len(commands) > 1 and commands[1] == "-chain":
                 if self.config.verbose:
                     print_debug(f"Chaining {len(messages)} messages")
                 for m in messages:
-                    self.session.history.append_message({"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False})
+                    self.session.context.append_message({"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False})
 
         else:
             print_error(f"Invalid slash command: {key}")
@@ -255,15 +255,15 @@ class SlashGPT:
 
     def import_data(self, commands):
         if len(commands) == 1:
-            files = self.session.history.session_list()
+            files = self.session.context.session_list()
             for file in files:
                 print(str(file["id"]) + ": " + file["name"])
             return
         else:
-            log = self.session.history.get_session_data(commands[1])
+            log = self.session.context.get_session_data(commands[1])
             if log:
                 if len(commands) == 2:
-                    self.session.history.restore(log)
+                    self.session.context.restore(log)
                     print("imported")
                     return
                 if len(commands) == 3 and commands[2] == "show":
@@ -304,11 +304,11 @@ class SlashGPT:
             if action_method == "switch_session":
                 memory = action_data.get("memory")
                 if memory is not None:
-                    self.session.history.setMemory(memory, action_data.get("merge"))
+                    self.session.context.setMemory(memory, action_data.get("merge"))
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_to_activate, memory=self.session.history.memory())
+                    self.switch_session(agent_to_activate, memory=self.session.context.memory())
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)
