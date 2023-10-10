@@ -3,7 +3,7 @@ from typing import Optional
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.utils.print import print_error, print_info
+from slashgpt.utils.print import print_error
 
 
 class ChatApplication:
@@ -30,14 +30,15 @@ class ChatApplication:
                 self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory
             )
             if self.config.verbose:
-                print_info(
-                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})"
+                self._callback(
+                    "info",
+                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})",
                 )
             else:
-                print_info(f"Activating: {self.session.title()}")
+                self._callback("info", f"Activating: {self.session.title()}")
             if self.session.manifest.get("notebook"):
                 (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
-                print_info(f"Created a notebook: {result.get('notebook_name')}")
+                self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
 
             if self.session.intro_message:
                 self._callback("bot", self.session.intro_message)

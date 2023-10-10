@@ -14,7 +14,7 @@ except ImportError:
 from slashgpt.chat_app import ChatApplication
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
-from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_warning
+from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
 
 if platform.system() == "Darwin":
@@ -265,6 +265,9 @@ class SlashGPT:
 
             if self.app.config.audio:
                 play_text(data, self.app.config.audio)
+
+        if callback_type == "info":
+            print_info(data)
 
         if callback_type == "function":
             (function_name, function_message) = data
