@@ -20,6 +20,13 @@ class ChatHistoryMemoryStorage(ChatHistoryAbstractStorage):
         # init log dir
         create_log_dir(self.base_dir, agent_name)
 
+    def setMemory(self, memory: dict):
+        print_warning("setMemory: to be implemented")
+
+    def memory(self):
+        print_warning("memory: to be implemented")
+        return {}
+
     def append(self, data: dict):
         self.__messages.append(data)
         save_log(self.base_dir, self.agent_name, self.messages(), self.time)

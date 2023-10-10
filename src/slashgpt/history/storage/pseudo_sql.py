@@ -2,7 +2,7 @@ import uuid
 from typing import List
 
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
-
+from slashgpt.utils.print import print_warning
 
 class ChatHistoryPseudoSQLStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
@@ -15,6 +15,13 @@ class ChatHistoryPseudoSQLStorage(ChatHistoryAbstractStorage):
 
     def __new_session_id(self):
         self.session_id = str(uuid.uuid4())
+
+    def setMemory(self, memory: dict):
+        print_warning("setMemory: to be implemented")
+
+    def memory(self):
+        print_warning("memory: to be implemented")
+        return {}
 
     def append(self, data):
         # insert into log (uid, session_id, role, message, created_at)

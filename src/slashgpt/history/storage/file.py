@@ -37,6 +37,13 @@ class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
         except FileNotFoundError:
             self.__messages = []
 
+    def setMemory(self, memory: dict):
+        print_warning("setMemory: to be implemented")
+
+    def memory(self):
+        print_warning("memory: to be implemented")
+        return {}
+
     def append(self, data: dict):
         self.__messages.append(data)
         self.__save_session()
