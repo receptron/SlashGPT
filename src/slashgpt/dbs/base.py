@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 class VectorDBBase(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, table_name: str, verbose: bool):
+        self.vectorEngine = None
         pass
 
     @abstractmethod
