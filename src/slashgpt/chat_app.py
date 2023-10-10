@@ -3,7 +3,7 @@ from typing import Optional
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.utils.print import print_bot, print_error, print_info
+from slashgpt.utils.print import print_error, print_info
 
 
 class ChatApplication:
@@ -40,7 +40,7 @@ class ChatApplication:
                 print_info(f"Created a notebook: {result.get('notebook_name')}")
 
             if self.session.intro_message:
-                print_bot(self.session.botname(), self.session.intro_message)
+                self._callback("bot", self.session.intro_message)
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
