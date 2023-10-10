@@ -49,7 +49,7 @@ class SampleApp:
         question = "Who is the CEO of SpaceX?"
         self.session.append_user_question(self.session.manifest.format_question(question))
         self.process_llm()
-        messages = self.session.history.messages()
+        messages = self.session.context.messages()
         last_message = messages[len(messages) - 1]
 
         print(f"Q: {question}")
