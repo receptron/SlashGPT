@@ -4,13 +4,14 @@ import uuid
 from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
+from slashgpt.chat_context import ChatContext
 from slashgpt.dbs.db_pinecone import DBPinecone
-from slashgpt.history.base import ChatHistory
+from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug, print_error, print_warning
+from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
 
 
 class ChatSession:
@@ -26,6 +27,7 @@ class ChatSession:
         agent_name: str = "GPT",
         intro: bool = True,
         restore: bool = False,
+        memory: Optional[dict] = None,
     ):
         """
         Args:
@@ -37,6 +39,7 @@ class ChatSession:
             agent_name (str, optional): Display name of agent
             intro (bool, optional): True if the introduction message should be appended.
             restore (bool, optional): True if we are restoring an existing session.
+            memory (dict, optional): The initial value of short term memory
         """
         self.config = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
@@ -46,8 +49,8 @@ class ChatSession:
         """Manifest which specifies the behavior of the AI agent (Manifest)"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
         """Specified user id or randomly generated uuid (str)"""
-        self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
-        """Chat history (ChatHistory)"""
+        self.context = ChatContext(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
+        """Chat history (ChatContext)"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
@@ -60,7 +63,8 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {})
+        self.context.setMemory(memory or {})
+        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
         if self.prompt and not restore:
@@ -113,16 +117,16 @@ class ChatSession:
             preset (bool): True, if it is preset by the manifest
             name (str, optional): function name (when the role is "function")
         """
-        self.history.append_message({"role": role, "content": message, "name": name, "preset": preset})
+        self.context.append_message({"role": role, "content": message, "name": name, "preset": preset})
 
     def append_user_question(self, message: str):
         """Append a question from the user to the history
         and update the prompt if necessary (e.g, RAG)"""
         self.append_message("user", message, False)
         if self.vector_db:
-            articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
-            assert self.history.get_message_prop(0, "role") == "system", "Missing system message"
-            self.history.set_message(
+            articles = self.vector_db.fetch_related_articles(self.context.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)
+            assert self.context.get_message_prop(0, "role") == "system", "Missing system message"
+            self.context.set_message(
                 0,
                 {
                     "role": "system",
@@ -148,8 +152,11 @@ class ChatSession:
             res (str): message
             function_call (dict): json representing the function call (optional)
         """
-        messages = self.history.messages()
+        messages = self.context.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+
+        if self.config.verbose and function_call is not None:
+            print_info(function_call)
 
         if role and res:
             self.append_message(role, res, False)
@@ -176,7 +183,7 @@ class ChatSession:
         """Title of the AI agent specified in the manifest"""
         return self.manifest.title()
 
-    def call_loop(self, callback, verbose, runtime):
+    def call_loop(self, callback, verbose: bool = False, runtime: PythonRuntime = None):
         # Ask LLM to generate a response.
         (res, function_call) = self.call_llm()
 
@@ -193,7 +200,7 @@ class ChatSession:
                     function_name,
                     should_call_llm,
                 ) = function_call.process_function_call(
-                    self.history,
+                    self.context,
                     runtime,
                     verbose,
                 )

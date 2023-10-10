@@ -2,7 +2,7 @@ import json
 import random
 import re
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from slashgpt.utils.print import print_info
 
@@ -147,7 +147,7 @@ class Manifest:
             contents = f.read()
             return re.sub("\\{resource\\}", contents, prompt, 1)
 
-    def prompt_data(self, manifests: dict = {}):
+    def prompt_data(self, manifests: dict = {}, memory: Optional[dict] = None):
         """Generate an appropriate prompt for a ChatSession (str)"""
         prompt = self.__read_prompt()
         agents = self.get("agents")
@@ -160,6 +160,8 @@ class Manifest:
                 prompt = self.__replace_from_resource_file(prompt, resource)
             if agents:
                 prompt = self.__apply_agent(prompt, agents, manifests)
+            if memory is not None:
+                prompt = re.sub("\\{memory\\}", json.dumps(memory), prompt, 1)
             return prompt
 
     def __apply_agent(self, prompt: str, agents: List[str], manifests: dict = {}):

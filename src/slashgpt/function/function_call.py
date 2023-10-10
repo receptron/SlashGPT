@@ -1,11 +1,11 @@
 import json
 from typing import Union
 
+from slashgpt.chat_context import ChatContext
 from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.history.base import ChatHistory
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_error, print_info, print_warning
+from slashgpt.utils.print import print_error, print_warning
 
 
 class FunctionCall:
@@ -20,6 +20,9 @@ class FunctionCall:
         self.__manifest = manifest
         actions = self.__manifest.actions()
         self.function_action = FunctionAction.factory(actions.get(self.__name()))
+
+    def __str__(self):
+        return f"{self.__name()}: ({self.__arguments(False)})"
 
     def __get(self, key: str):
         return self.__function_call_data.get(key)
@@ -57,19 +60,17 @@ class FunctionCall:
         return arguments
 
     def get_function(self, runtime: PythonRuntime, function_name: str):
-        if self.__manifest.get("notebook"):
+        if self.__manifest.get("notebook") and runtime is not None:
             return getattr(runtime, function_name)
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime, verbose: bool = False):
+    def process_function_call(self, context: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
-        arguments = self.__function_arguments(history.last_message(), verbose)
-        if verbose:
-            print_info(json.dumps(self.data(), indent=2))
+        arguments = self.__function_arguments(context.last_message(), verbose)
 
         if self.function_action:
             function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
@@ -88,14 +89,14 @@ class FunctionCall:
 
                 if message:
                     # Embed code for the context
-                    history.append_message({"role": "assistant", "content": message})
+                    context.append_message({"role": "assistant", "content": message})
                 function_message = self.__format_python_result(result)
             else:
                 function_message = None
                 print_error(f"No execution for function {function_name}")
 
         if function_message:
-            history.append_message({"role": "function", "content": function_message, "name": function_name})
+            context.append_message({"role": "function", "content": function_message, "name": function_name})
 
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)

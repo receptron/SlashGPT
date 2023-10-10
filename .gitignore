@@ -7,6 +7,7 @@ __pycache__/
 
 .vscode/
 output/
+filememory/
 
 # Python
 .ipynb_checkpoints/

@@ -108,7 +108,7 @@ def process_llm(session):
                 function_name,
                 should_call_llm,
             ) = function_call.process_function_call(
-                session.history,
+                session.context,
                 runtime,
                 True,
             )

@@ -1,9 +1,19 @@
 from typing import List
 
 
-class ChatHistory:
+class ChatContext:
     def __init__(self, repository):
         self.repository = repository
+
+    def setMemory(self, memory: dict, merge: bool = True):
+        if merge:
+            merged_memory = self.memory().copy()
+            merged_memory.update(memory)
+            memory = merged_memory
+        self.repository.setMemory(memory)
+
+    def memory(self):
+        return self.repository.memory()
 
     def append_message(self, data: dict):
         self.repository.append(data)

@@ -26,8 +26,15 @@ class FunctionAction:
         return self.__get("emit_method")
 
     def emit_data(self, arguments: dict):
+        def format(value):
+            if isinstance(value, str):
+                return value.format(**arguments)
+            elif isinstance(value, dict):
+                return {x: format(value.get(x)) for x in value}
+            return value
+
         data = self.__get("emit_data")
-        return {x: data.get(x).format(**arguments) for x in data}
+        return {x: format(data.get(x)) for x in data}
 
     def call_api(self, arguments: dict, base_dir: str, verbose: bool):
         type = self.__call_type()
