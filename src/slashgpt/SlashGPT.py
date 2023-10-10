@@ -304,15 +304,11 @@ class SlashGPT:
             if action_method == "switch_session":
                 memory = action_data.get("memory")
                 if memory is not None:
-                    if self.session.memory is not None and action_data.get("merge"):
-                        merged_memory = self.session.memory.copy()
-                        merged_memory.update(memory)
-                        memory = merged_memory
-                    self.session.memory = memory  # LATER: use context
+                    self.session.history.setMemory(memory, action_data.get("merge"))
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_to_activate, memory=memory)
+                    self.switch_session(agent_to_activate, memory=self.session.history.memory())
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)

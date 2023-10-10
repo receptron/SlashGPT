@@ -63,7 +63,7 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.memory = memory  # LATER: Store it in ChatContext
+        self.history.setMemory(memory or {})
         self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
