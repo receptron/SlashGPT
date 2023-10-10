@@ -12,6 +12,7 @@ from slashgpt.utils.print import print_warning
 class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str, session_id: str = ""):
         self.__messages: List[dict] = []
+        self.__memory: dict = {}
         self.base_dir = "filememory"
 
         self.uid = uid
@@ -26,23 +27,28 @@ class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
             self.session_id = session_id
             self.__load_session()
 
+    def _data(self):
+        return {"memory": self.__memory, "messages": self.__messages}
+
     def __save_session(self):
         with open(f"{self.base_dir}/{self.agent_name}/{self.session_id}.json", "w") as f:
-            json.dump(self.__messages, f, ensure_ascii=False, indent=2)
+            json.dump(self.__data(), f, ensure_ascii=False, indent=2)
 
     def __load_session(self):
         try:
             with open(f"{self.base_dir}/{self.agent_name}/{self.session_id}.json", "r") as f:
-                self.__messages = json.load(f)
+                data = json.load(f)
+                self.__messages = data.get("messages")
+                self.__memory = data.get("memory")
         except FileNotFoundError:
             self.__messages = []
 
     def setMemory(self, memory: dict):
-        print_warning("setMemory: to be implemented")
+        self.__memory = memory
+        self.__save_session()
 
     def memory(self):
-        print_warning("memory: to be implemented")
-        return {}
+        return self.__memory
 
     def append(self, data: dict):
         self.__messages.append(data)
