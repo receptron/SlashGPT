@@ -65,12 +65,12 @@ class FunctionCall:
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
+    def process_function_call(self, context: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
-        arguments = self.__function_arguments(history.last_message(), verbose)
+        arguments = self.__function_arguments(context.last_message(), verbose)
 
         if self.function_action:
             function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
@@ -89,14 +89,14 @@ class FunctionCall:
 
                 if message:
                     # Embed code for the context
-                    history.append_message({"role": "assistant", "content": message})
+                    context.append_message({"role": "assistant", "content": message})
                 function_message = self.__format_python_result(result)
             else:
                 function_message = None
                 print_error(f"No execution for function {function_name}")
 
         if function_message:
-            history.append_message({"role": "function", "content": function_message, "name": function_name})
+            context.append_message({"role": "function", "content": function_message, "name": function_name})
 
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)
