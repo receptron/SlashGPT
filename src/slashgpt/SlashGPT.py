@@ -75,8 +75,9 @@ Main is a singleton, which process the input from the user and manage chat sessi
 
 class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
+        self.manifests_manager = manifests_manager
         self.exit = False
-        self.app = ChatApplication(config, manifests_manager, agent_name)
+        self.app = ChatApplication(config)
         self.app.switch_session(agent_name)
 
     def parse_question(self, question: str):
@@ -182,7 +183,7 @@ class SlashGPT:
         elif key == "current_llm":
             print(self.app.session.llm_model.name())
         elif key == "new":
-            self.switch_session(self.app.session.agent_name, intro=False)
+            self.app.switch_session(self.app.session.agent_name, intro=False)
         elif commands[0] == "autotest":
             self.auto_test(commands)
         elif commands[0] == "switch":
@@ -244,11 +245,11 @@ class SlashGPT:
     def switch_manifests(self, key):
         m = self.manifests_manager[key]
         self.app.config.switch_manifests(self.app.config.base_path + "/" + m["manifests_dir"])
-        self.switch_session(m["default_agent_name"])
+        self.app.switch_session(m["default_agent_name"])
 
     def test(self, agent=None, message=None, messages=None):
         if agent is not None:
-            self.switch_session(agent)
+            self.app.switch_session(agent)
         if message:
             print(f"\033[95m\033[1m{self.app.session.username()}: \033[95m\033[0m{message}")
             self.talk(message)

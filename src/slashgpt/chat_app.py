@@ -14,9 +14,8 @@ from slashgpt.utils.print import print_bot, print_debug, print_error, print_func
 from slashgpt.utils.utils import InputStyle
 
 class ChatApplication:
-    def __init__(self, config: ChatConfigWithManifests, manifests_manager, agent_name: str):
+    def __init__(self, config: ChatConfigWithManifests):
         self.config = config
-        self.manifests_manager = manifests_manager
         self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
@@ -53,6 +52,9 @@ class ChatApplication:
             print_error(f"Invalid slash command: {agent_name}")
 
     def _process_event(self, callback_type, data):
+        if callback_type == "bot":
+            print_bot(self.session.botname(), data)
+
         if callback_type == "emit":
             # All emit methods must be processed here
             (action_method, action_data) = data
