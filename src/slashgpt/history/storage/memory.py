@@ -12,6 +12,7 @@ from slashgpt.utils.print import print_warning
 class ChatHistoryMemoryStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
         self.__messages: List[dict] = []
+        self.__memory: dict = {}
         self.uid = uid
         self.agent_name = agent_name
         self.base_dir = "output"
@@ -22,10 +23,10 @@ class ChatHistoryMemoryStorage(ChatHistoryAbstractStorage):
 
     def setMemory(self, memory: dict):
         print_warning("setMemory: to be implemented")
+        self.__memory = memory
 
     def memory(self):
-        print_warning("memory: to be implemented")
-        return {}
+        return self.__memory
 
     def append(self, data: dict):
         self.__messages.append(data)
