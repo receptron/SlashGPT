@@ -11,13 +11,13 @@ try:
 except ImportError:
     print("no playsound. pip install playsound")
 
+from slashgpt.chat_app import ChatApplication
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
-from slashgpt.chat_app import ChatApplication
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -202,7 +202,9 @@ class SlashGPT:
                 if self.app.config.verbose:
                     print_debug(f"Chaining {len(messages)} messages")
                 for m in messages:
-                    self.app.session.context.append_message({"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False})
+                    self.app.session.context.append_message(
+                        {"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False}
+                    )
 
         else:
             print_error(f"Invalid slash command: {key}")

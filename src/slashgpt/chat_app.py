@@ -13,6 +13,7 @@ from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
 
+
 class ChatApplication:
     def __init__(self, config: ChatConfigWithManifests):
         self.config = config
@@ -84,4 +85,3 @@ class ChatApplication:
             self.switch_session(self.session.agent_name)
             if self.config.verbose:
                 raise
-
