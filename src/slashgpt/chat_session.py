@@ -4,7 +4,7 @@ import uuid
 from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
-from slashgpt.dbs.pinecone import DBPinecone
+from slashgpt.dbs.db_pinecone import DBPinecone
 from slashgpt.history.base import ChatHistory
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
