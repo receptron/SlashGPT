@@ -1,8 +1,8 @@
 import os
-import pinecone
 
-from dotenv import load_dotenv
 import openai
+import pinecone
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -11,7 +11,7 @@ pinecone_api_key = os.getenv("PINECONE_API_KEY", "")
 pinecone_environment = os.getenv("PINECONE_ENVIRONMENT", "")
 
 pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
-table_name="slashgpt"
+table_name = "slashgpt"
 
 assert table_name in pinecone.list_indexes(), f"No Pinecone table named {table_name}"
 
@@ -48,6 +48,5 @@ for query in sampleDataSet:
     vectors = [(f"id_{i}", query_embedding, {"text": query})]
     print(vectors)
     index.upsert(vectors)
-        
 
     i = i + 1
