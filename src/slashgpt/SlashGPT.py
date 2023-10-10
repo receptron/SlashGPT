@@ -13,10 +13,8 @@ except ImportError:
 
 from slashgpt.chat_app import ChatApplication
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
-from slashgpt.chat_session import ChatSession
-from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
-from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
+from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_warning
 from slashgpt.utils.utils import InputStyle
 
 if platform.system() == "Darwin":

@@ -1,17 +1,9 @@
-import json
-import os
-import platform
-import re
 from typing import Optional
-
-from gtts import gTTS
 
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
-from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
-from slashgpt.utils.utils import InputStyle
+from slashgpt.utils.print import print_bot, print_error, print_info
 
 
 class ChatApplication:
@@ -56,7 +48,7 @@ class ChatApplication:
         prev_callback = self._callback
         self._callback = callback
         return prev_callback
-    
+
     def _process_event(self, callback_type, data):
         if callback_type == "emit":
             # All emit methods must be processed here
