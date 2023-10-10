@@ -1,11 +1,13 @@
 from abc import ABCMeta, abstractmethod
 
+from slashgpt.dbs.vector_engine import VectorEngine
+
 
 class VectorDBBase(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, table_name: str, verbose: bool):
-        self.vectorEngine = None
-        pass
+    def __init__(self, table_name: str, vector_engine: VectorEngine, verbose: bool):
+        self.verbose = verbose
+        self.vectorEngine = vector_engine(verbose)
 
     @abstractmethod
     def fetch_data(self, query_embedding):

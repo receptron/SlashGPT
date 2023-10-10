@@ -6,6 +6,7 @@ from typing import Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
 from slashgpt.dbs.db_pinecone import DBPinecone
+from slashgpt.dbs.vector_engine_openai import VectorEngineOpenAI
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
@@ -93,13 +94,13 @@ class ChatSession:
             print_debug(f"Model = {self.llm_model.name()}")
 
     def __get_vector_db(self):
-        # Todo: support other vector db
+        # Todo: support other vector db and vector engine
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
             try:
                 if embeddings["db_type"] == "pinecone":
-                    return DBPinecone.factory(table_name, self.config.verbose)
+                    return DBPinecone.factory(table_name, VectorEngineOpenAI, self.config.verbose)
             except Exception as e:
                 print_warning(f"Pinecone Error: {e}")
 
