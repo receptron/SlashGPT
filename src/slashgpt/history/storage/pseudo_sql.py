@@ -4,6 +4,7 @@ from typing import List
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.utils.print import print_warning
 
+
 class ChatHistoryPseudoSQLStorage(ChatHistoryAbstractStorage):
     def __init__(self, uid: str, agent_name: str):
         self.__messages: List[dict] = []

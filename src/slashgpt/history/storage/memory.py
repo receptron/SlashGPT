@@ -22,10 +22,7 @@ class ChatHistoryMemoryStorage(ChatHistoryAbstractStorage):
         create_log_dir(self.base_dir, agent_name)
 
     def _data(self):
-        return {
-            "memory": self.__memory,
-            "messages": self.__messages
-        }
+        return {"memory": self.__memory, "messages": self.__messages}
 
     def setMemory(self, memory: dict):
         self.__memory = memory
