@@ -1,7 +1,7 @@
 from typing import List
 
 
-class ChatHistory:
+class ChatContext:
     def __init__(self, repository):
         self.repository = repository
         self._memory = {} # LATER: Move this to repository

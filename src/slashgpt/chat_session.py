@@ -6,7 +6,7 @@ from typing import Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.dbs.pinecone import DBPinecone
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.history.base import ChatHistory
+from slashgpt.chat_context import ChatContext
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
@@ -49,8 +49,8 @@ class ChatSession:
         """Manifest which specifies the behavior of the AI agent (Manifest)"""
         self.user_id = user_id if user_id else str(uuid.uuid4())
         """Specified user id or randomly generated uuid (str)"""
-        self.history = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
-        """Chat history (ChatHistory)"""
+        self.history = ChatContext(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
+        """Chat history (ChatContext)"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():

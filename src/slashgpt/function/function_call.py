@@ -3,7 +3,7 @@ from typing import Union
 
 from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.history.base import ChatHistory
+from slashgpt.chat_context import ChatContext
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error, print_warning
 
@@ -65,7 +65,7 @@ class FunctionCall:
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime = None, verbose: bool = False):
+    def process_function_call(self, history: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
