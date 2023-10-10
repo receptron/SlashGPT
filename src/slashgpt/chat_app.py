@@ -20,7 +20,7 @@ class ChatApplication:
         self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
-        self.callback = self._process_event
+        self._callback = self._process_event
 
     """
     switchSession terminate the current chat session and start a new.
@@ -52,10 +52,12 @@ class ChatApplication:
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
+    def set_callback(self, callback):
+        prev_callback = self._callback
+        self._callback = callback
+        return prev_callback
+    
     def _process_event(self, callback_type, data):
-        if callback_type == "bot":
-            print_bot(self.session.botname(), data)
-
         if callback_type == "emit":
             # All emit methods must be processed here
             (action_method, action_data) = data
@@ -73,13 +75,9 @@ class ChatApplication:
                         self.session.append_user_question(message_to_append)
                     self.process_llm()
 
-        if callback_type == "function":
-            (function_name, function_message) = data
-            print_function(function_name, function_message)
-
     def process_llm(self):
         try:
-            self.session.call_loop(self.callback, self.config.verbose, self.runtime)
+            self.session.call_loop(self._callback, self.config.verbose, self.runtime)
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.agent_name)

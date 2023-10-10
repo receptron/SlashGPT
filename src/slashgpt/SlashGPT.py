@@ -79,6 +79,7 @@ class SlashGPT:
         self.exit = False
         self.app = ChatApplication(config)
         self.app.switch_session(agent_name)
+        self._prev_callback = self.app.set_callback(self._callback)
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -260,12 +261,18 @@ class SlashGPT:
                 print(f"\033[95m\033[1m{self.app.session.username()}: \033[95m\033[0m{m}")
                 self.talk(m)
 
-    def callback_xxx(self, callback_type, data):
+    def _callback(self, callback_type, data):
         if callback_type == "bot":
             print_bot(self.app.session.botname(), data)
 
             if self.app.config.audio:
                 play_text(data, self.app.config.audio)
+
+        if callback_type == "function":
+            (function_name, function_message) = data
+            print_function(function_name, function_message)
+
+        self._prev_callback(callback_type, data)
 
     """
     the main loop
