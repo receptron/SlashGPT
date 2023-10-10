@@ -5,14 +5,14 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 
-from slashgpt.history.base import ChatHistory  # noqa: E402
+from slashgpt.chat_context import ChatContext  # noqa: E402
 from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
 
 
 @pytest.fixture
 def history():
     memory_history = ChatHistoryFileStorage("123", "key")
-    history = ChatHistory(memory_history)
+    history = ChatContext(memory_history)
     history.append_message({"name": "1", "content": "1"})
     history.append_message({"name": "2", "content": "2"})
     history.append_message({"name": "3", "content": "3"})
