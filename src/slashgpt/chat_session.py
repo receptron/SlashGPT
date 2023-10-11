@@ -102,7 +102,7 @@ class ChatSession:
             try:
                 if embeddings["db_type"] == "pinecone":
                     return DBPinecone.factory(table_name, VectorEngineOpenAI, self.config.verbose)
-                elif embeddings["db_type"] == "pgvectore":
+                elif embeddings["db_type"] == "pgvector":
                     return DBPgVector.factory(table_name, VectorEngineOpenAI, self.config.verbose)
             except Exception as e:
                 print_warning(f"Pinecone Error: {e}")
