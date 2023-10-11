@@ -98,7 +98,7 @@ class ChatApplication:
         """It calls the LLM with the current context (system prompt and messages)
         and process the response (such as function call)"""
         try:
-            self.session.call_loop(self._process_event, self.config.verbose, self.runtime)
+            self.session.call_loop(self._process_event, self.runtime)
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.agent_name)
