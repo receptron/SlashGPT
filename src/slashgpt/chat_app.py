@@ -16,11 +16,12 @@ class ChatApplication:
         model: Optional[LlmModel] = None,
         runtime: Optional[PythonRuntime] = None,
         history_engine: Optional[ChatHistoryAbstractStorage] = None,
+        agent_name: Optional[str] = None
     ):
         self.config = config
         self.history_engine = history_engine
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
-        self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine)
+        self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine, agent_name=agent_name)
         self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
 
