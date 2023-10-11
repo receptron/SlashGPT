@@ -6,6 +6,7 @@ from typing import Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
 from slashgpt.dbs.db_pinecone import DBPinecone
+from slashgpt.dbs.db_pgvector import DBPgVector
 from slashgpt.dbs.vector_engine_openai import VectorEngineOpenAI
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
@@ -101,6 +102,8 @@ class ChatSession:
             try:
                 if embeddings["db_type"] == "pinecone":
                     return DBPinecone.factory(table_name, VectorEngineOpenAI, self.config.verbose)
+                elif embeddings["db_type"] == "pgvectore":
+                    return DBPgVector.factory(table_name, VectorEngineOpenAI, self.config.verbose)
             except Exception as e:
                 print_warning(f"Pinecone Error: {e}")
 
