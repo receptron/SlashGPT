@@ -9,25 +9,36 @@ from slashgpt.utils.print import print_error, print_warning
 
 
 class ChatApplication:
-    def __init__(
-        self,
-        config: ChatConfigWithManifests,
-        callback=None,
-        model: Optional[LlmModel] = None,
-        runtime: Optional[PythonRuntime] = None
-    ):
-        self.config = config
+    """This instance represents an LLM application,
+    which consists of multiple LLM agents."""
+
+    def __init__(self, config: ChatConfigWithManifests, callback=None, model: Optional[LlmModel] = None, runtime: Optional[PythonRuntime] = None):
+        self.config: ChatConfigWithManifests = config
+        """The configuration of LLMs and manifests """
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
+        """The default LLM model for this application"""
         self.runtime: Optional[PythonRuntime] = runtime
+        """Python runtime"""
         self._callback = callback or self._noop
+        """Callback function"""
         self.session: Optional[ChatSession] = None
+        """Active session, initially None"""
 
-    """
-    switchSession terminate the current chat session and start a new.
-    The key specifies the AI agent.
-    """
+    def switch_session(
+        self,
+        agent_name: Optional[str] = None,
+        intro: bool = True,
+        memory: Optional[dict] = None,
+        history_engine: Optional[ChatHistoryAbstractStorage] = None,
+    ):
+        """
+        It terminates the current chat session (if any) and start a new.
 
-    def switch_session(self, agent_name: Optional[str]=None, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
+            agent_name(str): specifies the AI agent to activate
+            intro(bool): specifies if it needs to add the introduction message
+            memory(dict, optional): initial set of short-term memory
+            history_engine(ChatHistoryAbstractStorage, optional): history_engine
+        """
         if agent_name is not None:
             if self.config.has_manifest(agent_name):
                 manifest = self.config.manifests.get(agent_name)
@@ -77,13 +88,14 @@ class ChatApplication:
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_name = agent_to_activate, memory=self.session.context.memory())
+                    self.switch_session(agent_name=agent_to_activate, memory=self.session.context.memory())
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)
                     self.process_llm()
 
     def process_llm(self):
+        """Call the LLM with the current context and process the response"""
         try:
             self.session.call_loop(self._process_event, self.config.verbose, self.runtime)
         except Exception as e:
