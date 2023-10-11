@@ -30,8 +30,9 @@ create table
 CREATE TABLE IF NOT EXISTS vector_table
                  (id SERIAL NOT NULL,
                   embedding VECTOR(1536),
-                  text varchar(8192), fileName varchar(2048),
-                  pageNumber integer, PRIMARY KEY (id));
+                  text varchar(8192),
+                  storage_id char(255),
+                  PRIMARY KEY (id));
 ```
 
 install pip
