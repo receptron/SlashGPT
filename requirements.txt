@@ -25,3 +25,4 @@ yamllint
 mypy
 yfinance
 flask
+psycopg2
