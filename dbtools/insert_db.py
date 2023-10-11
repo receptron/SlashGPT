@@ -26,7 +26,7 @@ async def insert_data(conn):
         print(query_embedding)
 
         sql = "INSERT INTO vector_table (text, storage_id, embedding) VALUES (%s, %s, %s)"
-        await conn.execute(sql, (query, 'sample', query_embedding))
+        await conn.execute(sql, (query, "sample", query_embedding))
 
 
 async def semantic_search(conn, query):
@@ -38,7 +38,13 @@ async def semantic_search(conn, query):
 
     async with conn.cursor() as cur:
         sql = "SELECT id, text FROM vector_table where storage_id = %s ORDER BY embedding <=> %s LIMIT 5"
-        await cur.execute(sql, ('sample', query_embedding,))
+        await cur.execute(
+            sql,
+            (
+                "sample",
+                query_embedding,
+            ),
+        )
         return await cur.fetchall()
 
 
