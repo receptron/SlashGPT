@@ -25,8 +25,8 @@ async def insert_data(conn):
         query_embedding = query_embedding_response["data"][0]["embedding"]
         print(query_embedding)
 
-        sql = "INSERT INTO vector_table (text, embedding) VALUES (%s, %s)"
-        await conn.execute(sql, (query, query_embedding))
+        sql = "INSERT INTO vector_table (text, storage_id, embedding) VALUES (%s, %s, %s)"
+        await conn.execute(sql, (query, "sample", query_embedding))
 
 
 async def semantic_search(conn, query):
@@ -37,8 +37,14 @@ async def semantic_search(conn, query):
     query_embedding = np.array(query_embedding_response["data"][0]["embedding"])
 
     async with conn.cursor() as cur:
-        sql = "SELECT id, text FROM vector_table ORDER BY embedding <=> %s LIMIT 5"
-        await cur.execute(sql, (query_embedding,))
+        sql = "SELECT id, text FROM vector_table where storage_id = %s ORDER BY embedding <=> %s LIMIT 5"
+        await cur.execute(
+            sql,
+            (
+                "sample",
+                query_embedding,
+            ),
+        )
         return await cur.fetchall()
 
 
