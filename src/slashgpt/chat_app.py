@@ -42,17 +42,18 @@ class ChatApplication:
                 )
                 if self.config.verbose:
                     self._callback(
+                        session,
                         "info",
                         f"Activating: {session.title()} (model={session.llm_model.name()}, temperature={session.temperature()}, max_token={session.llm_model.max_token()})",
                     )
                 else:
-                    self._callback("info", f"Activating: {session.title()}")
+                    self._callback(session, "info", f"Activating: {session.title()}")
                 if session.manifest.get("notebook"):
                     (result, _) = self.runtime.create_notebook(session.llm_model.name())
-                    self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
+                    self._callback(session, "info", f"Created a notebook: {result.get('notebook_name')}")
 
                 if session.intro_message:
-                    self._callback("bot", session.intro_message)
+                    self._callback(session, "bot", session.intro_message)
 
                 return session
             else:
@@ -63,11 +64,11 @@ class ChatApplication:
     def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
         self.session = self._create_session(agent_name=agent_name, intro=intro, memory=memory, history_engine=history_engine)
 
-    def _noop(self, callback_type, data):
+    def _noop(self, session, callback_type, data):
         pass
 
     def _process_event(self, callback_type, data):
-        self._callback(callback_type, data)
+        self._callback(self.session, callback_type, data)
 
         if callback_type == "emit":
             # All emit methods must be processed here
