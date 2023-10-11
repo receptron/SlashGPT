@@ -4,14 +4,14 @@ from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.utils.print import print_error
-
+from slashgpt.llms.model import LlmModel
 
 class ChatApplication:
-    def __init__(self, config: ChatConfigWithManifests, callback=None):
+    def __init__(self, config: ChatConfigWithManifests, callback=None, model: Optional[LlmModel] = None, runtime: Optional[PythonRuntime] = None):
         self.config = config
-        self.llm_model = self.config.get_default_llm_model()
+        self.llm_model: LlmModel = model or self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
-        self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
+        self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
 
     """

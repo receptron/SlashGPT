@@ -16,6 +16,7 @@ from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
+from slashgpt.function.jupyter_runtime import PythonRuntime
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
@@ -75,7 +76,7 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.manifests_manager = manifests_manager
         self.exit = False
-        self.app = ChatApplication(config, self._callback)
+        self.app = ChatApplication(config, self._callback, runtime = PythonRuntime(config.base_path + "/output/notebooks"))
         self.app.switch_session(agent_name)
 
     def parse_question(self, question: str):
