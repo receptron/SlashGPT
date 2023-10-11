@@ -21,7 +21,7 @@ class FunctionAction:
 
     def has_emit(self):
         """Returns if the action type is emit"""
-        return self.__get("type") == "emit"
+        return self.__call_type() == CallType.EMIT
 
     def emit_method(self):
         return self.__get("emit_method")
@@ -85,6 +85,8 @@ class FunctionAction:
                 return CallType.DATA_URL
             if type == "message_template":
                 return CallType.MESSAGE_TEMPLATE
+            if type == "emit":
+                return CallType.EMIT
 
     def read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
