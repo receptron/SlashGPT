@@ -1,6 +1,6 @@
 import os
-import numpy as np
 
+import numpy as np
 import psycopg2
 from pgvector.psycopg2 import register_vector
 from psycopg2.extensions import AsIs
@@ -26,17 +26,19 @@ class DBPgVector(VectorDBBase):
         self.table_name = table_name
         register_vector(self.conn)
 
-
     def fetch_data(self, query_embedding):
         cur = self.conn.cursor()
         sql = "SELECT id, text FROM %s ORDER BY embedding <=> %s LIMIT 5"
-        cur.execute(sql, (AsIs(self.table_name),  np.array(query_embedding), ))
-
+        cur.execute(
+            sql,
+            (
+                AsIs(self.table_name),
+                np.array(query_embedding),
+            ),
+        )
 
         response = cur.fetchall()
         results = []
         for data in response:
             results.append(data[1])
         return results
-        
-

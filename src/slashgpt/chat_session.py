@@ -5,8 +5,8 @@ from typing import Optional
 
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
-from slashgpt.dbs.db_pinecone import DBPinecone
 from slashgpt.dbs.db_pgvector import DBPgVector
+from slashgpt.dbs.db_pinecone import DBPinecone
 from slashgpt.dbs.vector_engine_openai import VectorEngineOpenAI
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
