@@ -3,14 +3,24 @@ from typing import Optional
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
 from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.utils.print import print_error
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.llms.model import LlmModel
+from slashgpt.utils.print import print_error
+
 
 class ChatApplication:
-    def __init__(self, config: ChatConfigWithManifests, callback=None, model: Optional[LlmModel] = None, runtime: Optional[PythonRuntime] = None):
+    def __init__(
+        self,
+        config: ChatConfigWithManifests,
+        callback=None,
+        model: Optional[LlmModel] = None,
+        runtime: Optional[PythonRuntime] = None,
+        history_engine: Optional[ChatHistoryAbstractStorage] = None,
+    ):
         self.config = config
+        self.history_engine = history_engine
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
-        self.session = ChatSession(self.config, default_llm_model=self.llm_model)
+        self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine)
         self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
 
@@ -21,13 +31,19 @@ class ChatApplication:
 
     def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
         if agent_name is None:
-            self.session = ChatSession(self.config, default_llm_model=self.llm_model)
+            self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine)
             return
 
         if self.config.has_manifest(agent_name):
             manifest = self.config.manifests.get(agent_name)
             self.session = ChatSession(
-                self.config, default_llm_model=self.llm_model, manifest=manifest, agent_name=agent_name, intro=intro, memory=memory
+                self.config,
+                default_llm_model=self.llm_model,
+                manifest=manifest,
+                agent_name=agent_name,
+                intro=intro,
+                memory=memory,
+                history_engine=self.history_engine,
             )
             if self.config.verbose:
                 self._callback(
