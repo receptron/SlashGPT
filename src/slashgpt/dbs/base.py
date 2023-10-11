@@ -5,7 +5,7 @@ from slashgpt.dbs.vector_engine import VectorEngine
 
 class VectorDBBase(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, table_name: str, vector_engine: VectorEngine, verbose: bool):
+    def __init__(self, table_name: str, storage_id: str, vector_engine: VectorEngine, verbose: bool):
         self.verbose = verbose
         self.vectorEngine = vector_engine(verbose)
 
