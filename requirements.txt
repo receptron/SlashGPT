@@ -26,3 +26,4 @@ mypy
 yfinance
 flask
 psycopg2-binary
+pgvector
