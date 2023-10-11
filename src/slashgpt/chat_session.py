@@ -150,27 +150,6 @@ class ChatSession:
             self.append_message("assistant", intro_message, True)
         return intro_message
 
-    def call_llm(self):
-        """
-        Let the LLM generate a responce based on the messasges in this session.
-
-        Returns:
-
-            role (str): "assistent"
-            res (str): message
-            function_call (dict): json representing the function call (optional)
-        """
-        messages = self.context.messages()
-        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
-
-        if self.config.verbose and function_call is not None:
-            print_info(function_call)
-
-        if role and res:
-            self.append_message(role, res, False)
-
-        return (res, function_call)
-
     def temperature(self):
         """Temperature specified in the manifest"""
         return self.manifest.temperature()
@@ -191,18 +170,46 @@ class ChatSession:
         """Title of the AI agent specified in the manifest"""
         return self.manifest.title()
 
-    def call_loop(self, callback, verbose: bool = False, runtime: PythonRuntime = None):
-        # Ask LLM to generate a response.
+    def call_llm(self):
+        """
+        Let the LLM generate a responce based on the messasges in this session.
+        The application typically calls call_loop method instead.
+
+        Returns:
+
+            role (str): "assistent"
+            res (str): message
+            function_call (dict): json representing the function call (optional)
+        """
+        messages = self.context.messages()
+        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+
+        if self.config.verbose and function_call is not None:
+            print_info(function_call)
+
+        if role and res:
+            self.append_message(role, res, False)
+
+        return (res, function_call)
+
+    def call_loop(self, callback, runtime: PythonRuntime = None):
+        """
+        Calls the LLM and process the response (functions calls).
+        It may call itself recursively if ncessary.
+        """
         (res, function_call) = self.call_llm()
 
         if res:
             callback("bot", res)
 
         if function_call:
-            (action_data, action_method) = function_call.emit_data(verbose)
+            # Check if this function needs to be processed by the application (emit style)
+            (action_data, action_method) = function_call.get_emit_data(self.config.verbose)
             if action_method:
+                # Yes, let the application process it
                 callback("emit", (action_method, action_data))
             else:
+                # No, process it by calling its process_function_call method.
                 (
                     function_message,
                     function_name,
@@ -210,10 +217,10 @@ class ChatSession:
                 ) = function_call.process_function_call(
                     self.context,
                     runtime,
-                    verbose,
+                    self.config.verbose,
                 )
                 if function_message:
                     callback("function", (function_name, function_message))
 
                 if should_call_llm:
-                    self.call_loop(callback, verbose, runtime)
+                    self.call_loop(callback, runtime)
