@@ -3,7 +3,7 @@ from typing import List
 
 import pinecone
 
-from slashgpt.dbs.base import VectorDBBase
+from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine
 from slashgpt.utils.print import print_error
 

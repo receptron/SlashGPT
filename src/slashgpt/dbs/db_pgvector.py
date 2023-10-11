@@ -6,7 +6,7 @@ import psycopg2
 from pgvector.psycopg2 import register_vector
 from psycopg2.extensions import AsIs
 
-from slashgpt.dbs.base import VectorDBBase
+from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine
 from slashgpt.utils.print import print_error, print_info
 
