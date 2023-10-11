@@ -34,6 +34,10 @@ class SampleApp:
         )
 
     def callback(self, callback_type, data):
+        if callback_type == "bot":
+            print(self.app.session.botname(), data)
+        if callback_type == "info":
+            print(data)
         if callback_type == "function":
             (function_name, function_message) = data
             print(f"{function_name}: {function_message}")

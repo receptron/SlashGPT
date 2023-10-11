@@ -11,6 +11,7 @@
       "url": "https://spacex-production.up.railway.app/graphql"
     }
   },
+  "intro": ["Ask me anything about SpaceX"],
   "sample": "Who is CEO of SpaceX?",
   "sample1": "What kind of information are you able to get?",
   "sample2": "Get all the information of last 10 launches",
