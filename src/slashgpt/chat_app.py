@@ -7,7 +7,7 @@ from slashgpt.utils.print import print_error
 
 
 class ChatApplication:
-    def __init__(self, config: ChatConfigWithManifests, callback = None):
+    def __init__(self, config: ChatConfigWithManifests, callback=None):
         self.config = config
         self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
