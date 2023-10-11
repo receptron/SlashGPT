@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import openai
 import tiktoken  # for counting tokens
@@ -8,18 +9,18 @@ from slashgpt.utils.print import print_debug
 
 
 class VectorEngineOpenAI(VectorEngine):
-    def __init__(self, verbose):
+    def __init__(self, verbose: bool):
         self.EMBEDDING_MODEL = os.getenv("PINECONE_EMBEDDING_MODEL", "text-embedding-ada-002")
         self.verbose = verbose
 
-    def query_to_vector(self, query):
+    def query_to_vector(self, query: str) -> List[float]:
         query_embedding_response = openai.Embedding.create(
             model=self.EMBEDDING_MODEL,
             input=query,
         )
         return query_embedding_response["data"][0]["embedding"]
 
-    def results_to_articles(self, results, query, messages, model_name: str, token_budget: int):
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], model_name: str, token_budget: int) -> str:
         articles = ""
         count = 0
         base_token = self.__messages_tokens(messages, model_name)
@@ -39,7 +40,7 @@ class VectorEngineOpenAI(VectorEngine):
         return articles
 
     # Returns the total number of tokens in messages
-    def __messages_tokens(self, messages, model_name: str) -> int:
+    def __messages_tokens(self, messages: List[dict], model_name: str) -> int:
         return sum([self.__num_tokens(message["content"], model_name) for message in messages])
 
     # Returns the number of tokens in a string
