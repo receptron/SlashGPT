@@ -32,10 +32,11 @@ class SampleApp:
             history_engine=history_engine,
             runtime=PythonRuntime(config.base_path + "/output/notebooks"),
         )
+        self.app.switch_session(agent_name)
 
     def callback(self, callback_type, data):
         if callback_type == "bot":
-            print(self.app.session.botname(), data)
+            print(f"A: {data}")
         if callback_type == "info":
             print(data)
         if callback_type == "function":
@@ -44,14 +45,9 @@ class SampleApp:
 
     def main(self):
         question = "Who is the CEO of SpaceX?"
+        print(f"Q: {question}")
         self.app.session.append_user_question(question)
         self.app.process_llm()
-        messages = self.app.session.context.messages()
-        last_message = messages[len(messages) - 1]
-
-        print(f"Q: {question}")
-        print(f"A: {last_message.get('content')}")
-
 
 app = SampleApp()
 app.main()
