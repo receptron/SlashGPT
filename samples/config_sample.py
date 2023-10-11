@@ -22,16 +22,16 @@ class SampleApp:
         self.config = config = ChatConfigWithManifests(current_dir, current_dir + "/manifests/sample", llm_models, llm_engine_configs)
         model = config.get_llm_model_from_key("gpt3")
 
-        agent_name = "spacex"
-        history_engine = ChatHistoryFileStorage("sample", agent_name)
         self.app = ChatApplication(
             config,
             self.callback,
             model=model,
-            agent_name=agent_name,
-            history_engine=history_engine,
             runtime=PythonRuntime(config.base_path + "/output/notebooks"),
         )
+        
+        agent_name = "spacex"
+        history_engine = ChatHistoryFileStorage("sample", agent_name)
+        self.app.switch_session(agent_name, history_engine=history_engine)
 
     def callback(self, callback_type, data):
         if callback_type == "bot":

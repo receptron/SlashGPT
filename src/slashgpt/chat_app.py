@@ -14,23 +14,20 @@ class ChatApplication:
         config: ChatConfigWithManifests,
         callback=None,
         model: Optional[LlmModel] = None,
-        runtime: Optional[PythonRuntime] = None,
-        history_engine: Optional[ChatHistoryAbstractStorage] = None,
-        agent_name: Optional[str] = None,
+        runtime: Optional[PythonRuntime] = None
     ):
         self.config = config
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
         self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
-
-        self.session = self._create_session(agent_name=agent_name, intro=True, history_engine=history_engine)
+        self.session = self._create_session()
 
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def _create_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
+    def _create_session(self, agent_name: Optional[str]=None, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
         if agent_name is not None:
             if self.config.has_manifest(agent_name):
                 manifest = self.config.manifests.get(agent_name)
