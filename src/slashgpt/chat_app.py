@@ -16,51 +16,56 @@ class ChatApplication:
         model: Optional[LlmModel] = None,
         runtime: Optional[PythonRuntime] = None,
         history_engine: Optional[ChatHistoryAbstractStorage] = None,
-        agent_name: Optional[str] = None
+        agent_name: Optional[str] = None,
     ):
         self.config = config
         self.history_engine = history_engine
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
-        self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine, agent_name=agent_name)
         self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
+
+        self.session = self._create_session(agent_name=agent_name, intro=True)
 
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
-        if agent_name is None:
-            self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine)
-            return
-
-        if self.config.has_manifest(agent_name):
-            manifest = self.config.manifests.get(agent_name)
-            self.session = ChatSession(
-                self.config,
-                default_llm_model=self.llm_model,
-                manifest=manifest,
-                agent_name=agent_name,
-                intro=intro,
-                memory=memory,
-                history_engine=self.history_engine,
-            )
-            if self.config.verbose:
-                self._callback(
-                    "info",
-                    f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})",
+    def _create_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
+        if agent_name is not None:
+            if self.config.has_manifest(agent_name):
+                manifest = self.config.manifests.get(agent_name)
+                session = ChatSession(
+                    self.config,
+                    default_llm_model=self.llm_model,
+                    manifest=manifest,
+                    agent_name=agent_name,
+                    intro=intro,
+                    memory=memory,
+                    history_engine=self.history_engine,
                 )
-            else:
-                self._callback("info", f"Activating: {self.session.title()}")
-            if self.session.manifest.get("notebook"):
-                (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
-                self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
+                if self.config.verbose:
+                    self._callback(
+                        "info",
+                        f"Activating: {session.title()} (model={session.llm_model.name()}, temperature={session.temperature()}, max_token={session.llm_model.max_token()})",
+                    )
+                else:
+                    self._callback("info", f"Activating: {session.title()}")
+                if session.manifest.get("notebook"):
+                    (result, _) = self.runtime.create_notebook(session.llm_model.name())
+                    self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
 
-            if self.session.intro_message:
-                self._callback("bot", self.session.intro_message)
-        else:
-            print_error(f"Invalid slash command: {agent_name}")
+                if session.intro_message:
+                    self._callback("bot", session.intro_message)
+
+                return session
+            else:
+                print_error(f"Invalid slash command: {agent_name}")
+
+        return ChatSession(self.config, default_llm_model=self.llm_model, history_engine=self.history_engine)
+
+    def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None):
+        self.session = self._create_session(agent_name=agent_name, intro=intro, memory=memory)
 
     def _noop(self, callback_type, data):
         pass

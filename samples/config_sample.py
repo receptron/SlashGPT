@@ -32,7 +32,6 @@ class SampleApp:
             history_engine=history_engine,
             runtime=PythonRuntime(config.base_path + "/output/notebooks"),
         )
-        self.app.switch_session(agent_name)
 
     def callback(self, callback_type, data):
         if callback_type == "bot":
@@ -48,6 +47,7 @@ class SampleApp:
         print(f"Q: {question}")
         self.app.session.append_user_question(question)
         self.app.process_llm()
+
 
 app = SampleApp()
 app.main()
