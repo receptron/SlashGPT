@@ -29,7 +29,7 @@ class DBPgVector(VectorDBBase):
 
     def fetch_data(self, query_embedding):
         cur = self.conn.cursor()
-        if self.storage_id == '': 
+        if self.storage_id == "":
             sql = "SELECT id, text FROM %s ORDER BY embedding <=> %s LIMIT 5"
             cur.execute(
                 sql,
