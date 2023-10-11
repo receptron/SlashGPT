@@ -45,7 +45,7 @@ class ChatApplication:
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
-    def _noop():
+    def _noop(self, callback_type, data):
         pass
 
     def _process_event(self, callback_type, data):
