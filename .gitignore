@@ -16,6 +16,8 @@ filememory/
 *~
 
 # for package
-# src/slashgpt/manifests/
-# src/slashgpt/resources/
-# src/slashgpt/test/
+src/slashgpt/manifests/
+src/slashgpt/resources/
+src/slashgpt/test/
+
+run*.sh
