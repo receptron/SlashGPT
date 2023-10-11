@@ -1,8 +1,9 @@
 import os
+from typing import List
 
 import pinecone
 
-from slashgpt.dbs.base import VectorDBBase
+from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine
 from slashgpt.utils.print import print_error
 
@@ -25,7 +26,7 @@ class DBPinecone(VectorDBBase):
         self.index = pinecone.Index(table_name)
         self.storage_id = storage_id
 
-    def fetch_data(self, query_embedding):
+    def fetch_data(self, query_embedding: List[float]) -> List[str]:
         response = self.index.query(query_embedding, top_k=12, include_metadata=True)
 
         results = []
