@@ -31,9 +31,9 @@ class SampleApp:
 
         agent_name = "spacex"
         history_engine = ChatHistoryFileStorage("sample", agent_name)
-        self.app.switch_session(agent_name, history_engine=history_engine)
+        self.app.switch_session(agent_name=agent_name, history_engine=history_engine)
 
-    def callback(self, session, callback_type, data):
+    def callback(self, callback_type, data):
         if callback_type == "bot":
             print(f"A: {data}")
         if callback_type == "info":

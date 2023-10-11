@@ -5,7 +5,7 @@ from slashgpt.chat_session import ChatSession
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.llms.model import LlmModel
-from slashgpt.utils.print import print_error
+from slashgpt.utils.print import print_error, print_warning
 
 
 class ChatApplication:
@@ -20,18 +20,18 @@ class ChatApplication:
         self.llm_model: LlmModel = model or self.config.get_default_llm_model()
         self.runtime: Optional[PythonRuntime] = runtime
         self._callback = callback or self._noop
-        self.session = self._create_session()
+        self.session: Optional[ChatSession] = None
 
     """
     switchSession terminate the current chat session and start a new.
     The key specifies the AI agent.
     """
 
-    def _create_session(self, agent_name: Optional[str]=None, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
+    def switch_session(self, agent_name: Optional[str]=None, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
         if agent_name is not None:
             if self.config.has_manifest(agent_name):
                 manifest = self.config.manifests.get(agent_name)
-                session = ChatSession(
+                self.session = ChatSession(
                     self.config,
                     default_llm_model=self.llm_model,
                     manifest=manifest,
@@ -42,33 +42,29 @@ class ChatApplication:
                 )
                 if self.config.verbose:
                     self._callback(
-                        session,
                         "info",
-                        f"Activating: {session.title()} (model={session.llm_model.name()}, temperature={session.temperature()}, max_token={session.llm_model.max_token()})",
+                        f"Activating: {self.session.title()} (model={self.session.llm_model.name()}, temperature={self.session.temperature()}, max_token={self.session.llm_model.max_token()})",
                     )
                 else:
-                    self._callback(session, "info", f"Activating: {session.title()}")
-                if session.manifest.get("notebook"):
-                    (result, _) = self.runtime.create_notebook(session.llm_model.name())
-                    self._callback(session, "info", f"Created a notebook: {result.get('notebook_name')}")
+                    self._callback("info", f"Activating: {self.session.title()}")
+                if self.session.manifest.get("notebook"):
+                    (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
+                    self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
 
-                if session.intro_message:
-                    self._callback(session, "bot", session.intro_message)
-
-                return session
+                if self.session.intro_message:
+                    self._callback("bot", self.session.intro_message)
+                return
             else:
                 print_error(f"Invalid slash command: {agent_name}")
 
-        return ChatSession(self.config, default_llm_model=self.llm_model, history_engine=history_engine)
+        print_warning("No agent_name was spacified")
+        self.session = ChatSession(self.config, default_llm_model=self.llm_model, history_engine=history_engine)
 
-    def switch_session(self, agent_name: str, intro: bool = True, memory: Optional[dict] = None, history_engine: Optional[ChatHistoryAbstractStorage] = None):
-        self.session = self._create_session(agent_name=agent_name, intro=intro, memory=memory, history_engine=history_engine)
-
-    def _noop(self, session, callback_type, data):
+    def _noop(self, callback_type, data):
         pass
 
     def _process_event(self, callback_type, data):
-        self._callback(self.session, callback_type, data)
+        self._callback(callback_type, data)
 
         if callback_type == "emit":
             # All emit methods must be processed here
@@ -81,7 +77,7 @@ class ChatApplication:
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_to_activate, memory=self.session.context.memory())
+                    self.switch_session(agent_name = agent_to_activate, memory=self.session.context.memory())
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)

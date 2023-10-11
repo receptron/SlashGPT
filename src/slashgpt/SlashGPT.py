@@ -259,10 +259,9 @@ class SlashGPT:
                 print(f"\033[95m\033[1m{self.app.session.username()}: \033[95m\033[0m{m}")
                 self.talk(m)
 
-    def _callback(self, session, callback_type, data):
-        # session might be different from self.app.session depending on the timing
+    def _callback(self, callback_type, data):
         if callback_type == "bot":
-            print_bot(session.botname(), data)
+            print_bot(self.app.session.botname(), data)
 
             if self.app.config.audio:
                 play_text(data, self.app.config.audio)
