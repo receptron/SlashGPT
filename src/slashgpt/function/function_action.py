@@ -20,6 +20,7 @@ class FunctionAction:
         return self.__function_action_data.get(key)
 
     def has_emit(self):
+        """Returns if the action type is emit"""
         return self.__get("type") == "emit"
 
     def emit_method(self):

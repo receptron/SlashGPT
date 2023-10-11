@@ -203,10 +203,13 @@ class ChatSession:
             callback("bot", res)
 
         if function_call:
-            (action_data, action_method) = function_call.emit_data(self.config.verbose)
+            # Check if this function needs to be processed by the application (emit style)
+            (action_data, action_method) = function_call.get_emit_data(self.config.verbose)
             if action_method:
+                # Yes, let the application process it
                 callback("emit", (action_method, action_data))
             else:
+                # No, process it by calling its process_function_call method.
                 (
                     function_message,
                     function_name,

@@ -33,7 +33,8 @@ class FunctionCall:
     def __name(self):
         return self.__get("name")
 
-    def emit_data(self, verbose: bool = False):
+    def get_emit_data(self, verbose: bool = False):
+        """Get data to emit if it exists"""
         if self.function_action and self.function_action.has_emit():
             return (
                 self.function_action.emit_data(self.__arguments(verbose)),
@@ -54,29 +55,39 @@ class FunctionCall:
 
     def __function_arguments(self, last_messages: dict, verbose: bool):
         arguments = self.__arguments(verbose)
+
+        # NOTE: This is a special hack to deal with a case where GPT3/4 specify python as the function name
+        # even though we never ask for it.
         if self.__manifest.get("notebook") and self.__name() == "python" and isinstance(arguments, str):
             print_warning("python function was called")
             return {"code": arguments, "query": last_messages["content"]}
+        
         return arguments
 
     def get_function(self, runtime: PythonRuntime, function_name: str):
+        # Returns the spacified python function
         if self.__manifest.get("notebook") and runtime is not None:
             return getattr(runtime, function_name)
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
     def process_function_call(self, context: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
+        # Process (=execute) the function call as specified in the "action" section of the manifest file
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
         arguments = self.__function_arguments(context.last_message(), verbose)
 
+        # Check if the action is specified in the manifest
         if self.function_action:
+            # Yes, process it accordingly.
             function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
         else:
+            # No. Get the specified python function and execute it.
             function = self.get_function(runtime, function_name)
             if function:
+                # NOTE: This is a pure debug purpose code
                 if arguments.get("code"):
                     if isinstance(arguments["code"], list):
                         print("\n".join(arguments["code"]))
