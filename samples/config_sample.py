@@ -28,12 +28,6 @@ class SampleApp:
         self.session = ChatSession(config, default_llm_model=model, manifest=manifest, agent_name=agent_name, history_engine=history_engine)
 
     def callback(self, callback_type, data):
-        if callback_type == "emit":
-            (action_method, action_data) = data
-            # All emit methods must be processed here
-            if action_method == "switch_session":
-                self.switch_session(action_data.get("manifest"), intro=False)
-                self.query_llm(action_data.get("message"))
         if callback_type == "function":
             (function_name, function_message) = data
             print(f"{function_name}: {function_message}")
