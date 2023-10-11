@@ -13,6 +13,7 @@ except ImportError:
 
 from slashgpt.chat_app import ChatApplication
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
+from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.utils.help import LONG_HELP, ONELINE_HELP
 from slashgpt.utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 from slashgpt.utils.utils import InputStyle
@@ -75,7 +76,7 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.manifests_manager = manifests_manager
         self.exit = False
-        self.app = ChatApplication(config, self._callback)
+        self.app = ChatApplication(config, self._callback, runtime=PythonRuntime(config.base_path + "/output/notebooks"))
         self.app.switch_session(agent_name)
 
     def parse_question(self, question: str):
@@ -302,9 +303,9 @@ class SlashGPT:
             if question:
                 if isinstance(question, list):
                     for q in question:
-                        self.query_llm(self.app.session.manifest.format_question(q))
+                        self.query_llm(q)
                 else:
-                    self.query_llm(self.app.session.manifest.format_question(question))
+                    self.query_llm(question)
 
     def query_llm(self, question):
         self.app.session.append_user_question(question)

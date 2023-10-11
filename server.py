@@ -138,14 +138,14 @@ def talk(manifests, agent, session_id=None):
         (session_id, session, engine) = init_session(config, agent, m, model)
         if message:
             # print(session)
-            session.append_user_question(session.manifest.format_question(message))
+            session.append_user_question(message)
             process_llm(session)
             # talk_to(message)
         print(message)
     else:
         (session, engine) = restore_session(config, agent, m, session_id, model)
         if message:
-            session.append_user_question(session.manifest.format_question(message))
+            session.append_user_question(message)
             process_llm(session)
 
     return jsonify({"session_id": session_id, "messages": engine.messages()})
