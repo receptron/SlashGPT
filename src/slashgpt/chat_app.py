@@ -58,7 +58,7 @@ class ChatApplication:
                     )
                 else:
                     self._callback("info", f"Activating: {self.session.title()}")
-                if self.session.manifest.get("notebook"):
+                if self.session.manifest.get("notebook") and self.runtime:
                     (result, _) = self.runtime.create_notebook(self.session.llm_model.name())
                     self._callback("info", f"Created a notebook: {result.get('notebook_name')}")
 
@@ -95,7 +95,8 @@ class ChatApplication:
                     self.process_llm()
 
     def process_llm(self):
-        """Call the LLM with the current context and process the response"""
+        """It calls the LLM with the current context (system prompt and messages)
+        and process the response (such as function call)"""
         try:
             self.session.call_loop(self._process_event, self.config.verbose, self.runtime)
         except Exception as e:
