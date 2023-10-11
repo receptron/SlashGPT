@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import List
 
 from slashgpt.dbs.vector_engine import VectorEngine
 
@@ -21,14 +22,14 @@ class VectorDBBase(metaclass=ABCMeta):
         results = self.fetch_data(query_embedding)
         return self.results_to_articles(results, query, messages, model_name, token_budget)
 
-    def messages_to_query(self, messages):
+    def messages_to_query(self, messages: List[dict]) -> str:
         query = ""
         for message in messages:
             if message["role"] == "user":
                 query = message["content"] + "\n" + query
         return query
 
-    def query_to_vector(self, query):
+    def query_to_vector(self, query: str):
         return self.vectorEngine.query_to_vector(query)
 
     def results_to_articles(self, results, query, messages, model_name: str, token_budget: int):
