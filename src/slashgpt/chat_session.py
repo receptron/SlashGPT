@@ -129,6 +129,7 @@ class ChatSession:
     def append_user_question(self, message: str):
         """Append a question from the user to the history
         and update the prompt if necessary (e.g, RAG)"""
+        message = self.manifest.format_question(message)
         self.append_message("user", message, False)
         if self.vector_db:
             articles = self.vector_db.fetch_related_articles(self.context.messages(), self.llm_model.name(), self.llm_model.max_token() - 500)

@@ -303,9 +303,9 @@ class SlashGPT:
             if question:
                 if isinstance(question, list):
                     for q in question:
-                        self.query_llm(self.app.session.manifest.format_question(q))
+                        self.query_llm(q)
                 else:
-                    self.query_llm(self.app.session.manifest.format_question(question))
+                    self.query_llm(question)
 
     def query_llm(self, question):
         self.app.session.append_user_question(question)
