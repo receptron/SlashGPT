@@ -7,12 +7,12 @@ from slashgpt.utils.print import print_error
 
 
 class ChatApplication:
-    def __init__(self, config: ChatConfigWithManifests):
+    def __init__(self, config: ChatConfigWithManifests, callback = None):
         self.config = config
         self.llm_model = self.config.get_default_llm_model()
         self.session = ChatSession(self.config, default_llm_model=self.llm_model)
         self.runtime = PythonRuntime(self.config.base_path + "/output/notebooks")
-        self._callback = self._process_event
+        self._callback = callback or self._noop
 
     """
     switchSession terminate the current chat session and start a new.
@@ -45,12 +45,12 @@ class ChatApplication:
         else:
             print_error(f"Invalid slash command: {agent_name}")
 
-    def set_callback(self, callback):
-        prev_callback = self._callback
-        self._callback = callback
-        return prev_callback
+    def _noop():
+        pass
 
     def _process_event(self, callback_type, data):
+        self._callback(callback_type, data)
+
         if callback_type == "emit":
             # All emit methods must be processed here
             (action_method, action_data) = data
@@ -70,7 +70,7 @@ class ChatApplication:
 
     def process_llm(self):
         try:
-            self.session.call_loop(self._callback, self.config.verbose, self.runtime)
+            self.session.call_loop(self._process_event, self.config.verbose, self.runtime)
         except Exception as e:
             print_error(f"Exception: Restarting the chat :{e}")
             self.switch_session(self.session.agent_name)

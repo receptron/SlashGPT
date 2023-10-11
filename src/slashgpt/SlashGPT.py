@@ -75,9 +75,8 @@ class SlashGPT:
     def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
         self.manifests_manager = manifests_manager
         self.exit = False
-        self.app = ChatApplication(config)
+        self.app = ChatApplication(config, self._callback)
         self.app.switch_session(agent_name)
-        self._prev_callback = self.app.set_callback(self._callback)
 
     def parse_question(self, question: str):
         key = question[1:].strip()
@@ -272,8 +271,6 @@ class SlashGPT:
         if callback_type == "function":
             (function_name, function_message) = data
             print_function(function_name, function_message)
-
-        self._prev_callback(callback_type, data)
 
     """
     the main loop
