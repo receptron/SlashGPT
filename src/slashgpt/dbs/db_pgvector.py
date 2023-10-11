@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import numpy as np
 import psycopg2
@@ -27,7 +28,7 @@ class DBPgVector(VectorDBBase):
         self.storage_id = storage_id
         register_vector(self.conn)
 
-    def fetch_data(self, query_embedding):
+    def fetch_data(self, query_embedding: List[float]) -> List[str]:
         cur = self.conn.cursor()
         if self.storage_id == "":
             sql = "SELECT id, text FROM %s ORDER BY embedding <=> %s LIMIT 5"
