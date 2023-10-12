@@ -16,7 +16,7 @@ load_dotenv()
 current_dir = os.path.dirname(__file__)
 
 
-class MyLlmEngine(LLMEngineBase):
+class MockLlmEngine(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
         return
@@ -38,7 +38,7 @@ class MyLlmEngine(LLMEngineBase):
 
 
 my_llm_engine_configs = {
-    "my_engine": MyLlmEngine,
+    "my_engine": MockLlmEngine,
 }
 
 my_llm_models = {
