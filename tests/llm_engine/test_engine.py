@@ -27,13 +27,13 @@ class MyLlmEngine(LLMEngineBase):
         res = "no message"
         if len(messages) > 0:
             last_message = messages[len(messages) - 1].get("content")
-            res = last_message  # just repeat if there is no mathing message
+            res = last_message or ""  # just repeat if there is no mathing message
             if last_message == "Hi":
                 res = "Hello World"
             elif last_message == "Bye":
                 res = "Sayonara"
             elif last_message == "prompt":
-                res = messages[0].get("content")
+                res = messages[0].get("content") or ""
         return (role, res, function_call)
 
 
