@@ -35,16 +35,14 @@ def test_foo(engine):
     assert role == "assistant"
     assert res == "hello"
 
-res = "foo"
+class Test:
+    def process_event(self, callback_type, data):
+        if callback_type == "bot":
+            self.res = data
 
-def process_event(callback_type, data):
-    if callback_type == "bot":
-        global res
-        res = data
-
-def test_bar(engine):
-    config = ChatConfig(current_dir)
-    session = ChatSession(config, manifest={})
-    session.append_user_question("Which year was the declaration of independence written?")
-    session.call_loop(process_event)
-    assert "1776" in res
+    def test_gpt(self, engine):
+        config = ChatConfig(current_dir)
+        session = ChatSession(config, manifest={})
+        session.append_user_question("Which year was the declaration of independence written?")
+        session.call_loop(self.process_event)
+        assert "1776" in self.res
