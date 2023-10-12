@@ -20,7 +20,15 @@ class TestGPT:
     def test_gpt(self):
         if os.getenv("OPENAI_API_KEY", None) is not None:
             config = ChatConfig(current_dir)
+            question = "What year was the Declaration of Independence written？"
+            # Just calls LLM (no process for function_call)
             session = ChatSession(config, manifest={})
-            session.append_user_question("In which year was the declaration of independence written?")
+            session.append_user_question(question)
+            (message, _function_call) = session.call_llm()
+            assert "1776" in message
+
+            # Callback style (function_call will be processed)
+            session = ChatSession(config, manifest={})
+            session.append_user_question(question)
             session.call_loop(self.process_event)
             assert "1776" in self.res
