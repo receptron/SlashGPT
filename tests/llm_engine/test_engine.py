@@ -42,17 +42,9 @@ def process_event(callback_type, data):
         global res
         res = data
 
-manifest = {
-    "prompt": "abc"
-}
-
 def test_bar(engine):
     config = ChatConfig(current_dir)
-    session = ChatSession(
-        config,
-        manifest=manifest,
-        agent_name="foo"
-    )
-    session.append_user_question("Hello")
+    session = ChatSession(config, manifest={})
+    session.append_user_question("Which year was the declaration of independence written?")
     session.call_loop(process_event)
-    assert res == "hello"
+    assert "1776" in res
