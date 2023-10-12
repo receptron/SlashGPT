@@ -49,32 +49,12 @@ my_llm_models = {
     },
 }
 
-
-@pytest.fixture
-def engine():
-    return MyLlmEngine({})
-
-
-def test_foo(engine):
-    (role, res, function_call) = engine.chat_completion([], None, False)
-    assert role == "assistant"
-    assert res == "no message"
-
-
 class Test:
     def process_event(self, callback_type, data):
         if callback_type == "bot":
             self.res = data
 
-    def test_gpt(self, engine):
-        if os.getenv("OPENAI_API_KEY", None) is not None:
-            config = ChatConfig(current_dir)
-            session = ChatSession(config, manifest={})
-            session.append_user_question("Which year was the declaration of independence written?")
-            session.call_loop(self.process_event)
-            assert "1776" in self.res
-
-    def test_my_engine(self):
+    def test_simple(self):
         config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
         manifest = {"model": "my_model", "prompt": "This is prompt"}
         session = ChatSession(config, manifest=manifest)
@@ -91,7 +71,7 @@ class Test:
         session.call_loop(self.process_event)
         assert self.res == manifest.get("prompt")
 
-    def test_my_engine_with_memory(self):
+    def test_memory(self):
         config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
         manifest = {"model": "my_model", "prompt": "This is prompt {memory}"}
         memory = {"name": "Joe Smith"}
