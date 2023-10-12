@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from typing import List
@@ -89,3 +90,12 @@ class Test:
         session.append_user_question("prompt")
         session.call_loop(self.process_event)
         assert self.res == manifest.get("prompt")
+
+    def test_my_engine_with_memory(self):
+        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
+        manifest = {"model": "my_model", "prompt": "This is prompt {memory}"}
+        memory = {"name": "Joe Smith"}
+        session = ChatSession(config, manifest=manifest, memory=memory)
+        session.append_user_question("prompt")
+        session.call_loop(self.process_event)
+        assert self.res == manifest.get("prompt").format(memory=json.dumps(memory))
