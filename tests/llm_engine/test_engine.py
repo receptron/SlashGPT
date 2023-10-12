@@ -31,6 +31,8 @@ class MyLlmEngine(LLMEngineBase):
                 res = "Hello World"
             elif last_message == "Bye":
                 res = "Sayonara"
+            elif last_message == "prompt":
+                res = messages[0].get("content")
         return (role, res, function_call)
 
 my_llm_engine_configs = {
@@ -67,7 +69,8 @@ class Test:
 
     def test_gpt(self):
         config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
-        session = ChatSession(config, manifest={ "model": "my_model" })
+        manifest={ "model": "my_model", "prompt": "This is prompt" }
+        session = ChatSession(config, manifest = manifest)
         session.append_user_question("Hi")
         session.call_loop(self.process_event)
         assert self.res == "Hello World"
@@ -77,3 +80,6 @@ class Test:
         session.append_user_question("Repeat this message.")
         session.call_loop(self.process_event)
         assert self.res == "Repeat this message."
+        session.append_user_question("prompt")
+        session.call_loop(self.process_event)
+        assert self.res == manifest.get("prompt")
