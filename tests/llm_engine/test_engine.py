@@ -26,6 +26,17 @@ class MyLlmEngine(LLMEngineBase):
         function_call = None
         return (role, res, function_call)
 
+my_llm_engine_configs = {
+    "my_engine": MyLlmEngine,
+}
+
+my_llm_models = {
+    "my_model": {
+        "engine_name": "my_engine",
+        "model_name": "my_model",
+    },
+}
+
 @pytest.fixture
 def engine():
     return MyLlmEngine({})
@@ -46,3 +57,10 @@ class Test:
         session.append_user_question("Which year was the declaration of independence written?")
         session.call_loop(self.process_event)
         assert "1776" in self.res
+
+    def test_gpt(self):
+        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
+        session = ChatSession(config, manifest={ "model": "my_model" })
+        session.append_user_question("Hi")
+        session.call_loop(self.process_event)
+        assert self.res == "hello"
