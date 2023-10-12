@@ -1,12 +1,11 @@
 from slashgpt.llms.engine.hosted import LLMEngineHosted
 from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
-from slashgpt.llms.engine.palm import LLMEnginePaLM
 from slashgpt.llms.engine.replicate import LLMEngineReplicate
 
 default_llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,
     "replicate": LLMEngineReplicate,
-    "palm": LLMEnginePaLM,
+    # "palm": LLMEnginePaLM,
     "hosted": LLMEngineHosted,
 }
 
@@ -48,9 +47,9 @@ default_llm_models = {
         "api_key": "REPLICATE_API_TOKEN",
         "replicate_model": "replicate/vicuna-13b:6282abe6a492de4145d7bb601023762212f9ddbbe78278bd6771c8b3b2f2a13b",
     },
-    "palm": {
-        "engine_name": "palm",
-        "model_name": "palm",
-        "api_key": "GOOGLE_PALM_KEY",
-    },
+    # "palm": {
+    #    "engine_name": "palm",
+    #    "model_name": "palm",
+    #    "api_key": "GOOGLE_PALM_KEY",
+    # },
 }

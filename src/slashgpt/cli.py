@@ -5,8 +5,21 @@ import json
 import os
 import sys
 
+from slashgpt.llms.engine.palm import LLMEnginePaLM
 from slashgpt.SlashGPT import ChatSlashConfig, SlashGPT
 from slashgpt.utils.help import ONELINE_HELP
+
+my_llm_engine_configs = {
+    "palm": LLMEnginePaLM,
+}
+
+my_llm_models = {
+    "palm": {
+        "engine_name": "palm",
+        "model_name": "palm",
+        "api_key": "GOOGLE_PALM_KEY",
+    },
+}
 
 
 def cli(base_dir=""):
@@ -32,7 +45,7 @@ def cli(base_dir=""):
         llm_engine_configs = getattr(module, "llm_engine_configs")
         config = ChatSlashConfig(current_dir, current_dir + "/" + dir, llm_models, llm_engine_configs)
     else:
-        config = ChatSlashConfig(current_dir, current_dir + "/" + dir)
+        config = ChatSlashConfig(current_dir, current_dir + "/" + dir, my_llm_models, my_llm_engine_configs)
 
     print(ONELINE_HELP)
     main = SlashGPT(config, manifests_manager, args.agent)

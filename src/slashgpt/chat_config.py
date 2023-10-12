@@ -3,6 +3,7 @@ from typing import Optional
 from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
+from slashgpt.utils.print import print_warning
 
 
 class ChatConfig:
@@ -46,6 +47,7 @@ class ChatConfig:
             llm_model = list(llm_models.values())[index]
             return llm_model
         else:
+            print_warning(f"ChatConfig: Failed to find the model {llm_model_name}")
             return cls.__get_default_llm_model_name(llm_models)
 
     def get_default_llm_model(self):
