@@ -52,7 +52,7 @@ my_llm_models = {
 class Test:
     def process_event(self, callback_type, data):
         if callback_type == "bot":
-            self.res = data
+            self.res = data  # record the output from the LLM
 
     def test_simple(self):
         config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)

@@ -15,12 +15,12 @@ current_dir = os.path.dirname(__file__)
 class TestGPT:
     def process_event(self, callback_type, data):
         if callback_type == "bot":
-            self.res = data
+            self.res = data  # record the output from the LLM
 
     def test_gpt(self):
         if os.getenv("OPENAI_API_KEY", None) is not None:
             config = ChatConfig(current_dir)
             session = ChatSession(config, manifest={})
-            session.append_user_question("Which year was the declaration of independence written?")
+            session.append_user_question("In which year was the declaration of independence written?")
             session.call_loop(self.process_event)
             assert "1776" in self.res
