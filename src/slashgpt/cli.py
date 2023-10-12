@@ -5,9 +5,9 @@ import json
 import os
 import sys
 
+from slashgpt.llms.engine.palm import LLMEnginePaLM
 from slashgpt.SlashGPT import ChatSlashConfig, SlashGPT
 from slashgpt.utils.help import ONELINE_HELP
-from slashgpt.llms.engine.palm import LLMEnginePaLM
 
 my_llm_engine_configs = {
     "palm": LLMEnginePaLM,
@@ -20,6 +20,7 @@ my_llm_models = {
         "api_key": "GOOGLE_PALM_KEY",
     },
 }
+
 
 def cli(base_dir=""):
     parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
