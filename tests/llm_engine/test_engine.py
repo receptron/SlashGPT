@@ -22,8 +22,15 @@ class MyLlmEngine(LLMEngineBase):
     
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         role = "assistant"
-        res = "hello"
         function_call = None
+        res = "no message"
+        if len(messages) > 0:
+            last_message = messages[len(messages) - 1].get("content")
+            res = last_message # just repeat if there is no mathing message
+            if last_message == "Hi":
+                res = "Hello World"
+            elif last_message == "Bye":
+                res = "Sayonara"
         return (role, res, function_call)
 
 my_llm_engine_configs = {
@@ -44,7 +51,7 @@ def engine():
 def test_foo(engine):
     (role, res, function_call) = engine.chat_completion([], None, False)
     assert role == "assistant"
-    assert res == "hello"
+    assert res == "no message"
 
 class Test:
     def process_event(self, callback_type, data):
@@ -63,4 +70,10 @@ class Test:
         session = ChatSession(config, manifest={ "model": "my_model" })
         session.append_user_question("Hi")
         session.call_loop(self.process_event)
-        assert self.res == "hello"
+        assert self.res == "Hello World"
+        session.append_user_question("Bye")
+        session.call_loop(self.process_event)
+        assert self.res == "Sayonara"
+        session.append_user_question("Repeat this message.")
+        session.call_loop(self.process_event)
+        assert self.res == "Repeat this message."
