@@ -66,8 +66,8 @@ class Test:
         session.append_user_question("Which year was the declaration of independence written?")
         session.call_loop(self.process_event)
         assert "1776" in self.res
-
-    def test_gpt(self):
+        
+    def test_my_engine(self):
         config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
         manifest={ "model": "my_model", "prompt": "This is prompt" }
         session = ChatSession(config, manifest = manifest)
