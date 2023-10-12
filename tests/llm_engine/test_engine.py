@@ -3,7 +3,6 @@ import os
 import sys
 from typing import List
 
-import pytest
 from dotenv import load_dotenv
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
@@ -48,6 +47,7 @@ my_llm_models = {
         "model_name": "my_model",
     },
 }
+
 
 class Test:
     def process_event(self, callback_type, data):
