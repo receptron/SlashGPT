@@ -21,7 +21,7 @@ class CallType(Enum):
         for member in cls:
             if member.name == value:
                 return member
-        return None    
+        return None
 
 
 COLOR_DEBUG = "cyan"
@@ -30,5 +30,5 @@ COLOR_WARNING = "yellow"
 COLOR_ERROR = "red"
 
 if __name__ == "__main__":
-    assert(CallType.withKey('rest') == CallType.REST)
-    assert(CallType.withKey('bar') == None)
+    assert CallType.withKey("rest") == CallType.REST
+    assert CallType.withKey("bar") is None
