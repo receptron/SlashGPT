@@ -15,8 +15,20 @@ class CallType(Enum):
     MESSAGE_TEMPLATE = 4
     EMIT = 5
 
+    @classmethod
+    def withKey(cls, value):
+        value = value.upper()
+        for member in cls:
+            if member.name == value:
+                return member
+        return None    
+
 
 COLOR_DEBUG = "cyan"
 COLOR_INFO = "blue"
 COLOR_WARNING = "yellow"
 COLOR_ERROR = "red"
+
+if __name__ == "__main__":
+    assert(CallType.withKey('rest') == CallType.REST)
+    assert(CallType.withKey('bar') == None)

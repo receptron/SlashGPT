@@ -86,18 +86,7 @@ class FunctionAction:
         return "Success"
 
     def __call_type(self):
-        type = self.__get("type")
-        if type:
-            if type == "rest":
-                return CallType.REST
-            if type == "graphQL":
-                return CallType.GRAPHQL
-            if type == "data_url":
-                return CallType.DATA_URL
-            if type == "message_template":
-                return CallType.MESSAGE_TEMPLATE
-            if type == "emit":
-                return CallType.EMIT
+        return CallType.withKey(self.__get("type"))
 
     def __read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
         _mime_type = mime_type or ""
