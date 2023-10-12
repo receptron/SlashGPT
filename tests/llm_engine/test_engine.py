@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 from slashgpt.llms.engine.base import LLMEngineBase  # noqa: E402
 from slashgpt.manifest import Manifest
 
-class TestEngine(LLMEngineBase):
+class MyTestEngine(LLMEngineBase):
     def __init__(self, llm_model):
         self.llm_model = llm_model
         return
@@ -20,7 +20,10 @@ class TestEngine(LLMEngineBase):
         function_call = None
         return (role, res, function_call)
 
-def test_foo():
-    engine = TestEngine({})
+@pytest.fixture
+def engine():
+    return MyTestEngine({})
+
+def test_foo(engine):
     (role, res, function_call) = engine.chat_completion([], None, False)
     assert role == "assistant"
