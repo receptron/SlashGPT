@@ -38,4 +38,3 @@ class TestGPT:
             session.append_user_question(question)
             session.call_loop(self.process_event)
             assert "1776" in self.res
-

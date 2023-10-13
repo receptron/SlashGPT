@@ -4,8 +4,8 @@ from typing import List
 import openai
 import tiktoken  # for counting tokens
 
-from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.engine.replicate import message_to_prompt
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
@@ -28,27 +28,20 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         model_name = self.llm_model.name()
+        prompt = message_to_prompt(messages, manifest)
         temperature = manifest.temperature()
-        functions = manifest.functions()
         stream = manifest.stream()
         num_completions = manifest.num_completions()
-        # LATER: logprobs is invalid with ChatCompletion API
-        # logprobs = manifest.logprobs()
-        params = dict(model=model_name, messages=messages, temperature=temperature, stream=stream, n=num_completions)
-        if functions:
-            params["functions"] = functions
-        response = openai.ChatCompletion.create(**params)
+        logprobs = manifest.logprobs()
+        params = dict(model=model_name, prompt=prompt, temperature=temperature, stream=stream, n=num_completions, logprobs=logprobs)
+        response = openai.Completion.create(**params)
 
         if verbose:
             print_debug(f"model={response['model']}")
             print_debug(f"usage={response['usage']}")
-        answer = response["choices"][0]["message"]
-        res = answer["content"]
-        role = answer["role"]
-        function_call = FunctionCall.factory(answer.get("function_call"), manifest)
-
-        if res and function_call is None:
-            function_call = self._extract_function_call(messages[-1], manifest, res, True)
+        res = response["choices"][0]["text"]
+        function_call = self._extract_function_call(messages[-1], manifest, res)
+        role = "assistant"
 
         return (role, res, function_call)
 
