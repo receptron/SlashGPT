@@ -26,6 +26,7 @@ class LlmModel:
             engine_name (str): name of the engine (e.g, openai-gpt')
             model_name (str): specific model name (e.g, 'gpt-3.5-turbo-0613')
             api_key (str): name of the env. variable which holds a secret key (e.g, 'OPENAI_API_KEY')
+            api_base (str): endpoint url hosted models compatible with OpenAI chat completions API
             max_token (str): maximum token length (e.g, 4096)
             default (boolean, optional): True if this is the default model
         """
@@ -60,6 +61,10 @@ class LlmModel:
         """Returns the api key specified in the environment"""
         return os.getenv(self.get("api_key"), "")
 
+    def get_api_base(self):
+        """Returns the openai api base url"""
+        return self.get("api_base")
+
     def __get_engine(self, llm_engine_configs: dict):
         class_data = llm_engine_configs.get(self.engine_name())
 
@@ -84,6 +89,3 @@ class LlmModel:
             verbose (bool): True if it's in verbose mode.
         """
         return self.engine.chat_completion(messages, manifest, verbose)
-
-    def num_tokens(self, text: str):
-        return self.engine.num_tokens(text)
