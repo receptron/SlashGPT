@@ -2,6 +2,7 @@ import sys
 from typing import List
 
 import openai
+import tiktoken  # for counting tokens
 
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
@@ -26,7 +27,6 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
-
         model_name = self.llm_model.name()
         temperature = manifest.temperature()
         functions = manifest.functions()
@@ -43,12 +43,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             )
         else:
             response = openai.ChatCompletion.create(
-                model=model_name,
-                messages=messages,
-                temperature=temperature,
-                stream=stream,
-                logprobs=logprobs,
-                n=num_completions
+                model=model_name, messages=messages, temperature=temperature, stream=stream, logprobs=logprobs, n=num_completions
             )
 
         if verbose:
@@ -63,3 +58,8 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             function_call = self._extract_function_call(messages[-1], manifest, res, True)
 
         return (role, res, function_call)
+
+    def num_tokens(self, text: str):
+        model_name = self.llm_model.name()
+        encoding = tiktoken.encoding_for_model(model_name)
+        return len(encoding.encode(text))

@@ -89,3 +89,6 @@ class LlmModel:
             verbose (bool): True if it's in verbose mode.
         """
         return self.engine.chat_completion(messages, manifest, verbose)
+
+    def num_tokens(self, text: str):
+        return self.engine.num_tokens(text)

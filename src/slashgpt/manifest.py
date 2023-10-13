@@ -54,7 +54,7 @@ class Manifest:
         return self.get("stream") or False
 
     def logprobs(self):
-        """Returns the number of tokens for whichthe LLM will display log probabilities, with a max of 5 (int)"""
+        """Returns the number of tokens for which the LLM will display log probabilities, with a max of 5 (int)"""
         return self.get("logprobs") or None
 
     def num_completions(self):
