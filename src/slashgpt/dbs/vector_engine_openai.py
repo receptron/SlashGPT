@@ -23,12 +23,10 @@ class VectorEngineOpenAI(VectorEngine):
     def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
         articles = ""
         count = 0
-        base_token = self.__messages_tokens(messages, llm_model)
-        if self.verbose:
-            print_debug(f"messages token:{base_token}")
+        message = self.__join_messages(messages)
         for article in results:
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
-            if llm_model.num_tokens(articles + article_with_section + query) + base_token > token_budget:
+            if llm_model.num_tokens(articles + article_with_section + query + message) > token_budget:
                 break
             else:
                 count += 1
@@ -39,6 +37,5 @@ class VectorEngineOpenAI(VectorEngine):
             print_debug(f"Articles:{count}, Tokens:{llm_model.num_tokens(articles + query)}")
         return articles
 
-    # Returns the total number of tokens in messages
-    def __messages_tokens(self, messages: List[dict], llm_model: LlmModel) -> int:
-        return sum([llm_model.num_tokens(message["content"]) for message in messages])
+    def __join_messages(self, messages: List[dict]) -> str:
+        return '\n'.join(map(lambda x: x["content"], messages))
