@@ -9,6 +9,7 @@ from slashgpt.manifest import Manifest  # noqa: E402
 
 current_dir = os.path.dirname(__file__)
 
+
 @pytest.fixture
 def manifest():
     manifest_data = {
