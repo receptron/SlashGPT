@@ -34,17 +34,11 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         logprobs = manifest.logprobs()
         num_completions = manifest.num_completions()
 
+        # LATER: add logprobs=logprobs for competion API?
+        params = dict(model=model_name, messages=messages, temperature=temperature, stream=stream, n=num_completions)
         if functions:
-            response = openai.ChatCompletion.create(
-                model=model_name,
-                messages=messages,
-                functions=functions,
-                temperature=temperature,
-            )
-        else:
-            response = openai.ChatCompletion.create(
-                model=model_name, messages=messages, temperature=temperature, stream=stream, logprobs=logprobs, n=num_completions
-            )
+            params["functions"] = functions
+        response = openai.ChatCompletion.create(**params)
 
         if verbose:
             print_debug(f"model={response['model']}")
