@@ -35,17 +35,20 @@ class MockLlmEngine(LLMEngineBase):
                 res = messages[0].get("content") or ""
             elif last_message == "model":
                 res = self.llm_model.name()
+            elif last_message == "custom":
+                res = self.llm_model.get("x_custom")
         return (role, res, function_call)
 
 
 my_llm_engine_configs = {
-    "my_engine": MockLlmEngine,
+    "mock_engine": MockLlmEngine,
 }
 config = ChatConfig(current_dir, llm_engine_configs=my_llm_engine_configs)
 
 mock_model = {
-                "engine_name": "my_engine",
+                "engine_name": "mock_engine",
                 "model_name": "mock_model",
+                "x_custom": "mock_value",
             }
 
 class Test:
@@ -70,6 +73,9 @@ class Test:
         session.append_user_question("model")
         (message, _function_call) = session.call_llm()
         assert message == "mock_model"
+        session.append_user_question("custom")
+        (message, _function_call) = session.call_llm()
+        assert message == "mock_value"
 
     def test_memory(self):
         manifest = {
