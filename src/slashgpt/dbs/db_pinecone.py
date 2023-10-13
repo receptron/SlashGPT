@@ -25,7 +25,6 @@ class DBPinecone(VectorDBBase):
         super().__init__(table_name, embeddings, vector_engine, verbose)
         self.index = pinecone.Index(table_name)
 
-
     def fetch_data(self, query_embedding: List[float]) -> List[str]:
         response = self.index.query(query_embedding, top_k=12, include_metadata=True)
 
