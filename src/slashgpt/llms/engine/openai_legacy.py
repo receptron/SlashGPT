@@ -1,5 +1,6 @@
 import sys
 from typing import List
+import json
 
 import openai
 import tiktoken  # for counting tokens
@@ -33,12 +34,15 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
         stream = manifest.stream()
         num_completions = manifest.num_completions()
         logprobs = manifest.logprobs()
-        params = dict(model=model_name, prompt=prompt, temperature=temperature, stream=stream, n=num_completions, logprobs=logprobs)
+        params = dict(model=model_name, prompt=prompt, stream=stream, temperature=temperature, n=num_completions, logprobs=logprobs)
+
+        if verbose:
+            print_debug(f"params={json.dumps(params, indent=2)}")
         response = openai.Completion.create(**params)
 
         if verbose:
-            print_debug(f"model={response['model']}")
-            print_debug(f"usage={response['usage']}")
+            print_debug(f"response={response}")
+
         res = response["choices"][0]["text"]
         function_call = self._extract_function_call(messages[-1], manifest, res)
         role = "assistant"
