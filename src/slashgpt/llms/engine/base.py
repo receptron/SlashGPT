@@ -15,6 +15,12 @@ class LLMEngineBase(metaclass=ABCMeta):
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         pass
 
+    def num_tokens(self, text: str):
+        """Calculate the llm token of the text. Because this is for openai, override it if you use another language model."""
+        model_name = self.llm_model.name()
+        encoding = tiktoken.encoding_for_model(model_name)
+        return len(encoding.encode(text))
+
     """
     Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format.
