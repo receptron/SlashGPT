@@ -37,15 +37,22 @@ class TestGPT:
         if os.getenv("OPENAI_API_KEY", None) is not None:
             manifest = {
                 "prompt": "When the user makes a request, call the 'play' function to play the specified music",
-                "functions": {
-                    "name": "play",
-                    "description": "Play a music",
-                    "parameters": {
-                        "type": "string",
-                        "name": "title",
-                        "description": "Title of the music.",
-                    },
-                },
+                "functions": [
+                    {
+                        "name": "play",
+                        "description": "Play a music",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Title of the music.",
+                                }
+                            },
+                        },
+                        "required": ["title"],
+                    }
+                ],
                 "actions": {
                     "play": {"type": "message_template", "message": "Success. I started playing {title}."},
                 },
@@ -56,5 +63,6 @@ class TestGPT:
             assert function_call is not None
             data = function_call.data()
             print(data)
-            assert data["name"] == "run_python_code"
-            assert data["arguments"]["code"][0] == "!pip install geopandas"
+            assert data["name"] == "play"
+            if isinstance(data["arguments"], str):
+                assert "Bohemian Rhapsody" in data["arguments"]
