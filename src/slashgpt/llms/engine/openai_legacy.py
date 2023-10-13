@@ -28,21 +28,15 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
-        model_name = self.llm_model.name()
         prompt = message_to_prompt(messages, manifest)
-        temperature = manifest.temperature()
-        stream = manifest.stream()
-        num_completions = manifest.num_completions()
-        logprobs = manifest.logprobs()
-
         params = dict(
-            model=model_name,
+            model=self.llm_model.name(),
             prompt=prompt,
-            stream=stream,
+            temperature=manifest.temperature(),
+            stream=manifest.stream(),
+            n=manifest.num_completions(),
+            logprobs=manifest.logprobs(),
             max_tokens=self.llm_model.max_token() - self.num_tokens(prompt),
-            temperature=temperature,
-            n=num_completions,
-            logprobs=logprobs,
         )
 
         if verbose:
