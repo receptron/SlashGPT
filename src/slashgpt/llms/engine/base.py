@@ -61,3 +61,22 @@ class LLMEngineBase(metaclass=ABCMeta):
             return False
         else:
             return lines[key][:3] == "```"
+
+    def prompt_from_messages(self, messages: List[dict], manifest: Manifest):
+        functions = manifest.functions()
+        prompts = []
+        for message in messages:
+            role = message["role"]
+            content = message["content"]
+            if content:
+                prompts.append(f"{role}:{content}")
+        if functions:
+            # insert before last
+            last = prompts.pop()
+            prompts.append(
+                f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument."
+            )
+            prompts.append(last)
+
+        prompts.append("assistant:")
+        return "\n".join(prompts)
