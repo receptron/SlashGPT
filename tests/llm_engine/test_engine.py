@@ -33,48 +33,58 @@ class MockLlmEngine(LLMEngineBase):
                 res = "Sayonara"
             elif last_message == "prompt":
                 res = messages[0].get("content") or ""
+            elif last_message == "model":
+                res = self.llm_model.name()
+            elif last_message == "custom":
+                res = self.llm_model.get("x_custom")
         return (role, res, function_call)
 
 
 my_llm_engine_configs = {
-    "my_engine": MockLlmEngine,
+    "mock_engine": MockLlmEngine,
 }
+config = ChatConfig(current_dir, llm_engine_configs=my_llm_engine_configs)
 
-my_llm_models = {
-    "my_model": {
-        "engine_name": "my_engine",
-        "model_name": "my_model",
-    },
+mock_model = {
+    "engine_name": "mock_engine",
+    "model_name": "mock_model",
+    "x_custom": "mock_value",
 }
 
 
 class Test:
-    def process_event(self, callback_type, data):
-        if callback_type == "bot":
-            self.res = data  # record the output from the LLM
-
     def test_simple(self):
-        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
-        manifest = {"model": "my_model", "prompt": "This is prompt"}
+        manifest = {
+            "model": mock_model,
+            "prompt": "This is prompt",
+        }
         session = ChatSession(config, manifest=manifest)
         session.append_user_question("Hi")
-        session.call_loop(self.process_event)
-        assert self.res == "Hello World"
+        (message, _function_call) = session.call_llm()
+        assert message == "Hello World"
         session.append_user_question("Bye")
-        session.call_loop(self.process_event)
-        assert self.res == "Sayonara"
+        (message, _function_call) = session.call_llm()
+        assert message == "Sayonara"
         session.append_user_question("Repeat this message.")
-        session.call_loop(self.process_event)
-        assert self.res == "Repeat this message."
+        (message, _function_call) = session.call_llm()
+        assert message == "Repeat this message."
         session.append_user_question("prompt")
-        session.call_loop(self.process_event)
-        assert self.res == manifest.get("prompt")
+        (message, _function_call) = session.call_llm()
+        assert message == manifest.get("prompt")
+        session.append_user_question("model")
+        (message, _function_call) = session.call_llm()
+        assert message == "mock_model"
+        session.append_user_question("custom")
+        (message, _function_call) = session.call_llm()
+        assert message == "mock_value"
 
     def test_memory(self):
-        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
-        manifest = {"model": "my_model", "prompt": "This is prompt {memory}"}
+        manifest = {
+            "model": mock_model,
+            "prompt": "This is prompt {memory}",
+        }
         memory = {"name": "Joe Smith"}
         session = ChatSession(config, manifest=manifest, memory=memory)
         session.append_user_question("prompt")
-        session.call_loop(self.process_event)
-        assert self.res == manifest.get("prompt").format(memory=json.dumps(memory))
+        (message, _function_call) = session.call_llm()
+        assert message == manifest.get("prompt").format(memory=json.dumps(memory))
