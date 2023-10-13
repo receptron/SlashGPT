@@ -99,8 +99,6 @@ class ChatSession:
         embeddings = self.manifest.get("embeddings")
         if embeddings:
             table_name = embeddings.get("name")
-            metadata = embeddings.get("metadata")
-            storage_id = metadata.get("storage_id") if metadata else ""
 
             try:
                 if embeddings["db_type"] == "pinecone":
