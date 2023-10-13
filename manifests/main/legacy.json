@@ -1,0 +1,5 @@
+{
+    "title": "Plain agent with gpt-3.5-turbo-instruct",
+    "model": "gpt-3.5-turbo-instruct",
+    "sample": "List top 10 restaurants in Tokyo"
+}
