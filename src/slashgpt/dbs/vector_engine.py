@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
+from slashgpt.llms.model import LlmModel
 
 
 class VectorEngine(metaclass=ABCMeta):
@@ -12,5 +13,5 @@ class VectorEngine(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def results_to_articles(self, results: List[str], query: str, messages: List[dict], model_name: str, token_budget: int) -> str:
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
         pass

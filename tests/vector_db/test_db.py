@@ -2,12 +2,14 @@ import os
 import sys
 from typing import List
 
+
 import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 
 from slashgpt.dbs.db_base import VectorDBBase  # noqa: E402
 from slashgpt.dbs.vector_engine import VectorEngine  # noqa: E402
+from slashgpt.llms.model import LlmModel  # noqa: E402
 
 
 class VectorEngineMock(VectorEngine):
@@ -23,7 +25,7 @@ class VectorEngineMock(VectorEngine):
         return [0.0, 0.0]
 
     # 3
-    def results_to_articles(self, results: List[str], query: str, messages: List[dict], model_name: str, token_budget: int) -> str:
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
         return ", ".join(results)
 
 
