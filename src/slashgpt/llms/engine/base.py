@@ -9,9 +9,8 @@ from slashgpt.utils.print import print_warning
 
 
 class LLMEngineBase(metaclass=ABCMeta):
-    @abstractmethod
     def __init__(self, llm_model):
-        pass
+        self.llm_model = llm_model
 
     @abstractmethod
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
@@ -19,7 +18,7 @@ class LLMEngineBase(metaclass=ABCMeta):
 
     def num_tokens(self, text: str):
         """Calculate the llm token of the text. Because this is for openai, override it if you use another language model."""
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = self.llm_model.name() if self.llm_model.name().startswith("gpt-") else "gpt-3.5-turbo-0613"
         encoding = tiktoken.encoding_for_model(model_name)
         return len(encoding.encode(text))
 
