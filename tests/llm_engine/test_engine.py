@@ -33,20 +33,20 @@ class MockLlmEngine(LLMEngineBase):
                 res = "Sayonara"
             elif last_message == "prompt":
                 res = messages[0].get("content") or ""
+            elif last_message == "model":
+                res = self.llm_model.name()
         return (role, res, function_call)
 
 
 my_llm_engine_configs = {
     "my_engine": MockLlmEngine,
 }
+config = ChatConfig(current_dir, llm_engine_configs=my_llm_engine_configs)
 
-my_llm_models = {
-    "my_model": {
-        "engine_name": "my_engine",
-        "model_name": "my_model",
-    },
-}
-
+mock_model = {
+                "engine_name": "my_engine",
+                "model_name": "mock_model",
+            }
 
 class Test:
     def process_event(self, callback_type, data):
@@ -54,8 +54,10 @@ class Test:
             self.res = data  # record the output from the LLM
 
     def test_simple(self):
-        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
-        manifest = {"model": "my_model", "prompt": "This is prompt"}
+        manifest = {
+            "model": mock_model,
+            "prompt": "This is prompt",
+        }
         session = ChatSession(config, manifest=manifest)
         session.append_user_question("Hi")
         session.call_loop(self.process_event)
@@ -69,10 +71,15 @@ class Test:
         session.append_user_question("prompt")
         session.call_loop(self.process_event)
         assert self.res == manifest.get("prompt")
+        session.append_user_question("model")
+        session.call_loop(self.process_event)
+        assert self.res == "mock_model"
 
     def test_memory(self):
-        config = ChatConfig(current_dir, my_llm_models, my_llm_engine_configs)
-        manifest = {"model": "my_model", "prompt": "This is prompt {memory}"}
+        manifest = {
+            "model": mock_model,
+            "prompt":  "This is prompt {memory}",
+        }
         memory = {"name": "Joe Smith"}
         session = ChatSession(config, manifest=manifest, memory=memory)
         session.append_user_question("prompt")
