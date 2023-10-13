@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Optional
 
+import tiktoken  # for counting tokens
+
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_warning
@@ -17,7 +19,7 @@ class LLMEngineBase(metaclass=ABCMeta):
 
     def num_tokens(self, text: str):
         """Calculate the llm token of the text. Because this is for openai, override it if you use another language model."""
-        model_name = self.llm_model.name()
+        model_name = "gpt-3.5-turbo-0613"
         encoding = tiktoken.encoding_for_model(model_name)
         return len(encoding.encode(text))
 
