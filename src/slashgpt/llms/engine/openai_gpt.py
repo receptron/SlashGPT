@@ -31,10 +31,9 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         temperature = manifest.temperature()
         functions = manifest.functions()
         stream = manifest.stream()
-        logprobs = manifest.logprobs()
         num_completions = manifest.num_completions()
-
-        # LATER: add logprobs=logprobs for competion API?
+        # LATER: logprobs is invalid with ChatCompletion API
+        # logprobs = manifest.logprobs()
         params = dict(model=model_name, messages=messages, temperature=temperature, stream=stream, n=num_completions)
         if functions:
             params["functions"] = functions
