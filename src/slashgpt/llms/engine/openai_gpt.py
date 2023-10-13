@@ -31,20 +31,13 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         temperature = manifest.temperature()
         functions = manifest.functions()
         stream = manifest.stream()
-        logprobs = manifest.logprobs()
         num_completions = manifest.num_completions()
-
+        # LATER: logprobs is invalid with ChatCompletion API
+        # logprobs = manifest.logprobs()
+        params = dict(model=model_name, messages=messages, temperature=temperature, stream=stream, n=num_completions)
         if functions:
-            response = openai.ChatCompletion.create(
-                model=model_name,
-                messages=messages,
-                functions=functions,
-                temperature=temperature,
-            )
-        else:
-            response = openai.ChatCompletion.create(
-                model=model_name, messages=messages, temperature=temperature, stream=stream, logprobs=logprobs, n=num_completions
-            )
+            params["functions"] = functions
+        response = openai.ChatCompletion.create(**params)
 
         if verbose:
             print_debug(f"model={response['model']}")
