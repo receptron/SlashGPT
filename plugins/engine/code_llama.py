@@ -9,6 +9,7 @@ from slashgpt.manifest import Manifest
 
 class LLMEngineCodeLlama(LLMEngineBase):
     def __init__(self, llm_model):
+        super().__init__(llm_model)
         model_name = llm_model.name()
         self.tokenizer = CodeLlamaTokenizer.from_pretrained(model_name)
         self.model = LlamaForCausalLM.from_pretrained(model_name)

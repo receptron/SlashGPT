@@ -23,7 +23,7 @@ def get_prompt_data(messages: List[dict]):
 
 class LLMEnginePaLM(LLMEngineBase):
     def __init__(self, llm_model):
-        self.llm_model = llm_model
+        super().__init__(llm_model)
         key = llm_model.get_api_key_value()
         palm.configure(api_key=key)
 
