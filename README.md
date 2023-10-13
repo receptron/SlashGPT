@@ -11,8 +11,8 @@ Here are the design goals:
 5. It enables broker agent (or dispatcher), which routes user's message to an appropriate agent.
 6. It is able to run generated Python code like Code Interpreter (see "code" agent).
 
-> [!NOTE]  
-> If you want to try it out immediately, please try the Google Google Colaboratory version.  
+> [!NOTE]
+> If you want to try it out immediately, please try the Google Google Colaboratory version.
 
 <a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
@@ -38,7 +38,7 @@ Then run SlashGPT
 
 ## Initialization for developer
 
-1. Install the required packages: 
+1. Install the required packages:
 
     `pip install -r requirements.txt`
 
@@ -76,10 +76,10 @@ Then run SlashGPT
 
 ## Outputs
 
-1. Each conversation will be store as a json file under the "output/{context}" folder, 
+1. Each conversation will be store as a json file under the "output/{context}" folder,
 where the context is "GTP" for general chat, and the app id for a specialized chat.
 
-2. Please notice that the "output" folder is ignored by git. 
+2. Please notice that the "output" folder is ignored by git.
 
 3. Code Interpreter agents will generate Jupyter notebook in "output/notebooks" folder.
 
@@ -124,6 +124,9 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
 - *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (number, optional): Temperature (the default is 0.7)
+- *stream* (boolean, optional): Enable LLM output streaming (not yet implemented)
+- *logprobs* (number, optional): Number of "next probable tokens" + associated log probabilities to return alongside the output
+- *num_completions* (number, optional): Number of different completions to request from the model per prompt
 - *list* (array of string, optional): {random} will put one of them randomly into the prompt
 - *embeddings* (object, optional):
   - *name* (string, optional): index name of the embedding vector database
@@ -138,13 +141,13 @@ Name of that file becomes the slash command. (the slash command of "foo.json" is
 
 It defines template-based function implementations (including mockups), alternative to writing Python code using the "module" property.
 
-It supports four different methods. 
+It supports four different methods.
 
 ### 1. Formatted string.
 
-Use this method to develop the front-end of a system before the backend become ready. 
+Use this method to develop the front-end of a system before the backend become ready.
 
-- *message* (format string, required): chat message to be added 
+- *message* (format string, required): chat message to be added
 - *manifest* (format string, optional): manifest file name to be loaded for chained action
 
 Here is an example (home2).

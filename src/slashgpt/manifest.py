@@ -49,6 +49,18 @@ class Manifest:
             return float(self.get("temperature"))
         return 0.7
 
+    def stream(self):
+        """Returns a boolean value indicating if the LLM should stream its output back to the user (bool)"""
+        return self.get("stream") or False
+
+    def logprobs(self):
+        """Returns the number of tokens for whichthe LLM will display log probabilities, with a max of 5 (int)"""
+        return self.get("logprobs") or None
+
+    def num_completions(self):
+        """Returns the number of desired LLM completions per prompt (int)"""
+        return self.get("num_completions") or 1
+
     def model(self):
         """Returns the specified LLM model (str or dict)"""
         return self.get("model")
