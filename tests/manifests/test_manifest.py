@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 
 from slashgpt.manifest import Manifest  # noqa: E402
 
+current_dir = os.path.dirname(__file__)
 
 @pytest.fixture
 def manifest():
@@ -18,7 +19,7 @@ def manifest():
         "model": "gpt-3.5-turbo-16k-0613",
         "modelx": "gpt-4-0613",
         "temperature": "0.0",
-        "functions": "./resources/home.json",
+        "functions": "../../resources/functions/home.json",
         "actions": {
             "fill_bath": {"message": "Success. I started filling the bath tab."},
             "set_temperature": {"message": "Success. I set the teperature to {temperature} for {location}"},
@@ -33,7 +34,7 @@ def manifest():
             "Ask for clarification if a user request is ambiguous.",
         ],
     }
-    return Manifest(manifest_data, "", "ai-agent")
+    return Manifest(manifest_data, current_dir, "ai-agent")
 
 
 def test_username(manifest):
