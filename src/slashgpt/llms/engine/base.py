@@ -1,19 +1,26 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Optional
 
+import tiktoken  # for counting tokens
+
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_warning
 
 
 class LLMEngineBase(metaclass=ABCMeta):
-    @abstractmethod
     def __init__(self, llm_model):
-        pass
+        self.llm_model = llm_model
 
     @abstractmethod
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         pass
+
+    def num_tokens(self, text: str):
+        """Calculate the llm token of the text. Because this is for openai, override it if you use another language model."""
+        model_name = self.llm_model.name() if self.llm_model.name().startswith("gpt-") else "gpt-3.5-turbo-0613"
+        encoding = tiktoken.encoding_for_model(model_name)
+        return len(encoding.encode(text))
 
     """
     Extract the Python code from the string if the agent is a code interpreter.

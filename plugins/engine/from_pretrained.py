@@ -30,6 +30,7 @@ def get_prompt_data(messages: List[dict], manifest: Manifest):
 
 class LLMEngineFromPretrained(LLMEngineBase):
     def __init__(self, llm_model):
+        super().__init__(llm_model)
         model_name = llm_model.name()
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
