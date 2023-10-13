@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -8,6 +9,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
 from slashgpt.manifest import Manifest  # noqa: E402
 
 current_dir = os.path.dirname(__file__)
+
+function_file = "../../resources/functions/home.json"
 
 
 @pytest.fixture
@@ -20,7 +23,7 @@ def manifest():
         "model": "gpt-3.5-turbo-16k-0613",
         "modelx": "gpt-4-0613",
         "temperature": "0.0",
-        "functions": "../../resources/functions/home.json",
+        "functions": function_file,
         "actions": {
             "fill_bath": {"message": "Success. I started filling the bath tab."},
             "set_temperature": {"message": "Success. I set the teperature to {temperature} for {location}"},
@@ -62,8 +65,12 @@ def test_model(manifest):
     assert manifest.model() == "gpt-3.5-turbo-16k-0613"
 
 
-# def test_functions(manifest):
-#    assert manifest.functions() == json.load
+def test_functions(manifest):
+    with open(current_dir + "/" + function_file, "r") as f:
+        value = json.load(f)
+
+    assert manifest.functions() == value
+
 
 # def test_read_module(manifest):
 #    assert manifest.read_module() == ""
