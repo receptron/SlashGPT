@@ -2,6 +2,7 @@ import sys
 from typing import List
 
 import openai
+import tiktoken  # for counting tokens
 
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
@@ -44,3 +45,8 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             function_call = self._extract_function_call(messages[-1], manifest, res, True)
 
         return (role, res, function_call)
+
+    def num_tokens(self, text: str):
+        model_name = self.llm_model.name()
+        encoding = tiktoken.encoding_for_model(model_name)
+        return len(encoding.encode(text))
