@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -64,5 +65,8 @@ class TestGPT:
             data = function_call.data()
             print(data)
             assert data["name"] == "play"
-            if isinstance(data["arguments"], str):
-                assert "Bohemian Rhapsody" in data["arguments"]
+            arguments = data["arguments"]
+            assert arguments is not None
+            if isinstance(arguments, str):
+                arguments = json.loads(arguments)
+            assert arguments["title"] == "Bohemian Rhapsody"
