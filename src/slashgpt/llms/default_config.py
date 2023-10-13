@@ -1,9 +1,11 @@
 from slashgpt.llms.engine.hosted import LLMEngineHosted
 from slashgpt.llms.engine.openai_gpt import LLMEngineOpenAIGPT
+from slashgpt.llms.engine.openai_legacy import LLMEngineOpenAILegacy
 from slashgpt.llms.engine.replicate import LLMEngineReplicate
 
 default_llm_engine_configs = {
     "openai-gpt": LLMEngineOpenAIGPT,
+    "openai-legacy": LLMEngineOpenAILegacy,
     "replicate": LLMEngineReplicate,
     # "palm": LLMEnginePaLM,
     "hosted": LLMEngineHosted,
@@ -24,7 +26,7 @@ default_llm_models = {
         "default": True,
     },
     "gpt3c": {
-        "engine_name": "openai-gpt",
+        "engine_name": "openai-legacy",
         "model_name": "gpt-3.5-turbo-instruct",
         "api_key": "OPENAI_API_KEY",
         "max_token": 4096,
