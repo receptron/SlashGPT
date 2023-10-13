@@ -18,8 +18,7 @@ current_dir = os.path.dirname(__file__)
 
 class MockLlmEngine(LLMEngineBase):
     def __init__(self, llm_model):
-        self.llm_model = llm_model
-        return
+        super().__init__(llm_model)
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         role = "assistant"
