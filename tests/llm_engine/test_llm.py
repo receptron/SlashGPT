@@ -27,8 +27,15 @@ class TestGPT:
             (message, _function_call) = session.call_llm()
             assert "1776" in message
 
+            # legasy GPT (completion API)
+            session = ChatSession(config, manifest=dict(model="gpt-3.5-turbo-instruct"))
+            session.append_user_question(question)
+            (message, _function_call) = session.call_llm()
+            assert "1776" in message
+
             # Callback style (function_call will be processed)
             session = ChatSession(config, manifest={})
             session.append_user_question(question)
             session.call_loop(self.process_event)
             assert "1776" in self.res
+
