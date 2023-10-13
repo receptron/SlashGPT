@@ -4,7 +4,6 @@ from typing import List
 import requests
 
 from slashgpt.llms.engine.base import LLMEngineBase
-from slashgpt.llms.engine.replicate import message_to_prompt
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
@@ -19,7 +18,7 @@ class LLMEngineHosted(LLMEngineBase):
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         # temperature = manifest.temperature()
-        prompt = message_to_prompt(messages, manifest)
+        prompt = self.prompt_from_messages(messages, manifest)
 
         if verbose:
             print_debug("calling *** local")

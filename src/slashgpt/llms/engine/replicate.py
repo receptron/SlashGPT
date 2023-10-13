@@ -6,27 +6,6 @@ from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug
 
-
-def message_to_prompt(messages: List[dict], manifest: Manifest):
-    functions = manifest.functions()
-    prompts = []
-    for message in messages:
-        role = message["role"]
-        content = message["content"]
-        if content:
-            prompts.append(f"{role}:{content}")
-    if functions:
-        # insert before last
-        last = prompts.pop()
-        prompts.append(
-            f"system: Here is the definition of functions available to you to call.\n{functions}\nYou need to generate a json file with 'name' for function name and 'arguments' for argument."
-        )
-        prompts.append(last)
-
-    prompts.append("assistant:")
-    return "\n".join(prompts)
-
-
 default_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
 
 
@@ -35,7 +14,7 @@ class LLMEngineReplicate(LLMEngineBase):
         temperature = manifest.temperature()
 
         replicate_model = self.llm_model.get("replicate_model") or default_model
-        prompt = message_to_prompt(messages, manifest)
+        prompt = self.prompt_from_messages(messages, manifest)
 
         if verbose:
             print_debug("calling replicate.run")

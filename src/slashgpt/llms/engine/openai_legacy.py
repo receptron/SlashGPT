@@ -6,7 +6,6 @@ import openai
 import tiktoken  # for counting tokens
 
 from slashgpt.llms.engine.base import LLMEngineBase
-from slashgpt.llms.engine.replicate import message_to_prompt
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
@@ -28,7 +27,7 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
         return
 
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
-        prompt = message_to_prompt(messages, manifest)
+        prompt = self.prompt_from_messages(messages, manifest)
         params = dict(
             model=self.llm_model.name(),
             prompt=prompt,
