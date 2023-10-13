@@ -11,7 +11,7 @@ from slashgpt.utils.print import print_debug, print_error
 
 class LLMEngineHosted(LLMEngineBase):
     def __init__(self, llm_model):
-        self.llm_model = llm_model
+        super().__init__(llm_model)
         self.api_key = self.llm_model.get_api_key_value()
         self.header_key = self.llm_model.llm_model_data.get("header_api_key")
         self.url = self.llm_model.llm_model_data.get("url")

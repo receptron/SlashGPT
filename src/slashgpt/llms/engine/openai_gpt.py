@@ -12,7 +12,7 @@ from slashgpt.utils.print import print_debug, print_error
 
 class LLMEngineOpenAIGPT(LLMEngineBase):
     def __init__(self, llm_model):
-        self.llm_model = llm_model
+        super().__init__(llm_model)
         key = llm_model.get_api_key_value()
         if key == "":
             print_error("OPENAI_API_KEY environment variable is missing from .env")

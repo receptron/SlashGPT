@@ -31,10 +31,6 @@ default_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987
 
 
 class LLMEngineReplicate(LLMEngineBase):
-    def __init__(self, llm_model):
-        self.llm_model = llm_model
-        return
-
     def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
         temperature = manifest.temperature()
 
