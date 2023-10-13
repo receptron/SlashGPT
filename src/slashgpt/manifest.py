@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from typing import List, Optional
 
-from slashgpt.utils.print import print_info
+from slashgpt.utils.print import print_debug, print_info
 
 
 class Manifest:
@@ -22,6 +22,7 @@ class Manifest:
         self.__manifest = manifest
         self.__agent_name = agent_name
         self.__module = self.__read_module()
+        self.__functions = self.__read_functions()
 
     def get(self, key: str):
         """Returns the specified property of the manifest definition (str, dict or list)"""
@@ -76,25 +77,28 @@ class Manifest:
 
     def functions(self):
         """Returns function definitions (list)"""
-        value = self.__functions()
-        agents = self.get("agents")
+        return self.__functions
 
-        # If agents are specified, inject their keys into the definition of categorize function.
-        if value and agents:
-            # WARNING: It assumes that categorize(category, ...) function
-            for function in value:
-                if function.get("name") == "categorize":
-                    function["parameters"]["properties"]["category"]["enum"] = agents
-        return value
-
-    def __functions(self):
+    def __read_functions(self):
         value = self.get("functions")
         if value:
-            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
-                return value
+            # load a file if the location is specified
             if isinstance(value, str):
                 with open(self.base_dir + "/" + value, "r") as f:
-                    return json.load(f)
+                    value = json.load(f)
+            # validation
+            if value and isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
+                agents = self.get("agents")
+                # If agents are specified, inject their keys into the definition of categorize function.
+                if agents:
+                    # WARNING: It assumes that categorize(category, ...) function
+                    for function in value:
+                        if function.get("name") == "categorize":
+                            function["parameters"]["properties"]["category"]["enum"] = agents
+                return value
+            else:
+                print_debug("Invalid functions", value)
+
         return None
 
     """
