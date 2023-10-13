@@ -46,10 +46,11 @@ my_llm_engine_configs = {
 config = ChatConfig(current_dir, llm_engine_configs=my_llm_engine_configs)
 
 mock_model = {
-                "engine_name": "mock_engine",
-                "model_name": "mock_model",
-                "x_custom": "mock_value",
-            }
+    "engine_name": "mock_engine",
+    "model_name": "mock_model",
+    "x_custom": "mock_value",
+}
+
 
 class Test:
     def test_simple(self):
@@ -80,7 +81,7 @@ class Test:
     def test_memory(self):
         manifest = {
             "model": mock_model,
-            "prompt":  "This is prompt {memory}",
+            "prompt": "This is prompt {memory}",
         }
         memory = {"name": "Joe Smith"}
         session = ChatSession(config, manifest=manifest, memory=memory)
