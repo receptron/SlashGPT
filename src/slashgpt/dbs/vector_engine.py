@@ -14,5 +14,5 @@ class VectorEngine(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel) -> str:
         pass
