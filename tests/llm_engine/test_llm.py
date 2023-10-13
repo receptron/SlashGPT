@@ -54,9 +54,6 @@ class TestGPT:
                         "required": ["title"],
                     }
                 ],
-                "actions": {
-                    "play": {"type": "message_template", "message": "Success. I started playing {title}."},
-                },
             }
             session = ChatSession(config, manifest=manifest)
             session.append_user_question("Play Bohemian Rhapsody")
