@@ -49,10 +49,6 @@ mock_model = {
             }
 
 class Test:
-    def process_event(self, callback_type, data):
-        if callback_type == "bot":
-            self.res = data  # record the output from the LLM
-
     def test_simple(self):
         manifest = {
             "model": mock_model,
@@ -60,20 +56,20 @@ class Test:
         }
         session = ChatSession(config, manifest=manifest)
         session.append_user_question("Hi")
-        session.call_loop(self.process_event)
-        assert self.res == "Hello World"
+        (message, _function_call) = session.call_llm()
+        assert message == "Hello World"
         session.append_user_question("Bye")
-        session.call_loop(self.process_event)
-        assert self.res == "Sayonara"
+        (message, _function_call) = session.call_llm()
+        assert message == "Sayonara"
         session.append_user_question("Repeat this message.")
-        session.call_loop(self.process_event)
-        assert self.res == "Repeat this message."
+        (message, _function_call) = session.call_llm()
+        assert message == "Repeat this message."
         session.append_user_question("prompt")
-        session.call_loop(self.process_event)
-        assert self.res == manifest.get("prompt")
+        (message, _function_call) = session.call_llm()
+        assert message == manifest.get("prompt")
         session.append_user_question("model")
-        session.call_loop(self.process_event)
-        assert self.res == "mock_model"
+        (message, _function_call) = session.call_llm()
+        assert message == "mock_model"
 
     def test_memory(self):
         manifest = {
@@ -83,5 +79,5 @@ class Test:
         memory = {"name": "Joe Smith"}
         session = ChatSession(config, manifest=manifest, memory=memory)
         session.append_user_question("prompt")
-        session.call_loop(self.process_event)
-        assert self.res == manifest.get("prompt").format(memory=json.dumps(memory))
+        (message, _function_call) = session.call_llm()
+        assert message == manifest.get("prompt").format(memory=json.dumps(memory))
