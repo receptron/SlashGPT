@@ -26,15 +26,13 @@ class VectorEngineOpenAI(VectorEngine):
         message = self.__join_messages(messages)
         for article in results:
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
-            if llm_model.is_within_budget(articles + article_with_section + query + message):
+            if llm_model.is_within_budget(articles + article_with_section + query + message, self.verbose):
                 count += 1
                 articles += article_with_section
-                if self.verbose:
-                    print(len(article), llm_model.num_tokens(article))
             else:
                 break
         if self.verbose:
-            print_debug(f"Articles:{count}, Tokens:{llm_model.num_tokens(articles + query)}")
+            print_debug(f"Articles:{count}")
         return articles
 
     def __join_messages(self, messages: List[dict]) -> str:

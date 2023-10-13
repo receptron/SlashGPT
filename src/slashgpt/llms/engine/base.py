@@ -22,10 +22,10 @@ class LLMEngineBase(metaclass=ABCMeta):
         encoding = tiktoken.encoding_for_model(model_name)
         return len(encoding.encode(text))
 
-    def is_within_budget(self, text: str):
+    def is_within_budget(self, text: str, verbose: bool = False):
         token_budget = self.llm_model.max_token() - 500
         return self.__num_tokens(text) <= token_budget
-    
+
     """
     Extract the Python code from the string if the agent is a code interpreter.
     Returns it in the "function call" format.

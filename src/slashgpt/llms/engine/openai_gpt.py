@@ -57,6 +57,6 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         encoding = tiktoken.encoding_for_model(model_name)
         return len(encoding.encode(text))
 
-    def is_within_budget(self, text: str):
+    def is_within_budget(self, text: str, verbose: bool = False):
         token_budget = self.llm_model.max_token() - 500
         return self.__num_tokens(text) <= token_budget
