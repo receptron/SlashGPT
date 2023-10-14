@@ -76,7 +76,7 @@ class LLMEngineBase(metaclass=ABCMeta):
         return "\n".join(prompts)
 
     """
-    is_within_budget method is for vector db/engine. 
+    is_within_budget method is for vector db/engine.
     """
 
     def is_within_budget(self, text: str, verbose: bool = False):
