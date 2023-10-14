@@ -20,25 +20,20 @@ class VectorEngineOpenAI(VectorEngine):
         )
         return query_embedding_response["data"][0]["embedding"]
 
-    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel) -> str:
         articles = ""
         count = 0
-        base_token = self.__messages_tokens(messages, llm_model)
-        if self.verbose:
-            print_debug(f"messages token:{base_token}")
+        message = self.__join_messages(messages)
         for article in results:
             article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
-            if llm_model.num_tokens(articles + article_with_section + query) + base_token > token_budget:
-                break
-            else:
+            if llm_model.is_within_budget(articles + article_with_section + query + message, self.verbose):
                 count += 1
                 articles += article_with_section
-                if self.verbose:
-                    print(len(article), llm_model.num_tokens(article))
+            else:
+                break
         if self.verbose:
-            print_debug(f"Articles:{count}, Tokens:{llm_model.num_tokens(articles + query)}")
+            print_debug(f"Articles:{count}")
         return articles
 
-    # Returns the total number of tokens in messages
-    def __messages_tokens(self, messages: List[dict], llm_model: LlmModel) -> int:
-        return sum([llm_model.num_tokens(message["content"]) for message in messages])
+    def __join_messages(self, messages: List[dict]) -> str:
+        return "\n".join(map(lambda x: x["content"], messages))

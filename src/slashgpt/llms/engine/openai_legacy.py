@@ -35,7 +35,7 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
             stream=manifest.stream(),
             n=manifest.num_completions(),
             logprobs=manifest.logprobs(),
-            max_tokens=self.llm_model.max_token() - self.num_tokens(prompt),
+            max_tokens=self.llm_model.max_token() - self.__num_tokens(prompt),
         )
 
         if verbose:
@@ -51,7 +51,11 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
 
         return (role, res, function_call)
 
-    def num_tokens(self, text: str):
+    def __num_tokens(self, text: str):
         model_name = self.llm_model.name()
         encoding = tiktoken.encoding_for_model(model_name)
         return len(encoding.encode(text))
+
+    def is_within_budget(self, text: str, verbose: bool = False):
+        token_budget = self.llm_model.max_token() - 500
+        return self.__num_tokens(text) <= token_budget

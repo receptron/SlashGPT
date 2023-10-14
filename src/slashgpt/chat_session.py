@@ -130,7 +130,7 @@ class ChatSession:
         message = self.manifest.format_question(message)
         self.append_message("user", message, False)
         if self.vector_db:
-            articles = self.vector_db.fetch_related_articles(self.context.messages(), self.llm_model, self.llm_model.max_token() - 500)
+            articles = self.vector_db.fetch_related_articles(self.context.messages(), self.llm_model)
             assert self.context.get_message_prop(0, "role") == "system", "Missing system message"
             self.context.set_message(
                 0,

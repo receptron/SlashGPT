@@ -24,7 +24,7 @@ class VectorEngineMock(VectorEngine):
         return [0.0, 0.0]
 
     # 3
-    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel, token_budget: int) -> str:
+    def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel) -> str:
         return ", ".join(results)
 
 
@@ -57,7 +57,7 @@ def test_vector1(vector_db):
             "content": "apple content 2",
         },
     ]
-    articles = vector_db.fetch_related_articles(messages, "", 100000)
+    articles = vector_db.fetch_related_articles(messages, "")
     assert articles == "alice, bob"
 
 
@@ -76,5 +76,5 @@ def test_vector2(vector_db):
             "content": "banana content 3",
         },
     ]
-    articles = vector_db.fetch_related_articles(messages, "", 100000)
+    articles = vector_db.fetch_related_articles(messages, "")
     assert articles == "banana, pineapple"
