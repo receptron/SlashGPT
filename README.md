@@ -4,7 +4,7 @@ SlashGPT is a playground for developers to make quick prototypes of LLM agents (
 
 Here are the design goals:
 
-1. Extremely easy to create a new LLM agent. You just need to add a new manifest file (in Json).
+1. Extremely easy to create a new LLM agent. You just need to add a new manifest file (in Json or YAML).
 2. Instantly switch among agents, by just typing "/{agent_name}"
 3. Extensible enough so that it is possible to implement most of LLM agents without writing any code.
 4. It is possible to integrate ChatGPT plugins as agents without writing any code.
@@ -17,24 +17,6 @@ Here are the design goals:
 <a href="https://colab.research.google.com/github/snakajima/SlashGPT/blob/main/notebooks/SlashGPT_on_GoogleColab.ipynb">
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
 </a>
-
-## QuickStart
-
-```
-pip install slashgpt
-```
-
-```
-export OPENAI_API_KEY=XXX
-```
-
-XXX is you open api key.
-
-```
-slashGPT
-```
-
-Then run SlashGPT
 
 ## Initialization for developer
 
@@ -57,6 +39,12 @@ Then run SlashGPT
     - SLASH_GPT_ENV_NOTEABLE_API_KEY: required to use "noteable" agent.
     - SLASH_GPT_ENV_WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
     - ALCHEMY_API_KEY: required to use "web3" agent.
+
+## API Documentation
+
+```
+pdoc src/slashgpt
+```
 
 ## Execution
 
@@ -85,16 +73,15 @@ where the context is "GTP" for general chat, and the app id for a specialized ch
 
 ## Code Interpreter Agents
 
-Some of agents are built to mimic the behaviors of ChatGPT code interpreter (or Noteable plugin)
-with various LLMs.
+Some of agents are built to mimic the behaviors of ChatGPT code interpreter with various LLMs.
 
 - code: GPT3.5
-- code_palm2: PaLM2 (GOOGLE_PALM_KEY key is required)
+- code_palm: PaLM2 (GOOGLE_PALM_KEY key is required)
 - code_llama: LlaMA (REPLICATE_API_TOKEN is required)
 
-code (GPT3.5) works just like Code Interpreter. It is able to respond to the output of generated code appropriately.
+code (GPT3.5) works just like OpenAI's Code Interpreter. It is able to execute the output of generated code appropriately.
 
-code_palm2 (PaLM2) and code_llma (LlaMA) are not able to respond to the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output, and the user needs to explicitly ask it to analyze the result.
+code_palm2 (PaLM2) and code_llma (LlaMA) are not able to execute the output of generated code (they often enter into an infinite loop). Therefore, we stop the conversation after the output ("skip_function_result": true in the manifest), and the user needs to explicitly ask it to run the generated code.
 
 For the runtime, it uses IPython by default, but it uses CodeBox if you specify CODEBOX_API_KEY key. IPython displays images as popups, but does not write them into the notebook. CodeBox is able to write them into the notebook.
 
@@ -108,7 +95,7 @@ Sample queries.
 
 ## Manifest files
 
-Create a new manifest file, {agent_name}.json in "manifests" folder with following properties:
+Create a new manifest file, {agent_name}.json/yml in "manifests" folder with following properties:
 
 - *title* (string, **required**): Title for the user to see
 - *about* (string, optional): About the manifest (URL, email, github id, or twitter id)
@@ -118,11 +105,11 @@ Create a new manifest file, {agent_name}.json in "manifests" folder with followi
 - *result_form* (string): format string to extend function call result.
 - *skip_function_result* (boolean): skip the chat completion right after the function call.
 - *notebook* (boolean): create a new notebook at the beginning of each session (for code_palm2)
-- *bot* (string, optional): Agent name
+- *bot* (string, optional): Agent name. The default is Agent({agent_name}).
 - *you* (string, optional): User name. The default is You({agent_name}).
-- *sample* (string, optional): Sample question (type "/sample" to send it)
+- *sample* or *smaple...* (string, optional): Sample question (type "/sample" to submit it as the user message)
 - *intro* (array of strings, optional): Introduction statements (will be randomly selected)
-- *model* (string, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
+- *model* (string or dict, optional): LLM model (such as "gpt-4-613", the default is "gpt-3-turbo")
 - *temperature* (number, optional): Temperature (the default is 0.7)
 - *stream* (boolean, optional): Enable LLM output streaming (not yet implemented)
 - *logprobs* (number, optional): Number of "next probable tokens" + associated log probabilities to return alongside the output
@@ -143,14 +130,14 @@ It defines template-based function implementations (including mockups), alternat
 
 It supports four different methods.
 
-### 1. Formatted string.
+### 1. Formatted string (type="message_template").
 
 Use this method to develop the front-end of a system before the backend become ready.
 
 - *message* (format string, required): chat message to be added
 - *manifest* (format string, optional): manifest file name to be loaded for chained action
 
-Here is an example (home2).
+Here is an example (home).
 
 ```
   "actions": {
@@ -163,7 +150,7 @@ Here is an example (home2).
   }
 ```
 
-### 2. REST calls
+### 2. REST calls (type="rest")
 
 Use this method to call REST APIs (equivalent to ChatGPT's plugin system).
 
@@ -181,7 +168,7 @@ Here is an example (currency).
   }
 ```
 
-### 3. GraphQL calls
+### 3. GraphQL calls (type="graphQL")
 
 Use this method to call GraphQL APIs.
 
@@ -198,7 +185,7 @@ Here is an example (spacex).
   }
 ```
 
-### 4. data URL
+### 4. data URL (type="data_url")
 
 This method allows a developer to generate a text data (typically in JSON, but not limited to), and turn it into a data URL.
 
@@ -270,10 +257,42 @@ The definition of "make_event" function.
   }
 }
 ```
+### 5. Emit (type="emit")
+
+It will emit an event to the caller (of ChatSession:call_loop). 
+
+The "emit_method" determines the action and the "emit_data" defines parameters. 
+
+ChatApplication implements the "switch_session" method, which takes "message", "agent" and "memory" properties.
+
+- message(str, optional): the initial user message to be given to the new agent.
+- agent(str): the agent key
+- memory(dict, optional): the short-term memory to be passed to the new agent. 
+
+Here is an example (dispatcher):
+```
+  "actions": {
+    "categorize": {
+      "type": "emit",
+      "emit_method": "switch_session",
+      "emit_data": {
+        "message": "{question}",
+        "agent": "{category}"
+      }
+    }
+  },
+```
 
 ## Standard Test Sequence
 
-This is the standard test sequence.
+Automated.
+
+```
+./SlashGPT.py
+/autotest
+```
+
+This is the standard manual test sequence.
 
 ```
 # Test REST API
@@ -287,18 +306,18 @@ Expected Output: Title: France riorts ...\nSummary: The fourth night ...
 Input: /switch main
 
 # Test GraphQL
-You: /sample spacex
+Input: /sample spacex
 Expected Output: The CEO of SpaceX is Elon Musk.
 Input: /switch main
 
 # Test DataURL
-You: /sample cal
+Input: /sample cal
 Expected Output: I have scheduled a meeting with Tim Cook on July 4th at 8:00 PM UTC for 30 minutes. The meeting will be held at Tim Cook's office. I have sent the invitation to Tim Cook at tim@apple.com.
 Input: /switch main
 
 # Test Code Interpreter
-You: /code
-You: /sample_stock
+Input: /code
+Input: /sample_stock
 Expected Output: <Marketcap history of Apple and Tesla>
 ```
 
