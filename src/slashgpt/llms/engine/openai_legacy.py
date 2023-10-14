@@ -46,7 +46,8 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
             print_debug(f"response={response}")
 
         res = response["choices"][0]["text"]
-        function_call = self._extract_function_call(messages[-1], manifest, res)
+        function_call = self._extract_function_call(messages[-1], manifest, res) if manifest.functions() is not None else None
+
         role = "assistant"
 
         return (role, res, function_call)
