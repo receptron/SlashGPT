@@ -25,7 +25,7 @@ class LLMEngineReplicate(LLMEngineBase):
             temperature=temperature,
         )
         res = "".join(output)
-        function_call = self._extract_function_call(messages[-1], manifest, res)
+        function_call = self._extract_function_call(messages[-1], manifest, res) if manifest.functions() is not None else None
 
         role = "assistant"
         if function_call:
