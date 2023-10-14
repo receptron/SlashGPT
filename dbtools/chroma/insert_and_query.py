@@ -7,6 +7,8 @@ from chromadb.config import Settings
 import openai
 from dotenv import load_dotenv
 
+import numpy as np
+
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY", None)
@@ -43,13 +45,28 @@ for query in sampleDataSet:
     
     collection.upsert(
         ids=[str(i)],
-        embeddings=[query_embedding_response],
+        embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
         metadatas=[
             {"id": i},
         ],
         documents=[query],
     )
+    i = i + 1
 
-
-response = collection.get()
+# response = collection.get()
 # print(response)
+
+# q = "いつだって、偉大な先人達は凡人達の熾烈な抵抗に遭ってきた。",
+q = "人間性について絶望してはならない。なぜなら我々は人間なのだから。"
+
+query_embedding_response = openai.Embedding.create(
+    model=EMBEDDING_MODEL,
+    input=q,
+)
+
+res = collection.query(
+    query_embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
+    n_results=1,
+)
+print(res)
+
