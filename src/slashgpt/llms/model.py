@@ -92,3 +92,6 @@ class LlmModel:
 
     def num_tokens(self, text: str):
         return self.engine.num_tokens(text)
+
+    def is_within_budget(self, text: str, verbose: bool):
+        return self.engine.is_within_budget(text, verbose)
