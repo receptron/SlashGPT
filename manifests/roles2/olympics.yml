@@ -9,8 +9,8 @@ embeddings:
   engine_type: openai
   name: olympics-2022
 
-sample: Please list the names of Japanese athletes won the gold medal at the 2022
+sample: List the name of men who won halfpipe medals in 2022 along with the type of medal and nationality.
+sample2: How about women?
+sample3: Please list the names of Japanese athletes won the gold medal at the 2022
   Winter Olympics along with event names they won the medal.
-sample2: List the name of men who won halfpipe medals in 2022.
-sample3: How about women?
 
