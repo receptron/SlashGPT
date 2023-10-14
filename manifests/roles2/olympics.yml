@@ -8,6 +8,8 @@ prompt: Use the below articles on the 2022 Winter Olympics to answer the subsequ
   '{articles}'
 sample: Please list the names of Japanese athletes won the gold medal at the 2022
   Winter Olympics along with event names they won the medal.
+sample2: List the name of men who won snowboarding medals in 2022.
+sample3: How about women?
 temperature: 0
 title: Olympics 2022
 
