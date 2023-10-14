@@ -40,6 +40,12 @@ Here are the design goals:
     - SLASH_GPT_ENV_WEBPILOT_UID: required to use "webpilot" agent (any unique UUID is fine)
     - ALCHEMY_API_KEY: required to use "web3" agent.
 
+## API Documentation
+
+```
+pdoc src/slashgpt
+```
+
 ## Execution
 
 1. Type `./SlashGPT.py`
@@ -279,7 +285,14 @@ Here is an example (dispatcher):
 
 ## Standard Test Sequence
 
-This is the standard test sequence.
+Automated.
+
+```
+./SlashGPT.py
+/autotest
+```
+
+This is the standard manual test sequence.
 
 ```
 # Test REST API
