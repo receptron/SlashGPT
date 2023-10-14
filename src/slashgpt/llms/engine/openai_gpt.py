@@ -45,10 +45,13 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         answer = response["choices"][0]["message"]
         res = answer["content"]
         role = answer["role"]
-        function_call = FunctionCall.factory(answer.get("function_call"), manifest)
 
-        if res and function_call is None:
-            function_call = self._extract_function_call(messages[-1], manifest, res, True)
+        function_call = None
+        if manifest.functions() is not None:
+            function_call = FunctionCall.factory(answer.get("function_call"), manifest)
+
+            if res and function_call is None:
+                function_call = self._extract_function_call(messages[-1], manifest, res, True)
 
         return (role, res, function_call)
 
