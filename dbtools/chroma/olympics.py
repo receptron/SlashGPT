@@ -17,8 +17,8 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 # download pre-chunked text and pre-computed embeddings
 # this file is ~200 MB, so may take a minute depending on your connection speed
 # embeddings_path = "https://cdn.openai.com/API/examples/data/winter_olympics_2022.csv"
-#embeddings_path = "./testdata/winter_olympics_2022.csv"
-embeddings_path = "./testdata/foo.csv"
+embeddings_path = "./testdata/winter_olympics_2022.csv"
+#embeddings_path = "./testdata/foo.csv"
 
 print("loading... (takes a while)")
 df = pd.read_csv(embeddings_path)
@@ -34,7 +34,7 @@ db_path = os.path.normpath(os.path.expanduser("~/.slashgpt/chroma-db"))
 
 client = chromadb.PersistentClient(path=db_path)
 
-collection = client.get_or_create_collection("olympic2022")
+collection = client.get_or_create_collection("olympics-2022")
 
 for i, row in df.iterrows():
     query_embedding_response = openai.Embedding.create(
