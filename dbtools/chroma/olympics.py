@@ -16,18 +16,14 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 
 # download pre-chunked text and pre-computed embeddings
 # this file is ~200 MB, so may take a minute depending on your connection speed
-# embeddings_path = "https://cdn.openai.com/API/examples/data/winter_olympics_2022.csv"
-embeddings_path = "./testdata/winter_olympics_2022.csv"
-#embeddings_path = "./testdata/foo.csv"
+embeddings_path = "https://cdn.openai.com/API/examples/data/winter_olympics_2022.csv"
+# embeddings_path = "./testdata/winter_olympics_2022.csv"
 
 print("loading... (takes a while)")
 df = pd.read_csv(embeddings_path)
 
 # convert embeddings from CSV str type back to list type
 df['embedding'] = df['embedding'].apply(ast.literal_eval)
-
-# the dataframe has two columns: "text" and "embedding"
-# print(df)
 
 
 db_path = os.path.normpath(os.path.expanduser("~/.slashgpt/chroma-db"))
