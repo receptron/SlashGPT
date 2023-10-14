@@ -1,0 +1,16 @@
+title: Olympics 2022
+about: OpenAI's cookbook https://cookbook.openai.com/examples/question_answering_using_embeddings
+temperature: 0.3
+prompt: Use the below articles on the 2022 Winter Olympics to answer the subsequent question.
+  If the answer cannot be found in the articles, write 'I could not find an answer'.
+  '{articles}'
+embeddings:
+  db_type: chroma
+  engine_type: openai
+  name: olympics-2022
+
+sample: List the name of men who won halfpipe medals in 2022 along with the type of medal and nationality.
+sample2: How about women?
+sample3: Please list the names of Japanese athletes won the gold medal at the 2022
+  Winter Olympics along with event names they won the medal.
+

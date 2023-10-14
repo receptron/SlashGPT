@@ -25,7 +25,7 @@ class VectorEngineOpenAI(VectorEngine):
         count = 0
         message = self.__join_messages(messages)
         for article in results:
-            article_with_section = f'\n\nSection:\n"""\n{article}\n"""'
+            article_with_section = f'{article}\n"""'
             if llm_model.is_within_budget(articles + article_with_section + query + message, self.verbose):
                 count += 1
                 articles += article_with_section
