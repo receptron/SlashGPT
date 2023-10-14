@@ -1,13 +1,15 @@
-import os
 import ast  # for converting embeddings saved as strings back to arrays
+import os
+
+import chromadb
+import numpy as np
 import openai  # for calling the OpenAI API
 import pandas as pd  # for storing text and embeddings data
 import tiktoken  # for counting tokens
-import chromadb
-import numpy as np
+from dotenv import load_dotenv
+
 # from scipy import spatial  # for calculating vector similarities for search
 
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -23,7 +25,7 @@ print("loading... (takes a while)")
 df = pd.read_csv(embeddings_path)
 
 # convert embeddings from CSV str type back to list type
-df['embedding'] = df['embedding'].apply(ast.literal_eval)
+df["embedding"] = df["embedding"].apply(ast.literal_eval)
 
 
 db_path = os.path.normpath(os.path.expanduser("~/.slashgpt/chroma-db"))
@@ -35,16 +37,16 @@ collection = client.get_or_create_collection("olympics-2022")
 for i, row in df.iterrows():
     query_embedding_response = openai.Embedding.create(
         model=EMBEDDING_MODEL,
-        input=row['text'],
+        input=row["text"],
     )
 
     collection.upsert(
         ids=[str(i)],
-        embeddings=row['embedding'],
+        embeddings=row["embedding"],
         metadatas=[
             {"id": i},
         ],
-        documents=[row['text']],
+        documents=[row["text"]],
     )
 
 q = "Sharipzyanov"
