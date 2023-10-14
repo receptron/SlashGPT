@@ -12,33 +12,28 @@ from slashgpt.utils.print import print_error, print_info
 
 
 class DBPgVector(VectorDBBase):
-    @classmethod
-    def factory(cls, table_name: str, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
+    def __init__(self, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
         postgresql_config = os.getenv("POSTGRESQL_CONFIG", None)
-        if postgresql_config:
-            return DBPgVector(table_name, embeddings, vector_engine, verbose)
-        else:
+        if postgresql_config is None:
             print_error("POSTGRESQL_CONFIG environment variable is missing from .env")
+            raise RuntimeError("DBPgVector POSTGRESQL_CONFIG environment variable is missing")
 
-    def __init__(self, table_name: str, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
-        super().__init__(table_name, embeddings, vector_engine, verbose)
-        postgresql_config = os.getenv("POSTGRESQL_CONFIG", None)
+        super().__init__(embeddings, vector_engine, verbose)
         self.conn = psycopg2.connect(postgresql_config)
-        self.table_name = table_name
-        self.embeddings = embeddings
         register_vector(self.conn)
 
     def fetch_data(self, query_embedding: List[float]) -> List[str]:
         cur = self.conn.cursor()
         metadata = self.embeddings.get("metadata")
         storage_id = metadata.get("storage_id") if metadata else ""
+        table_name = self.embeddings.get("name")
 
         if storage_id == "":
             sql = "SELECT id, text FROM %s ORDER BY embedding <=> %s LIMIT 5"
             cur.execute(
                 sql,
                 (
-                    AsIs(self.table_name),
+                    AsIs(table_name),
                     np.array(query_embedding),
                 ),
             )
@@ -47,7 +42,7 @@ class DBPgVector(VectorDBBase):
             cur.execute(
                 sql,
                 (
-                    AsIs(self.table_name),
+                    AsIs(table_name),
                     storage_id,
                     np.array(query_embedding),
                 ),
