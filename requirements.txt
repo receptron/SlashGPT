@@ -27,3 +27,4 @@ yfinance
 flask
 psycopg2-binary
 pgvector
+chromadb
