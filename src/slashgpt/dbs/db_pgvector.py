@@ -12,17 +12,13 @@ from slashgpt.utils.print import print_error, print_info
 
 
 class DBPgVector(VectorDBBase):
-    @classmethod
-    def factory(cls, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
-        postgresql_config = os.getenv("POSTGRESQL_CONFIG", None)
-        if postgresql_config:
-            return DBPgVector(embeddings, vector_engine, verbose)
-        else:
-            print_error("POSTGRESQL_CONFIG environment variable is missing from .env")
-
     def __init__(self, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
-        super().__init__(embeddings, vector_engine, verbose)
         postgresql_config = os.getenv("POSTGRESQL_CONFIG", None)
+        if postgresql_config is None:
+            print_error("POSTGRESQL_CONFIG environment variable is missing from .env")
+            raise RuntimeError("DBPgVector POSTGRESQL_CONFIG environment variable is missing")
+
+        super().__init__(embeddings, vector_engine, verbose)
         self.conn = psycopg2.connect(postgresql_config)
         register_vector(self.conn)
 

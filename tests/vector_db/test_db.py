@@ -29,8 +29,8 @@ class VectorEngineMock(VectorEngine):
 
 
 class DBTestVector(VectorDBBase):
-    def __init__(self, table_name: str, storage_id: str, vector_engine: VectorEngine, verbose: bool):
-        super().__init__(table_name, storage_id, vector_engine, verbose)
+    def __init__(self, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
+        super().__init__(embeddings, vector_engine, verbose)
 
     # 2
     def fetch_data(self, query_embedding: List[float]) -> List[str]:
@@ -43,7 +43,7 @@ class DBTestVector(VectorDBBase):
 
 @pytest.fixture
 def vector_db():
-    return DBTestVector("test", "test", VectorEngineMock, True)
+    return DBTestVector({}, VectorEngineMock, True)
 
 
 def test_vector1(vector_db):

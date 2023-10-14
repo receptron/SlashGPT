@@ -20,6 +20,6 @@ def get_vector_db(manifest: Manifest, config: ChatConfig):
             dbs = vector_dbs[embeddings["db_type"]]
             engine = vector_engines[embeddings["engine_type"]]
             if dbs and engine:
-                return dbs.factory(embeddings, engine, config.verbose)
+                return dbs(embeddings, engine, config.verbose)
         except Exception as e:
             print_warning(f"Pinecone Error: {e}")

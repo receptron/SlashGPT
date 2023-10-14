@@ -11,7 +11,7 @@ from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
 from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
-from slashgpt.utils.print import print_debug, print_error, print_info, print_warning
+from slashgpt.utils.print import print_debug, print_error, print_info
 
 
 class ChatSession:
