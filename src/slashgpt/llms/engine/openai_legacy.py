@@ -35,7 +35,7 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
             stream=manifest.stream(),
             n=manifest.num_completions(),
             logprobs=manifest.logprobs(),
-            max_tokens=self.llm_model.max_token() - self.num_tokens(prompt),
+            max_tokens=self.llm_model.max_token() - self.__num_tokens(prompt),
         )
 
         if verbose:
