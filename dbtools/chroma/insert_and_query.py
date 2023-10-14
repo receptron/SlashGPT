@@ -67,4 +67,5 @@ res = collection.query(
     query_embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
     n_results=1,
 )
-print(list(map(lambda x: "".join(x), res["documents"])))
+
+print(list(map(lambda x: "".join(x), list(*res["documents"]))))
