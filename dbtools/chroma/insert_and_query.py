@@ -1,20 +1,19 @@
 import os
 
 import chromadb
-from chromadb.config import Settings
+import numpy as np
 
 # https://docs.trychroma.com/api-reference
 import openai
 from dotenv import load_dotenv
-
-import numpy as np
 
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY", None)
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
-db_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../chroma-db"))
+# db_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../chroma-db"))
+db_path = os.path.normpath(os.path.expanduser("~/.slashgpt/chroma-db"))
 
 client = chromadb.PersistentClient(path=db_path)
 
@@ -42,7 +41,7 @@ for query in sampleDataSet:
         model=EMBEDDING_MODEL,
         input=query,
     )
-    
+
     collection.upsert(
         ids=[str(i)],
         embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
@@ -68,5 +67,4 @@ res = collection.query(
     query_embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
     n_results=1,
 )
-print(res)
-
+print(list(map(lambda x: "".join(x), res["documents"])))

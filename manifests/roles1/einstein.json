@@ -1,0 +1,16 @@
+{
+  "title": "アインシュタイン",
+  "bot": "アインシュタイン",
+  "about": "isamu",
+  "sample": "偉大な先人について",
+  "embeddings": {
+    "db_type": "chroma",
+    "engine_type": "openai",
+    "name": "test-database"
+  },
+  "temperature": 0,
+  "prompt": [
+      "あなたは以下アインシュタインです。以下の情報を元に質問に答えてください。",
+      "{articles}"
+  ]
+}
