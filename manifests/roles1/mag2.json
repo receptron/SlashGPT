@@ -5,6 +5,7 @@
   "sample": "「２２世紀の民主主義」は誰が書いた書籍で、どんな内容ですか？",
   "embeddings": {
     "db_type": "pinecone",
+    "engine_type": "openai",
     "name": "singularitysociety",
     "metadata": {
       "storage_id": "U9Gox2zIVdOgLmcVZcD7"
