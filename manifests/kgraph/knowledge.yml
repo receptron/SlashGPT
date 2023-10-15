@@ -11,8 +11,8 @@ actions:
     emit_data:
       agent: code
       memory:
-        nodes: {nodes}
-        edges: {edges}
+        nodes: '{nodes}'
+        edges: '{edges}'
 
 sample: Supply chain of electric car
 sample2: The solar system including moons
