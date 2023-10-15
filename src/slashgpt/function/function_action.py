@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
@@ -84,11 +84,11 @@ class FunctionAction:
 
         if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
-        
+
         if type == CallType.DEBUG:
             print_function(name, f"arguments: {json.dumps(arguments, indent=2)}")
             return None
-        
+
         return "Success"
 
     def __call_type(self):
