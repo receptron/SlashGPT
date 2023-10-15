@@ -87,7 +87,7 @@ class FunctionAction:
         
         if type == CallType.DEBUG:
             print_function(name, f"arguments: {json.dumps(arguments, indent=2)}")
-            return "Success"
+            return None
         
         return "Success"
 
