@@ -88,7 +88,7 @@ class FunctionCall:
         # Check if the action is specified in the manifest
         if self.function_action:
             # Yes, process it accordingly.
-            function_message = self.function_action.call_api(arguments, self.__manifest.base_dir, verbose)
+            function_message = self.function_action.call_api(function_name, arguments, self.__manifest.base_dir, verbose)
         else:
             # No. Get the specified python function and execute it.
             function = self.get_function(runtime, function_name)
