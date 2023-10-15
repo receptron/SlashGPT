@@ -2,7 +2,7 @@ import json
 import os
 import platform
 import re
-from typing import Optional
+from typing import List, Optional
 
 from gtts import gTTS
 
@@ -28,7 +28,7 @@ utility functions for Main class
 """
 
 
-def play_text(text, lang):
+def play_text(text: str, lang: str):
     audio_obj = gTTS(text=text, lang=lang, slow=False)
     audio_obj.save("./output/audio.mp3")
     try:
@@ -73,7 +73,7 @@ Main is a singleton, which process the input from the user and manage chat sessi
 
 
 class SlashGPT:
-    def __init__(self, config: ChatSlashConfig, manifests_manager, agent_name: str):
+    def __init__(self, config: ChatSlashConfig, manifests_manager: dict, agent_name: str):
         self.manifests_manager = manifests_manager
         self.exit = False
         self.app = ChatApplication(config, self._callback, runtime=PythonRuntime(config.base_path + "/output/notebooks"))
@@ -208,7 +208,7 @@ class SlashGPT:
         else:
             print_error(f"Invalid slash command: {key}")
 
-    def auto_test(self, commands):
+    def auto_test(self, commands: List[str]):
         file_name = commands[1] if len(commands) > 1 else "default"
         file_path = f"{self.app.config.base_path}/test/{file_name}.json"
         if not os.path.exists(file_path):
@@ -222,7 +222,7 @@ class SlashGPT:
                 self.test(**message)
         self.app.config.verbose = False
 
-    def import_data(self, commands):
+    def import_data(self, commands: List[str]):
         if len(commands) == 1:
             files = self.app.session.context.session_list()
             for file in files:
@@ -243,7 +243,7 @@ class SlashGPT:
         print("/import {num}: import history")
         print("/import {num} show: show history")
 
-    def switch_manifests(self, key):
+    def switch_manifests(self, key: str):
         m = self.manifests_manager[key]
         self.app.config.switch_manifests(self.app.config.base_path + "/" + m["manifests_dir"])
         self.app.switch_session(m["default_agent_name"])
@@ -291,7 +291,7 @@ class SlashGPT:
             self.exit = True
             print("bye")
 
-    def talk(self, question):
+    def talk(self, question: str):
         mode = self.detect_input_style(question)
         if mode == InputStyle.HELP:
             self.display_oneline_help()
@@ -307,6 +307,6 @@ class SlashGPT:
                 else:
                     self.query_llm(question)
 
-    def query_llm(self, question):
+    def query_llm(self, question: str):
         self.app.session.append_user_question(question)
         self.app.process_llm()
