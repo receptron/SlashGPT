@@ -94,7 +94,9 @@ class FunctionAction:
     def __call_type(self):
         return CallType.withKey(self.__get("type"))
 
-    def __read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool) -> str:
+    def __read_dataURL_template(
+        self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool
+    ) -> str:
         _mime_type = mime_type or ""
         with open(f"{base_dir}/{template_file_name}", "r") as f:
             template = f.read()
@@ -104,7 +106,7 @@ class FunctionAction:
             dataURL = f"data:{_mime_type};charset=utf-8,{quote_plus(data)}"
             return message_template.format(url=dataURL)
 
-    def __get_appkey_value(self) -> str:
+    def __get_appkey_value(self) -> str | None:
         appkey = self.__get("appkey")
         url = self.__get("url")
 
@@ -117,9 +119,10 @@ class FunctionAction:
                 parsed_url = urlparse(url)
                 if param[0] != parsed_url.netloc:
                     print_error(f"Invalid appkey domain {appkey} in .env file.")
-                    return
+                    return None
                 appkey_value = param[1]
 
             if not appkey_value:
                 print_error(f"Missing {appkey} in .env file.")
             return appkey_value
+        return None
