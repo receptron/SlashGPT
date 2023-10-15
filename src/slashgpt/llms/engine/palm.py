@@ -3,6 +3,7 @@ from typing import List
 import google.generativeai as palm
 
 from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
@@ -22,7 +23,7 @@ def get_prompt_data(messages: List[dict]):
 
 
 class LLMEnginePaLM(LLMEngineBase):
-    def __init__(self, llm_model):
+    def __init__(self, llm_model: LlmModel):
         super().__init__(llm_model)
         key = llm_model.get_api_key_value()
         palm.configure(api_key=key)

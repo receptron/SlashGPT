@@ -4,12 +4,13 @@ from typing import List
 import requests
 
 from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
 
 class LLMEngineHosted(LLMEngineBase):
-    def __init__(self, llm_model):
+    def __init__(self, llm_model: LlmModel):
         super().__init__(llm_model)
         self.api_key = self.llm_model.get_api_key_value()
         self.header_key = self.llm_model.llm_model_data.get("header_api_key")
