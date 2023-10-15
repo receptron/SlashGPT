@@ -1,7 +1,7 @@
 import random
 import re
 import uuid
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
