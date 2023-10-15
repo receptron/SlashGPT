@@ -1,7 +1,7 @@
 import random
 import re
 import uuid
-from typing import Optional
+from typing import Callable, Optional
 
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
@@ -174,7 +174,7 @@ class ChatSession:
 
         return (res, function_call)
 
-    def call_loop(self, callback, runtime: PythonRuntime = None):
+    def call_loop(self, callback: Callable[[str, tuple[str, dict]], None], runtime: PythonRuntime = None):
         """
         Calls the LLM and process the response (functions calls).
         It may call itself recursively if ncessary.

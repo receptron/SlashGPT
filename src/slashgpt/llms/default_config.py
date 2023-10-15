@@ -35,13 +35,14 @@ default_llm_models = {
         "engine_name": "openai-gpt",
         "model_name": "gpt-4-0613",
         "api_key": "OPENAI_API_KEY",
-        "max_token": 4096,
+        "max_token": 8192,
     },
     "llama2": {
         "engine_name": "replicate",
         "model_name": "llama2",
         "api_key": "REPLICATE_API_TOKEN",
         "replicate_model": "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83",
+        "max_token": 4000,
     },
     "llama270": {
         "engine_name": "replicate",

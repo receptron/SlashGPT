@@ -36,7 +36,7 @@ class ChatContext:
     def pop_message(self):
         return self.repository.pop()
 
-    def message_dict(self, x):
+    def message_dict(self, x: dict):
         if x.get("name"):
             return {"role": x.get("role"), "content": x.get("content"), "name": x.get("name")}
         return {"role": x.get("role"), "content": x.get("content")}
@@ -56,7 +56,7 @@ class ChatContext:
     def session_list(self):
         return self.repository.session_list()
 
-    def get_session_data(self, id):
+    def get_session_data(self, id: str):
         return self.repository.get_session_data(id)
 
     def md(self, names: dict = {}):

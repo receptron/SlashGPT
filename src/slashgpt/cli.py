@@ -22,7 +22,7 @@ my_llm_models = {
 }
 
 
-def cli(base_dir=""):
+def cli(base_dir: str = ""):
     parser = argparse.ArgumentParser(description="SlashGPT: LLM Playgroud")
     parser.add_argument("--autotest", action="store_true")
     parser.add_argument("--agent", default="dispatcher")
