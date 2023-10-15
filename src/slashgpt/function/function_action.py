@@ -1,8 +1,9 @@
 import os
+import json
 from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
-from slashgpt.utils.print import print_debug, print_error
+from slashgpt.utils.print import print_debug, print_error, print_function
 from slashgpt.utils.utils import CallType
 
 
@@ -47,7 +48,7 @@ class FunctionAction:
         data = self.__get("emit_data")
         return {x: format(data.get(x)) for x in data}
 
-    def call_api(self, arguments: dict, base_dir: str, verbose: bool):
+    def call_api(self, name: str, arguments: dict, base_dir: str, verbose: bool):
         """Execute a function appropriately for each CallType"""
         type = self.__call_type()
         if type == CallType.REST:
@@ -83,6 +84,11 @@ class FunctionAction:
 
         if type == CallType.MESSAGE_TEMPLATE:
             return self.__get("message").format(**arguments)
+        
+        if type == CallType.DEBUG:
+            print_function(name, f"arguments: {json.dumps(arguments, indent=2)}")
+            return "Success"
+        
         return "Success"
 
     def __call_type(self):
