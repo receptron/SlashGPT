@@ -27,15 +27,15 @@ class FunctionAction:
     def __get(self, key: str):
         return self.__function_action_data.get(key)
 
-    def has_emit(self):
+    def has_emit(self) -> bool:
         """Returns if the action type is emit"""
         return self.__call_type() == CallType.EMIT
 
-    def emit_method(self):
+    def emit_method(self) -> str:
         """Returns the "emit_method" property of emit_data"""
         return self.__get("emit_method")
 
-    def emit_data(self, arguments: dict):
+    def emit_data(self, arguments: dict) -> dict:
         """Returns the data to emit by replacing all {arg}"""
 
         def format(value):
@@ -94,7 +94,7 @@ class FunctionAction:
     def __call_type(self):
         return CallType.withKey(self.__get("type"))
 
-    def __read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
+    def __read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool) -> str:
         _mime_type = mime_type or ""
         with open(f"{base_dir}/{template_file_name}", "r") as f:
             template = f.read()
@@ -104,7 +104,7 @@ class FunctionAction:
             dataURL = f"data:{_mime_type};charset=utf-8,{quote_plus(data)}"
             return message_template.format(url=dataURL)
 
-    def __get_appkey_value(self):
+    def __get_appkey_value(self) -> str:
         appkey = self.__get("appkey")
         url = self.__get("url")
 
