@@ -18,7 +18,7 @@ class FunctionAction:
         self.__function_action_data = function_action_data
 
     @classmethod
-    def factory(cls, function_action_data):
+    def factory(cls, function_action_data: dict):
         """May create an instance if the function_action_data exists"""
         if function_action_data is None:
             return None
