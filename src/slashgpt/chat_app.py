@@ -10,7 +10,7 @@ from slashgpt.utils.print import print_error, print_warning
 
 class ChatApplication:
     """This instance represents an LLM application,
-    which consists of multiple LLM agents."""
+    which consists of multiple LLM agents specified by the manifests of the ChatConfigWithManifests instance."""
 
     def __init__(self, config: ChatConfigWithManifests, callback=None, model: Optional[LlmModel] = None, runtime: Optional[PythonRuntime] = None):
         self.config: ChatConfigWithManifests = config
