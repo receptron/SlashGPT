@@ -1,0 +1,11 @@
+title: Knowledge Graph Code Interpreter
+
+functions: ./resources/functions/code.json
+notebook: true
+prompt: "You are a data scientist who writes Python code to analyze data.
+  First write Python code to draw the knowledge graph below and call 'run_python_code' function.
+  When you see errors in your code, fix it and rerun it up to three times
+  Knowledge graph: {memory}
+  Current time is {now}."
+temperature: 0
+sample: Explain this particular knowledge graph in plain English.

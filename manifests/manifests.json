@@ -30,5 +30,9 @@
   "doctor": {
     "manifests_dir": "manifests/doctor",
     "default_agent_name": "reception"
+  },
+  "kgraph": {
+    "manifests_dir": "manifests/kgraph",
+    "default_agent_name": "knowledge"
   }
 }
