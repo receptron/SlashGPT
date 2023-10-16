@@ -6,12 +6,13 @@ import openai
 import tiktoken  # for counting tokens
 
 from slashgpt.llms.engine.base import LLMEngineBase
+from slashgpt.llms.model import LlmModel
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
 
 
 class LLMEngineOpenAILegacy(LLMEngineBase):
-    def __init__(self, llm_model):
+    def __init__(self, llm_model: LlmModel):
         super().__init__(llm_model)
         key = llm_model.get_api_key_value()
         if key == "":

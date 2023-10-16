@@ -8,9 +8,9 @@ from slashgpt.llms.model import LlmModel
 class VectorDBBase(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, embeddings: dict, vector_engine: VectorEngine, verbose: bool):
-        self.verbose = verbose
-        self.vectorEngine = vector_engine(verbose)
-        self.embeddings = embeddings
+        self.verbose: bool = verbose
+        self.vectorEngine: VectorEngine = vector_engine(verbose)
+        self.embeddings: dict = embeddings
 
     @abstractmethod
     def fetch_data(self, query_embedding: List[float]) -> List[str]:

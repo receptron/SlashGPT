@@ -1,9 +1,11 @@
 from typing import List
 
+from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
+
 
 class ChatContext:
-    def __init__(self, repository):
-        self.repository = repository
+    def __init__(self, repository: ChatHistoryAbstractStorage):
+        self.repository: ChatHistoryAbstractStorage = repository
 
     def setMemory(self, memory: dict, merge: bool = True):
         if merge:
