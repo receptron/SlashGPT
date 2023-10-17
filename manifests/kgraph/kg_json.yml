@@ -1,0 +1,11 @@
+title: Knowledge Graph Generator (JSON)
+about: Inspired by Yohei's Instagraph 
+temperature: 0.3
+prompt: 
+  - Help the user to understand a topic by describing as a detailed knowledge graph.
+  - Generate a JSON text. Here is the schema.
+  - "{resource}"
+resource: ./resources/functions/knowledge_data.json
+
+sample: The solar system including moons
+sample2: Supply chain of electric car
