@@ -14,5 +14,5 @@ actions:
         nodes: '{nodes}'
         edges: '{edges}'
 
-sample: Supply chain of electric car
-sample2: The solar system including moons
+sample: The solar system including moons
+sample2: Supply chain of electric car
