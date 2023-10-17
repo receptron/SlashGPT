@@ -1,10 +1,11 @@
 import random
 import re
 import uuid
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
+from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.utils import get_vector_db
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
@@ -41,15 +42,15 @@ class ChatSession:
             restore (bool, optional): True if we are restoring an existing session.
             memory (dict, optional): The initial value of short term memory
         """
-        self.config = config
+        self.config: ChatConfig = config
         """Configuration Object (ChatConfig), which specifies accessible LLM models"""
-        self.agent_name = agent_name
+        self.agent_name: str = agent_name
         """Display name of the AI agent (str)"""
-        self.manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
+        self.manifest: Manifest = Manifest(manifest if manifest else {}, config.base_path, agent_name)
         """Manifest which specifies the behavior of the AI agent (Manifest)"""
-        self.user_id = user_id if user_id else str(uuid.uuid4())
+        self.user_id: str = user_id if user_id else str(uuid.uuid4())
         """Specified user id or randomly generated uuid (str)"""
-        self.context = ChatContext(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
+        self.context: ChatContext = ChatContext(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
         """Chat history (ChatContext)"""
 
         # Load the model name and make it sure that we have required keys
@@ -64,23 +65,23 @@ class ChatSession:
 
         # Load the prompt, fill variables and append it as the system message
         self.context.setMemory(memory or {})
-        self.prompt = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
+        self.prompt: str = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
         if self.prompt and not restore:
             self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
-        self.vector_db = get_vector_db(manifest, config)
+        self.vector_db: VectorDBBase = get_vector_db(manifest, config)
         """Associated vector database (DBPinecone, optional, to be virtualized)"""
 
         # Load functions file if it is specified
-        self.functions = self.manifest.functions()
+        self.functions: List[dict] = self.manifest.functions()
         """List of function definitions (list, optional)"""
         if self.functions and self.config.verbose:
             print_debug(self.functions)
 
-        self.intro_message = self.__set_intro(intro)
+        self.intro_message: Optional[str] = self.__set_intro(intro)
         """Introduction message (str, optional)"""
 
     def set_llm_model(self, llm_model: LlmModel):

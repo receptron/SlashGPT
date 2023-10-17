@@ -18,7 +18,7 @@ class FunctionAction:
         self.__function_action_data = function_action_data
 
     @classmethod
-    def factory(cls, function_action_data):
+    def factory(cls, function_action_data: dict):
         """May create an instance if the function_action_data exists"""
         if function_action_data is None:
             return None
@@ -27,15 +27,15 @@ class FunctionAction:
     def __get(self, key: str):
         return self.__function_action_data.get(key)
 
-    def has_emit(self):
+    def has_emit(self) -> bool:
         """Returns if the action type is emit"""
         return self.__call_type() == CallType.EMIT
 
-    def emit_method(self):
+    def emit_method(self) -> str:
         """Returns the "emit_method" property of emit_data"""
         return self.__get("emit_method")
 
-    def emit_data(self, arguments: dict):
+    def emit_data(self, arguments: dict) -> dict:
         """Returns the data to emit by replacing all {arg}"""
 
         def format(value):
@@ -94,7 +94,9 @@ class FunctionAction:
     def __call_type(self):
         return CallType.withKey(self.__get("type"))
 
-    def __read_dataURL_template(self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool):
+    def __read_dataURL_template(
+        self, base_dir: str, template_file_name: str, mime_type: str, message_template: str, arguments: dict, verbose: bool
+    ) -> str:
         _mime_type = mime_type or ""
         with open(f"{base_dir}/{template_file_name}", "r") as f:
             template = f.read()
@@ -104,7 +106,7 @@ class FunctionAction:
             dataURL = f"data:{_mime_type};charset=utf-8,{quote_plus(data)}"
             return message_template.format(url=dataURL)
 
-    def __get_appkey_value(self):
+    def __get_appkey_value(self) -> str | None:
         appkey = self.__get("appkey")
         url = self.__get("url")
 
@@ -117,9 +119,10 @@ class FunctionAction:
                 parsed_url = urlparse(url)
                 if param[0] != parsed_url.netloc:
                     print_error(f"Invalid appkey domain {appkey} in .env file.")
-                    return
+                    return None
                 appkey_value = param[1]
 
             if not appkey_value:
                 print_error(f"Missing {appkey} in .env file.")
             return appkey_value
+        return None

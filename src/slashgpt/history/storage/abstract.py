@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import List
 
 
 class ChatHistoryAbstractStorage(metaclass=ABCMeta):
@@ -7,7 +8,7 @@ class ChatHistoryAbstractStorage(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def setMemory(self, dict):
+    def setMemory(self, memory: dict):
         pass
 
     @abstractmethod
@@ -15,19 +16,19 @@ class ChatHistoryAbstractStorage(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def append(self, data):
+    def append(self, data: dict):
         pass
 
     @abstractmethod
-    def get(self, index):
+    def get(self, index: int):
         pass
 
     @abstractmethod
-    def get_data(self, index, name):
+    def get_data(self, index: int, name: str):
         pass
 
     @abstractmethod
-    def set(self, index, data):
+    def set(self, index: int, data: dict):
         pass
 
     @abstractmethod
@@ -47,7 +48,7 @@ class ChatHistoryAbstractStorage(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def restore(self, data):
+    def restore(self, data: List[dict]):
         pass
 
     @abstractmethod

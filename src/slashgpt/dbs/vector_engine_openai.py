@@ -10,12 +10,12 @@ from slashgpt.utils.print import print_debug
 
 class VectorEngineOpenAI(VectorEngine):
     def __init__(self, verbose: bool):
-        self.EMBEDDING_MODEL = os.getenv("PINECONE_EMBEDDING_MODEL", "text-embedding-ada-002")
-        self.verbose = verbose
+        self.__EMBEDDING_MODEL = os.getenv("PINECONE_EMBEDDING_MODEL", "text-embedding-ada-002")
+        self.__verbose = verbose
 
     def query_to_vector(self, query: str) -> List[float]:
         query_embedding_response = openai.Embedding.create(
-            model=self.EMBEDDING_MODEL,
+            model=self.__EMBEDDING_MODEL,
             input=query,
         )
         return query_embedding_response["data"][0]["embedding"]
@@ -26,12 +26,12 @@ class VectorEngineOpenAI(VectorEngine):
         message = self.__join_messages(messages)
         for article in results:
             article_with_section = f'{article}\n"""'
-            if llm_model.is_within_budget(articles + article_with_section + query + message, self.verbose):
+            if llm_model.is_within_budget(articles + article_with_section + query + message, self.__verbose):
                 count += 1
                 articles += article_with_section
             else:
                 break
-        if self.verbose:
+        if self.__verbose:
             print_debug(f"Articles:{count}")
         return articles
 

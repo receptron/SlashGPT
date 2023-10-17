@@ -24,9 +24,9 @@ class ChatConfigWithManifests(ChatConfig):
             llm_engine_configs (dict, optional): collection of custom LLM engine definitions
         """
         super().__init__(base_path, llm_models, llm_engine_configs)
-        self.manifests = self.__load_manifests(path_manifests)
+        self.manifests: dict = self.__load_manifests(path_manifests)
         """Set of manifests loaded from the specified folder"""
-        self.path_manifests = path_manifests
+        self.path_manifests: str = path_manifests
         """Location of the folder where manifests were loaded"""
 
     @classmethod

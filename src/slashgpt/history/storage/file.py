@@ -86,7 +86,7 @@ class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
     def nonpreset_messages(self):
         return filter(lambda x: not x.get("preset"), self.__messages)
 
-    def restore(self, data):
+    def restore(self, data: List[dict]):
         self.__messages = data
 
     def session_list(self):
@@ -94,7 +94,7 @@ class ChatHistoryFileStorage(ChatHistoryAbstractStorage):
         files = glob.glob(f"{history_path}/*")
         return list(map(lambda x: {"name": x[1], "id": x[0]}, enumerate(files)))
 
-    def get_session_data(self, id):
+    def get_session_data(self, id: str):
         files = self.session_list()
         if id.isdecimal() and len(files) > int(id):
             file_name = files[int(id)]["name"]
