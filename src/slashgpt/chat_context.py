@@ -1,6 +1,9 @@
-from typing import List
+from __future__ import annotations
 
-from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
+from typing import TYPE_CHECKING, List
+
+if TYPE_CHECKING:
+    from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 
 
 class ChatContext:

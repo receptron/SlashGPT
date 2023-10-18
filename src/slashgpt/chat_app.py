@@ -1,11 +1,15 @@
-from typing import Optional
+from __future__ import annotations
 
-from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
+from typing import TYPE_CHECKING, Optional
+
 from slashgpt.chat_session import ChatSession
-from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
-from slashgpt.llms.model import LlmModel
 from slashgpt.utils.print import print_error, print_warning
+
+if TYPE_CHECKING:
+    from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
+    from slashgpt.function.jupyter_runtime import PythonRuntime
+    from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
+    from slashgpt.llms.model import LlmModel
 
 
 class ChatApplication:
