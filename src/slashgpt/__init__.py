@@ -58,6 +58,7 @@ __all__ = [
     "FunctionCall",
     "PythonRuntime",
     # history
+    "ChatHistory",
     "ChatHistoryAbstractStorage",
     "ChatHistoryFileStorage",
     "ChatHistoryMemoryStorage",

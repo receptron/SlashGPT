@@ -83,12 +83,10 @@ class ChatApplication:
 
             if action_method == "switch_session":
                 memory = action_data.get("memory")
-                if memory is not None:
-                    self.session.history.setMemory(memory, action_data.get("merge"))
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_name=agent_to_activate, memory=self.session.history.memory())
+                    self.switch_session(agent_name=agent_to_activate, memory=memory)
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)
