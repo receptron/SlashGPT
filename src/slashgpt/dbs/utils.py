@@ -6,21 +6,21 @@ from slashgpt.dbs.vector_engine_openai import VectorEngineOpenAI
 from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_warning
 
-vector_dbs = {
+__vector_dbs = {
     "pinecone": DBPinecone,
     "pgvector": DBPgVector,
     "chroma": DBChroma,
 }
 
-vector_engines = {"openai": VectorEngineOpenAI}
+__vector_engines = {"openai": VectorEngineOpenAI}
 
 
 def get_vector_db(manifest: Manifest, config: ChatConfig):
     embeddings = manifest.get("embeddings")
     if embeddings:
         try:
-            dbs = vector_dbs[embeddings["db_type"]]
-            engine = vector_engines[embeddings["engine_type"]]
+            dbs = __vector_dbs[embeddings["db_type"]]
+            engine = __vector_engines[embeddings["engine_type"]]
             if dbs and engine:
                 return dbs(embeddings, engine, config.verbose)
         except Exception as e:

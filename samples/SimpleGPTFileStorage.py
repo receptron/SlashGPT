@@ -6,10 +6,10 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
-from slashgpt.chat_config import ChatConfig  # noqa: E402
-from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
-from slashgpt.utils.print import print_bot, print_error, print_function, print_info  # noqa: E402
+from slashgpt import ChatConfig  # noqa: E402
+from slashgpt import ChatHistoryFileStorage  # noqa: E402
+from slashgpt import ChatSession  # noqa: E402
+from slashgpt import print_bot, print_error, print_function, print_info  # noqa: E402
 
 if platform.system() == "Darwin":
     # So that input can handle Kanji & delete
