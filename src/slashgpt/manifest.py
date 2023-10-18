@@ -4,7 +4,20 @@ import re
 from datetime import datetime
 from typing import List, Optional
 
-from slashgpt.utils.print import print_debug, print_info
+from slashgpt.chat_config import ChatConfig
+from slashgpt.dbs.db_chroma import DBChroma
+from slashgpt.dbs.db_pgvector import DBPgVector
+from slashgpt.dbs.db_pinecone import DBPinecone
+from slashgpt.dbs.vector_engine_openai import VectorEngineOpenAI
+from slashgpt.utils.print import print_debug, print_info, print_warning
+
+__vector_dbs = {
+    "pinecone": DBPinecone,
+    "pgvector": DBPgVector,
+    "chroma": DBChroma,
+}
+
+__vector_engines = {"openai": VectorEngineOpenAI}
 
 
 class Manifest:
@@ -202,3 +215,14 @@ class Manifest:
     def samples(self):
         """Returns the sample questions specified in the manifest (list)"""
         return list(filter(lambda x: x.strip()[:6] == "sample", self.__manifest.keys()))
+
+    def get_vector_db(self, config: ChatConfig):
+        embeddings = self.get("embeddings")
+        if embeddings:
+            try:
+                dbs = __vector_dbs[embeddings["db_type"]]
+                engine = __vector_engines[embeddings["engine_type"]]
+                if dbs and engine:
+                    return dbs(embeddings, engine, config.verbose)
+            except Exception as e:
+                print_warning(f"get_vector_db Error: {e}")

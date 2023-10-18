@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import importlib
 import inspect
 import os
-from typing import List
+from typing import TYPE_CHECKING, List
 
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error
+
+if TYPE_CHECKING:
+    from slashgpt.manifest import Manifest
 
 
 class LlmModel:

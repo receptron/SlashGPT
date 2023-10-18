@@ -1,10 +1,15 @@
-from typing import List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List
 
 import replicate
 
 from slashgpt.llms.engine.base import LLMEngineBase
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug
+
+if TYPE_CHECKING:
+    from slashgpt.manifest import Manifest
+
 
 default_model = "a16z-infra/llama7b-v2-chat:a845a72bb3fa3ae298143d13efa8873a2987dbf3d49c293513cd8abf4b845a83"
 

@@ -12,7 +12,6 @@ from .dbs.db_base import VectorDBBase
 from .dbs.db_chroma import DBChroma
 from .dbs.db_pgvector import DBPgVector
 from .dbs.db_pinecone import DBPinecone
-from .dbs.utils import get_vector_db
 from .dbs.vector_engine import VectorEngine
 from .dbs.vector_engine_openai import VectorEngineOpenAI
 from .function.function_action import FunctionAction
@@ -42,7 +41,7 @@ __all__ = [
     "ChatApplication",
     "ChatConfig",
     "ChatConfigWithManifests",
-    "ChatContext",
+    "ChatHistory",
     "ChatSession",
     "cli",
     # dbs

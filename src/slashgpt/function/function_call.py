@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 import json
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from slashgpt.chat_history import ChatHistory
 from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_error, print_warning
+
+if TYPE_CHECKING:
+    from slashgpt.manifest import Manifest
 
 
 class FunctionCall:
