@@ -32,6 +32,7 @@ from .llms.engine.openai_legacy import LLMEngineOpenAILegacy
 from .llms.engine.palm import LLMEnginePaLM
 from .llms.engine.replicate import LLMEngineReplicate
 from .llms.model import LlmModel
+from .manifest import Manifest
 from .utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 
 # from .function.network import *
@@ -68,6 +69,7 @@ __all__ = [
     "LLMEnginePaLM",
     "LLMEngineReplicate",
     "LlmModel",
+    "Manifest",
     # utils
     "print_debug",
     "print_error",
