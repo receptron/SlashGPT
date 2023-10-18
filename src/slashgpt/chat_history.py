@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 
 
-class ChatContext:
+class ChatHistory:
     def __init__(self, repository: ChatHistoryAbstractStorage):
         self.repository: ChatHistoryAbstractStorage = repository
 

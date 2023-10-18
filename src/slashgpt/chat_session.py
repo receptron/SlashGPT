@@ -4,7 +4,7 @@ import uuid
 from typing import Callable, List, Optional
 
 from slashgpt.chat_config import ChatConfig
-from slashgpt.chat_context import ChatContext
+from slashgpt.chat_history import ChatHistory
 from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
@@ -49,8 +49,8 @@ class ChatSession:
         """Manifest which specifies the behavior of the AI agent (Manifest)"""
         self.user_id: str = user_id if user_id else str(uuid.uuid4())
         """Specified user id or randomly generated uuid (str)"""
-        self.context: ChatContext = ChatContext(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
-        """Chat history (ChatContext)"""
+        self.history: ChatHistory = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
+        """Chat history (ChatHistory)"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
@@ -63,7 +63,7 @@ class ChatSession:
         self.set_llm_model(llm_model)
 
         # Load the prompt, fill variables and append it as the system message
-        self.context.setMemory(memory or {})
+        self.history.setMemory(memory or {})
         self.prompt: str = self.manifest.prompt_data(config.manifests if hasattr(config, "manifests") else {}, memory)
         """Prompt for the AI agent (str)"""
 
@@ -106,7 +106,7 @@ class ChatSession:
             preset (bool): True, if it is preset by the manifest
             name (str, optional): function name (when the role is "function")
         """
-        self.context.append_message({"role": role, "content": message, "name": name, "preset": preset})
+        self.history.append_message({"role": role, "content": message, "name": name, "preset": preset})
 
     def append_user_question(self, message: str):
         """Append a question from the user to the history
@@ -114,9 +114,9 @@ class ChatSession:
         message = self.manifest.format_question(message)
         self.append_message("user", message, False)
         if self.vector_db:
-            articles = self.vector_db.fetch_related_articles(self.context.messages(), self.llm_model)
-            assert self.context.get_message_prop(0, "role") == "system", "Missing system message"
-            self.context.set_message(
+            articles = self.vector_db.fetch_related_articles(self.history.messages(), self.llm_model)
+            assert self.history.get_message_prop(0, "role") == "system", "Missing system message"
+            self.history.set_message(
                 0,
                 {
                     "role": "system",
@@ -163,7 +163,7 @@ class ChatSession:
             res (str): message
             function_call (dict): json representing the function call (optional)
         """
-        messages = self.context.messages()
+        messages = self.history.messages()
         (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
         if self.config.verbose and function_call is not None:
@@ -197,7 +197,7 @@ class ChatSession:
                     function_name,
                     should_call_llm,
                 ) = function_call.process_function_call(
-                    self.context,
+                    self.history,
                     runtime,
                     self.config.verbose,
                 )
