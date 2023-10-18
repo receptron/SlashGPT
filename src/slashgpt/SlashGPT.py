@@ -156,16 +156,16 @@ class SlashGPT:
                 self.app.config.audio = None if commands[1] == "off" else commands[1]
             print(f"Audio mode: {self.app.config.audio}")
         elif key == "prompt":
-            if self.app.session.context.len_messages() >= 1:
-                print(self.app.session.context.get_message_prop(0, "content"))
+            if self.app.session.history.len_messages() >= 1:
+                print(self.app.session.history.get_message_prop(0, "content"))
             if self.app.config.verbose and self.app.session.functions:
                 print_debug(self.app.session.functions)
         elif commands[0] == "history":
             if len(commands) == 1:
-                print(json.dumps(self.app.session.context.messages(), ensure_ascii=False, indent=2))
-                print(json.dumps(self.app.session.context.preset_messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.app.session.history.messages(), ensure_ascii=False, indent=2))
+                print(json.dumps(self.app.session.history.preset_messages(), ensure_ascii=False, indent=2))
             elif len(commands) > 1 and commands[1] == "pop":
-                self.app.session.context.pop_message()
+                self.app.session.history.pop_message()
         elif key == "functions":
             if self.app.session.functions:
                 print(json.dumps(self.app.session.functions, indent=2))
@@ -195,13 +195,13 @@ class SlashGPT:
         elif commands[0] == "reload":
             self.app.config.reload()
         elif self.app.config.has_manifest(commands[0]):
-            messages = self.app.session.context.nonpreset_messages()  # for "-chain" option
+            messages = self.app.session.history.nonpreset_messages()  # for "-chain" option
             self.app.switch_session(commands[0])
             if len(commands) > 1 and commands[1] == "-chain":
                 if self.app.config.verbose:
                     print_debug(f"Chaining {len(messages)} messages")
                 for m in messages:
-                    self.app.session.context.append_message(
+                    self.app.session.history.append_message(
                         {"role": m.get("role"), "content:": m.get("content"), "name": m.get("name"), "preset": False}
                     )
 
@@ -224,15 +224,15 @@ class SlashGPT:
 
     def import_data(self, commands: List[str]):
         if len(commands) == 1:
-            files = self.app.session.context.session_list()
+            files = self.app.session.history.session_list()
             for file in files:
                 print(str(file["id"]) + ": " + file["name"])
             return
         else:
-            log = self.app.session.context.get_session_data(commands[1])
+            log = self.app.session.history.get_session_data(commands[1])
             if log:
                 if len(commands) == 2:
-                    self.app.session.context.restore(log)
+                    self.app.session.history.restore(log)
                     print("imported")
                     return
                 if len(commands) == 3 and commands[2] == "show":

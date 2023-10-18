@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Union
 
-from slashgpt.chat_context import ChatContext
+from slashgpt.chat_history import ChatHistory
 from slashgpt.function.function_action import FunctionAction
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.manifest import Manifest
@@ -77,13 +77,13 @@ class FunctionCall:
         elif self.__manifest.get("module"):
             return self.__manifest.get_module(function_name)  # python code
 
-    def process_function_call(self, context: ChatContext, runtime: PythonRuntime = None, verbose: bool = False):
+    def process_function_call(self, history: ChatHistory, runtime: PythonRuntime = None, verbose: bool = False):
         """Process (=execute) the function call as specified in the "actions" section or "module" section of the manifest file"""
         function_name = self.__name()
         if function_name is None:
             return (None, None, False)
 
-        arguments = self.__function_arguments(context.last_message(), verbose)
+        arguments = self.__function_arguments(history.last_message(), verbose)
 
         # Check if the action is specified in the manifest
         if self.function_action:
@@ -105,15 +105,15 @@ class FunctionCall:
                     (result, message) = function(**arguments)
 
                 if message:
-                    # Embed code for the context
-                    context.append_message({"role": "assistant", "content": message})
+                    # Embed code for the history
+                    history.append_message({"role": "assistant", "content": message})
                 function_message = self.__format_python_result(result)
             else:
                 function_message = None
                 print_error(f"No execution for function {function_name}")
 
         if function_message:
-            context.append_message({"role": "function", "content": function_message, "name": function_name})
+            history.append_message({"role": "function", "content": function_message, "name": function_name})
 
         should_call_llm = (not self.__manifest.skip_function_result()) and function_message
         return (function_message, function_name, should_call_llm)

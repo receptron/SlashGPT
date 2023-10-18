@@ -5,7 +5,7 @@ import sys
 import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
-from slashgpt.chat_context import ChatContext  # noqa: E402
+from slashgpt.chat_history import ChatHistory  # noqa: E402
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage  # noqa: E402
 
 
@@ -16,7 +16,7 @@ def history():
 
     memory_history = ChatHistoryMemoryStorage("123", "key")
     memory_history.restore(data)
-    history = ChatContext(memory_history)
+    history = ChatHistory(memory_history)
     return history
 
 
