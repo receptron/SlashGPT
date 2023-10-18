@@ -9,11 +9,11 @@ from flask import Flask, jsonify, render_template, request
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from config.llm_config import llm_engine_configs, llm_models  # noqa: E402
-from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
-from slashgpt.chat_session import ChatSession  # noqa: E402
-from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
-from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
-from slashgpt.utils.print import print_error  # noqa: E402
+from slashgpt import ChatConfigWithManifests  # noqa: E402
+from slashgpt import ChatSession  # noqa: E402
+from slashgpt import PythonRuntime  # noqa: E402
+from slashgpt import ChatHistoryFileStorage  # noqa: E402
+from slashgpt import print_error  # noqa: E402
 
 load_dotenv()
 
