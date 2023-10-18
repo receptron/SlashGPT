@@ -8,14 +8,6 @@ class ChatHistoryAbstractStorage(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def setMemory(self, memory: dict):
-        pass
-
-    @abstractmethod
-    def memory(self):
-        pass
-
-    @abstractmethod
     def append(self, data: dict):
         pass
 
