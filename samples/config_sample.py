@@ -6,10 +6,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.join(os.path.dirname(__file__), "../src"))
 
 from config.llm_config_sample import llm_engine_configs, llm_models  # noqa: E402
-from slashgpt.chat_app import ChatApplication  # noqa: E402
-from slashgpt.chat_config_with_manifests import ChatConfigWithManifests  # noqa: E402
-from slashgpt.function.jupyter_runtime import PythonRuntime  # noqa: E402
-from slashgpt.history.storage.file import ChatHistoryFileStorage  # noqa: E402
+from slashgpt import ChatApplication, ChatConfigWithManifests, ChatHistoryFileStorage, PythonRuntime  # noqa: E402
 
 load_dotenv()
 current_dir = os.path.dirname(__file__)
