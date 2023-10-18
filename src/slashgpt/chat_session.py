@@ -6,7 +6,6 @@ from typing import Callable, List, Optional
 from slashgpt.chat_config import ChatConfig
 from slashgpt.chat_context import ChatContext
 from slashgpt.dbs.db_base import VectorDBBase
-from slashgpt.dbs.utils import get_vector_db
 from slashgpt.function.jupyter_runtime import PythonRuntime
 from slashgpt.history.storage.abstract import ChatHistoryAbstractStorage
 from slashgpt.history.storage.memory import ChatHistoryMemoryStorage
@@ -72,7 +71,7 @@ class ChatSession:
             self.append_message("system", self.prompt, True)
 
         # Prepare embedded database index
-        self.vector_db: VectorDBBase = get_vector_db(manifest, config)
+        self.vector_db: VectorDBBase = self.manifest.get_vector_db(config)
         """Associated vector database (DBPinecone, optional, to be virtualized)"""
 
         # Load functions file if it is specified

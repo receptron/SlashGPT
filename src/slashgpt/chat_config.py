@@ -1,9 +1,13 @@
-from typing import Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
 
 from slashgpt.llms.default_config import default_llm_engine_configs, default_llm_models
 from slashgpt.llms.model import LlmModel
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_warning
+
+if TYPE_CHECKING:
+    from slashgpt.manifest import Manifest
 
 
 class ChatConfig:

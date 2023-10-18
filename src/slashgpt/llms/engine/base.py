@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import tiktoken  # for counting tokens
 
 from slashgpt.function.function_call import FunctionCall
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_warning
+
+if TYPE_CHECKING:
+    from slashgpt.manifest import Manifest
 
 
 class LLMEngineBase(metaclass=ABCMeta):

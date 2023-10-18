@@ -1,14 +1,18 @@
+from __future__ import annotations
+
 import json
 import sys
-from typing import List
+from typing import TYPE_CHECKING, List
 
 import openai
 import tiktoken  # for counting tokens
 
 from slashgpt.llms.engine.base import LLMEngineBase
-from slashgpt.llms.model import LlmModel
-from slashgpt.manifest import Manifest
 from slashgpt.utils.print import print_debug, print_error
+
+if TYPE_CHECKING:
+    from slashgpt.llms.model import LlmModel
+    from slashgpt.manifest import Manifest
 
 
 class LLMEngineOpenAILegacy(LLMEngineBase):
