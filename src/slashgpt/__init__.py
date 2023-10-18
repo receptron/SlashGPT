@@ -41,7 +41,7 @@ __all__ = [
     "ChatApplication",
     "ChatConfig",
     "ChatConfigWithManifests",
-    "ChatContext",
+    "ChatHistory",
     "ChatSession",
     "cli",
     # dbs
