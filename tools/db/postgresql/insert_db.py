@@ -1,7 +1,6 @@
 import asyncio
 import os
 
-import numpy as np
 import openai
 import psycopg
 from dotenv import load_dotenv
@@ -29,38 +28,10 @@ async def insert_data(conn):
         await conn.execute(sql, (query, "sample", query_embedding))
 
 
-async def semantic_search(conn, query):
-    query_embedding_response = openai.Embedding.create(
-        model=EMBEDDING_MODEL,
-        input=query,
-    )
-    query_embedding = np.array(query_embedding_response["data"][0]["embedding"])
-
-    async with conn.cursor() as cur:
-        sql = "SELECT id, text FROM vector_table where storage_id = %s ORDER BY embedding <=> %s LIMIT 5"
-        await cur.execute(
-            sql,
-            (
-                "sample",
-                query_embedding,
-            ),
-        )
-        return await cur.fetchall()
-
-
 async def insert():
     conn = await psycopg.AsyncConnection.connect(dbname="test_vector", autocommit=True)
+    await register_vector_async(conn)
     await insert_data(conn)
 
 
-async def search():
-    conn = await psycopg.AsyncConnection.connect(dbname="test_vector", autocommit=True)
-    await register_vector_async(conn)
-    query = "富士山"
-    result = await semantic_search(conn, query)
-
-    print(result)
-
-
-# asyncio.run(insert())
-asyncio.run(search())
+asyncio.run(insert())
