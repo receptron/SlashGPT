@@ -10,8 +10,12 @@ async def handle_websocket(websocket, path):
     try:
         while True:
             message = await websocket.recv()
-            print("message:", message)
-            await websocket.send(f"replying to {message}")
+            # Now we want to send this message to all clients, excluding the sender.
+            for client in connected_clients:
+                if client != websocket:  # Don't send the message back to the same client who sent it
+                    # You can format the message, or even add sender details, timestamps, etc.
+                    await client.send(message)  # Forward the message to another client
+                    
     except websockets.exceptions.ConnectionClosed:
         # Connection was lost, remove client
         print("Connection closed {path}")
