@@ -51,6 +51,8 @@ class ChatSession:
         """Specified user id or randomly generated uuid (str)"""
         self.history: ChatHistory = ChatHistory(history_engine or ChatHistoryMemoryStorage(self.user_id, agent_name))
         """Chat history (ChatHistory)"""
+        self.memory: Optional[dict] = memory
+        """Short term memory (dict, optional)"""
 
         # Load the model name and make it sure that we have required keys
         if self.manifest.model():
