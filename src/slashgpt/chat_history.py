@@ -10,16 +10,6 @@ class ChatHistory:
     def __init__(self, repository: ChatHistoryAbstractStorage):
         self.repository: ChatHistoryAbstractStorage = repository
 
-    def setMemory(self, memory: dict, merge: bool = True):
-        if merge:
-            merged_memory = self.memory().copy()
-            merged_memory.update(memory)
-            memory = merged_memory
-        self.repository.setMemory(memory)
-
-    def memory(self):
-        return self.repository.memory()
-
     def append_message(self, data: dict):
         self.repository.append(data)
 
