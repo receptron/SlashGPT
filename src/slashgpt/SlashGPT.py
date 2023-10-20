@@ -4,7 +4,7 @@ import platform
 import re
 from typing import List, Optional
 
-from gtts import gTTS
+from gtts import gTTS, lang
 
 try:
     from playsound import playsound
@@ -152,8 +152,16 @@ class SlashGPT:
         elif commands[0] == "audio":
             if len(commands) == 1:
                 self.app.config.audio = None if self.app.config.audio else "en"
-            elif commands[1] == "off":
-                self.app.config.audio = None if commands[1] == "off" else commands[1]
+            else:
+                audio = None
+                if commands[1] != "off":
+                    languages = lang.tts_langs()
+                    if commands[1] in languages:
+                        audio = commands[1]
+                    else:
+                        print_error(f"Invalid language: {commands[1]}")
+                        print(f"Available languages: {', '.join(languages)}")
+                self.app.config.audio = audio
             print(f"Audio mode: {self.app.config.audio}")
         elif key == "prompt":
             if self.app.session.history.len_messages() >= 1:
