@@ -33,6 +33,7 @@ class ChatApplication:
         agent_name: Optional[str] = None,
         intro: bool = True,
         memory: Optional[dict] = None,
+        merge_memory: bool = False,
         history_engine: Optional[ChatHistoryAbstractStorage] = None,
     ):
         """
@@ -41,11 +42,16 @@ class ChatApplication:
             agent_name(str): specifies the AI agent to activate
             intro(bool): specifies if it needs to add the introduction message
             memory(dict, optional): initial set of short-term memory
+            merge_memory(bool): if True, the memory is merged with the existing memory
             history_engine(ChatHistoryAbstractStorage, optional): history_engine
         """
         if agent_name is not None:
             if self.config.has_manifest(agent_name):
                 manifest = self.config.manifests.get(agent_name)
+                if merge_memory and self.session and self.session.memory:
+                    merged_memory = self.session.memory.copy()
+                    merged_memory.update(memory or {})
+                    memory = merged_memory
                 self.session = ChatSession(
                     self.config,
                     default_llm_model=self.llm_model,
@@ -90,7 +96,8 @@ class ChatApplication:
 
                 agent_to_activate = action_data.get("agent")
                 if agent_to_activate:
-                    self.switch_session(agent_name=agent_to_activate, memory=memory)
+                    merge_memory = action_data.get("merge")
+                    self.switch_session(agent_name=agent_to_activate, memory=memory, merge_memory=merge_memory)
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)
