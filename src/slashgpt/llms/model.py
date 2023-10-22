@@ -47,7 +47,6 @@ class LlmModel:
         """Returns the model name"""
         return self.get("model_name")
 
-
     def max_token(self):
         """Returns the maximum token length"""
         return self.get("max_token") or 4096
