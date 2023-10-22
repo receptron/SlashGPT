@@ -23,13 +23,6 @@ class FunctionCall:
         self.function_action: Optional[FunctionAction] = FunctionAction.factory(actions.get(self.__name()))
         """the instance that describes the action to take"""
 
-    @classmethod
-    def factory(cls, function_call_data: dict, manifest: Manifest):
-        """The factory method which creates a FunctionCall instance if the function_call_data exists."""
-        if function_call_data is None:
-            return None
-        return FunctionCall(function_call_data, manifest)
-
     def __str__(self):
         return f"{self.__name()}: ({self.__arguments(False)})"
 
