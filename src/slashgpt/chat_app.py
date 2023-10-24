@@ -101,7 +101,9 @@ class ChatApplication:
                     message_to_append = action_data.get("message")
                     if message_to_append:
                         self.session.append_user_question(message_to_append)
-                    self.process_llm()
+                        self.process_llm()
+                    elif action_data.get("initiate"):
+                        self.process_llm()
 
     def process_llm(self):
         """It calls the LLM with the current context (system prompt and messages)

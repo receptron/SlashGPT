@@ -13,6 +13,7 @@
       "emit_method": "switch_session",
       "emit_data": {
         "agent": "nurse",
+        "initiate": true,
         "memory": {
           "name": "{name}",
           "sex": "{sex}",

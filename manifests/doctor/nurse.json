@@ -13,6 +13,7 @@
       "emit_data": {
         "agent": "{doctor}",
         "merge": true,
+        "initiate": true,
         "memory": {
           "issue": "{issue}",
           "severity": "{severity}"
