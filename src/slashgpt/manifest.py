@@ -190,7 +190,7 @@ class Manifest:
             if agents:
                 prompt = self.__apply_agent(prompt, agents, manifests)
             if memory is not None:
-                prompt = re.sub("\\{memory\\}", json.dumps(memory), prompt, 1)
+                prompt = re.sub("\\{memory\\}", json.dumps(memory, ensure_ascii=False), prompt, 1)
             return prompt
 
     def __apply_agent(self, prompt: str, agents: List[str], manifests: dict = {}):

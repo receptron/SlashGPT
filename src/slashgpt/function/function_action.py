@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from urllib.parse import quote_plus, urlparse
 
 from slashgpt.function.network import graphQLRequest, http_request
@@ -40,6 +41,10 @@ class FunctionAction:
 
         def format(value):
             if isinstance(value, str):
+                match = re.search(r"^{([a-zA-Z_]+)\}$", value)
+                # if the value has a shape like "{prop_name}", get that property as-is
+                if match:
+                    return arguments.get(match.group(1))
                 return value.format(**arguments)
             elif isinstance(value, dict):
                 return {x: format(value.get(x)) for x in value}
