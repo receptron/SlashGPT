@@ -42,6 +42,7 @@ class FunctionAction:
         def format(value):
             if isinstance(value, str):
                 match = re.search(r"^{([a-zA-Z_]+)\}$", value)
+                # if the value has a shape like "{prop_name}", get that property as-is
                 if match:
                     return arguments.get(match.group(1))
                 return value.format(**arguments)
