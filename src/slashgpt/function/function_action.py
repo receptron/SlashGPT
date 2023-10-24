@@ -41,7 +41,7 @@ class FunctionAction:
 
         def format(value):
             if isinstance(value, str):
-                match = re.search(r"\{([^}]+)\}", value)
+                match = re.search(r"^{([a-zA-Z_]+)\}$", value)
                 if match:
                     return arguments.get(match.group(1))
                 return value.format(**arguments)
