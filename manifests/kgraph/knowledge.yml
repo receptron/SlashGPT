@@ -2,7 +2,7 @@ title: Knowledge Graph Generator
 about: Inspired by Yohei's Instagraph 
 temperature: 0.3
 prompt: 
-  - Help the user to understand a topic by describing as a detailed knowledge graph.
+  - Help the user to understand a topic by describing it as a detailed knowledge graph by calling knowledge_graph function.
 functions: ./resources/functions/knowledge.json
 actions:
   knowledge_graph:
@@ -16,3 +16,4 @@ actions:
 
 sample: The solar system including moons
 sample2: Supply chain of electric car
+sample3: 火力発電所
