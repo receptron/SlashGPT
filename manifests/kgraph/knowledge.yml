@@ -4,6 +4,7 @@ temperature: 0.3
 prompt: 
   - Help the user to understand a topic by describing it as a detailed knowledge graph by calling knowledge_graph function.
 functions: ./resources/functions/knowledge.json
+function_call: knowledge_graph
 actions:
   knowledge_graph:
     type: emit

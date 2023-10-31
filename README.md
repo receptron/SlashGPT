@@ -119,6 +119,7 @@ Create a new manifest file, {agent_name}.json/yml in "manifests" folder with fol
   - *name* (string, optional): index name of the embedding vector database
 - *resource* (string, optional): location of the resource file. Use {resource} to paste it into the prompt
 - *functions* (string or list, optional): string - location of the function definitions, list - function definitions
+- *function_call* (string, optional): the name of tne function LLM should call
 - *module* (string, optional): location of the Python script to be loaded for function calls
 - *actions* (object, optional): Template-based function processor (see details below)
 
