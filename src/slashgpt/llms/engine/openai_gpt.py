@@ -43,9 +43,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         if functions:
             params["functions"] = functions
             if manifest.get("function_call"):
-                params["function_call"] = dict(
-                    name = manifest.get("function_call")
-                )
+                params["function_call"] = dict(name=manifest.get("function_call"))
         response = openai.ChatCompletion.create(**params)
 
         if verbose:
