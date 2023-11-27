@@ -1,0 +1,26 @@
+title: Paper review
+functions: './resources/functions/paper.json'
+description: summarize paper agent. Original agent is https://github.com/rkmt/summarize_arxv
+prompt: |
+  与えられた論文の要点をまとめ、以下の項目で日本語で出力せよ。それぞれの項目は最大でも180文字以内に要約せよ。
+  ```
+  論文名:タイトルの日本語訳
+  キーワード:この論文のキーワード
+  課題:この論文が解決する課題
+  手法:この論文が提案する手法,
+  結果:提案手法によって得られた結果
+  ```
+sample: |
+  title: Backdoor Activation Attack: Attack Large Language Models using Activation Steering for Safety-Alignment
+  body: To ensure AI safety, instruction-tuned Large Language Models (LLMs) are specifically trained to ensure alignment, which refers to making models behave in accordance with human intentions.
+  While these models have demonstrated commendable results on various safety benchmarks, the vulnerability of their safety alignment has not been extensively studied. This is particularly troubling given the potential harm that LLMs can inflict.
+  Existing attack methods on LLMs often rely on poisoned training data or the injection of malicious prompts. These approaches compromise the stealthiness and generalizability of the attacks, making them susceptible to detection.
+  Additionally, these models often demand substantial computational resources for implementation, making them less practical for real-world applications. Inspired by recent success in modifying model behavior through steering vectors without the need for optimization, and drawing on its effectiveness in red-teaming LLMs, we conducted experiments employing activation steering to target four key aspects of LLMs: truthfulness, toxicity, bias, and harmfulness - across a varied set of attack settings.
+  To establish a universal attack strategy applicable to diverse target alignments without depending on manual analysis, we automatically select the intervention layer based on contrastive layer search.
+  Our experiment results show that activation attacks are highly effective and add little or no overhead to attack efficiency.
+  Additionally, we discuss potential countermeasures against such activation attacks. Our code and data are available at this https URL Warning: this paper contains content that can be offensive or upsetting.
+skip_function_result: true
+actions: 
+  paper_summary:
+    type: "message_template"
+    message: "title: {title}\nkeywords: {keywords}\nissues: {issues}\nmethods: {methods}\nresults: {results}"
