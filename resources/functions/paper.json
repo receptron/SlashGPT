@@ -1,0 +1,39 @@
+[
+  {
+    "name": "paper_summary",
+    "description": "与えられた論文の要点をまとめ、以下の項目で日本語で出力せよ。それぞれの項目は最大でも180文字以内に要約せよ。",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "論文名:タイトルの日本語訳"
+        },
+        "keywords": {
+          "type": "string",
+          "description": "キーワード:この論文のキーワード"
+        },
+        "issues": {
+          "type": "string",
+          "description": "課題:この論文が解決する課題"
+        },
+        "methods": {
+          "type": "string",
+          "description": "手法:この論文が提案する手法"
+        },
+        "results": {
+          "type": "string",
+          "description": "結果:提案手法によって得られた結果"
+        }
+      },
+      "required": [
+        "title",
+        "keywords",
+        "issues",
+        "methods",
+        "results"
+      ]
+    }
+  }
+]
+              
