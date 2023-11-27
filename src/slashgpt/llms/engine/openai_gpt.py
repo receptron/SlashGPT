@@ -3,8 +3,8 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, List
 
-from openai import OpenAI
 import tiktoken  # for counting tokens
+from openai import OpenAI
 
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
