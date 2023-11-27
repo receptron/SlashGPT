@@ -46,6 +46,10 @@ Here are the design goals:
 pdoc src/slashgpt
 ```
 
+or
+
+https://snakajima.github.io/SlashGPT/
+
 ## Execution
 
 1. Type `./SlashGPT.py`
