@@ -27,7 +27,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         # Override default openai endpoint for custom-hosted models
         api_base = llm_model.get_api_base()
         if api_base:
-            self.client.api_base = api_base
+            self.client.base_url = api_base
 
         return
 
