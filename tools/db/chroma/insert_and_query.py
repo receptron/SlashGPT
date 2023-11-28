@@ -37,14 +37,14 @@ sampleDataSet = [
 
 i = 0
 for query in sampleDataSet:
-    query_embedding_response = openai.Embedding.create(
+    query_embedding_response = openai.embeddings.create(
         model=EMBEDDING_MODEL,
         input=query,
     )
 
     collection.upsert(
         ids=[str(i)],
-        embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
+        embeddings=[np.array(query_embedding_response.data[0].embedding).tolist()],
         metadatas=[
             {"id": i},
         ],
@@ -58,13 +58,13 @@ for query in sampleDataSet:
 # q = "いつだって、偉大な先人達は凡人達の熾烈な抵抗に遭ってきた。",
 q = "人間性について絶望してはならない。なぜなら我々は人間なのだから。"
 
-query_embedding_response = openai.Embedding.create(
+query_embedding_response = openai.embeddings.create(
     model=EMBEDDING_MODEL,
     input=q,
 )
 
 res = collection.query(
-    query_embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
+    query_embeddings=[np.array(query_embedding_response.data[0].embedding).tolist()],
     n_results=1,
 )
 

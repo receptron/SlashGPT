@@ -27,7 +27,7 @@ class FunctionCall:
         return f"{self.__name()}: ({self.__arguments(False)})"
 
     def __get(self, key: str):
-        return self.__function_call_data.get(key)
+        return dict(self.__function_call_data).get(key)
 
     def data(self):
         """returns a dictionary with name and arguments"""
