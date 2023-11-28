@@ -34,7 +34,7 @@ client = chromadb.PersistentClient(path=db_path)
 collection = client.get_or_create_collection("olympics-2022")
 
 for i, row in df.iterrows():
-    query_embedding_response = openai.Embedding.create(
+    query_embedding_response = openai.embeddings.create(
         model=EMBEDDING_MODEL,
         input=row["text"],
     )
@@ -49,13 +49,13 @@ for i, row in df.iterrows():
     )
 
 q = "Sharipzyanov"
-query_embedding_response = openai.Embedding.create(
+query_embedding_response = openai.embeddings.create(
     model=EMBEDDING_MODEL,
     input=q,
 )
 
 res = collection.query(
-    query_embeddings=[np.array(query_embedding_response["data"][0]["embedding"]).tolist()],
+    query_embeddings=[np.array(query_embedding_response.data[0].embedding).tolist()],
     n_results=1,
 )
 
