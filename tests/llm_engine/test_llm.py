@@ -67,8 +67,8 @@ class TestGPT:
             assert function_call is not None
             data = function_call.data()
             print(data)
-            assert data["name"] == "play"
-            arguments = data["arguments"]
+            assert data.name == "play"
+            arguments = data.arguments
             assert arguments is not None
             if isinstance(arguments, str):
                 arguments = json.loads(arguments)
