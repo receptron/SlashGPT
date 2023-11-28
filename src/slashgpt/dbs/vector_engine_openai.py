@@ -14,11 +14,11 @@ class VectorEngineOpenAI(VectorEngine):
         self.__verbose = verbose
 
     def query_to_vector(self, query: str) -> List[float]:
-        query_embedding_response = openai.Embedding.create(
+        query_embedding_response = openai.embeddings.create(
             model=self.__EMBEDDING_MODEL,
             input=query,
         )
-        return query_embedding_response["data"][0]["embedding"]
+        return query_embedding_response.data[0].embedding
 
     def results_to_articles(self, results: List[str], query: str, messages: List[dict], llm_model: LlmModel) -> str:
         articles = ""
