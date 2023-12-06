@@ -45,6 +45,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             if manifest.get("function_call"):
                 params["function_call"] = dict(name=manifest.get("function_call"))
         response = self.client.chat.completions.create(**params)
+        token_usage = response.usage.total_tokens
 
         if verbose:
             print_debug(f"model={dict(response)['model']}")
@@ -60,7 +61,7 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             if res and function_call is None:
                 function_call = self._extract_function_call(messages[-1], manifest, res, True)
 
-        return (role, res, function_call)
+        return (role, res, function_call, token_usage)
 
     def __num_tokens(self, text: str):
         model_name = self.llm_model.name()

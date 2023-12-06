@@ -58,6 +58,6 @@ class LLMEnginePaLM(LLMEngineBase):
 
         role = "assistant"
         if function_call:
-            return (role, None, function_call)
+            return (role, None, function_call, None)
         else:
-            return (role, res, None)
+            return (role, res, None, None)

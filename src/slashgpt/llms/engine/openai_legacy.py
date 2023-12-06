@@ -55,7 +55,7 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
 
         role = "assistant"
 
-        return (role, res, function_call)
+        return (role, res, function_call, None)
 
     def __num_tokens(self, text: str):
         model_name = self.llm_model.name()

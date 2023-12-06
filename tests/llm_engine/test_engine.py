@@ -37,7 +37,7 @@ class MockLlmEngine(LLMEngineBase):
                 res = self.llm_model.name()
             elif last_message == "custom":
                 res = self.llm_model.get("x_custom")
-        return (role, res, function_call)
+        return (role, res, function_call, 0)
 
 
 my_llm_engine_configs = {
@@ -60,22 +60,22 @@ class Test:
         }
         session = ChatSession(config, manifest=manifest)
         session.append_user_question("Hi")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == "Hello World"
         session.append_user_question("Bye")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == "Sayonara"
         session.append_user_question("Repeat this message.")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == "Repeat this message."
         session.append_user_question("prompt")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == manifest.get("prompt")
         session.append_user_question("model")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == "mock_model"
         session.append_user_question("custom")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == "mock_value"
 
     def test_memory(self):
@@ -86,5 +86,5 @@ class Test:
         memory = {"name": "Joe Smith"}
         session = ChatSession(config, manifest=manifest, memory=memory)
         session.append_user_question("prompt")
-        (message, _function_call) = session.call_llm()
+        (message, _function_call, _) = session.call_llm()
         assert message == manifest.get("prompt").format(memory=json.dumps(memory))

@@ -32,7 +32,7 @@ class Main:
 
     def talk_with_input(self, question, session):
         session.append_user_question(question)
-        (message, _) = session.call_llm()
+        (message, _, _) = session.call_llm()
 
         if message:
             print(f"\033[92m\033[1m{session.botname()}\033[95m\033[0m: {message}")

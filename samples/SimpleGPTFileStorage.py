@@ -43,7 +43,7 @@ class SimpleGPT:
 
     def process_llm(self, session):
         try:
-            (res, function_call) = session.call_llm()
+            (res, function_call, _) = session.call_llm()
 
             if res:
                 print_bot(session.botname(), res)

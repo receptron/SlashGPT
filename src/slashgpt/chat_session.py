@@ -167,7 +167,7 @@ class ChatSession:
             function_call (dict): json representing the function call (optional)
         """
         messages = self.history.messages()
-        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+        (role, res, function_call, token_usage) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
         if self.config.verbose and function_call is not None:
             print_info(function_call)
@@ -175,14 +175,14 @@ class ChatSession:
         if role and res:
             self.append_message(role, res, False)
 
-        return (res, function_call)
+        return (res, function_call, token_usage)
 
     def call_loop(self, callback: Callable[[str, tuple[str, dict]], None], runtime: PythonRuntime = None):
         """
         Calls the LLM and process the response (functions calls).
         It may call itself recursively if ncessary.
         """
-        (res, function_call) = self.call_llm()
+        (res, function_call, _) = self.call_llm()
 
         if res:
             callback("bot", res)

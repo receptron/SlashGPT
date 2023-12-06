@@ -24,7 +24,7 @@ async def main():
             print("question:", question)
             session = ChatSession(config, manifest=manifest)
             session.append_user_question(question)
-            (message, _function_call) = session.call_llm()
+            (message, _function_call, _) = session.call_llm()
             await websocket.send(message)
 
 
