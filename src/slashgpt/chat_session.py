@@ -175,14 +175,14 @@ class ChatSession:
         if role and res:
             self.append_message(role, res, False)
 
-        return (res, function_call)
+        return (res, function_call, token_usage)
 
     def call_loop(self, callback: Callable[[str, tuple[str, dict]], None], runtime: PythonRuntime = None):
         """
         Calls the LLM and process the response (functions calls).
         It may call itself recursively if ncessary.
         """
-        (res, function_call) = self.call_llm()
+        (res, function_call, _) = self.call_llm()
 
         if res:
             callback("bot", res)
