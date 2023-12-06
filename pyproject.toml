@@ -6,7 +6,7 @@ line_length = 150
 
 [tool.poetry]
 name = "slashgpt"
-version = "0.0.4"
+version = "0.0.6"
 description = ""
 authors = ["snakajima <satoshi.nakajima@gmail.com>"]
 license = "MIT"
@@ -17,12 +17,12 @@ packages = [
  { include = "slashgpt", from  = "src" },
 ]
 
-include = ["manifests/*", "manifests/*/*", "test/*", "resources/*/*",  "data/*"]
+include = ["manifests/*", "manifests/*/*", "test/*", "resources/*/*",  "data/*", "src/slashgpt/manifests/*", "src/slashgpt/manifests/*/*", "src/slashgpt/resources/*/*"]
 
 
 [tool.poetry.dependencies]
 python = "<3.13,>=3.9"
-openai = "^0.28.0"
+openai = "^1.2.0"
 python-dotenv = "1.0.0"
 pinecone-client = "^2.2.2"
 google-generativeai = "^0.1.0"
