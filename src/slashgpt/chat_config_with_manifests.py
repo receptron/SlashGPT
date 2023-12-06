@@ -6,6 +6,7 @@ from typing import Optional
 import yaml
 
 from slashgpt.chat_config import ChatConfig
+from slashgpt.utils.print import print_error
 
 
 class ChatConfigWithManifests(ChatConfig):
@@ -36,10 +37,16 @@ class ChatConfigWithManifests(ChatConfig):
         for file in files:
             if re.search(r"\.json$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
-                    manifests[file.split(".")[0]] = json.load(f)
+                    try:
+                        manifests[file.split(".")[0]] = json.load(f)
+                    except:
+                        print_error(file + " is broken")
             elif re.search(r"\.yml$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
-                    manifests[file.split(".")[0]] = yaml.safe_load(f)
+                    try:
+                        manifests[file.split(".")[0]] = yaml.safe_load(f)
+                    except:
+                        print_error(file + " is broken")
         return manifests
 
     def switch_manifests(self, path: str):
