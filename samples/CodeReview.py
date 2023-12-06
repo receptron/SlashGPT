@@ -2,7 +2,6 @@
 #  git diff -U9999 | python -m samples.CodeReview
 #  git show -U9999 {commits} | python -m samples.CodeReview
 
-import json
 import os
 import sys
 
