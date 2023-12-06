@@ -167,7 +167,7 @@ class ChatSession:
             function_call (dict): json representing the function call (optional)
         """
         messages = self.history.messages()
-        (role, res, function_call) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
+        (role, res, function_call, token_usage) = self.llm_model.generate_response(messages, self.manifest, self.config.verbose)
 
         if self.config.verbose and function_call is not None:
             print_info(function_call)
