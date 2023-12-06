@@ -39,12 +39,12 @@ sampleDataSet = [
 
 i = 0
 for query in sampleDataSet:
-    query_embedding_response = openai.Embedding.create(
+    query_embedding_response = openai.embeddings.create(
         model=EMBEDDING_MODEL,
         input=query,
     )
 
-    query_embedding = query_embedding_response["data"][0]["embedding"]
+    query_embedding = query_embedding_response.data[0].embedding
     vectors = [(f"id_{i}", query_embedding, {"text": query})]
     print(vectors)
     index.upsert(vectors)

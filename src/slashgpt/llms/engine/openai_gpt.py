@@ -3,8 +3,8 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, List
 
-import openai
 import tiktoken  # for counting tokens
+from openai import OpenAI
 
 from slashgpt.function.function_call import FunctionCall
 from slashgpt.llms.engine.base import LLMEngineBase
@@ -22,12 +22,12 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
         if key == "":
             print_error("OPENAI_API_KEY environment variable is missing from .env")
             sys.exit()
-        openai.api_key = key
+        self.client = OpenAI(api_key=key)
 
         # Override default openai endpoint for custom-hosted models
         api_base = llm_model.get_api_base()
         if api_base:
-            openai.api_base = api_base
+            self.client.base_url = api_base
 
         return
 
@@ -44,19 +44,19 @@ class LLMEngineOpenAIGPT(LLMEngineBase):
             params["functions"] = functions
             if manifest.get("function_call"):
                 params["function_call"] = dict(name=manifest.get("function_call"))
-        response = openai.ChatCompletion.create(**params)
+        response = self.client.chat.completions.create(**params)
         token_usage = response.get("usage").get("total_tokens")
 
         if verbose:
-            print_debug(f"model={response['model']}")
-            print_debug(f"usage={response['usage']}")
-        answer = response["choices"][0]["message"]
-        res = answer["content"]
-        role = answer["role"]
+            print_debug(f"model={dict(response)['model']}")
+            print_debug(f"usage={dict(response)['usage']}")
+        answer = response.choices[0].message
+        res = answer.content
+        role = answer.role
 
         function_call = None
-        if functions is not None and answer.get("function_call") is not None:
-            function_call = FunctionCall(answer.get("function_call"), manifest)
+        if functions is not None and answer.function_call is not None:
+            function_call = FunctionCall(answer.function_call, manifest)
 
             if res and function_call is None:
                 function_call = self._extract_function_call(messages[-1], manifest, res, True)

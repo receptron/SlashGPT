@@ -4,8 +4,8 @@ import json
 import sys
 from typing import TYPE_CHECKING, List
 
-import openai
 import tiktoken  # for counting tokens
+from openai import OpenAI
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.utils.print import print_debug, print_error
@@ -22,12 +22,12 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
         if key == "":
             print_error("OPENAI_API_KEY environment variable is missing from .env")
             sys.exit()
-        openai.api_key = key
+        self.client = OpenAI(api_key=key)
 
         # Override default openai endpoint for custom-hosted models
         api_base = llm_model.get_api_base()
         if api_base:
-            openai.api_base = api_base
+            self.client.base_url = api_base
 
         return
 
@@ -45,12 +45,12 @@ class LLMEngineOpenAILegacy(LLMEngineBase):
 
         if verbose:
             print_debug(f"params={json.dumps(params, indent=2)}")
-        response = openai.Completion.create(**params)
+        response = self.client.completions.create(**params)
 
         if verbose:
             print_debug(f"response={response}")
 
-        res = response["choices"][0]["text"]
+        res = response.choices[0].text
         function_call = self._extract_function_call(messages[-1], manifest, res) if manifest.functions() is not None else None
 
         role = "assistant"
