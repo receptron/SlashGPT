@@ -39,13 +39,13 @@ class ChatConfigWithManifests(ChatConfig):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     try:
                         manifests[file.split(".")[0]] = json.load(f)
-                    except:
+                    except json.JSONDecodeError:
                         print_error(file + " is broken")
             elif re.search(r"\.yml$", file):
                 with open(f"{path}/{file}", "r", encoding="utf-8") as f:  # encoding add for Win
                     try:
                         manifests[file.split(".")[0]] = yaml.safe_load(f)
-                    except:
+                    except Exception:
                         print_error(file + " is broken")
         return manifests
 
