@@ -37,7 +37,7 @@ class MockLlmEngine(LLMEngineBase):
                 res = self.llm_model.name()
             elif last_message == "custom":
                 res = self.llm_model.get("x_custom")
-        return (role, res, function_call)
+        return (role, res, function_call, 0)
 
 
 my_llm_engine_configs = {
