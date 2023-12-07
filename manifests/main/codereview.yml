@@ -1,0 +1,86 @@
+title: Code review
+prompt: |
+  git diffの情報が与えられます。ファイル名等から使われている言語を推測し、あなたはその言語の専門家になります。
+  -で始まる行は削除された行、+で始まる行は追加された行です。
+  与えらた情報を元に、更新されたコードについて、バグや問題を指摘し、改善点を教えてください。
+  また変更内容を要約して、わかりやすく説明してください。
+memo: git show -U9999 422b8ea64a21c528f79f82ff219fb83643c30569
+sample: |
+  commit 422b8ea64a21c528f79f82ff219fb83643c30569
+  Author: snakajima <satoshi.nakajima@gmail.com>
+  Date:   Thu Oct 12 08:52:13 2023 -0700
+  
+      ChatSession
+  
+  diff --git a/tests/llm_engine/test_engine.py b/tests/llm_engine/test_engine.py
+  index b4e9047..ba7e3bf 100644
+  --- a/tests/llm_engine/test_engine.py
+  +++ b/tests/llm_engine/test_engine.py
+  @@ -1,30 +1,58 @@
+   import os
+   import sys
+   from typing import List
+  -
+  +from dotenv import load_dotenv
+   import pytest
+   
+   sys.path.append(os.path.join(os.path.dirname(__file__), "../../src"))
+   
+   from slashgpt.llms.engine.base import LLMEngineBase  # noqa: E402
+  -from slashgpt.manifest import Manifest
+  +from slashgpt.manifest import Manifest  # noqa: E402
+  +
+  +from slashgpt.chat_config import ChatConfig  # noqa: E402
+  +from slashgpt.chat_session import ChatSession  # noqa: E402
+   
+  -class MyLlmENgine(LLMEngineBase):
+  +load_dotenv()
+  +current_dir = os.path.dirname(__file__)
+  +
+  +class MyLlmEngine(LLMEngineBase):
+       def __init__(self, llm_model):
+           self.llm_model = llm_model
+           return
+       
+       def chat_completion(self, messages: List[dict], manifest: Manifest, verbose: bool):
+           role = "assistant"
+           res = "hello"
+           function_call = None
+           return (role, res, function_call)
+   
+   @pytest.fixture
+   def engine():
+  -    return MyLlmENgine({})
+  +    return MyLlmEngine({})
+   
+   def test_foo(engine):
+       (role, res, function_call) = engine.chat_completion([], None, False)
+       assert role == "assistant"
+  +    assert res == "hello"
+  +
+  +res = "foo"
+  +
+  +def process_event(callback_type, data):
+  +    if callback_type == "bot":
+  +        global res
+  +        res = data
+  +
+  +manifest = {
+  +    "prompt": "abc"
+  +}
+  +
+  +def test_bar(engine):
+  +    config = ChatConfig(current_dir)
+  +    session = ChatSession(
+  +        config,
+  +        manifest=manifest,
+  +        agent_name="foo"
+  +    )
+  +    session.append_user_question("Hello")
+  +    session.call_loop(process_event)
+       assert res == "hello"
+skip_function_result: true
+actions: 
+  paper_summary:
+    type: "message_template"
+    message: "title: {title}\nkeywords: {keywords}\nissues: {issues}\nmethods: {methods}\nresults: {results}"
