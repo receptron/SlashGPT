@@ -59,6 +59,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 slashGPT = "slashgpt.cli:cli"
+slashbot = "slashgpt.slashbot:run_bot"
 
 [tool.poetry.build]
 script = "prebuild.py"
