@@ -4,12 +4,15 @@ import platform
 import re
 from typing import List, Optional
 
-from gtts import gTTS, lang
+try:
+    from gtts import gTTS, lang
+except ImportError:
+    print("no gtts. pip install gtts if you need")
 
 try:
     from playsound import playsound
 except ImportError:
-    print("no playsound. pip install playsound")
+    print("no playsound. pip install playsound if you need")
 
 from slashgpt.chat_app import ChatApplication
 from slashgpt.chat_config_with_manifests import ChatConfigWithManifests
@@ -29,12 +32,12 @@ utility functions for Main class
 
 
 def play_text(text: str, lang: str):
-    audio_obj = gTTS(text=text, lang=lang, slow=False)
-    audio_obj.save("./output/audio.mp3")
     try:
+        audio_obj = gTTS(text=text, lang=lang, slow=False)
+        audio_obj.save("./output/audio.mp3")
         playsound("./output/audio.mp3")
     except NameError:
-        print("no playsound. pip install playsound")
+        print_error("no playsound or gtts. pip install playsound or gtts")
 
 
 """
@@ -155,7 +158,11 @@ class SlashGPT:
             else:
                 audio = None
                 if commands[1] != "off":
-                    languages = lang.tts_langs()
+                    try:
+                        languages = lang.tts_langs()
+                    except NameError:
+                        languages = ""
+                        print_error("no gtts. pip install gtts")
                     if commands[1] in languages:
                         audio = commands[1]
                     else:
