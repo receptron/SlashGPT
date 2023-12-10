@@ -6,7 +6,6 @@ termcolor
 bs4
 tiktoken
 gTTS
-playsound
 pyobjc; sys_platform == 'darwin' 
 IPython
 matplotlib
