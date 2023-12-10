@@ -15,7 +15,6 @@ scipy
 replicate
 pydantic==1.10
 codeboxapi
-gql
 requests-toolbelt
 black[jupyter]
 isort
