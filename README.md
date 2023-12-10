@@ -21,7 +21,10 @@ Here are the design goals:
 ## Initialization for developer
 
 1. Install the required packages:
+  - If you want to use all the functions, install this.
+    `pip install -r requirements/full.txt`
 
+  - If you want to use only the general features, install this
     `pip install -r requirements.txt`
 
 2. Create .env file, and specify your OpenAI key as follows:
