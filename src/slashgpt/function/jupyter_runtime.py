@@ -12,8 +12,11 @@ try:
     import IPython
     import matplotlib.image as mpimg
     import matplotlib.pyplot as plt
+
+    isLoadedRuntime = True
 except ImportError:
     print("no jupyter_runtime related module. pip install codeboxapi IPython matplotlib numpy")
+    isLoadedRuntime = False
 
 
 from slashgpt.utils.print import print_error
@@ -35,6 +38,9 @@ class PythonRuntime:
             os.makedirs(self.folder_path)
 
     def create_notebook(self, module: str):
+        if not isLoadedRuntime:
+            return ({"result": "Not created a notebook", "notebook_name": "None"}, None)
+
         # Create a new notebook
         counter = 0
         notebook_name = "notebook"
@@ -70,6 +76,8 @@ class PythonRuntime:
             self.codebox = None
 
     def run_python_code(self, code: list, query: str):
+        if not isLoadedRuntime:
+            return (None, "")
         if query:
             self.notebook["cells"].append(
                 {
