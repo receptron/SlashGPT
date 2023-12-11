@@ -1,10 +1,13 @@
 import os
 from typing import List
 
-import numpy as np
-import psycopg2
-from pgvector.psycopg2 import register_vector
-from psycopg2.extensions import AsIs
+try:
+    import numpy as np
+    import psycopg2
+    from pgvector.psycopg2 import register_vector
+    from psycopg2.extensions import AsIs
+except ImportError:
+    print("no db_pgvector related module. pip install psycopg2-binary pgvector numpy")
 
 from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine

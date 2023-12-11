@@ -1,8 +1,11 @@
 import os
 from typing import List
 
-import chromadb
-import numpy as np
+try:
+    import chromadb
+    import numpy as np
+except ImportError:
+    print("no db_chroma related module. pip install chromadb numpy")
 
 from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine

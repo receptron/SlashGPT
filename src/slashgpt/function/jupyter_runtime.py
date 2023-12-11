@@ -5,11 +5,16 @@ import json
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import codeboxapi as cb
-import IPython
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 from dotenv import load_dotenv
+
+try:
+    import codeboxapi as cb
+    import IPython
+    import matplotlib.image as mpimg
+    import matplotlib.pyplot as plt
+except ImportError:
+    print("no jupyter_runtime related module. pip install codeboxapi IPython matplotlib numpy")
+
 
 from slashgpt.utils.print import print_error
 
