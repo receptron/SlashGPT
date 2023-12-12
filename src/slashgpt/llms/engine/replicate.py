@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
-import replicate
+try:
+    import replicate
+except ImportError:
+    print("no replicate. pip install replicate")
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.utils.print import print_debug

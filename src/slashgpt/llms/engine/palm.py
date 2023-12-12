@@ -1,6 +1,9 @@
 from typing import List
 
-import google.generativeai as palm
+try:
+    import google.generativeai as palm
+except ImportError:
+    print("no google-generativeai. pip install google-generativeai")
 
 from slashgpt.llms.engine.base import LLMEngineBase
 from slashgpt.llms.model import LlmModel
