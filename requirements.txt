@@ -12,5 +12,3 @@ flake8
 pytest
 yamllint
 mypy
-flask
-
