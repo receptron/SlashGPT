@@ -1,7 +1,10 @@
 import os
 from typing import List
 
-import pinecone
+try:
+    import pinecone
+except ImportError:
+    print("no pinecone. pip install pinecone")
 
 from slashgpt.dbs.db_base import VectorDBBase
 from slashgpt.dbs.vector_engine import VectorEngine
