@@ -15,7 +15,7 @@ try:
 
     isLoadedRuntime = True
 except ImportError:
-    print("no jupyter_runtime related module. pip install codeboxapi IPython matplotlib numpy")
+    print("no jupyter_runtime related module. pip install codeboxapi IPython matplotlib numpy pydantic==1.10")
     isLoadedRuntime = False
 
 
