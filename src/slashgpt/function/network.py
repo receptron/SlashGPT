@@ -3,8 +3,15 @@ import re
 import urllib.parse
 
 import requests
-from gql import Client, gql
-from gql.transport.requests import RequestsHTTPTransport
+
+try:
+    from gql import Client, gql
+    from gql.transport.requests import RequestsHTTPTransport
+
+    isLoadedGQL = True
+except ImportError:
+    print("no gql. pip install gql")
+    isLoadedGQL = False
 
 from slashgpt.utils.print import print_debug, print_error
 

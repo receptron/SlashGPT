@@ -6,7 +6,7 @@ line_length = 150
 
 [tool.poetry]
 name = "slashgpt"
-version = "0.0.6"
+version = "0.0.7"
 description = ""
 authors = ["snakajima <satoshi.nakajima@gmail.com>"]
 license = "MIT"
@@ -59,6 +59,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 slashGPT = "slashgpt.cli:cli"
+slashbot = "slashgpt.slashbot:run_bot"
 
 [tool.poetry.build]
 script = "prebuild.py"

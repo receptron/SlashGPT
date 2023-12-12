@@ -32,6 +32,7 @@ from .llms.engine.palm import LLMEnginePaLM
 from .llms.engine.replicate import LLMEngineReplicate
 from .llms.model import LlmModel
 from .manifest import Manifest
+from .slashbot import run_bot
 from .utils.print import print_bot, print_debug, print_error, print_function, print_info, print_warning
 
 # from .function.network import *
@@ -44,6 +45,7 @@ __all__ = [
     "ChatHistory",
     "ChatSession",
     "cli",
+    "run_bot",
     # dbs
     "VectorDBBase",
     "DBChroma",
