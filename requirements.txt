@@ -3,6 +3,7 @@ python-dotenv==1.0.0
 termcolor
 bs4
 tiktoken
+pyyaml
 pyobjc; sys_platform == 'darwin' 
 requests-toolbelt
 black[jupyter]

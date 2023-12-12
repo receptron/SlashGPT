@@ -28,6 +28,7 @@ termcolor = "^2.3.0"
 bs4 = "^0.0.1"
 tiktoken = "^0.4.0"
 requests-toolbelt = "^1.0.0"
+pyyaml = "^6.0.1"
 
 [tool.poetry.dependencies.pyobjc]
 version = "^9.2"
