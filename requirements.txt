@@ -4,7 +4,6 @@ termcolor
 bs4
 tiktoken
 pyobjc; sys_platform == 'darwin' 
-pydantic==1.10
 requests-toolbelt
 black[jupyter]
 isort
