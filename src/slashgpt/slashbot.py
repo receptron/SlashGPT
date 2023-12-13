@@ -14,28 +14,28 @@ from slashgpt import ChatConfigWithManifests, ChatSession  # noqa: E402
 
 def run_bot(base_dir: str = ""):
     parser = argparse.ArgumentParser(description="SlashBot: SlashGPT bot")
-    parser.add_argument("agentname")
+    if not "--list" in sys.argv and not "-l" in sys.argv:
+        parser.add_argument("agentname")
     parser.add_argument("--manifests", default="main")
     parser.add_argument("--dir", "-d", default="")
     parser.add_argument("--list", "-l", action="store_true")
-
     args = parser.parse_args()
     manifests = args.manifests
-    agent = args.agentname
     directory = args.dir
 
     current_dir = directory if directory else base_dir if base_dir != "" else os.path.dirname(__file__)
     manifests_dir = current_dir + "/manifests/" + manifests
-    agent_file = manifests_dir + "/" + agent
 
     config = ChatConfigWithManifests(current_dir, manifests_dir)
-
     if args.list:
         print("Manifest list")
         for manifest_key in config.manifests.keys():
             manifest = config.manifests[manifest_key]
             print(manifest_key + ": " + manifest.get("title", "") + " - " + manifest.get("description", ""))
         return
+
+    agent = args.agentname
+    agent_file = manifests_dir + "/" + agent
 
     if os.path.isfile(agent_file + ".yml"):
         agent_file = agent_file + ".yml"
