@@ -14,7 +14,7 @@ from slashgpt import ChatConfigWithManifests, ChatSession  # noqa: E402
 
 def run_bot(base_dir: str = ""):
     parser = argparse.ArgumentParser(description="SlashBot: SlashGPT bot")
-    if not "--list" in sys.argv and not "-l" in sys.argv:
+    if "--list" not in sys.argv and "-l" not in sys.argv:
         parser.add_argument("agentname")
     parser.add_argument("--manifests", default="main")
     parser.add_argument("--dir", "-d", default="")
