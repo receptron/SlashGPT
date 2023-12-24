@@ -1,0 +1,110 @@
+title: Commit comments
+prompt: |
+  git diffの情報が与えられます。ファイル名等から使われている言語を推測し、あなたはその言語の専門家になります。
+  -で始まる行は削除された行、+で始まる行は追加された行です。
+  与えらた情報を元に、更新されたコードについて、commit 時のコメントを作成してください。
+sample: |
+  commit 6f603b7fb7bc15477b3a50cd7fe1906ee19b5b75 (HEAD -> hono, origin/hono)
+  Author: isamu <isamu@to-kyo.to>
+  Date:   Sun Dec 24 08:44:35 2023 +0900
+  
+      add hono
+  
+  diff --git a/firebase.json b/firebase.json
+  index 296cfe1..5df8cc1 100644
+  --- a/firebase.json
+  +++ b/firebase.json
+  @@ -27,6 +27,11 @@
+         }
+       ],
+       "rewrites": [
+  +      {
+  +        "source": "/api/*",
+  +        "function": "hono_server",
+  +        "region": "asia-northeast1"
+  +      },
+         {
+           "source": "**",
+           "destination": "/index.html"
+  diff --git a/functions/package.json b/functions/package.json
+  index a93e95e..d399170 100644
+  --- a/functions/package.json
+  +++ b/functions/package.json
+  @@ -16,7 +16,8 @@
+     "main": "lib/index.js",
+     "dependencies": {
+       "firebase-admin": "^11.11.0",
+  -    "firebase-functions": "^4.4.1"
+  +    "firebase-functions": "^4.4.1",
+  +    "hono": "^3.11.9"
+     },
+     "devDependencies": {
+       "@typescript-eslint/eslint-plugin": "^6.4.1",
+  diff --git a/functions/src/functions/server/hono.ts b/functions/src/functions/server/hono.ts
+  new file mode 100644
+  index 0000000..4ca6125
+  --- /dev/null
+  +++ b/functions/src/functions/server/hono.ts
+  @@ -0,0 +1,33 @@
+  +import { Hono } from "hono";
+  +import { Request as FunctionRequest, Response } from "firebase-functions";
+  +
+  +// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  +const handle = (app: Hono<any>) => {
+  +  return async (req: FunctionRequest, resp: Response) => {
+  +    const url = new URL(`${req.protocol}://${req.hostname}${req.url}`);
+  +
+  +    const headers = new Headers()
+  +
+  +    Object.keys(req.headers).forEach((k) => {
+  +      headers.set(k, req.headers[k] as string);
+  +    })
+  +    const body = req.body;
+  +    
+  +    const newRequest = ["GET", "HEAD"].includes(req.method) ? new Request(url, {
+  +      headers,
+  +      method: req.method,
+  +    }) : new Request(url, {
+  +      headers,
+  +      method: req.method,
+  +      body,
+  +    }) 
+  +    const res = await app.fetch(newRequest);
+  +    resp.json(await res.json());
+  +  };
+  +};
+  +
+  +const app = new Hono();
+  +
+  +app.get("/api/test", (c) => c.json({message: "Hono!"}));
+  +
+  +export const server = handle(app);
+  diff --git a/functions/src/index.ts b/functions/src/index.ts
+  index 11251d9..10bcf56 100644
+  --- a/functions/src/index.ts
+  +++ b/functions/src/index.ts
+  @@ -10,4 +10,6 @@ import exportIfNeeded from "./common/exportifneeded";
+   //   response.send("Hello from Firebase!");
+   // });
+   
+  -exportIfNeeded("test", "tests/test", exports);
+  +// exportIfNeeded("test", "tests/test", exports);
+  +
+  +exportIfNeeded("hono_server", "server/hono", exports);
+  diff --git a/functions/src/wrappers/server/hono.ts b/functions/src/wrappers/server/hono.ts
+  new file mode 100644
+  index 0000000..7bf7401
+  --- /dev/null
+  +++ b/functions/src/wrappers/server/hono.ts
+  @@ -0,0 +1,11 @@
+  +import * as functions from "firebase-functions";
+  +import * as hono from "../../functions/server/hono";
+  +
+  +export default functions
+  +  .region("asia-northeast1")
+  +  .runWith({
+  +    maxInstances: 5,
+  +    timeoutSeconds: 10,
+  +    memory: "1GB" as "1GB",
+  +  })
+  +  .https.onRequest(hono.server);
