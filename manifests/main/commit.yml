@@ -1,4 +1,4 @@
-title: Code review
+title: Commit comments
 prompt: |
   git diffの情報が与えられます。ファイル名等から使われている言語を推測し、あなたはその言語の専門家になります。
   -で始まる行は削除された行、+で始まる行は追加された行です。
