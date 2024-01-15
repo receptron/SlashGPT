@@ -95,7 +95,7 @@ def restore_session(config, agent_name, manifest, session_id, llm):
 
 def process_llm(session):
     try:
-        (res, function_call) = session.call_llm()
+        (res, function_call, _) = session.call_llm()
 
         if function_call:
             runtime.create_notebook(session.llm_model.name())
@@ -104,7 +104,7 @@ def process_llm(session):
                 function_name,
                 should_call_llm,
             ) = function_call.process_function_call(
-                session.context,
+                session.history,
                 runtime,
                 True,
             )
