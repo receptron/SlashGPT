@@ -30,3 +30,8 @@ before_commit:
 	make test
 	make format
 	make lint
+
+.PHONY: docker
+docker:
+	docker build -t sld -f Dockerfile.dev .
+	docker run -it -v "$(PWD):/SlashGPT/SlashGPT" sld bash
