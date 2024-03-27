@@ -31,7 +31,7 @@
   "actions": {
     "convert": {
       "type": "rest",
-      "url": "https://today-currency-converter.oiconma.repl.co/currency-converter?from={from}&to={to}&amount={amount}"
+      "url": "https://43eed2b6-0718-4f41-bdfc-f4d50f895267-00-1yb27jf0f9z7g.sisko.replit.dev/currency-converter?from={from}&to={to}&amount={amount}"
     }
   },
   "prompt": [
