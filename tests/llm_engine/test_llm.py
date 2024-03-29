@@ -25,13 +25,13 @@ class TestGPT:
             # Just calls LLM (no process for function_call)
             session = ChatSession(config, manifest={})
             session.append_user_question(question)
-            (message, _function_call) = session.call_llm()
+            (message, _function_call, _token_usage) = session.call_llm()
             assert "1776" in message
 
             # legasy GPT (completion API)
             session = ChatSession(config, manifest=dict(model="gpt-3.5-turbo-instruct"))
             session.append_user_question(question)
-            (message, _function_call) = session.call_llm()
+            (message, _function_call, _token_usage) = session.call_llm()
             assert "1776" in message
 
             # Callback style (function_call will be processed)
@@ -63,7 +63,7 @@ class TestGPT:
             }
             session = ChatSession(config, manifest=manifest)
             session.append_user_question("Play Bohemian Rhapsody")
-            (message, function_call) = session.call_llm()
+            (message, function_call, _token_usage) = session.call_llm()
             assert function_call is not None
             data = function_call.data()
             print(data)
