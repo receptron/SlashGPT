@@ -30,3 +30,14 @@ before_commit:
 	make test
 	make format
 	make lint
+
+## docker: run docker development environment with full requirements
+.PHONY: docker
+docker:
+	docker build --build-arg BUILD=full -t slashgpt .
+	docker run -it -v "$(PWD):/SlashGPT/SlashGPT" slashgpt python -m pdb SlashGPT.py
+
+## dev: run debugging environment in poetry
+.PHONY: dev
+dev:
+	poetry run python -m pdb SlashGPT.py
