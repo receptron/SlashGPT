@@ -52,7 +52,7 @@ pdoc src/slashgpt
 
 or
 
-[GitHub Main Repo](https://snakajima.github.io/SlashGPT/)
+[GitHub Main Repo](https://receptron.github.io/SlashGPT/)
 
 ## Execution
 
